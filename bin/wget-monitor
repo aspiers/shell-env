@@ -2,6 +2,11 @@
 #
 # wget-monitor -- simple URL monitor
 #
+# Stick a list of URLs in ~/.wget-monitor, one per line, (blank lines
+# and comment lines with '#' allowed) for wget to retrieve.  First
+# invocation fetches the URLs into a local cache; subsequent
+# invocations diff the online version against the cache.
+#
 # Copyright (c) 2003 Adam Spiers <adam@spiers.net>.  All rights
 # reserved. This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
