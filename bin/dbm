@@ -83,6 +83,7 @@ elsif ($action =~ /^(find|search)$/) {
     exit 1;
   }
   my $re = $ARGV[0];
+
   foreach my $key (keys %hash) {
     print_key_val($key) if $key =~ /$re/o;
   }
@@ -176,10 +177,34 @@ sub maybe_quote {
   }
 }
 
+sub has_EXISTS {
+  my $pkg = ref tied %hash;
+  {
+    no strict 'refs';
+    
+    if ($pkg eq 'AnyDBM_File') {
+      foreach my $mod (@{"${pkg}::ISA"}) {
+        next unless $mod =~ /_File$/;
+        return 1 if defined &{"${mod}::EXISTS"};
+      }
+      return 0;
+    }
+    else {
+      return defined &{"${pkg}::EXISTS"};
+    }
+  }
+}
+  
 sub print_key_val {
   my $key = shift;
-  my $val = exists  $hash{$key} ?
-              (defined $hash{$key} ? $hash{$key} : '__undef__')
-            : '__non-existant__';
+
+  my $val;
+  if (has_EXISTS() && ! exists $hash{$key}) {
+    $val = '__non-existant__';
+  }
+  else {
+    $val = defined $hash{$key} ? $hash{$key} : '__undef__';
+  }
+  
   print "$key, $val\n";
 }
