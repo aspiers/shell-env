@@ -976,6 +976,11 @@ alias -g NS='| sort -n'
 alias -g RNS='| sort -nr'
 
 # }}}
+# {{{ common filenames
+
+alias -g DN=/dev/null
+
+# }}}
 
 # }}}
 
