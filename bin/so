@@ -13,7 +13,11 @@ tmpfile=`mktemp /tmp/source-only.XXXXXXX`
   cat $ZDOTDIR/.cvsignore
   # Allow files in other directories
   sed 's/^/\*\//g' $ZDOTDIR/.cvsignore
-) | $here/../glob-to-re >  $tmpfile
+  # Prune directories
+  sed 's/$/\/\*/g' $ZDOTDIR/.cvsignore
+  # Prune sub-directories
+  sed 's/^/\*\//g; s/$/\/\*/g' $ZDOTDIR/.cvsignore
+) | $here/../glob-to-re > $tmpfile
 
 grep -vEf $tmpfile
 
