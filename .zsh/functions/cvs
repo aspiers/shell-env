@@ -5,8 +5,8 @@ quiet=''
 
 home=${ZDOTDIR:-$HOME}
 
-normal_colourer=$home/bin/shortcuts/colour-cvs-output
-diff_colourer=$home/bin/shortcuts/colour-diff-output
+normal_colourer=$home/bin/shortcuts/tty-colour-cvs
+diff_colourer=$home/bin/shortcuts/tty-colour-diff
 
 colourer=''
 
