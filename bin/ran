@@ -1,20 +1,36 @@
 #!/usr/bin/perl -wl
+#
+# Advanced replacement for seq(1)
+#
+# Adam Spiers <ran@adamspiers.org>
+#
+# $Id$
 
 use Getopt::Long;
-my %opts = (delimiter => ' ');
-GetOptions(\%opts, 'help', 'delimiter=s', 'lines') or usage();
-usage() if @ARGV < 2 or $opts{help};
-$opts{delimiter} = "\n" if $opts{lines};
-$format = $ARGV[0] =~ /%/ ? shift : '%s';
-print join qqexpand($opts{delimiter}),
-           map { sprintf $format, $_ } eval "@ARGV";
+my %opts;
+GetOptions(
+  \%opts,
+  'help',
+  'delimiter=s', 'format=s', 'lines', 'space-pad|p', 'zero-pad|z',
+) or usage();
+usage() if @ARGV == 0 or $opts{help};
+my $delimiter = delimiter();
+my @items     = eval "@ARGV";
+my $format    = get_format(\@items);
+my @formatted_items = map { sprintf $format, $_ } @items;
+print join qqexpand($delimiter), @formatted_items;
 
 sub usage {
-  die <<EOUSAGE
-Usage: ran [options] <printf format string> <Perl list>
+  warn @_, "\n" if @_;
+  
+  die <<EOUSAGE;
+Usage: ran [options] <Perl list>
 Options:
   -d, --delimiter=STR    Set output delimiter
   -l, --lines            Set output delimiter to \\n
+  -f, --format=STR       Use printf format string
+  -p, --space-pad        Equalize width by padding with spaces
+  -z, --zero-pad         Equalize width by padding with leading zeroes
 EOUSAGE
 }
 
@@ -24,3 +40,32 @@ sub qqexpand {
   return $delimiter;
 }
 
+sub get_format {
+  my ($items) = @_;
+
+  my @foo = map { defined $opts{$_} ? 1 : 0 } qw(format space-pad zero-pad);
+  usage("You must only select one output format.\n")
+    if $foo[0] + $foo[1] + $foo[2] > 1;
+
+  return '%0' . max_width($items) . 'd' if $opts{'zero-pad'};
+  return '%'  . max_width($items) . 's' if $opts{'space-pad'};
+  return $opts{format}                  if $opts{'format'};
+  return '%s';
+}
+
+sub max_width {
+  my ($items) = @_;
+  my $max_width = 0;
+  for (@$items) {
+    $max_width = length if length > $max_width;
+  }
+  return $max_width;
+}
+
+sub delimiter {
+  usage("You cannot specify both --delimiter and --lines.\n")
+    if $opts{delimiter} && $opts{lines};
+
+  return "\n" if $opts{lines};
+  return $opts{delimiter} || ' ';
+}
