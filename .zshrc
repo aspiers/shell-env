@@ -250,7 +250,7 @@ TMOUT=1800
 
 local _find_promptinit
 _find_promptinit=( $^fpath/promptinit(N) )
-if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
+if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   zshrc_load_status 'prompt system'
 
   autoload -U promptinit
