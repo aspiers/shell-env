@@ -1,0 +1,2 @@
+#compdef mx
+_files -g '*(^*)'
