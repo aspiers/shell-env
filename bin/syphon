@@ -11,8 +11,8 @@ syphon - removal of lines from start of file
 
 =head1 DESCRIPTION
 
-Removes of lines from the beginning of a file.  Stops when a pattern
-is encountered (the first line matching the pattern is not removed).
+Removes lines from the beginning of a file.  Stops when a pattern is
+encountered (the first line matching the pattern is not removed).
 Outputs to STDOUT, unless C<-i> is specified, in which case the inode
 is preserved by filtering to a temporary file and then copying back
 over the original file.  This means it will work with log files whose
