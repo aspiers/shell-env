@@ -180,12 +180,6 @@ infopath=(
 
 # Variables used by zsh
 
-# {{{ zdotdir
-
-zdotdir=${ZDOTDIR:-$HOME}
-export ZDOTDIR="$zdotdir"
-
-# }}}
 # {{{ Function path
 
 fpath=(

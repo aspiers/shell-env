@@ -21,7 +21,14 @@ fi
 # }}}
 # {{{ Environment
 
-[[ -e ~/.shared_env ]] && . ~/.shared_env
+# {{{ zdotdir
+
+zdotdir=${ZDOTDIR:-$HOME}
+export ZDOTDIR="$zdotdir"
+
+# }}}
+
+[[ -e $zdotdir/.shared_env ]] && . $zdotdir/.shared_env
 
 # {{{ path
 
@@ -29,7 +36,7 @@ fi
 typeset -U path
 
 path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
-path=( ~/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
+path=( $zdotdir/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
 # {{{ Perl libraries
