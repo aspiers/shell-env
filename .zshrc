@@ -505,6 +505,11 @@ zshrc_load_status 'aliases and functions'
 
 # {{{ Better word navigation
 
+# Remember, WORDCHARS is defined as a 'list of non-alphanumeric
+# characters considered part of a word by the line editor'.
+
+# Elsewhere we set it to the empty string.
+
 _my_extended_wordchars='*?_-.[]~=&;!#$%^(){}<>:@,\\'
 _my_extended_wordchars_space="${_my_extended_wordchars} "
 _my_extended_wordchars_slash="${_my_extended_wordchars}/"
@@ -550,16 +555,11 @@ forward-to-/ () {
      unquote-forward-word
 }
 
+# Create new user-defined widgets pointing to eponymous functions.
 zle -N backward-to-space
 zle -N forward-to-space
-
 zle -N backward-to-/
 zle -N forward-to-/
-
-bindkey "^[B"  backward-to-space
-bindkey "^[F"  forward-to-space
-bindkey "^[^b" backward-to-/
-bindkey "^[^f" forward-to-/
 
 # }}}
 # {{{ zrecompile
@@ -944,10 +944,18 @@ bindkey '^[P' history-beginning-search-backward
 bindkey '^[N' history-beginning-search-forward
 bindkey '^W' kill-region
 bindkey '^I' complete-word
+bindkey '^Xi' incremental-complete-word
 # bindkey '^[b' emacs-backward-word
 # bindkey '^[f' emacs-forward-word
+bindkey "^[B"  backward-to-space
+bindkey "^[F"  forward-to-space
+bindkey "^[^b" backward-to-/
+bindkey "^[^f" forward-to-/
 
-zmodload zsh/deltochar >&/dev/null && bindkey '^[z' zap-to-char
+if zmodload zsh/deltochar >&/dev/null; then
+  bindkey '^[z' zap-to-char
+  bindkey '^[Z' delete-to-char
+fi
 
 # Fix weird sequence that rxvt produces
 bindkey -s '^[[Z' '\t'
