@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+# Take two or more sequences and 'zip' them together in the functional
+# programming sense.
+
 use strict;
 use warnings;
 
