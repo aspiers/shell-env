@@ -43,7 +43,7 @@ bind '"\e\C-i":dynamic-complete-history'
 # }}}
 # {{{ Prompt
 
-PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \$ "
+PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \\$ "
 
 # }}}
 # {{{ Aliases and functions
