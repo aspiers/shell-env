@@ -106,6 +106,7 @@ export REPLYTO='adam@spiers.net (Adam Spiers)'
 # {{{ Palm Pilot
 
 export PILOTRATE=115200
+export PILOTPORT=/dev/pilot
 
 # }}}
 
