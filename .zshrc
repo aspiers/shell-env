@@ -167,13 +167,43 @@ zshrc_load_status 'setting environment'
 # {{{ INFOPATH
 
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T INFOPATH infopath
-typeset -U infopath
+typeset -U infopath # no duplicates
 export INFOPATH
 infopath=( 
+          ~/local/$OSTYPE/info(N)
           ~/local/info(N)
+          /usr/local/info(N)
           /usr/info(N)
           $infopath
          )
+
+# }}}
+# {{{ MANPATH
+
+case "$OSTYPE" in
+  linux*)
+    # Don't need to do anything through the cunningness
+    # of AUTOPATH in /etc/man.config!
+    ;;
+
+  *)
+    # Don't trust system-wide MANPATH?  Remember what it was, for reference.
+    sysmanpath=$HOME/.sysmanpath
+    [ -e $sysmanpath ] || echo "$MANPATH" > $sysmanpath
+    manpath=( )
+    for dir in "$path[@]"; do
+      echo dir $dir
+      [[ "$dir" == */bin ]] || continue
+      mandir="${dir//\/bin//man}"
+      echo mandir $mandir
+      [[ -d "$mandir" ]] && manpath=( "$mandir" "$manpath[@]" )
+      echo added
+    done
+
+    # ... or *do* trust system-wide MANPATH
+    #MANPATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$MANPATH
+    ;;
+esac
 
 # }}}
 

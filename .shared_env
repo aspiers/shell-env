@@ -35,6 +35,11 @@ for newpath in                                    \
 done
 
 # }}}
+# {{{ MANPATH
+
+# In order to avoid forks here, this is done in .zshrc
+
+# }}}
 # {{{ IN_SCREEN
 
 case "$TERM" in
