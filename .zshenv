@@ -29,6 +29,7 @@ if [[ "$ZDOTDIR" == "$HOME" ]]; then
   zdotdirpath=( $ZDOTDIR )
 else
   zdotdirpath=( $ZDOTDIR $HOME )
+  export OTHER_USER=1
 fi
 
 # }}}
