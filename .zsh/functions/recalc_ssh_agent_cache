@@ -45,8 +45,8 @@ recalc_ssh_agent_cache () {
 
 write_ssh_agent_cache () {
   cat >|/tmp/.dsa-cache-$USER-$HOST <<EOF
-SSH_AGENT_PID=$SSH_AGENT_PID
-SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+export SSH_AGENT_PID=$SSH_AGENT_PID
+export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
 EOF
 
   cat <<EOF 
