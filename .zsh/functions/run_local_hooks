@@ -27,11 +27,11 @@ run_local_hooks () {
   for dir in ${zdotdirpath:-$HOME}; do
     if [ -n "$dir" ]; then
       for file in "$@"; do
-        for suffix in local ${HOST%%.*}; do
-          if [ -r "$dir/$file.$suffix" ]; then
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$suffix"
-            . $dir/$file.$suffix
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$suffix done"
+        for hook_suffix in local ${HOST%%.*}; do
+          if [ -r "$dir/$file.$hook_suffix" ]; then
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$hook_suffix"
+            . $dir/$file.$hook_suffix
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$hook_suffix done"
           fi
         done
       done
