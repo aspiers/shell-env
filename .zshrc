@@ -382,7 +382,7 @@ hosts=(
     {aviator,vaeth}.guideguide.com
 
     # plig
-    {,riffraff.}plig.net
+    {,riffraff.}plig.net adamspiers.org
 
     # New College
     corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
@@ -445,6 +445,7 @@ zstyle ':completion:*' hosts $hosts
 ### BEGIN PRIVATE
 my_accounts=(
   {localadams,root}@pulse
+  adams@adamspiers.org
   adam@corelli.new.ox.ac.uk
   adam@aviator.guideguide.com
   {adam,root}@thelonious.new.ox.ac.uk
