@@ -535,7 +535,7 @@ compdef _users lh
 alias f=finger
 
 # su to root and change window title
-alias root='echo -n "\e]0;root@${HOST}\a"; su -; cxx'
+alias root='echo -n "\e]0;root@${HOST}\a"; su -; cx'
 
 # }}}
 # {{{ No spelling correction
