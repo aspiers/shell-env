@@ -64,7 +64,7 @@ export IRCNICK='Adam'
 # {{{ Editor
 
 export EDITOR=emacs
-export VISUAL='QUICK_EMACS=1 emacs -nw' # see also fe()
+export VISUAL=fe
 
 # }}}
 # {{{ WWW home
