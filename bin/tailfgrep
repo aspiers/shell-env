@@ -21,6 +21,7 @@
 ## 
 
 # TODO:
+#   - make read more than one line per second (doh!)
 #   - extend to multiple patterns (one for each file?)
 #   - include more options from tail (e.g. -n) and grep (e.g. -i)
 
