@@ -14,6 +14,7 @@ use Getopt::Long;
 use ASpiers 'qqexpand';
 
 my %opts;
+Getopt::Long::Configure('require_order');
 GetOptions(\%opts, 'command=s')
   or usage();
 @ARGV or usage();
@@ -22,8 +23,9 @@ sub usage {
   die "Usage: $RealScript -c 'text to feed' command [arg1 [arg2 ...]]\n";
 }
 
-my $exp = Expect->spawn(@ARGV)
-  or die "Cannot spawn $ARGV[0]: $!\n";
+my $exp = new Expect;
+$exp->slave->clone_winsize_from(\*STDIN);
+$exp->spawn(@ARGV) or die "Cannot spawn $ARGV[0]: $!\n";
 
 $exp->send(qqexpand($opts{command}));
 $exp->interact;
