@@ -24,6 +24,6 @@ zrecompile "$@" -p -- \
   -R $_compinit_dir/compinit -- \
   -R $_compinit_dir/compaudit -- \
   -R $_compinit_dir/compdump -- \
-  -M -U ~/.zsh/funcs.zwc \
+  -M -U ~/.zsh/functions.zwc \
         ~/.zsh/functions/*(*) \
         "$_site_funcs[@]"
