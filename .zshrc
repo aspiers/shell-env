@@ -716,6 +716,7 @@ if [[ "$TERM" == ([Ex]term*|screen*) ]]; then
 fi
 
 # }}}
+alias sc=screen
 
 # }}}
 # {{{ Other users
