@@ -2,5 +2,6 @@
 if which strace 2>&1 >/dev/null; then
   strace -e trace=file "$@"
 else
-  echo strace not found
+  echo "strace not found" >&2
+  exit 1
 fi
