@@ -128,7 +128,7 @@ setopt                       \
      NO_sh_file_expansion    \
         sh_option_letters    \
         short_loops          \
-     NO_sh_word_split        \
+        sh_word_split        \
      NO_single_line_zle      \
      NO_sun_keyboard_hack    \
         unset                \
