@@ -21,20 +21,9 @@ fi
 # }}}
 # {{{ Environment
 
-# {{{ INPUTRC
+. ~/.shared_env
 
-# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
-# set convert-meta to off?
-unset INPUTRC
-
-# }}}
-# {{{ LD_PRELOAD
-
-# Fix obscure gtk problem
-#LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
-
-# }}}
-# {{{ Path
+# {{{ path
 
 # No duplicates
 typeset -U path
@@ -49,7 +38,7 @@ path=( ~/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/lib/perl5{/site_perl,}{/5.*,}{/i?86*,}(N)
+          ~/lib/perl5{/site_perl,}{/5.*,}{/i?86*,}(NOn)
           ~/lib/perl5(N)
           $perl5lib
          )
@@ -61,63 +50,10 @@ perl5lib=(
 typeset -U rubylib
 export RUBYLIB
 rubylib=( 
-          ~/lib/ruby{/site_ruby,}{/1.*,}{/i?86*,}(N)
+          ~/lib/ruby{/site_ruby,}{/1.*,}{/i?86*,}(NOn)
           ~/lib/ruby(N)
           $rubylib
          )
-
-# }}}
-# {{{ IRC
-
-export IRCNAME='Adam Spiers'
-export IRCNICK='Adam'
-
-# }}}
-# {{{ Editor
-
-export EDITOR=emacs
-export VISUAL=fe
-
-# }}}
-# {{{ WWW home
-
-export WWW_HOME='http://www.new.ox.ac.uk/~adam/'
-
-# }}}
-# {{{ Pager
-
-export METAMAIL_PAGER='less -r'
-export PAGER='less'
-export LESS='-h100 -i -j1 -M -q -y100'
-#export LESSOPEN='|/usr/local/bin/lesspipe.sh %s'
-#export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
-
-# }}}
-# {{{ Name and Reply_To
-
-export NAME='Adam Spiers'
-export REPLYTO='adam@spiers.net (Adam Spiers)'
-
-# }}}
-# {{{ POSIXLY_CORRECT for patch
-
-#export POSIXLY_CORRECT=yes
-
-# }}}
-# {{{ Palm Pilot
-
-export PILOTRATE=115200
-export PILOTPORT=/dev/pilot
-
-# }}}
-# {{{ rsync uses ssh
-
-export RSYNC_RSH=ssh
-
-# }}}
-# {{{ cvs uses ssh
-
-export CVS_RSH=ssh
 
 # }}}
 

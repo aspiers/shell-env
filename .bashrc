@@ -6,8 +6,12 @@
 
 # .bashrc is invoked by non-login interactive shells
 
-[ -e ~/.switch_shell ] && . ~/.switch_shell
+# {{{ Try to switch shell
 
+preferred_shell=$(<~/.preferred_shell)
+[ -r ~/.switch_shell ] && . ~/.switch_shell $preferred_shell
+
+# }}}
 # {{{ Source global definitions
 
 if [ -f /etc/bashrc ]; then
@@ -15,10 +19,9 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # }}}
-
 # {{{ Environment
 
-# not sure this should be in this file
+. ~/.shared_env
 
 # {{{ ls colours
 
@@ -26,55 +29,6 @@ if which dircolors >&/dev/null && [ -e ~/.dircolors ]; then
   # show directories in yellow
   eval `dircolors -b ~/.dircolors`
 fi
-
-# }}}
-# {{{ INPUTRC
-
-# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
-# set convert-meta to off?
-unset INPUTRC
-
-# }}}
-# {{{ IRC
-
-export IRCNAME='Adam Spiers'
-export IRCNICK='Adam'
-
-# }}}
-# {{{ Editor
-
-export EDITOR=emacs
-export VISUAL=fe
-
-# }}}
-# {{{ WWW home
-
-export WWW_HOME='http://www.new.ox.ac.uk/~adam/'
-
-# }}}
-# {{{ Pager
-
-export METAMAIL_PAGER='less -r'
-export PAGER='less'
-export LESS='-h100 -i -j1 -M -q -y100'
-#export LESSOPEN='|/usr/local/bin/lesspipe.sh %s'
-#export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
-
-# }}}
-# {{{ Name and Reply_To
-
-export NAME='Adam Spiers'
-export REPLYTO='adam@spiers.net (Adam Spiers)'
-
-# }}}
-# {{{ rsync uses ssh
-
-export RSYNC_RSH=ssh
-
-# }}}
-# {{{ cvs uses ssh
-
-export CVS_RSH=ssh
 
 # }}}
 
@@ -214,12 +168,7 @@ alias th='ssh -l adam thelonious.new.ox.ac.uk'
 
 # {{{ Specific to hosts
 
-if [ -r ~/.bashrc.local ]; then
-  . ~/.bashrc.local
-fi
-
-if [ -r ~/.bashrc.${HOSTNAME%%.*} ]; then
-  . ~/.bashrc.${HOSTNAME%%.*}
-fi
+[ -r ~/.bashrc.local ]           && . ~/.bashrc.local
+[ -r ~/.bashrc.${HOSTNAME%%.*} ] && . ~/.bashrc.${HOSTNAME%%.*}
 
 # }}}
