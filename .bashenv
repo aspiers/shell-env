@@ -11,6 +11,7 @@
 # bet on the latter; it depends on whether ENV or BASH_ENV were set,
 # and the version of bash.  ~/.ssh/environment can set it if ssh is
 # involved.  As a result, assume the lowest common denominator, e.g.
-# old ksh's don't even support ~ expansion.
+# old ksh's don't even support ~ expansion, or 'source' (use '.' 
+# instead).
 
 [ -r $HOME/.shared_env ] && . $HOME/.shared_env

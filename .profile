@@ -1,3 +1,3 @@
-# this happens when sh is invoked
+# This is read when sh or ksh is invoked.
 
-. ~/.bashrc
+. $HOME/.bashrc
