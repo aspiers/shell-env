@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Date::Manip 'Delta_Format';
+use File::Basename;
+use Getopt::Long;
+my %opts;
+GetOptions(\%opts, 'human|h', 'help') or usage();
+
+sub usage {
+  my $me = basename $0;
+  die <<EOUSAGE;
+EOUSAGE
+}
+
+my $who = shift || scalar(getpwuid $<);
+
+open(FINGER, "finger $who|")
+  or die "open(finger $who|) failed: $!\n";
+
+my $least_idle_secs;
+my $logged_on;
+while (<FINGER>) {
+  next if 1 .. /\bon since/i;
+
+  next unless s/\bidle(\s+time)?\b//i;
+  chomp;
+  s/^\s+//;
+  
+  my $secs;
+  $secs += $1 * 3600 * 24 if s/(\d+) days?\s+//i;
+  $secs += $1 * 3600      if s/(\d+) hours?\s+//i;
+  $secs += $1 *   60      if s/(\d+) min(ute)?s?\s+//i;
+  $secs += $1             if s/(\d+) sec(ond)?s?\s+//i;
+  $least_idle_secs = $secs
+    if ! defined $least_idle_secs || $secs < $least_idle_secs;
+}
+
+close(FINGER);
+
+if ($opts{human}) {
+  my @units = Delta_Format(
+    $least_idle_secs . 'S',
+    0,
+    map "%${_}v", qw{M d h m s},
+  );
+  
+  my $i = 0;
+  my @out;
+  for my $unit (qw{month day hour minute second}) {
+    if (my $val = $units[$i]) {
+      my $out = "$val $unit";
+      $out   .= "s" if $val != 1;
+      push @out, $out;
+    }
+    $i++;
+  }
+    
+  print "@out\n";
+}
+else {
+  print "$least_idle_secs\n";
+}
