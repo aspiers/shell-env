@@ -150,6 +150,18 @@ zshrc_load_status 'setting environment'
 export COLUMNS
 
 # }}}
+# {{{ INFOPATH
+
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T INFOPATH infopath
+typeset -U infopath
+export INFOPATH
+infopath=( 
+          ~/local/info(N)
+          /usr/info(N)
+          $infopath
+         )
+
+# }}}
 
 # Variables used by zsh
 
