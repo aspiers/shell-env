@@ -1,6 +1,12 @@
 #!/bin/zsh
 #
-# Adam's zshenv startup file
+# .zshenv
+# for zsh 3.1.6 and newer (may work OK with earlier versions)
+#
+# by Adam Spiers <adam@spiers.net>
+#
+# Best viewed in emacs folding mode (folding.el).
+# (That's what all the # {{{ and # }}} are for.)
 #
 # This gets run even for non-interactive shells;
 # keep it as fast as possible.
@@ -19,7 +25,6 @@ then
 fi
 
 # }}}
-# {{{ Environment
 
 # {{{ zdotdir
 
@@ -36,6 +41,8 @@ fi
 
 [[ -e $zdotdir/.shared_env ]] && . $zdotdir/.shared_env
 
+setopt extended_glob
+
 # {{{ path
 
 typeset -U path # No duplicates
@@ -48,6 +55,30 @@ path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}
 # {{{ manpath
 
 typeset -U manpath # No duplicates
+
+# }}}
+# {{{ fpath
+
+fpath=(
+       $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions,scripts}}(N) 
+
+       $fpath
+
+       # very old versions
+       /usr/doc/zsh*/[F]unctions(N)
+      )
+
+# Autoload all shell functions from all directories in $fpath that
+# have the executable bit on (the executable bit is not necessary, but
+# gives you an easy way to stop the autoloading of a particular shell
+# function).
+
+for dirname in $fpath; do
+  fns=( $dirname/*~*~(N.x:t) )
+  (( $#fns )) && autoload "$fns[@]"
+done
+
+#[[ "$ZSH_VERSION_TYPE" == 'new' ]] || typeset -gU fpath
 
 # }}}
 # {{{ LD_LIBRARY_PATH
@@ -85,7 +116,6 @@ rubylib=(
 
 # }}}
 
-# }}}
 # {{{ Specific to hosts
 
 run_local_hooks .zshenv
