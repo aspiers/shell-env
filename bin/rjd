@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Search for uninterruptible processes
+rj " D "
