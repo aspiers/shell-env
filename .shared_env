@@ -52,8 +52,10 @@ if [ "$HOME" = '/' ]; then
   if [ -d /root ]; then
     HOME=/root
   elif [ -d /var/tmp ]; then
-    mkdir /var/tmp/root.tmphome && \
-     HOME=/var/tmp/root.tmphome
+    new_home=/var/tmp/root.tmphome
+    if [ -d "$new_home" ] || mkdir "$new_home"; then
+      HOME="$new_home"
+    fi
   fi
 fi
 [ "$HOME" = '/' ] && echo "Warning: ~ is /"
