@@ -140,3 +140,14 @@ alias tf='less +F'
 
 # }}}
 
+# {{{ Specific to hosts
+
+if [ -r ~/.bashrc.local ]; then
+  . ~/.bashrc.local
+fi
+
+if [ -r ~/.bashrc.${HOSTNAME%%.*} ]; then
+  . ~/.bashrc.${HOSTNAME%%.*}
+fi
+
+# }}}
