@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use File::Path;
+
+die "Usage: $0 <new output dir>\n"
+  unless @ARGV && ! -e $ARGV[0];
+my $dir = shift;
+mkdir($dir) or die "mkdir($dir): $!\n";
+
+open_new("$dir/unknown");
+my @buffer;                     # use split!
+my $BUFFER_SIZE = 10;           # max lines in buffer
+
+while (<>) {
+  if (/^(.+\d) (\S+) kernel: Linux version (\d\..+)/) {
+    my ($when, $host, $version) = ($1, $2, $3);
+    my ($ver, $builduid, $builddate) =
+      $version =~ /(\d\.\S+) \((\S+?)\) \(.+\) #\d+ (.+)$/
+      or die "Couldn't parse version `$version'\n";
+    warn "$when: booted $ver ($builduid)\n";
+    $when =~ s/  / 0/;
+    $when =~ s/\s+/-/g;
+    my $outdir = "$dir/$builduid/$ver";
+    mkpath($outdir);
+    while (@buffer && $buffer[0] !~ /syslogd.*restart/) {
+      print OUT shift(@buffer);
+    }
+    open_new("$outdir/$when");
+    flush_buffer();
+    print OUT;
+  }
+  else {
+    print OUT shift(@buffer) unless @buffer < $BUFFER_SIZE;
+    push @buffer, $_;
+  }
+}
+
+close(OUT);
+
+sub open_new {
+  my ($outfile) = @_;
+  die "$outfile already existed\n" if -e $outfile;
+  open(OUT, ">$outfile") or die "open(>$outfile): $!\n";
+}
+  
+sub flush_buffer {
+  print OUT @buffer;
+  @buffer = ();
+}
