@@ -217,8 +217,8 @@ SAVEHIST=3000
 # }}}
 # {{{ Maximum size of completion listing
 
-# Only ask if line would scroll off screen
-LISTMAX=0
+#LISTMAX=0    # Only ask if line would scroll off screen
+LISTMAX=1000  # "Never" ask
 
 # }}}
 # {{{ Watching for other users
@@ -329,7 +329,9 @@ zstyle ':completion:*:complete-extended:*' \
 # }}}
 # {{{ Fancy menu selection when there's ambiguity
 
-zstyle ':completion:*' menu yes select=long-list select=5 interactive
+#zstyle ':completion:*' menu yes select interactive
+#zstyle ':completion:*' menu yes=long select=long interactive
+zstyle ':completion:*' menu yes=5 select=5 interactive
 
 # }}}
 # {{{ Completion caching
