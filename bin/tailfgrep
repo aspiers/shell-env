@@ -49,6 +49,8 @@ my ($re, @files) = @ARGV;
 my %fh = ();
 open_files();
 
+$| = 1;
+
 my $last_file = '';
 
 while (1) {
@@ -72,12 +74,19 @@ while (1) {
   sleep 1;
 }
 
-END {
-  close_files();
-}
+close_files();
 
 sub open_files {
+  if (! @files && -t 1) {
+    push @files, '-';
+  }
+
   foreach my $file (@files) {
+    if ($file eq '-') {
+      $fh{$file} = *STDIN;
+      next;
+    }
+
     -f $file or die "$file isn't a file.\n";
     local *FH;
     open(FH, $file) or die "Couldn't open $file: $!\n";
@@ -89,6 +98,7 @@ sub open_files {
 sub close_files {
   foreach my $file (@files) {
     my $fh = $fh{$file};
+#    warn "closing $file / $fh\n";
     close($fh);
   }
 }
@@ -100,7 +110,9 @@ sub match {
 
 sub output_line {
   my ($file) = @_;
-  
+
+  $file = 'STDIN' if $file eq '-';
+
   if (@files > 1) {
     if ($file ne $last_file) {
       print "\n==> $file <==\n\n";
