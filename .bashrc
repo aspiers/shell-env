@@ -38,6 +38,7 @@ fi
 # }}}
 # {{{ Key bindings
 
+set -o emacs # vi sucks ;-)
 bind '"\ep":history-search-backward'
 bind '"\en":history-search-forward'
 bind '"\e\C-i":dynamic-complete-history'
