@@ -407,6 +407,7 @@ my_accounts=(
   security:{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
   {adams,root}:server1.w3w.net
   {adams,root}:{proxy.mediaconsult.com,195.217.36.66}
+  adamspiers:zsh.sourceforge.net
 )
 ### END PRIVATE
 
