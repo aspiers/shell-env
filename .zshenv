@@ -10,6 +10,10 @@
 #
 # This gets run even for non-interactive shells;
 # keep it as fast as possible.
+# 
+# N.B. This is for zsh-specific environment stuff.  Put generic,
+# portable environment settings in .shared_env instead, so that they
+# take effect for bash and ksh.
 
 # {{{ What version are we running?
 
