@@ -40,16 +40,16 @@ print "\nEscape received; switching to keepalive mode.\n";
 
 # Send a control-U to cancel escape sequence
 $exp->send("\cu\n");
-sleep 1;
-$exp->expect(0);
+$exp->expect(1, "\n"); # flush expect queue
 $exp->send("cat > /dev/null\n");
-sleep 1;
-$exp->expect(0);
+$exp->expect(1, "\n"); # flush expect queue
+#$exp->expect(0);
 
 my $mins = 0;
 while (1) {
   $exp->send("$mins minute" . ($mins == 1 ? '' : 's') . " of keepalive; press C-c to disconnect\n");
-  $exp->expect(0); # flush expect queue
+  sleep 1; # yuk
+  $exp->expect(1, "\n"); # flush expect queue
   sleep 60;
   $mins++;
 }
