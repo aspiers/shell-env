@@ -915,6 +915,7 @@ zshrc_load_status 'miscellaneous'
 
 # {{{ Hash named directories
 
+hash -d RP=/usr/src/redhat/RPMS
 hash -d I3=/usr/src/redhat/RPMS/i386
 hash -d I6=/usr/src/redhat/RPMS/i686
 hash -d NA=/usr/src/redhat/RPMS/noarch
