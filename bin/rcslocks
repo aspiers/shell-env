@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/opt/perl-5.6.1/bin/perl
 
 use strict;
 use warnings;
@@ -67,6 +67,24 @@ If you have finished editing any of them, please check them back in.
 Thanks.
 EOMSG
     }
+
+    print $fh <<EOMSG;
+
+To see changes not yet checked in:
+
+    rcsdiff $file
+
+To check in changes, do:
+
+    ci -u $file   # stands for Check In and leave working file Unlocked
+
+To revert to the previous version, do:
+
+    co -u $file   # stands for Check Out and leave working file Unlocked
+
+If you don't like having to remember all this, get used to editing
+RCS-controlled files with the 'viz' utility.
+EOMSG
     
     $fh->close;
     print "Sent mail to $address\n";
