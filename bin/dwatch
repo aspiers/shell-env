@@ -2,19 +2,23 @@
 
 =head1 NAME
 
-monitor -- simple monitor to watch for when things change
+dwatch -- simple monitor to watch for when things change
 
 =head1 SYNOPSIS
 
-    $ monitor --help
+    $ dwatch --help
 
-    $ monitor -u grep RAW /proc/net/sockstat
+    $ dwatch -u grep RAW /proc/net/sockstat
 
 =head1 DESCRIPTION
 
-monitor is a non-interactive version of C<watch -d> -- instead of 
+dwatch is a non-interactive version of C<watch -d> -- instead of 
 outputting the new output with highlighting of changes, it outputs
 the differences in C<diff(1)> format upon each invocation.
+
+The last output from the command is cached, and so unlike C<watch(1)>,
+comparisons can span multiple invocations.  This is useful for
+watching for changes across long periods of time.
 
 =head1 LICENSE
 
@@ -35,12 +39,15 @@ use File::Basename;
 use Getopt::Long;
 Getopt::Long::Configure('require_order');
 
-use vars '$new';
+my $me = basename($0);
+
+use vars qw($new $changes);
+$changes = 0;
 
 my %opt_defaults = (
   repeat => 1,
   delay  => 1,
-  cache  => "$ENV{HOME}/.monitor-cache",
+  cache  => "$ENV{HOME}/.$me-cache",
 );
 my %opts = (
   unified => 0,
@@ -64,7 +71,6 @@ usage() unless @ARGV;
 my $cmd = "@ARGV";
 
 sub usage {
-  my $me = basename($0);
   warn @_, "\n\n" if @_;
   die <<EOUSAGE;
 Usage: $me [options] command [args]
@@ -79,7 +85,8 @@ Options (defaults in []):
       --cache=DIR  Cache in DIR [$opt_defaults{cache}]
       --cumulative Output accumulated changes, not incrementals
 
-Exit code is the number of changes (each repeat counts as 0 or 1).
+Exit code is the number of changes (each repeat counts as 0 or 1),
+even when a SIGINT was received.
 EOUSAGE
 }
 
@@ -97,9 +104,8 @@ $hash =~ s!/!_!g;
 my $old = "$opts{cache}/$hash";
 $new = "$old.new";
 
-$SIG{INT} = sub { exit 0 }; # do END block on SIGINT
+$SIG{INT} = sub { exit $changes; }; # do END block on SIGINT
 
-my $changes = 0;
 my $reps_done = 0;
 do {{
   open(CMD, "$cmd |") or die "open($cmd |) failed: $!\n";
@@ -144,5 +150,4 @@ sub END {
   if ($new && -e $new) {
     unlink $new or warn "unlink($new) failed: $!\n";
   }
-  exit 0;
 }
