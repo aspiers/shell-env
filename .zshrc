@@ -656,11 +656,11 @@ compdef _functions reload
 # }}}
 # {{{ ls aliases
 
-if ls -F --color >&/dev/null; then
+if ls -F --color / >&/dev/null; then
   alias ls='command ls -F --color'
-elif ls -F >&/dev/null; then
+elif ls -F / >&/dev/null; then
   alias ls='command ls -F'
-elif ls --color >&/dev/null; then
+elif ls --color / >&/dev/null; then
   alias ls='command ls --color'
 fi
 
