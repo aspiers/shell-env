@@ -240,19 +240,6 @@ TMOUT=1800
 #}
 
 # }}}
-# {{{ CVS setups
-
-typeset -A _CVSROOTS _CVS_RSHS
-_CVSROOTS=(
-  local $HOME/.CVSROOT
-  plig  plig.net:/home/adams/.CVSROOT
-)
-_CVS_RSHS=(
-  local ''
-  plig  ssh
-)
-
-# }}}
 
 # }}}
 # {{{ Prompts
