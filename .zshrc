@@ -272,13 +272,13 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
        egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
-    if prompt -h adam2 | grep -q 8bit; then
+    if [[ "`prompt -h adam2`" == *8bit* ]]; then
       prompt adam2 8bit $adam2_colors
     else
       prompt adam2 $adam2_colors
     fi
   else
-    if prompt -h adam2 | grep -q plain; then
+    if [[ "`prompt -h adam2`" == *plain* ]]; then
       prompt adam2 plain $adam2_colors
     else
       prompt adam2 $adam2_colors
