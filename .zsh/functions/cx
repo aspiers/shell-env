@@ -24,16 +24,39 @@ cx () {
     # We've changed shell; assume that the most recently pushed entry
     # is the starting point for the new shell.
     TITLE_SHLVL=$SHLVL
-    [[  ${(t)titles} == 'array' ]] && [[ -n  "$TITLES" ]] &&  titles=(  "$TITLES" )
+    [[ ${(t)titles} == 'array' ]] && [[ -n "$TITLES" ]] && titles=( "$TITLES" )
   fi
 
   short_host=${HOST%%.*}
 
-  # Allow overriding auto suffix via -l.
-  # Not sure how it should handle -l and -l ""
-  if [[ "$1" == '-l' ]]; then
-    shift
+  # We use the fact that the environment variable TITLE_SHLVL can
+  # cross process boundaries, even though the array doesn't.
+  export TITLES
+
+  if (( $# == 0 )); then
+    # restore current setting
+    if (( $#titles == 0 )); then
+      new_title=
+    else
+      new_title="$titles[1]"
+    fi
+  else
+    # push new setting
+    # N.B. we allow pushing of "" but not sure how it should handle -l and -l ""
+    new_title="$*"
+
+    if (( $#titles )); then
+      titles=( "$new_title" "$titles[@]" )
+    else
+      titles=( "$new_title" )
+    fi
+  fi
+
+  # Determine suffix.  Allow overriding of auto-suffix via -l
+  # (either from $argv or from saved title)
+  if [[ "$new_title" == -l* ]]; then
     suffix=
+    new_title="${new_title#-l }"
   else
     if [[ "$USERNAME" == 'root' ]]; then
       suffix="${short_host}#"
@@ -46,39 +69,14 @@ cx () {
     ssuffix="|$suffix"
   fi
 
-  # We use the fact that the environment variable TITLE_SHLVL can
-  # cross process boundaries, even though the array.
-  export TITLES
-
-  if (( $# == 0 )); then
-    # restore current setting
-    if (( $#titles == 0 )); then
-      full_wtitle="$suffix"
-      full_ititle="$suffix"
-      full_stitle="$suffix"
-    else
-      full_wtitle="$titles[1]$wsuffix"
-      full_ititle="$titles[1]$isuffix"
-      full_stitle="$titles[1]$ssuffix"
-    fi
+  if [[ -z "$new_title" ]]; then
+    full_wtitle="$suffix"
+    full_ititle="$suffix"
+    full_stitle="$suffix"
   else
-    # push new setting
-    if (( $#titles )); then
-      titles=( "$*" "$titles[@]" )
-    else
-      titles=( "$*" )
-    fi
-
-    if [[ -z "$*" ]]; then
-      # allow pushing of ""
-      full_wtitle="$suffix"
-      full_ititle="$suffix"
-      full_stitle="$suffix"
-    else
-      full_wtitle="$*$wsuffix"
-      full_ititle="$*$isuffix"
-      full_stitle="$*$ssuffix"
-    fi
+    full_wtitle="$new_title$wsuffix"
+    full_ititle="$new_title$isuffix"
+    full_stitle="$new_title$ssuffix"
   fi
 
   functions cx_hook >/dev/null && cx_hook    
