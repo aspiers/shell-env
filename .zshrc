@@ -566,8 +566,19 @@ zle -N forward-to-/
 # }}}
 # {{{ kill-region-or-backward-(big-)word
 
+# autoloaded
 zle -N kill-region-or-backward-word
 zle -N kill-region-or-backward-big-word
+
+# }}}
+# {{{ kill-big-word
+
+kill-big-word () {
+    local WORDCHARS="${_my_extended_wordchars_slash}"
+    zle .kill-word
+}
+
+zle -N kill-big-word
 
 # }}}
 
@@ -960,10 +971,12 @@ bindkey '^I'   complete-word
 bindkey '^Xi'  incremental-complete-word
 # bindkey '^[b' emacs-backward-word
 # bindkey '^[f' emacs-forward-word
-bindkey "^[B"  backward-to-space
-bindkey "^[F"  forward-to-space
-bindkey "^[^b" backward-to-/
-bindkey "^[^f" forward-to-/
+bindkey '^[B'  backward-to-space
+bindkey '^[F'  forward-to-space
+bindkey '^[^b' backward-to-/
+bindkey '^[^f' forward-to-/
+
+bindkey '^[D'  kill-big-word
 
 if zmodload zsh/deltochar >&/dev/null; then
   bindkey '^[z' zap-to-char
