@@ -1,13 +1,22 @@
 #!/bin/sh
 
 if [ -z "$1" ]; then
-  echo "Usage: $0 <image file> [ <degrees> ]"
+  echo "Usage: $0 [ <degrees> ] <images> ... [ <degrees> <images> ... ] ..."
   exit 1
 fi
 
-file="$1"
-angle=${2:-90}
-newfile="${file}.$angle"
+angle=90
 
-jpegtran -rotate $angle -copy all "$file" > "$newfile"
-[ -e "$newfile" ] && mv "$newfile" "$file"
+for arg in "$@"; do
+  if [ "$arg" = 90 ] || [ "$arg" = 180 ] || [ "$arg" = 270 ]; then
+    angle="$arg"
+    shift
+  else
+    file="$arg"
+    shift
+    newfile="${file}.$angle"
+    jpegtran -rotate $angle -copy all "$file" > "$newfile"
+    [ -s "$newfile" ] && mv "$newfile" "$file"
+  fi
+done
+
