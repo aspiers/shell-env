@@ -394,6 +394,9 @@ hosts=(
     # W3
     server1.w3w.net
 
+    # Gareth Hughes (cmed)
+    194.202.166.101
+
 ### END PRIVATE
 
     # ftp sites
@@ -641,66 +644,35 @@ unset CVS_SERVER
 export CVSROOT
 export CVS_RSH=ssh
 
-scvs_local () {
-  CVSROOT=/usr/local/cvsroot
-  CVS_RSH=
-}
-
-scvs_mutt () {
-  CVSROOT=:pserver:anonymous@ftp.guug.de:/home/roessler/cvs
-  CVS_RSH=
-}
-
-scvs_alsa () {
-  CVSROOT=:pserver:anonymous@cvs.alsa-project.org:/home/alsa/cvsroot
-  CVS_RSH=
-}
-
-scvs_mozilla () {
-  CVSROOT=:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot
-  CVS_RSH=
-}
-
-scvs_gnokii () {
-  CVSROOT=:pserver:cvs@cvs.samba.org:/cvsroot
-  CVS_RSH=
-}
-
-# Add any other CVS setups you want here
+# for use with the scvs function
+typeset -A _CVSROOTS _CVS_RSHS
+_CVSROOTS=(
+           # Put your own CVSROOTs here
+           local             /usr/local/cvsroot
+           mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
-scvs_thelonious () {
-  CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
-  CVS_RSH=ssh
-}
-
-scvs_guideguide_remote () {
-  CVSROOT=proxy.guideguide.com:/share/cvsroot
-  CVS_RSH=~/bin/cvs_rsh
-}
-
-scvs_guideguide_local () {
-  CVSROOT=prophet5.london.guideguide.com:/share/cvsroot
-  CVS_RSH=ssh
-}
-
-scvs_zsh_local () {
-  if [[ "$1" == 'write' ]]; then
-    CVSROOT=adamspiers@cvs1:/cvsroot/zsh
-  else
-    CVSROOT=:pserver:anonymous@cvs1:/cvsroot/zsh
-  fi
-  CVS_RSH=ssh
-}
-
-scvs_zsh_remote () {
-  if [[ "$1" == 'write' ]]; then
-    CVSROOT=adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
-  else
-    CVSROOT=:pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
-  fi
-  CVS_RSH=ssh
-}
+           thelonious        adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
+           guideguide_remote proxy.guideguide.com:/share/cvsroot
+           guideguide_local  prophet5.london.guideguide.com:/share/cvsroot
+           zsh_local_write   adamspiers@cvs1:/cvsroot/zsh
+           zsh_local         :pserver:anonymous@cvs1:/cvsroot/zsh
+           zsh_remote_write  adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
+           zsh_remote        :pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
 ### END PRIVATE
+)
+
+_CVS_RSHS=(
+           # Put your own CVS_RSHs here
+### BEGIN PRIVATE
+           thelonious        ssh
+           guideguide_remote ~/bin/cvs_rsh
+           guideguide_local  ssh
+           zsh_local_write   ssh
+           zsh_local         ssh
+           zsh_remote_write  ssh
+           zsh_remote        ssh
+### END PRIVATE
+          )
 
 # }}}
 # {{{ Other programs
