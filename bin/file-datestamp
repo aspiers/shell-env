@@ -1,8 +1,8 @@
 #!/bin/sh
 
-format="%Y:%m:%d"
+format="%Y-%m-%d"
 if [ "$1" = "-t" ]; then
-  format="$format-%T"
+  format="$format-%H%Mh%Ss"
   shift
 fi
 
