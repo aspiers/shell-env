@@ -8,19 +8,16 @@
 
 # {{{ Fix broken keyboards
 
-if [ -z "$DISPLAY" ] && [ "$TERM" = 'linux' ]; then
-  echo -e "keymaps 0-15
-           keycode 58 = Control
-           keycode 29 = Caps_Lock" | loadkeys
-fi
+# This wouldn't work when ssh'ing to a remote machine from the console
+#if [ -z "$DISPLAY" ] && [ "$TERM" = 'linux' ]; then
 
-# }}}
-# {{{ User specific environment and startup programs
-
-for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
-               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
-  [ -d $newpath ] && PATH=$newpath:$PATH
-done
+case `tty` in
+  /dev/tty[0-9])
+    echo -e "keymaps 0-15
+             keycode 58 = Control
+             keycode 29 = Caps_Lock" | loadkeys
+  ;;
+esac
 
 # }}}
 
