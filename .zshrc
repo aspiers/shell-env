@@ -654,22 +654,8 @@ alias 7='cd +7'
 alias 8='cd +8'
 alias 9='cd +9'
 
-cd () {
-  if   [[ "x$*" == "x..." ]]; then
-    cd ../..
-  elif [[ "x$*" == "x...." ]]; then
-    cd ../../..
-  elif [[ "x$*" == "x....." ]]; then
-    cd ../../..
-  elif [[ "x$*" == "x......" ]]; then
-    cd ../../../..
-  else
-    builtin cd "$@"
-  fi
-}
-
 z () {
-  builtin cd ~/"$1"
+  cd ~/"$1"
 }
 
 alias md='mkdir -p'
@@ -866,6 +852,8 @@ alias -g RNS='| sort -nr'
 
 alias -g ...=../..
 alias -g ....=../../..
+alias -g .....=../../../..
+alias -g ......=../../../../..
 alias -g DN=/dev/null
 alias -g VM=/var/log/messages
 alias -g VL=/var/log
