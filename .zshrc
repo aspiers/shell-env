@@ -702,40 +702,48 @@ unset CVS_SERVER
 export CVSROOT
 export CVS_RSH=ssh
 
-setcvs_local () {
+scvs_local () {
   CVSROOT=/usr/local/cvsroot
   CVS_RSH=
 }
 
 # Add any other CVS setups you want here
 ### BEGIN PRIVATE
-setcvs_thelonious () {
+scvs_thelonious () {
   CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
   CVS_RSH=ssh
 }
 
-setcvs_alsa () {
+scvs_alsa () {
   CVSROOT=
   CVS_RSH=ssh
 }
 
-setcvs_mediaconsult_remote () {
+scvs_mediaconsult_remote () {
   CVSROOT=proxy.mediaconsult.com:/share/cvsroot
   CVS_RSH=~/bin/cvs_rsh
 }
 
-setcvs_mediaconsult_local () {
+scvs_mediaconsult_local () {
   CVSROOT=prophet5.mediaconsult.com:/share/cvsroot
   CVS_RSH=ssh
 }
 
-setcvs_zsh_local () {
-  CVSROOT=adamspiers@cvs1:/cvsroot/zsh
+scvs_zsh_local () {
+  if [[ "$1" == 'write' ]]; then
+    CVSROOT=adamspiers@cvs1:/cvsroot/zsh
+  else
+    CVSROOT=:pserver:anonymous@cvs1:/cvsroot/zsh
+  fi
   CVS_RSH=ssh
 }
 
-setcvs_zsh_remote () {
-  CVSROOT=adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
+scvs_zsh_remote () {
+  if [[ "$1" == 'write' ]]; then
+    CVSROOT=adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
+  else
+    CVSROOT=:pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
+  fi
   CVS_RSH=ssh
 }
 ### END PRIVATE
