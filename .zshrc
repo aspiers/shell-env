@@ -871,40 +871,42 @@ ssh () {
   cx
 }
 
-dsa () {
-  # comment this if you want
-  unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
+if which lsof pidof >&/dev/null; then
+  dsa () {
+    # comment this if you want
+    unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
 
-  /sbin/pidof ssh-agent | grep -q '[0-9]' || ssh-agent
+    pidof ssh-agent | grep -q '[0-9]' || ssh-agent
 
-  : ${SSH_AGENT_PID:=`/sbin/pidof ssh-agent`}
+    : ${SSH_AGENT_PID:=`pidof ssh-agent`}
 
-  if [[ -z "$SSH_AGENT_PID" ]]; then
-    echo "ssh-agent process not found; aborting ..."
-    return 1
-  fi
+    if [[ -z "$SSH_AGENT_PID" ]]; then
+      echo "ssh-agent process not found; aborting ..."
+      return 1
+    fi
 
-  : ${SSH_AUTH_SOCK:=`/usr/sbin/lsof -p $SSH_AGENT_PID |
-       awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
-       head -1`}
+    : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
+         awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
+         head -1`}
 
-  if [[ -z "$SSH_AUTH_SOCK" ]]; then
-    echo "Huh? lsof didn't do the biz; aborting ..."
-    return 2
-  fi
+    if [[ -z "$SSH_AUTH_SOCK" ]]; then
+      echo "Huh? lsof didn't do the biz; aborting ..."
+      return 2
+    fi
 
-  cat <<EOF 
-  Detected ssh-agent:
-     pid:    $SSH_AGENT_PID
-     socket: $SSH_AUTH_SOCK
+    cat <<EOF 
+    Detected ssh-agent:
+       pid:    $SSH_AGENT_PID
+       socket: $SSH_AUTH_SOCK
 EOF
 
-  echo -n "Setting up environment ... "
+    echo -n "Setting up environment ... "
 
-  export SSH_AGENT_PID SSH_AUTH_SOCK
+    export SSH_AGENT_PID SSH_AUTH_SOCK
 
-  echo done.
-}
+    echo done.
+  }
+fi
 
 alias sa=ssh-add
 
