@@ -11,12 +11,27 @@
 # {{{ To do list
 
 #
+#    - Add prot and unprot
 #    - Do safes?kill(all)? functions
 #    - Fix zx alias
 #
 
 # }}}
 
+# {{{ What version are we running?
+
+if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
+if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
+
+ZSH_VERSION_TYPE=old
+if [[ $ZSH_VERSION == 3.1.<6->* ||
+      $ZSH_VERSION == 3.2.<->*  ||
+      $ZSH_VERSION == 4.<->* ]]
+then
+  ZSH_VERSION_TYPE=new
+fi
+
+# }}}
 # {{{ Options
 
 setopt \
@@ -110,24 +125,20 @@ setopt \
      NO_xtrace \
         zle
 
-if [[ $ZSH_VERSION > 3.1.5 ]]; then
+if [[ $ZSH_VERSION_TYPE == 'new' ]]; then
   setopt \
         hist_expire_dups_first \
         hist_ignore_all_dups \
+     NO_hist_no_functions \
      NO_hist_save_no_dups \
-        inc_append_history
+        inc_append_history \
+        list_packed \
+     NO_rm_star_wait
 fi
 
-if [[ $ZSH_VERSION == 3.0.6 || $ZSH_VERSION > 3.1.5 ]]; then
+if [[ $ZSH_VERSION == 3.0.<6->* || $ZSH_VERSION_TYPE == 'new' ]]; then
   setopt \
         hist_reduce_blanks
-fi
-
-if [[ $ZSH_VERSION > 3.1 ]]; then
-  setopt \
-     NO_hist_no_functions \
-     NO_rm_star_wait \
-        list_packed
 fi
 
 # }}}
@@ -135,56 +146,6 @@ fi
 
 # REMINDER: Put non-interactive environment settings in .zshenv
 
-# {{{ Colours
-
-reset_colour="$(echo -n '\e[0m')"
-bold_colour="$(echo -n '\e[1m')"
-
-# Foreground
-
-fg_grey="$(echo -n '\e[0;30m')"
-fg_red="$(echo -n '\e[0;31m')"
-fg_green="$(echo -n '\e[0;32m')"
-fg_yellow="$(echo -n '\e[0;33m')"
-fg_blue="$(echo -n '\e[0;34m')"
-fg_magenta="$(echo -n '\e[0;35m')"
-fg_cyan="$(echo -n '\e[0;36m')"
-fg_white="$(echo -n '\e[0;37m')"
-
-fg_bold_grey="$(echo -n '\e[1;30m')"
-fg_bold_red="$(echo -n '\e[1;31m')"
-fg_bold_green="$(echo -n '\e[1;32m')"
-fg_bold_yellow="$(echo -n '\e[1;33m')"
-fg_bold_blue="$(echo -n '\e[1;34m')"
-fg_bold_magenta="$(echo -n '\e[1;35m')"
-fg_bold_cyan="$(echo -n '\e[1;36m')"
-fg_bold_white="$(echo -n '\e[1;37m')"
-
-# Background
-
-bg_grey="$(echo -n '\e[0;40m')"
-bg_red="$(echo -n '\e[0;41m')"
-bg_green="$(echo -n '\e[0;42m')"
-bg_yellow="$(echo -n '\e[0;43m')"
-bg_blue="$(echo -n '\e[0;44m')"
-bg_magenta="$(echo -n '\e[0;45m')"
-bg_cyan="$(echo -n '\e[0;46m')"
-bg_white="$(echo -n '\e[0;47m')"
-
-bg_bold_grey="$(echo -n '\e[1;40m')"
-bg_bold_red="$(echo -n '\e[1;41m')"
-bg_bold_green="$(echo -n '\e[1;42m')"
-bg_bold_yellow="$(echo -n '\e[1;43m')"
-bg_bold_blue="$(echo -n '\e[1;44m')"
-bg_bold_magenta="$(echo -n '\e[1;45m')"
-bg_bold_cyan="$(echo -n '\e[1;46m')"
-bg_bold_white="$(echo -n '\e[1;47m')"
-
-# Stop these screwing the environment listing up
-bg_zzzz_clear=$bg_grey
-fg_zzzz_clear=$fg_white$reset_colour
-
-# }}}
 # {{{ export COLUMNS
 
 # Some programs might find this handy.  Shouldn't do any harm.
@@ -247,176 +208,8 @@ TMOUT=1800
 # }}}
 # {{{ Prompts
 
-# Note: ANSI escape sequences need to be quoted with %{ ... %}
-# to tell zsh that they don't change the cursor position.
-
-# Variables common to all prompt styles
-prompt_newline=$(echo -ne "\n%{\r%}")
-
-# {{{ adam1
-
-prompt_adam1_setup () {
-  base_prompt="%{$bg_blue%}%n@%m%{$reset_colour%} "
-  post_prompt="%{$reset_colour%}"
-
-  base_prompt_no_colour=$(echo "$base_prompt" | perl -pe "s/%{.*?%}//g")
-  post_prompt_no_colour=$(echo "$post_prompt" | perl -pe "s/%{.*?%}//g")
-}
-
-prompt_adam1_precmd () {
-  setopt noxtrace localoptions
-  local base_prompt_expanded_no_colour base_prompt_etc
-  local prompt_length space_left
-
-  base_prompt_expanded_no_colour=$(print -P "$base_prompt_no_colour")
-  base_prompt_etc=$(print -P "$base_prompt%(4~|...|)%3~")
-  prompt_length=${#base_prompt_etc}
-# echo "Prompt length is $prompt_length"
-# echo "Base prompt length is $#base_prompt_expanded_no_colour"
-  if [[ $prompt_length -lt 40 ]]; then
-    path_prompt="%{$fg_bold_cyan%}%(4~|...|)%3~%{$fg_bold_white%}"
-  else
-    space_left=$(( $COLUMNS - $#base_prompt_expanded_no_colour - 2 ))
-#   echo "Space left is $space_left"
-    path_prompt="%{$fg_bold_green%}%${space_left}<...<%~$prompt_newline%{$fg_bold_white%}"
-  fi
-  PS1="$base_prompt$path_prompt %# $post_prompt"
-  PS2="$base_prompt$path_prompt %_> $post_prompt"
-  PS3="$base_prompt$path_prompt ?# $post_prompt"
-}
-
-prompt_adam1 () {
-  prompt_adam1_setup
-  precmd  () { prompt_adam1_precmd }
-  preexec () { }
-}
-
-available_prompt_styles=( $available_prompt_styles adam1 )
-
-# }}}
-# {{{ adam2
-
-# And you thought the last one was extreme.  If you've ever seen a
-# more complex prompt in your whole life, please e-mail it to me; I'd
-# love to know that I'm not the saddest person on the planet.
-
-prompt_adam2_setup () {
-  # Some can't be local
-  local prompt_gfx_tlc prompt_gfx_mlc prompt_gfx_blc prompt_gfx_bbox 
-
-  if [[ $1 == 'plain' ]]; then
-    shift
-    prompt_gfx_tlc='.'
-    prompt_gfx_mlc='|'
-    prompt_gfx_blc='\`'
-    prompt_gfx_hyphen='-'
-  else
-    prompt_gfx_tlc=$(echo "\xda")
-    prompt_gfx_mlc=$(echo "\xc3")
-    prompt_gfx_blc=$(echo "\xc0")
-    prompt_gfx_hyphen=$(echo "\xc4")
-  fi
-
-  # Colour scheme
-  prompt_scheme_colour1=${1:-'cyan'}    # hyphens
-  prompt_scheme_colour2=${2:-'green'}   # current directory
-  prompt_scheme_colour3=${3:-'cyan'}    # user@host
-
-  local num
-  for num in 1 2 3; do
-    # Grok this!
-    eval "prompt_colour$num="'${(P)$(echo "fg_$prompt_scheme_colour'"$num\")}"
-    eval "prompt_bold_colour$num="'${(P)$(echo "fg_bold_$prompt_scheme_colour'"$num\")}"
-  done
-
-  prompt_gfx_tbox=$(echo "%{$prompt_bold_colour1%}${prompt_gfx_tlc}%{$prompt_colour1%}${prompt_gfx_hyphen}")
-  prompt_gfx_bbox=$(echo "%{$prompt_bold_colour1%}${prompt_gfx_blc}${prompt_gfx_hyphen}%{$prompt_colour1%}")
-
-  # This has to be the coolest prompt hack in the entire world.
-  # Uhhhh ... or something.
-  prompt_gfx_bbox_to_mbox=$(echo "%{\e[A\r$prompt_bold_colour1${prompt_gfx_mlc}$prompt_colour1${prompt_gfx_hyphen}\e[B%}")
-
-  l_paren=$(echo "%{$fg_bold_grey%}(")
-  r_paren=$(echo "%{$fg_bold_grey%})")
-
-  l_bracket=$(echo "%{$fg_bold_grey%}[")
-  r_bracket=$(echo "%{$fg_bold_grey%}]")
-
-  prompt_machine=$(echo "%{$prompt_colour3%}%n%{$prompt_bold_colour3%}@%{$prompt_colour3%}%m")
-
-  prompt_padding_text=`perl -e "print qq{${prompt_gfx_hyphen}} x 200"`
-
-  prompt_line_1a="$prompt_gfx_tbox$l_paren%{$prompt_bold_colour2%}%~$r_paren%{$prompt_colour1%}"
-  prompt_line_1a_no_colour=$(echo "$prompt_line_1a" | perl -pe "s/%{.*?%}//g")
-  prompt_line_1b=$(echo "$l_paren$prompt_machine$r_paren%{$prompt_colour1%}${prompt_gfx_hyphen}")
-  prompt_line_1b_no_colour=$(echo "$prompt_line_1b" | perl -pe "s/%{.*?%}//g")
-
-  prompt_line_2="$prompt_gfx_bbox${prompt_gfx_hyphen}%{$fg_white%}"
-
-  prompt_char="%(!.#.>)"
-}
-
-prompt_adam2_precmd () {
-  setopt noxtrace localoptions
-  local prompt_line_1a_no_colour_expanded prompt_line_2a_no_colour_expanded
-  local prompt_padding_size prompt_padding prompt_line_1 pre_prompt
-  local prompt_pwd_size
-
-  prompt_line_1a_no_colour_expanded=$(print -P "$prompt_line_1a_no_colour")
-  prompt_line_1b_no_colour_expanded=$(print -P "$prompt_line_1b_no_colour")
-  prompt_padding_size=$(( $COLUMNS
-                            - $#prompt_line_1a_no_colour_expanded 
-                            - $#prompt_line_1b_no_colour_expanded ))
-
-  if [[ $prompt_padding_size -ge 0 ]]; then
-    prompt_padding=$(printf "%$prompt_padding_size.${prompt_padding_size}s" "$prompt_padding_text")
-    prompt_line_1="$prompt_line_1a$prompt_padding$prompt_line_1b"
-  else
-    prompt_padding_size=$(( $COLUMNS
-                              - $#prompt_line_1a_no_colour_expanded ))
-
-    if [[ $prompt_padding_size -ge 0 ]]; then
-      prompt_padding=$(printf "%$prompt_padding_size.${prompt_padding_size}s" "$prompt_padding_text")
-      prompt_line_1="$prompt_line_1a$prompt_padding"
-    else
-      prompt_pwd_size=$(( $COLUMNS - 5 ))
-      prompt_line_1="$prompt_gfx_tbox$l_paren%{$prompt_bold_colour2%}%$prompt_pwd_size<...<%~%<<$r_paren%{$prompt_colour1$prompt_gfx_hyphen%}"
-    fi
-  fi
-
-  pre_prompt="$prompt_line_1$prompt_newline$prompt_line_2"
-
-  PS1="$pre_prompt%{$fg_bold_white%}$prompt_char "
-  PS2="$prompt_line_2%{$prompt_gfx_bbox_to_mbox$fg_bold_white%}%_: "
-  PS3="$prompt_line_2%{$prompt_gfx_bbox_to_mbox$fg_bold_white%}?# "
-}
-
-prompt_adam2_preexec () {
-  print -n "$fg_white"
-}
-
-prompt_adam2 () {
-  prompt_adam2_setup $*
-  precmd () { prompt_adam2_precmd }
-  preexec () { prompt_adam2_preexec }
-}
-
-available_prompt_styles=( $available_prompt_styles adam2 )
-
-# }}}
-# {{{ Switching prompt styles
-
-prompt () {
-  if [[ $#* -eq 0 || -z "$available_prompt_styles[(r)$1]" ]]; then
-    echo "Usage: prompt <new prompt style> <params>"
-    echo "Available styles: $available_prompt_styles[*]"
-    return 1
-  fi
-
-  eval prompt_$1 $argv[2,-1]
-}
-
-# }}}
+autoload -U promptinit
+promptinit
 
 PS4="trace %N:%i> "
 #RPS1="$bold_colour$bg_red              $reset_colour"
@@ -640,11 +433,12 @@ alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -n | less'
 # }}}
 
 # }}}
-# {{{ Making stuff publicly accessible
+# {{{ Changing permissions
 
+# Make Public
 mp () {
   if [[ $#* -lt 3 ]]; then
-    echo "Usage: mp <group> <files> ..."
+    echo "Usage: mp <group> <files/dirs> ..."
     return 1
   fi
 
@@ -683,6 +477,7 @@ alias mps='ps -o user,pcpu,command'
 pst () {
   pstree -p $* | less -S
 }
+alias gps='gitps -p afx; cx'
 alias ra='ps auxww | grep -vE "(^($USER|nobody|root|bin))|login"'
 rj () {
   ps auxww | grep -E "($*|^USER)"
@@ -719,7 +514,20 @@ alias vx='export TERM=xterm-color'
 # }}}
 
 # }}}
+# {{{ Temporary extended globbing
 
+# I have extended_glob set all the time anyway, but this is nice
+# for those who don't.  Thanks to Bart Schaefer for this one.
+#
+#  function ext_glob {
+#      setopt localoptions extendedglob
+#      local command="$1"
+#      shift
+#      $==command $==~*                    # redo globbing on arguments
+#  }
+#  alias extglob='noglob ext_glob '        # delay globbing until inside
+
+# }}}
 # {{{ Other users
 
 lh () {
@@ -730,7 +538,7 @@ compdef _users lh
 alias f=finger
 
 # su to root and change window title
-alias root='echo -n "]0;root@${HOST}"; su -; cxx'
+alias root='echo -n "\e]0;root@${HOST}\a"; su -; cxx'
 
 # }}}
 # {{{ No spelling correction
@@ -1066,7 +874,7 @@ if [[ -x ~/bin/detect_ssh-agent ]]; then
 fi
 
 ### BEGIN PRIVATE
-alias th='ssh -l adam thelonious.new.ox.ac.uk'
+alias th='ssh -l adam thelonious.new.ox.ac.uk; cx'
 ### END PRIVATE
 
 # }}}
@@ -1142,6 +950,7 @@ bindkey -s '^X^Z' '%-^M'
 bindkey '^[e' expand-cmd-path
 bindkey -s '^X?' '\eb=\ef\C-x*'
 bindkey '^[^I' reverse-menu-complete
+bindkey '^X^N' accept-and-infer-next-history
 bindkey '^[p' history-beginning-search-backward
 bindkey '^[n' history-beginning-search-forward
 bindkey '^[P' history-beginning-search-backward
