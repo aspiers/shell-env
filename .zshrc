@@ -416,7 +416,7 @@ zstyle ':completion:*:history-words' menu yes
 # users=( tom dick harry )
 
 ### BEGIN PRIVATE
-#users=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
+#users=( adam adams aspiers )
 ### END PRIVATE
 
 #zstyle ':completion:*' users $users
@@ -441,34 +441,12 @@ hosts=(
     # home
     adamspiers.{dyndns,homelinux}.org
 
-    # guideguide
-    proxy.london.guideguide.com 194.203.206.225
-    {aviator,vaeth}.guideguide.com
-
     # plig
     {,riffraff.}plig.net adamspiers.org
-
-    # New College
-    corelli.new.ox.ac.uk 163.1.145.123
 
     # RAM
     {bach,gw,jascha,purcell,lib}.ram.ac.uk
     general.ulcc.ac.uk
-
-    # Chris Evans
-    ferret.lmh.ox.ac.uk
-
-    # Chris Cladingboel
-    plato.wadham.ox.ac.uk
-
-    # Darren Nickerson
-    hewes.icl.ox.ac.uk
-
-    # W3
-    server1.w3w.net
-
-    # Gareth Hughes (cmed)
-    194.202.166.101
 
 ### END PRIVATE
 
@@ -491,38 +469,20 @@ zstyle ':completion:*' hosts $hosts
 my_accounts=(
   {localadams,root}@{pulse,adamspiers.{dyndns,homelinux}.org}
   adams@adamspiers.org
-  adam@corelli.new.ox.ac.uk
-  adam@aviator.guideguide.com
-  {adam,root}@thelonious.new.ox.ac.uk
-  adam@hewes.icl.ox.ac.uk
   security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
-  {adams,root}@server1.w3w.net
-  adams@{proxy.guideguide.com,195.217.36.66}
   adamspiers@ssh.sourceforge.net
-  adam@landfill.tequilarista.org
   adams@plig.net
 )
 ### END PRIVATE
+
+zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 
 # Other people's accounts:
 #other_accounts=(
 #  {fred,root}@hismachine.com
 #  vera@hermachine.com
 #)
-
-### BEGIN PRIVATE
-other_accounts=(
-  {root,ben,nmcgroga,cclading,nick,stephen,bear,jo,cmb,dave,davetm}@thelonious.new.ox.ac.uk
-  {root,tpcadmin}@hewes.icl.ox.ac.uk
-  dnicker@ermine.ox.ac.uk
-  chris@plato.wadham.ox.ac.uk
-  {chris,weejock}@ferret.lmh.ox.ac.uk
-  {root,adam,rian}@server1.w3w.net
-)
-### END PRIVATE
-
-zstyle ':completion:*:my-accounts' users-hosts $my_accounts
-zstyle ':completion:*:other-accounts' users-hosts $other_accounts
+#zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 
 # }}}
 # {{{ (host, port, user) triples for telnet
@@ -534,12 +494,7 @@ zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 #    @news-server:nntp
 #    @proxy-server:8000
 #  )
-### BEGIN PRIVATE
-telnet_users_hosts_ports=(
-  @{localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}
-)
-### END PRIVATE
-zstyle ':completion:*:*:telnet:*' users-hosts-ports $telnet_users_hosts_ports
+#zstyle ':completion:*:*:telnet:*' users-hosts-ports $telnet_users_hosts_ports
 
 # }}}
 
