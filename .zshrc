@@ -285,9 +285,10 @@ compstyle ':*' expand 'yes'
 compstyle ':*' squeeze-slashes 'yes'
 
 # Include non-hidden directories in globbed file completions
+# for certain commands
 compstyle '::complete:*' \
   tag-order 'globbed-files directories' all-files 
-compstyle '::complete:*:*:directories' file-patterns '*~.*(-/)'
+compstyle '::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
 # Separate matches into groups
 compstyle ':*:matches' group 'yes'
