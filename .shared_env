@@ -10,6 +10,9 @@
 # Note that that means silly things like [ ! -e foo ] rather
 # than ! [ -e foo ] ...
 
+# Allow disabling of entire environment suite
+[ -n "$INHERIT_ENV" ] && return 0
+
 # {{{ Are we interactive?
 
 case "$-" in
@@ -160,6 +163,7 @@ export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 # {{{ Name and Reply_To
 
 export NAME='Adam Spiers'
+export EMAIL="Adam Spiers <darcs@adamspiers.org>" # for darcs
 export REPLYTO='adam@spiers.net (Adam Spiers)'
 
 # }}}
