@@ -1,0 +1,39 @@
+#
+# .ns - Nice Shell
+# (short name for quick invocation from other shells)
+#
+# Source this to get a decent setup from another
+# account.
+#
+
+# We have to intelligently guess where this file is.
+here="`dirname $0`"
+if ! [ -e $here/.zshrc ]; then
+  echo "$here missing .zshrc, aborting."
+  return
+fi
+
+here="`$here/bin/shortcuts/abs $0`"
+here="`dirname $here`"
+
+if ! [ -e $here/.zshrc ]; then
+  echo "abs failed"
+  return
+fi
+
+export ZDOTDIR="$here"
+
+case "$SHELL" in
+  *bash) source "$ZDOTDIR/.bashenv"
+         source "$ZDOTDIR/.bashrc"
+         # Are you feeling lucky, punk?
+         SHLVL=force_danger source "$ZDOTDIR/.switch_shell"
+         ;;
+
+  *zsh)  source "$ZDOTDIR/.zshenv"
+         source "$ZDOTDIR/.zshrc"
+         ;;
+
+  *)     source "$ZDOTDIR/.switch_shell"
+         ;;
+esac
