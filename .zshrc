@@ -491,7 +491,7 @@ alias which >&/dev/null && unalias which
 # }}}
 # {{{ run-help
 
-unalias run-help
+alias run-help >&/dev/null && unalias run-help
 autoload run-help
 
 # }}}
