@@ -8,7 +8,6 @@
 
 # {{{ Environment
 
-[ -r ~/.shared_env ] && . ~/.shared_env
 [ -r ~/.bashenv ] && . ~/.bashenv
 
 # }}}

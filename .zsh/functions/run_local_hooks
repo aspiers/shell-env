@@ -1,0 +1,21 @@
+#autoload
+
+# NOTE!  This file not only gets used by zsh, but by
+# .shared_env, and so has to work when source'd from
+# any sh-compatible shell.  Well, any sensible sh.
+# We're not going to bother supporting dysfunctional
+# shells like Solaris' /bin/sh.
+
+run_local_hooks () {
+  for dir in ${zdotdirpath:-$HOME}; do
+    if [ -n "$dir" ]; then
+      for file in "$@"; do
+        for suffix in local ${HOST%%.*}; do
+          [ -r "$dir/$file.$suffix" ] && source $dir/$file.$suffix
+        done
+      done
+    fi
+  done
+}
+
+run_local_hooks "$@"

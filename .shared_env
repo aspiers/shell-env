@@ -2,10 +2,20 @@
 #
 # Adam's shared environment startup file
 #
+# $Id$
+#
 # This should get run as part of setting up the environment
 # of any sh-compatible shell, including non-interactive ones;
 # hence it should be kept as fast and as portable as possible.
 
+# {{{ PATH
+
+for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
+               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
+  [ -d $newpath ] && PATH=$newpath:$PATH
+done
+
+# }}}
 # {{{ INPUTRC
 
 # no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
@@ -80,13 +90,12 @@ export CVS_RSH=ssh
 
 # }}}
 
-# {{{ Specific to hosts
+# {{{ Specific to local setups
 
 : ${HOST:=${HOSTNAME:-`hostname`}}
 : ${HOSTNAME:=$HOST}
 export HOST HOSTNAME
 
-[ -r $HOME/.shared_env.local ]       && . $HOME/.shared_env.local
-[ -r $HOME/.shared_env.${HOST%%.*} ] && . $HOME/.shared_env.${HOST%%.*}
+source ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .shared_env
 
 # }}}

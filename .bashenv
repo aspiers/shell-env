@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Adam's .bashenv
 #
 # to simulate .zshenv
@@ -9,11 +11,4 @@
 # on whether ENV or BASH_ENV were set, and the version of bash.
 # ~/.ssh/environment can set it if ssh is involved.
 
-# {{{ PATH
-
-for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
-               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
-  [ -d $newpath ] && PATH=$newpath:$PATH
-done
-
-# }}}
+[ -r ~/.shared_env ] && . ~/.shared_env

@@ -25,6 +25,11 @@ fi
 
 zdotdir=${ZDOTDIR:-$HOME}
 export ZDOTDIR="$zdotdir"
+if [[ "$ZDOTDIR" == "$HOME" ]]; then
+  zdotdirpath=( $ZDOTDIR )
+else
+  zdotdirpath=( $ZDOTDIR $HOME )
+fi
 
 # }}}
 
@@ -70,12 +75,6 @@ rubylib=(
 # }}}
 # {{{ Specific to hosts
 
-if [[ -r $HOME/.zshenv.local ]]; then
-  . $HOME/.zshenv.local
-fi
-
-if [[ -r $HOME/.zshenv.${HOST%%.*} ]]; then
-  . $HOME/.zshenv.${HOST%%.*}
-fi
+run_local_hooks .zshenv
 
 # }}}

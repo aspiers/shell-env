@@ -946,17 +946,10 @@ if [[ "${TERM}" == (xterm*|dtterm) ]]; then
 fi
 
 # }}}
-# {{{ Specific to hosts
+# {{{ Specific to local setups
 
-if [[ -r ~/.zshrc.local ]]; then
-  zshrc_load_status '.zshrc.local'
-  . ~/.zshrc.local
-fi
-
-if [[ -r ~/.zshrc.${HOST%%.*} ]]; then
-  zshrc_load_status ".zshrc.${HOST%%.*}"
-  . ~/.zshrc.${HOST%%.*}
-fi
+zshrc_load_status 'local hooks'
+run_local_hooks .zshrc
 
 # }}}
 
