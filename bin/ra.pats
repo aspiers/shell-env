@@ -1,0 +1,38 @@
+^nobody
+^bin
+^named
+^lp
+^mysql
+^postfix
+^xfs
+^mail
+^httpd
+^apache
+syslogd
+klogd
+login
+gpm -t
+crond
+/cron$
+ypbind
+ypserv
+sendmail
+getty
+sshd
+x?inetd
+rpcbind
+statd$
+lockd$
+mountd$
+powerd$
+utmpd$
+mutt
+pine
+-?(ba|k|t?c|z)?sh( -o (vi|emacs)| \((ba|k|t?c|z)?sh\))?$
+portmap$
+rpc.statd$
+ntpd( -U ntp)?$
+/atd$
+sched
+init( -)?$
+\[[[:alnum:]_]+\]$
