@@ -1,4 +1,6 @@
 #!/bin/sh
 
-exec diff -u "$@" | less +/'^diff
+exec diff -u "$@" | \
+  awk -f ~/bin/colour-diff-output.awk | \
+  less -r +/'^\[0mdiff
 g'
