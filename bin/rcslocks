@@ -3,13 +3,22 @@
 use strict;
 use warnings;
 
-use lib '../lib/perl5';
+use Getopt::Long;
+use Mail::Send;
+
+use lib '/home/lonlxadm/lib/perl5';
 use Rcs;
 
-die "Usage: $0 <file> [<file> ...]\n" unless @ARGV;
+my %opts;
+die <<EOF unless GetOptions(\%opts, 'mail') and @ARGV;
+Usage: $0 [--mail] <file> [<file> ...]
+Options:
+  --mail  Send reminder e-mail to lock owners
+EOF
 
 my $short = (@ARGV == 1);
 
+my %lockers;
 my %seen;
 foreach my $file (@ARGV) {
   unless (-e $file) {
@@ -24,8 +33,44 @@ foreach my $file (@ARGV) {
   next unless $rcsfile;
   next if $seen{$rcsfile}++;
   my $rcs     = Rcs->new($rcsfile);
-  my $lock    = $rcs->lock;
-  print $short ? "$lock\n" : "$file: locked by $lock\n" if $lock;
+  my $locker  = $rcs->lock;
+  if ($locker) {
+    print $short ? "$locker\n" : "$file: locked by $locker\n";
+    push @{ $lockers{$locker} }, $file;
+  }
+}
+
+if ($opts{mail}) {
+  while (my ($locker, $files) = each %lockers) {
+    my $msg = new Mail::Send Subject => "automated warning: you have RCS files locked";
+    my $address = "$locker\@lehman.com";
+    $msg->to($address);
+    my $fh = $msg->open;
+    my $file = @$files == 1 ? 'file' : 'files';
+    print $fh <<EOMSG;
+This is an automated email to remind you that you have the following
+$file locked under RCS:
+
+EOMSG
+    print $fh "  $_\n" foreach @$files;
+    if (@$files == 1) {
+      print $fh <<EOMSG;
+
+If you have finished editing it, please check it back in.
+Thanks.
+EOMSG
+    }
+    else {
+      print $fh <<EOMSG;
+
+If you have finished editing any of them, please check them back in.
+Thanks.
+EOMSG
+    }
+    
+    $fh->close;
+    print "Sent mail to $address\n";
+  }
 }
 
 sub find_rcs {
