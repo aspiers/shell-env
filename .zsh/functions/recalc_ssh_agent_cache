@@ -12,7 +12,7 @@ fi
 
 local pids
 pids=(
-  $( rj | awk "/^ *($USER|$UID) "'.*ssh-agent *$/ { print $2 }' ) 
+  $( rj | awk "/^ *($USER|$UID) "'.*ssh-agent/ && ! /awk/ { print $2 }' ) 
 )
 
 if (( $#pids > 1 )); then
