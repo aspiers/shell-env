@@ -365,7 +365,7 @@ hosts=(
 ### END PRIVATE
 
     # ftp sites
-    sunsite.doc.ic.ac.uk
+    sunsite.org.uk
 )
 
 compstyle '*' hosts $hosts
@@ -505,7 +505,7 @@ fbig () {
 # }}}
 # {{{ fbigrpms
 
-alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -n | less'
+alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
 
 # }}}
 
@@ -582,7 +582,7 @@ alias man='nocorrect man'
 # }}}
 # {{{ X windows related
 
-# {{{ Changing Eterm/xterm/rxvt/telnet client titles/fonts/pixmaps
+# {{{ Changing terminal window/icon titles
 
 cx () {
   local longhost shorthost short_from_opts
@@ -601,18 +601,28 @@ cx () {
   fi
         
   if [[ -z "$*" ]]; then
-    # Change window title
-    echo -n "\e]2;$USER@${longhost}\a"
+    # Revert window title to previous setting or default
+    : ${TITLE="$USER@${longhost}"}
+    echo -n "\e]2;$TITLE\a"
 
-    # Change window icon title
-    echo -n "\e]1;$USER@${longhost}\a"
+    # Revert window icon title to previous setting or default
+    : ${ITITLE="$USER@${longhost}"}
+    echo -n "\e]1;$ITITLE\a"
   else
     # Change window title
-    echo -n "\e]2;$* : $USER@${longhost}\a"
+    TITLE="$* : $USER@${longhost}"
+    echo -n "\e]2;$TITLE\a"
 
     # Change window icon title
-    echo -n "\e]1;$* @ ${longhost}\a"
+    ITITLE="$* @ $USER@${longhost}"
+    echo -n "\e]1;$ITITLE\a"
   fi
+}
+
+cxx () {
+  # Clear titles
+  unset TITLE ITITLE
+  cx 
 }
 
 if [[ "$TERM" == xterm* ]]; then
@@ -708,6 +718,11 @@ alias pico='/usr/bin/pico -z'
 # }}}
 # {{{ remote logins
 
+ssh () {
+  command ssh "$@"
+  cx
+}
+
 if [[ -x ~/bin/detect_ssh-agent ]]; then
   alias dsa='. ~/bin/detect_ssh-agent'
   alias sa=ssh-add
@@ -717,7 +732,7 @@ if [[ -x ~/bin/detect_ssh-agent ]]; then
 fi
 
 ### BEGIN PRIVATE
-alias th='ssh -l adam thelonious.new.ox.ac.uk; cx'
+alias th='ssh -l adam thelonious.new.ox.ac.uk'
 ### END PRIVATE
 
 # }}}
