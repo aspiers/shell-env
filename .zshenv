@@ -55,6 +55,18 @@ perl5lib=(
          )
 
 # }}}
+# {{{ Ruby libraries
+
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T RUBYLIB rubylib
+typeset -U rubylib
+export RUBYLIB
+rubylib=( 
+          ~/lib/ruby{/site_ruby,}{/1.*,}{/i?86*,}(N)
+          ~/lib/ruby(N)
+          $rubylib
+         )
+
+# }}}
 # {{{ IRC
 
 export IRCNAME='Adam Spiers'
