@@ -238,7 +238,10 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
 
   # Default prompt style
   adam2_colors=( white cyan cyan green )
-  if [[ -r /proc/$PPID/cmdline ]] &&
+
+  if [[ -r $zdotdir/.zsh_prompt ]]; then
+    . $zdotdir/.zsh_prompt
+  elif [[ -r /proc/$PPID/cmdline ]] &&
      egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
@@ -456,29 +459,6 @@ zstyle ':completion:*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
 
 zshrc_load_status 'aliases and functions'
 
-### BEGIN PRIVATE
-# {{{ Updating rc files
-
-rcup () {
-  ( cd &&
-    CVS_RSH=ssh CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot \
-    cvs update "$@"
-  )
-}
-
-_rcup () {
-  _path_files -W ~
-}
-
-compdef _rcup rcup
-
-# }}}
-# {{{ View addressbook
-
-alias addr='less ~/.gnome/GnomeCard.gcrd'
-
-# }}}
-### END PRIVATE
 # {{{ which
 
 # reverse unwanted aliasing of `which' by distribution startup
@@ -529,12 +509,26 @@ alias sl=ls # often screw this up
 
 # {{{ Changing/making/removing directory
 
+# blegh
 alias cd..='cd ..'
 alias cd...='cd ../..'
 alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
-alias cd......='cd ../../../../..'
 alias cd/='cd /'
+
+cd () {
+  if   [[ "x$*" == "x..." ]]; then
+    cd ../..
+  elif [[ "x$*" == "x...." ]]; then
+    cd ../../..
+  elif [[ "x$*" == "x....." ]]; then
+    cd ../../..
+  elif [[ "x$*" == "x......" ]]; then
+    cd ../../../..
+  else
+    builtin cd "$@"
+  fi
+}
 
 alias md='mkdir -p'
 alias rd=rmdir
@@ -549,60 +543,10 @@ alias po=popd
 alias pwd='pwd -r'
 
 # }}}
-# {{{ finding out disk hogs
-
-# {{{ du1 (du with depth 1)
-
-du1 () {
-  du "$@" | egrep -v '/.*/'
-  # Another idea from Bart Schaefer, which I need to fix
-  # to take parameters
-  #du -s *(/)
-}
-
-# }}}
-# {{{ fbig
-
-# Find big files
-
-fbig () {
-  ls -alFR "$@" | sort -rn -k5 | less -r
-}
-
-# }}}
-# {{{ fbigrpms
-
-# Find rpms which take lots of space
-
-alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
-
-# }}}
-
-# }}}
-# {{{ Use this to untar after doing a tar ztvf/tvf/ztf command
-
-# Thanks to Bart Schaefer for this one
-alias xt='fc -e - tvf=xf ztf=zxf -1'
-
-# }}}
-
 # }}}
 # {{{ Job/process control
 
 alias j='jobs -l'
-alias mps='ps -o user,pcpu,command'
-pst () {
-  pstree -p "$@" | less -S
-}
-which gps >&/dev/null && alias gps='gitps -p afx; cx'
-alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
-rj () {
-  ps auxww | grep -E "($*|^USER)"
-}
-ru () {
-  ps auxww | grep -E "^($*|USER)" | grep -vE "^$USERNAME|login"
-}
-compdef _users ru
 
 # }}}
 # {{{ History
@@ -623,20 +567,10 @@ compdef _vars_eq ts
 alias cls='clear'
 
 # }}}
-# {{{ Changing terminal type
-
-alias v1='export TERM=vt100'
-alias v2='export TERM=vt220'
-alias vx='export TERM=xterm-color'
-
-# }}}
 
 # }}}
 # {{{ Other users
 
-lh () {
-  last "$@" | head
-}
 compdef _users lh
 
 alias f=finger
@@ -662,103 +596,6 @@ alias mysqlshow='nocorrect mysqlshow'
 
 # can't be bothered to support this on old zshs
 
-if [[ "$ZSH_VERSION_TYPE" != 'old' ]]; then
-
-set_title () {
-  local num title
-
-  type="$1"
-  shift
-  case "$type" in
-    window) num=2
-	    ;;
-      icon) num=1
-	    ;;
-         *) print "Usage: set_title ( window | title ) <title>"
-	    return 1 
-	    ;;
-  esac
-
-  title="$1"
-
-  # Other checks will need to be added here.
-  if [[ "$TERM" == 'linux' ]]; then
-#    print "Cannot currently display $1 title; only remembering value set."
-  else
-    echo -n "\e]$num;$title\a"
-  fi
-}
-
-cx () {
-  local long_host short_host title_host short_from_opts
-
-  long_host=${HOST}
-  short_host=${HOST%%.*}
-
-  if [[ "$1" == "-s" ]]; then
-    short_from_opts=yes
-    shift
-  fi
-
-  if [[ ${+CX_SHORT_HOSTNAMES} -eq 1 || "$short_from_opts" == "yes" ]]; then
-    title_host=$short_host
-  else
-    title_host=$long_host
-  fi
-
-  if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
-    (( $+title )) || typeset -gT TITLE title
-    (( $+title )) || typeset -gT ITITLE ititle
-  fi
-  
-  : ${TITLE_SHLVL:=$SHLVL}
-  export TITLE_SHLVL
-
-  if [[ "$SHLVL" != "$TITLE_SHLVL" ]]; then
-    # We've changed shell; assume that the most recently pushed entry
-    # is the starting piont for the new shell.
-    TITLE_SHLVL=$SHLVL
-    [[  ${(t)title} == 'array' ]] &&  title=( "$title[1]" )
-    [[ ${(t)ititle} == 'array' ]] && ititle=( "$ititle[1]" )
-  fi
-
-  suffix="$USERNAME@${title_host}"
-  isuffix="$USERNAME@${short_host}"
-
-  export TITLE ITITLE
-
-  if (( $# == 0 )); then
-    # restore current setting
-    if (( $#title == 0 )); then
-      full_title="$suffix"
-      full_ititle="$isuffix"
-    else
-      full_title="$title[1] : $suffix"
-      full_ititle="$ititle[1] : $isuffix"
-    fi
-  else
-    # push new setting
-    if (( $#title )); then
-      title=(  "$*" "$title[@]" )
-      ititle=( "$*" "$ititle[@]" )
-    else
-      title=( "$*" )
-      ititle=( "$*" )
-    fi
-
-    if [[ -z "$*" ]]; then
-      # allow pushing of ""
-      full_title="$suffix"
-      full_ititle="$isuffix"
-    else
-      full_title="$* : $suffix"
-      full_ititle="$* : $isuffix"
-    fi
-  fi
-    
-  set_title window "$full_title"
-  set_title icon "$full_ititle"
-}
 
 cxx () {
   # pop
@@ -774,12 +611,6 @@ cxl () {
 if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
-fi
-
-else
-  cx  () { }
-  cxx () { }
-  cxl () { }
 fi
 
 # }}}
@@ -866,96 +697,6 @@ scvs_zsh_remote () {
 alias v=less
 
 # }}}
-# {{{ CVS
-
-if which cvs >&/dev/null; then
-  cvst () {
-    perl -MGetopt::Std -wl -- - "$@" <<'End_of_Perl'
-      $dir = '';
-      getopts('av', \%opts);
-      $| = 1;
-      open(CVS, "cvs -n status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
-      open(STDERR, ">&STDOUT") or die "Can't dup stdout";
-      while (<CVS>) {
-        chomp;
-        if (/cvs (?:status|server): Examining (.*)/) {
-          $dir = "$1/";
-        } elsif (/^File:\s+(.*)\s+Status:\s+(.*)/) {
-          ($file, $status) = ($1, $2);
-          next if ($status eq 'Up-to-date' && ! $opts{'a'});
-          $str = "File: $dir$file";
-          print $str, ' ' x (45 - length($str)), "Status: $status";
-        } elsif (/revision/ && $opts{'v'}) {
-          next if ($status eq 'Up-to-date' && ! $opts{'a'});
-          print;
-        } elsif (/^cvs status:/ || /password:/i) {
-          print;
-        }
-      }
-      close(CVS);
-End_of_Perl
-  }
-
-  cvsd () {
-    cvs diff -N "$@" 2>&1 | less
-  }
-
-  # see new stuff
-  cvsn () {
-    cvs diff -rBASE -rHEAD "$@" 2>&1 | egrep -v 'tag BASE is not in file' | less
-  }
-
-  cvsl () {
-    cvs log "$@" 2>&1 | less
-  }
-
-### BEGIN PRIVATE
-  cvsll () {
-    rcs2log \
-      -u "adam	Adam Spiers	adam@spiers.net" \
-      -u "localadams	Adam Spiers	adam@spiers.net" \
-      -u "adams	Adam Spiers	aspiers@guideguide.com" \
-      "$@" | less
-  }
-
-### END PRIVATE
-  cvss () {
-    cvs status "$@"
-  }
-
-  alias cvsv='cvst -av'
-
-  cvs () {
-    quiet='-q'
-    [[ "$*" == *status* ]] && quiet=''
-    command cvs $quiet "$@"
-  }
-
-  cvsu () {
-    cvs update "$@"
-  }
-
-  cvsup () {
-    cvsu "$@"
-  }
-
-  cvsq () {
-    cvs -nq update "$@" |& grep -v -- '-- ignored'
-  }
-
-  cvsls () {
-    files=( $( cvs status -l 2>/dev/null | awk '/File: / { print $2 }' ) )
-    ls -d "$@" *(/) "$files[@]"
-  }
-
-  # revert
-  cvsr () {
-    rm "$@"
-    cvs update "$@"
-  }
-fi
-
-# }}}
 # {{{ mutt
 
 m () {
@@ -963,18 +704,6 @@ m () {
   mutt "$@"
   cxx
 }
-
-# }}}
-# {{{ diff
-
-only () {
-  awk '/^Only in '"$1"'/ {s=$3 $4; sub(": *", "/", s); print s}'
-}
-
-# }}}
-# {{{ apropos
-
-alias ap=apropos
 
 # }}}
 # {{{ editors
@@ -994,45 +723,7 @@ ssh () {
   cx
 }
 
-if which lsof pidof >&/dev/null; then
-  dsa () {
-    # comment this if you want
-    unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
-
-    pidof ssh-agent | grep -q '[0-9]' || ssh-agent
-
-    : ${SSH_AGENT_PID:=`pidof ssh-agent`}
-
-    if [[ -z "$SSH_AGENT_PID" ]]; then
-      echo "ssh-agent process not found; aborting ..."
-      return 1
-    fi
-
-    : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
-         awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
-         head -1`}
-
-    if [[ -z "$SSH_AUTH_SOCK" ]]; then
-      echo "Huh? lsof didn't do the biz; aborting ..."
-      return 2
-    fi
-
-    cat <<EOF 
-    Detected ssh-agent:
-       pid:    $SSH_AGENT_PID
-       socket: $SSH_AUTH_SOCK
-EOF
-
-    echo -n "Setting up environment ... "
-
-    export SSH_AGENT_PID SSH_AUTH_SOCK
-
-    echo done.
-  }
-
-  # Sod it; run it now
-  dsa >&/dev/null
-fi
+dsa >&/dev/null
 
 alias sa=ssh-add
 
@@ -1112,37 +803,7 @@ bindkey '^[f' emacs-forward-word
 # Fix weird sequence that rxvt produces
 bindkey -s '^[[Z' '\t'
 
-aoeu () {
-  if tty | grep -q tty; then
-    local prefix=''
-    (( $EUID == 0 )) && prefix=sudo
-    $prefix loadkeys /usr/lib/kbd/keymaps/i386/qwerty/uk.no-capslock.kmap.gz
-  else
-    xmodmap $HOME/.keymaps/qwerty
-  fi
-  if (( $? == 0 )); then
-    echo qwerty layout selected
-  else
-    echo "There was an error; qwerty layout /not/ selected."
-  fi
-}  
-
-alias no=ls
-
-asdf () {
-  if tty | grep -q tty; then
-    local prefix=''
-    (( $EUID == 0 )) && prefix=sudo
-    $prefix loadkeys /usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
-  else
-    xmodmap $HOME/.keymaps/dvorak
-  fi
-  if (( $? == 0 )); then
-    echo Dvorak layout selected
-  else
-    echo "There was an error; Dvorak layout /not/ selected."
-  fi
-}
+alias no=ls  # for Dvorak
 
 # }}}
 # {{{ Miscellaneous
