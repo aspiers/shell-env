@@ -888,6 +888,11 @@ End_of_Perl
   cvsq () {
     cvs -nq update |& grep -v -- '-- ignored'
   }
+
+  cvsls () {
+    files=( $( cvs status -l 2>/dev/null | awk '/File: / { print $2 }' ) )
+    ls -d "$@" *(/) "$files[@]"
+  }
 fi
 
 # }}}
