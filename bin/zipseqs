@@ -6,16 +6,27 @@ use warnings;
 use Getopt::Long;
 
 my %opts;
-GetOptions(\%opts, 'prefixes|p', 'eof|e') or usage();
+GetOptions(\%opts, 'prefixes|p', 'format|f=s', 'eof|e') or usage();
 
 sub usage {
   die <<EOF;
 Usage: $0 file1 file2 [...]
        $0 [ -p | --prefixes ] prefix1 file1 prefix2 file2 [...]
+       $0 [ -f | --format=STR ] file1 file2 [...]
   -e, --eof   Abort as soon as EOF is reached on any file.
 
 Take twos or more sequences and 'zip' them together in the functional
-programming sense.
+programming sense.  Defaults to one item per line.  -p prefixes each
+item with a specified prefix.  -f allows an arbitrary output format,
+with each '%s' substituted for an item in the zipped sequence, e.g.
+the following are almost equivalent:
+
+$0 -p prefix1 file1 prefix2 file2
+$0 -f 'prefix1 %s\nprefix2 %s\n' file1 file2
+
+except that the former would stop intelligently if file2 ran out of
+items before file1 - there's no obvious general way of trimming a format
+string intelligently when one list runs out before another.
 EOF
 }
 
@@ -30,10 +41,13 @@ if ($opts{prefixes}) {
     push @files, $file;
     $prefixes{$file} = $prefix;
   }
+  #$format = map "$prefixes{$_} %s\n", @files;
 }
 else {
   @files = @ARGV;
 }
+
+$opts{format} =~ s/(\\([abefnrt]|x\d\d|0\d{2,3}))/qq["$1"]/gee if exists $opts{format};
 
 my %fh;
 foreach my $file (@files) {
@@ -44,6 +58,7 @@ my %eof;
 
 OUTER:
 while (1) {
+  my $out = $opts{format};
   foreach my $i (0 .. $#files) {
     my $file = $files[$i];
     my $line = get_line($file);
@@ -51,8 +66,13 @@ while (1) {
       last OUTER if $opts{eof};
       next;
     }
-    print $prefixes{$file}, ' ' if $opts{prefixes};
-    print $line if $line;
+    if (exists $opts{format}) {
+      $out =~ s/%s/$line/;
+    }
+    else {
+      print $prefixes{$file}, ' ' if $opts{prefixes};
+      print "$line\n" if $line;
+    }
   }
 
   # prune files which have reached EOF
@@ -61,6 +81,12 @@ while (1) {
 #  print "@files\n";
 
   last if @files == 0;
+
+  if ($opts{format}) {
+    $out =~ s/%s/EOF/g;
+    print $out;
+  }
+
 #  sleep 1;
 }
 
@@ -69,6 +95,11 @@ sub get_line {
   return undef if $eof{$file};
   my $fh = $fh{$file};
   my $line = <$fh>;
-  defined $line or $eof{$file}++;
+  if (defined $line) {
+    chomp $line;
+  }
+  else {
+    $eof{$file}++;
+  }
   return $line;
 }
