@@ -56,8 +56,23 @@ if (( $#sockets == 0 )); then
   echo "No sockets found; aborting."
   return 1
 elif (( $#sockets > 1 )); then
-  echo "$#sockets sockets found; aborting.  Remove dead sockets from:"
-  echo "${(F@)sockets/\/tmp/  /tmp}"
+  local -a _dead_sockets
+  echo "$#sockets sockets found:"
+  for s in "${sockets[@]}"; do
+    _lsof="`lsof $s`"
+    if [[ -z "$_lsof" ]]; then
+      echo "  $s appears dead."
+      _dead_sockets=( "${_dead_sockets[@]}" "$s" )
+    else
+      echo "  $s in use:"
+      echo "${(F@)${(f)_lsof}//(#s)/    }"
+      # does the same as:
+      #   echo "$lsof" | sed -e 's/^/    /'
+      # by splitting at \n into an array, substituting start
+      # of each element for '    ' and rejoining with \n.
+    fi
+  done
+  echo "Suggested action:\n  rm $_dead_sockets"
   return 1
 fi
 : ${SSH_AUTH_SOCK:=$sockets[0]}
