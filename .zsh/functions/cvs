@@ -2,4 +2,4 @@
 
 quiet='-q'
 [[ "$*" == *status* ]] && quiet=''
-command cvs $quiet "$@"
+command cvs $quiet "$@" | awk -f ~/bin/colour-cvs-output.awk
