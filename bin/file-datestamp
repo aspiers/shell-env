@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# avoid using : in the filename as will break usage within
+# $PATH etc., also in NFS automounts according to the Hickster.
+
 format="%Y-%m-%d"
 if [ "$1" = "-t" ]; then
   format="$format-%H%Mh%Ss"
