@@ -15,6 +15,7 @@ scvs () {
 
   shift
 
+  export CVSROOT CVS_RSH
   CVSROOT=$_CVSROOTS[$tag]
   CVS_RSH=$_CVS_RSHS[$tag]
 }
@@ -22,9 +23,11 @@ scvs () {
 typeset -A _CVSROOTS _CVS_RSHS
 _CVSROOTS=(
            # Put your own CVSROOTs here
-           local             /usr/local/cvsroot
+#          local             /usr/local/cvsroot
+           local             $HOME/.CVSROOT
            mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
+           plig              plig.net:/home/adams/.CVSROOT
            thelonious        adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
            guideguide_remote proxy.guideguide.com:/share/cvsroot
            guideguide_local  prophet5.london.guideguide.com:/share/cvsroot
@@ -38,6 +41,7 @@ _CVSROOTS=(
 _CVS_RSHS=(
            # Put your own CVS_RSHs here
 ### BEGIN PRIVATE
+           plig              ssh
            thelonious        ssh
            guideguide_remote ~/bin/cvs_rsh
            guideguide_local  ssh
