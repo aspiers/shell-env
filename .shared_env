@@ -10,17 +10,25 @@
 # Note that that means silly things like [ ! -e foo ] rather
 # than ! [ -e foo ] ...
 
+# {{{ Are we interactive?
+
+case "$-" in
+  *i*) shell_interactive=y ;;
+    *) shell_interactive=  ;;
+esac
+
+# }}}
+
 # {{{ Loading status
 
 sh_load_status () {
   # \e[0K is clear to right
-  echo -e -n "\r${0##*/} load: $* ... \e[0K"
+  [ -n "$interactive_shell" ] && echo -e -n "\r${0##*/} load: $* ... \e[0K"
 }
 
 # }}}
 
-# keep non-interactive shells clean
-#sh_load_status .shared_env
+sh_load_status .shared_env
 
 # {{{ HOME
 
