@@ -2,8 +2,8 @@
 
 local giveup='Cannot check validity of ssh-agent settings; assuming OK.'
 
-if ( ! /bin/true ); then
-  echo 'zsh has ( ! /bin/true ) negated subshell bug!'
+if ( ! true ); then
+  echo 'zsh has ( ! true ) negated subshell bug!'
 # Have rewritten the below so this doesn't matter.  Still
 # nice to be alerted to it now and again though.
 #   echo $giveup
