@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 ##
 ## tailfgrep -- monitor a file a la tail -f, looking for a given regexp
 ## Copyright (C) 1999 Adam Spiers <adam@spiers.net>
@@ -25,6 +25,8 @@
 #   - include more options from tail (e.g. -n) and grep (e.g. -i)
 
 use strict;
+use warnings;
+
 use Getopt::Long;
 
 my ($quiet, $inverse, $match) = (0, 0, 0);
