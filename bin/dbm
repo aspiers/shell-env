@@ -6,7 +6,7 @@
 # reserved. This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl itself.
 #
-# Version 0.13
+# Version 0.15
 #
 # $Id$
 #
@@ -18,8 +18,8 @@ use Text::Abbrev;
 use Text::ParseWords;
 use Getopt::Long;
 
-my $type;
-GetOptions("type|t=s" => \$type);
+my ($type, $help);
+GetOptions("type|t=s" => \$type, "help|h" => \$help);
 $type ||= 'AnyDBM_File';
 {
   local $SIG{__DIE__} = sub { };
@@ -27,8 +27,8 @@ $type ||= 'AnyDBM_File';
   die "Import of `$type' failed: $@" if $@;
 }
 
-unless ($ARGV[0]) {
-  usage('You must supply the name of a DBM file.');
+if ($help || ! @ARGV) {
+  usage();
   exit 1;
 }
 
@@ -36,22 +36,25 @@ my $dbm_file = shift;
 
 my $action = shift;
 my %actions = ();
-abbrev \%actions, qw/add remove delete edit list lookup clear/;
+abbrev \%actions, qw/set add change
+                     remove delete wipe erase
+                     list get fetch lookup
+                     find search
+                     edit
+                     clear/;
 unless ($action) {
   usage("You must specify an action.");
   exit 1;
 }
 $action = $actions{$action} if $action && exists $actions{$action};
-$action =~ s/remove/delete/;
-$action =~ s/lookup/list/;
 
 my %hash = ();
 tie %hash, $type, $dbm_file, O_RDWR | O_CREAT, 0600;
 die "tie() to $dbm_file failed: $!\n" unless tied %hash;
 
-if ($action eq 'add') {
+if ($action =~ /^(add|set|change)$/) {
   unless (@ARGV and @ARGV % 2 == 0) {
-    usage("`add' needs an even number of arguments " .
+    usage("`$action' needs an even number of arguments " .
           "(key1, val1, key2, val2 ...)");
     exit 1;
   }
@@ -60,24 +63,33 @@ if ($action eq 'add') {
     $hash{$key} = $value;
   }
 }
-elsif ($action eq 'delete') {
+elsif ($action =~ /^(remove|delete|wipe|erase)$/) {
   unless (@ARGV) {
-    usage("`delete' needs at least one argument.");
+    usage("`$action' needs at least one argument.");
     exit 1;
   }
   delete @hash{@ARGV};
 }
-elsif ($action eq 'list') {
+elsif ($action =~ /^(list|lookup|get|fetch)$/) {
   my @keys = @ARGV;
   @keys = keys %hash unless @keys;
   foreach my $key (@keys) {
-    my $val = $hash{$key} || '__undef__';
-    print "$key, $val\n";
+    print_key_val($key);
+  }
+}
+elsif ($action =~ /^(find|search)$/) {
+  unless (@ARGV == 1) {
+    usage("`$action' needs exactly one argument.");
+    exit 1;
+  }
+  my $re = $ARGV[0];
+  foreach my $key (keys %hash) {
+    print_key_val($key) if $key =~ /$re/o;
   }
 }
 elsif ($action eq 'edit') {
   if (@ARGV) {
-    usage("`edit' doesn't take any arguments.");
+    usage("`$action' doesn't take any arguments.");
     exit 1;
   }
 
@@ -120,7 +132,7 @@ elsif ($action eq 'edit') {
 }
 elsif ($action eq 'clear') {
   unless ("@ARGV" eq 'everything yes really') {
-    usage("You must invoke clear exactly as shown below.");
+    usage("You must invoke $action exactly as shown below.");
     exit 1;
   }
   %hash = ();
@@ -142,9 +154,10 @@ sub usage {
   print <<EOF;
 Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
    Actions:
-      add <key> <value>
-      remove <key> [ <key> ... ]    (`delete' may be used instead')
-      list [ <key> ... ]            (`lookup' may be used instead')
+      set <key> <value>               (synonyms: add change)
+      remove <key> [ <key> ... ]      (synonyms: delete, wipe, erase)
+      list [ <key> ... ]              (synonyms: get, fetch, lookup)
+      find <regexp>                   (synonyms: search)
       edit
       clear everything yes really
 
@@ -161,4 +174,12 @@ sub maybe_quote {
   else {
     return $in;
   }
+}
+
+sub print_key_val {
+  my $key = shift;
+  my $val = exists  $hash{$key} ?
+              (defined $hash{$key} ? $hash{$key} : '__undef__')
+            : '__non-existant__';
+  print "$key, $val\n";
 }
