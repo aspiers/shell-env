@@ -302,7 +302,7 @@ zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
-if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   autoload -U compinit
   compinit -C # don't perform security check
 else
