@@ -57,7 +57,7 @@ path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}
 typeset -U manpath # No duplicates
 
 # }}}
-# {{{ fpath
+# {{{ fpath/autoloads
 
 fpath=(
        $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions,scripts}}(N) 
@@ -68,13 +68,21 @@ fpath=(
        /usr/doc/zsh*/[F]unctions(N)
       )
 
-# Autoload all shell functions from all directories in $fpath that
-# have the executable bit on (the executable bit is not necessary, but
-# gives you an easy way to stop the autoloading of a particular shell
-# function).
+# Autoload shell functions from all directories in $fpath.  Restrict
+# functions from $zdotdir/.zsh to ones that have the executable bit
+# on.  (The executable bit is not necessary, but gives you an easy way
+# to stop the autoloading of a particular shell function).
+#
+# The ':t' is a history modifier to produce the tail of the file only,
+# i.e. dropping the directory path.  The 'x' glob qualifier means
+# executable by the owner (which might not be the same as the current
+# user).
 
 for dirname in $fpath; do
-  fns=( $dirname/*~*~(N.x:t) )
+  case "$dirname" in
+    $zdotdir/.zsh*) fns=( $dirname/*~*~(N.x:t) ) ;;
+                 *) fns=( $dirname/*~*~(N.:t)  ) ;;
+  esac
   (( $#fns )) && autoload "$fns[@]"
 done
 
