@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use lib '../lib/perl5';
+use Rcs;
+
+die "Usage: $0 <file> [<file> ...]\n" unless @ARGV;
+
+my $short = (@ARGV == 1);
+
+my %seen;
+foreach my $file (@ARGV) {
+  my $rcsfile = find_rcs($file);
+  next unless $rcsfile;
+  next if $seen{$rcsfile}++;
+  my $rcs     = Rcs->new($rcsfile);
+  my $lock    = $rcs->lock;
+  print $short ? "$lock\n" : "$file: locked by $lock\n" if $lock;
+}
+
+sub find_rcs {
+  my ($file) = @_;
+  return $file if $file =~ /,v$/;
+  (my $rcsfile = $file) =~ s!([^/]+)$!RCS/$1,v!;
+  return $rcsfile if -e $rcsfile;
+  $rcsfile = "$file,v";
+  return $rcsfile if -e $rcsfile;
+  warn "Couldn't find RCS file for $file\n";
+  return undef;
+}
