@@ -570,6 +570,12 @@ alias d=dirs
 alias po=popd
 
 # }}}
+# {{{ Renaming
+
+autoload zmv
+
+# }}}
+
 # }}}
 # {{{ Job/process control
 
