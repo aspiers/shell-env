@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 =head1 NAME
 
@@ -29,7 +29,6 @@ $Id$
 =cut
 
 use strict;
-use warnings;
 
 use Digest::MD5 'md5_base64';
 use File::Basename;
@@ -73,7 +72,7 @@ Options (defaults in []):
   -u, --unified    Output as unified diffs
   -c, --context    Output as context diffs
   -q, --quiet      Do not output, just return exit code
-  -r, --repeat=N   Repeat N times in a row, -1 for infinite [$opt_defaults{repeat}]
+  -r, --repeat=N   Repeat N times in a row, 0 for infinite [$opt_defaults{repeat}]
   -n, --delay=N    Delay N seconds in between each repeat [$opt_defaults{delay}]
       --cache=DIR  Cache in DIR [$opt_defaults{cache}]
       --cumulative Output accumulated changes, not incrementals
@@ -130,7 +129,7 @@ do {
       or warn "rename($new, $old) failed: $!\n";
   }
 
-  sleep $opts{delay} if $reps_done < $opts{repeat} or $opts{repeat} < 0;
+  sleep $opts{delay} if $reps_done < $opts{repeat} or $opts{repeat} == 0;
 }
 until $reps_done == $opts{repeat};
 
