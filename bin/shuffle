@@ -1,7 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use strict;
-use warnings;
 
 # For the sake of portability, we implement the shuffle ourselves
 # rather than depend on a CPAN module.
