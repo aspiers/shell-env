@@ -2,5 +2,7 @@
 
 local expl
 
+(( $#_CVSROOTS )) || scvs >&/dev/null
+
 _description cvs_set expl 'CVS setup'
 compadd "$expl[@]" - ${(k)_CVSROOTS}
