@@ -4,6 +4,8 @@
 #
 # $Id$
 
+# .bashrc is invoked by non-login interactive shells
+
 [ -e ~/.switch_shell ] && . ~/.switch_shell
 
 # {{{ Source global definitions

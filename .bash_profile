@@ -4,10 +4,9 @@
 #
 # $Id$
 
-# Get the normal interactive stuff
-if [ -f ~/.bashrc ]; then
-  . ~/.bashrc
-fi
+# .bash_profile is invoked by login shells in preference to .profile
+
+. ~/.switch_shell
 
 # User specific environment and startup programs
 for newpath in ~/bin ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
@@ -21,4 +20,8 @@ export USERNAME ENV PATH
 
 [ -e ~/.bash_profile.local ] && . ~/.bash_profile.local
 
-. ~/.switch_shell
+# Get the normal interactive stuff
+if [ -f ~/.bashrc ]; then
+  . ~/.bashrc
+fi
+
