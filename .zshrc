@@ -273,6 +273,7 @@ zstyle ':completion:*' completer _complete _correct _approximate _prefix
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
+zstyle ':completion::complete:*:*' use-cache 1
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
@@ -582,6 +583,7 @@ alias h=history
 # {{{ Environment
 
 alias ts=typeset
+compdef _vars_eq ts
 
 # }}}
 # {{{ Terminal
