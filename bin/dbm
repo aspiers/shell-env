@@ -154,7 +154,7 @@ EOF
 sub maybe_quote {
   my ($in) = @_;
   
-  if ($in =~ s/"/\\"/g) {
+  if ($in =~ s/"/\\"/g || $in =~ s/'/\\'/g) {
     return qq{"$in"};
   }
   else {
