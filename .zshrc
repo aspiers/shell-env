@@ -14,6 +14,7 @@
 # {{{ To do list
 
 #
+#    - du1
 #    - Add prot and unprot
 #    - Do safes?kill(all)? functions
 #
@@ -271,32 +272,42 @@ fi
 ##
 
 # General completion technique
-compstyle '*' completer _complete _correct _approximate
-compstyle ':incremental' completer _complete _correct
-compstyle ':predict' completer _complete
+compstyle ':*' completer _complete _correct _approximate _prefix
+compstyle '::prefix-1:*' completer _complete
+compstyle ':incremental:*' completer _complete _correct
+compstyle ':predict:*' completer _complete
 
 # Cache functions created by _regex_arguments
-compstyle '*' cache-path ~/.zsh/.cache-path
+compstyle ':*' cache-path ~/.zsh/.cache-path
 
 # Expand partial paths
-compstyle '*' expand 'yes'
+compstyle ':*' expand 'yes'
+compstyle ':*' squeeze-slashes 'yes'
+
+# Include non-hidden directories in globbed file completions
+compstyle '::complete:*' \
+  tag-order 'globbed-files directories' all-files 
+compstyle '::complete:*:*:directories' file-patterns '*~.*(-/)'
 
 # Separate matches into groups
-compstyle '*:matches' group 'yes'
+compstyle ':*:matches' group 'yes'
 
 # Describe each match group.
-# This one assumes that your terminal has a dark background.
-compstyle '*:descriptions' format "$fg_bold[white]%d$fg_no_bold[white]"
+compstyle ':*:descriptions' format "%B---- %d%b"
 
+# Messages/warnings format
+compstyle ':*:messages' format '%B%U---- %d%u%b' 
+compstyle ':*:warnings' format '%B%U---- no match for: %d%u%b'
+ 
 # Describe options in full
-compstyle '*:options' description 'yes'
-compstyle '*:options' auto-description '%d'
+compstyle ':*:options' description 'yes'
+compstyle ':*:options' auto-description '%d'
 
 # }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
-compstyle '*:history-words' stop 'verbose'
-compstyle '*:history-words' remove_all_dups 'yep'
+compstyle ':*:history-words' stop 'verbose'
+compstyle ':*:history-words' remove_all_dups 'yep'
 
 # }}}
 # {{{ Common usernames
@@ -307,7 +318,7 @@ compstyle '*:history-words' remove_all_dups 'yep'
 #users=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
 ### END PRIVATE
 
-#compstyle '*' users $users
+#compstyle ':*' users $users
 
 # }}}
 # {{{ Common hostnames
@@ -368,7 +379,7 @@ hosts=(
     sunsite.org.uk
 )
 
-compstyle '*' hosts $hosts
+compstyle ':*' hosts $hosts
 
 # }}}
 # {{{ (user,host) pairs
@@ -410,8 +421,8 @@ other_accounts=(
 )
 ### END PRIVATE
 
-compstyle '*:my-accounts' users-hosts $my_accounts
-compstyle '*:other-accounts' users-hosts $other_accounts
+compstyle ':*:my-accounts' users-hosts $my_accounts
+compstyle ':*:other-accounts' users-hosts $other_accounts
 
 # }}}
 # {{{ (host, port, user) triples for telnet
@@ -428,6 +439,7 @@ telnet_hosts_ports_users=(
   {localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}:
 )
 ### END PRIVATE
+compstyle ':*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
 
 # }}}
 
@@ -443,7 +455,7 @@ reload () {
     . ~/.zshrc
   else
     local fn
-    for fn in $*; do
+    for fn in "$@"; do
       unfunction $fn
       autoload -U $fn
     done
@@ -492,22 +504,25 @@ alias pwd='pwd -r'
 # {{{ du1 (du with depth 1)
 
 du1 () {
-  # I used to use this:
-  # du $* | egrep -v '/.*/'
-  # But then Bart Schaefer suggested du -s.
-  du -s *(/)
-  # Thanks Bart!
+  du "$@" | egrep -v '/.*/'
+  # Another idea from Bart Schaefer, which I need to fix
+  # to take parameters
+  #du -s *(/)
 }
 
 # }}}
 # {{{ fbig
 
+# Find big files
+
 fbig () {
-  ls -alFR $* | sort -rn -k5 | less -r
+  ls -alFR "$@" | sort -rn -k5 | less -r
 }
 
 # }}}
 # {{{ fbigrpms
+
+# Find rpms which take lots of space
 
 alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
 
@@ -527,7 +542,7 @@ alias xt='fc -e - tvf=xf ztf=zxf -1'
 alias j='jobs -l'
 alias mps='ps -o user,pcpu,command'
 pst () {
-  pstree -p $* | less -S
+  pstree -p "$@" | less -S
 }
 alias gps='gitps -p afx; cx'
 alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
@@ -569,7 +584,7 @@ alias vx='export TERM=xterm-color'
 # {{{ Other users
 
 lh () {
-  last $* | head
+  last "$@" | head
 }
 compdef _users lh
 
@@ -685,7 +700,7 @@ alias v=less
 
 if which cvs >/dev/null; then
   cvst () {
-    perl -MGetopt::Std -wl -- - $* <<'End_of_Perl'
+    perl -MGetopt::Std -wl -- - "$@" <<'End_of_Perl'
       $dir = '';
       getopts('av', \%opts);
       $| = 1;
@@ -712,19 +727,19 @@ End_of_Perl
   }
 
   cvsd () {
-    cvs diff -N $* |& less
+    cvs diff -N "$@" 2>&1 | less
   }
 
   cvsl () {
-    cvs log $* |& less
+    cvs log "$@" 2>&1 | less
   }
 
   cvsll () {
-    rcs2log $* | less
+    rcs2log "$@" | less
   }
 
   cvss () {
-    cvs status -v $*
+    cvs status -v "$@"
   }
 
   cvsq () {
@@ -831,7 +846,7 @@ bindkey '^[n' history-beginning-search-forward
 bindkey '^[P' history-beginning-search-backward
 bindkey '^[N' history-beginning-search-forward
 bindkey '^W' kill-region
-bindkey '^I' expand-or-complete-prefix
+bindkey '^I' complete-word
 bindkey '^[b' emacs-backward-word
 bindkey '^[f' emacs-forward-word
 
@@ -865,7 +880,14 @@ fi
 
 if [[ $ZSH_VERSION > 3.1.5 ]]; then
   zmodload -i zsh/complist
-  ZLS_COLOURS=${LS_COLORS-${LS_COLOURS-''}}
+
+  zstyle ':completion:*' list-colors ''
+
+  zstyle ':completion:*:*:kill:*:processes' list-colors \
+    '=(#b) #([0-9]#)*=0=01;31'
+
+  # show directories in yellow
+  zstyle ':completion:*' list-colors 'di=01;33'
 fi  
 
 # }}}
