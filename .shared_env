@@ -40,11 +40,15 @@ done
 # In order to avoid forks here, this is done in .zshrc
 
 # }}}
-# {{{ IN_SCREEN
+# {{{ GNU screen
 
 case "$TERM" in
   screen*) IN_SCREEN=yes ; export IN_SCREEN ;;
 esac
+
+if [ -e $ZDOTDIR/.screenrc ] && [ ! -e $HOME/.screenrc ]; then
+  export SCREENRC=$ZDOTDIR/.screenrc
+fi
 
 # }}}
 # {{{ INPUTRC
