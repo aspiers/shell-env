@@ -47,9 +47,6 @@ path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}
 # }}}
 # {{{ manpath
 
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] ||
-  typeset -T MANPATH manpath
-
 typeset -U manpath # No duplicates
 
 # }}}
