@@ -1,0 +1,6 @@
+#!/bin/sh
+
+format="%Y:%m:%d"
+[ "$1" = "-t" ] && format="$format-%T"
+
+date +"$format"
