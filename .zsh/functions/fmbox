@@ -1,0 +1,3 @@
+#autoload
+
+locate "$HOME/mail/*${^@}"
