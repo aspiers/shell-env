@@ -134,7 +134,7 @@ export OSTYPE
 # {{{ IRC
 
 export IRCNAME='Adam Spiers'
-export IRCNICK='tigerpig'
+export IRCNICK='roink'
 #export IRCNICK='Adam'
 
 # }}}
