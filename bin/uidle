@@ -7,7 +7,7 @@ use Date::Manip 'Delta_Format';
 use File::Basename;
 use Getopt::Long;
 my %opts;
-GetOptions(\%opts, 'human|h', 'help', 'debug|d') or usage();
+GetOptions(\%opts, 'human|h', 'help', 'tty|t', 'debug|d') or usage();
 usage() if $opts{help};
 
 use constant NEED_ON_SINCE => 1;
@@ -18,8 +18,13 @@ sub usage {
   my $me = basename $0;
   die <<EOUSAGE;
 Usage: $me [options] [username[\@host]]
+
+Finds the session with the smallest idle time corresponding to the
+specified user and outputs the number of seconds idle.
+
 Options:
-  -h, --human  Output idle time in human-readable format (defaults to seconds)
+  -h, --human  Output idle time in human-readable format
+  -t, --tty    Also output corresponding tty
   -d, --debug
       --help
 EOUSAGE
@@ -30,7 +35,7 @@ my $who = shift || scalar(getpwuid $<);
 open(FINGER, "finger -l -m $who|")
   or die "open(finger -l -m $who|) failed: $!\n";
 
-my $least_idle_secs;
+my ($least_idle_secs, $least_idle_tty, $tty);
 
 # The format of finger(1)'s output is such that an idle time line
 # always follows an 'On since' line.  If the expected idle time line
@@ -44,12 +49,14 @@ while (<FINGER>) {
     if (/^Login( name)?:/i) {
       debug("Got login line\n");
       $state = NEED_ON_SINCE;
+      undef $tty;
     }
     next;
   }
 
   if ($state == NEED_ON_SINCE) {
-    $state = NEED_IDLE if s/\bon since.*? on \S+\s*( from \S+)?//i;
+    $state = NEED_IDLE if s/\bon since.*? on (\S+)\s*( from \S+)?//i;
+    $tty = $1;
     debug("Merged line; redoing\n"), redo if /\bidle\b/;
     next;
   }
@@ -59,11 +66,13 @@ while (<FINGER>) {
       my $secs = parse_idle_time($_);
       if (! defined $least_idle_secs) {
         $least_idle_secs = $secs;
+        $least_idle_tty  = $tty;
         debug("Least idle now $secs seconds\n");
       }
       elsif ($secs < $least_idle_secs) {
         debug("Found smaller idle time of $secs seconds\n");
         $least_idle_secs = $secs;
+        $least_idle_tty  = $tty;
       }
       $state = NEED_ON_SINCE;
       next;
@@ -71,6 +80,7 @@ while (<FINGER>) {
     
     debug("Got:\n$_\ninstead of idle line; assuming not idle at all.\n");
     $least_idle_secs = 0;
+    $least_idle_tty  = $tty;
     $state = NEED_ON_SINCE;
     last;
   }
@@ -79,7 +89,9 @@ while (<FINGER>) {
 if ($state == NEED_IDLE) {
   debug("Finished expecting an idle line; assuming not idle at all.\n");
   $least_idle_secs = 0;
+  $least_idle_tty  = $tty;
 }
+
 if ($state == NEED_LOGIN) {
   die "Didn't get login line.\n";
 }
@@ -125,11 +137,12 @@ if ($opts{human}) {
     }
     $i++;
   }
+  @out = ('0 seconds') if @out == 0;
     
-  print "@out\n";
+  print "@out", $opts{tty} ? " on $least_idle_tty" : '', "\n";
 }
 else {
-  print "$least_idle_secs\n";
+  print $least_idle_secs, $opts{tty} ? " $least_idle_tty" : '', "\n";
 }
 
 sub debug {
