@@ -439,6 +439,7 @@ hosts=(
     adamspiers.dyndns.org
     adamspiers.org
     f5.mandolinarchive.com
+    coltrane.homelinux.org
 ### END PRIVATE
 )
 
