@@ -312,9 +312,10 @@ fi
 # }}}
 # {{{ General completion technique
 
-zstyle ':completion:*' completer \
-  _complete _prefix _approximate:-one _ignored \
-  _complete:-extended _approximate:-four
+# zstyle ':completion:*' completer \
+#   _complete _prefix _approximate:-one _ignored \
+#   _complete:-extended _approximate:-four
+zstyle ':completion:*' completer _complete _prefix _ignored _complete:-extended
 
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
