@@ -13,9 +13,8 @@ fi
 
 # {{{ Key bindings
 
-# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
-# set convert-meta to off?
-unset INPUTRC
+bind '"\ep":history-search-backward'
+bind '"\en":history-search-forward'
 
 # }}}
 # {{{ Prompt
@@ -240,4 +239,4 @@ alias tf='less +F'
 
 # }}}
 
-. ~/.switch_shell
+[ -e ~/.switch_shell ] && . ~/.switch_shell
