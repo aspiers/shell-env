@@ -21,7 +21,6 @@
 ## 
 
 # TODO:
-#   - make read more than one line per second (doh!)
 #   - extend to multiple patterns (one for each file?)
 #   - include more options from tail (e.g. -n) and grep (e.g. -i)
 
@@ -60,7 +59,7 @@ while (1) {
  FILE:
   foreach my $file (@files) {
     my $fh = $fh{$file};
-    if (defined($_ = <$fh>)) {
+    while (defined($_ = <$fh>)) {
       if ($quiet) {
         match($_) && exit 0;
       }
