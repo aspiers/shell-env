@@ -1,0 +1,86 @@
+#!/bin/bash
+
+me="`basename $0`"
+
+if [ $# != 1 ] || ! [ -e "$1" ]; then
+  echo "Usage: $me <file>"
+  exit 1
+fi
+
+dir="`dirname $1`"
+file="`basename $1`"
+orig_dir="`pwd`"
+
+if ! viz_tmpdir=`mktemp -d /tmp/$me.XXXXXXXX` || ! [ -d "$viz_tmpdir" ]; then
+  echo "mktemp failed: $!"
+  exit 1
+fi
+
+cleanup () {
+  [ -n "$viz_tmpdir" ] && rm -rf "$viz_tmpdir"
+}
+
+trap cleanup EXIT
+
+if ! co -l "$dir/$file"; then
+  echo "Checkout failed; aborting." >&2
+  exit 1
+fi
+
+tmpfile="$viz_tmpdir/$file"
+cp "$dir/$file" "$tmpfile"
+editor="${EDITOR:-${VISUAL:-vi}}"
+
+validate () {
+  if [ -e "$dir/.vizrc" ]; then
+    . "$dir/.vizrc"
+    return $?
+  fi
+  return 0
+}
+
+trap 'echo -e "\nNo cheating now!"' INT
+
+$editor "$tmpfile"
+
+while [ 1 = 1 ]; do
+  changed=
+  cmp -s "$dir/$file" "$tmpfile" || changed=y
+  [ -z "$changed" ] && break
+
+  validates=
+  echo "Testing validity of changes ... "
+  validate "$tmpfile" && validates=y
+
+  replied=
+  while [ -z "$replied" ]; do
+    if [ -n "$validates" ]; then
+      read -n 1 -p "Re-edit, diff, check in, or abandon [r/d/c/a]? " reply
+    else
+      read -n 1 -p "Re-edit or abandon [r/a]? " reply
+    fi
+    case "$reply" in
+      a) changed=
+         echo
+         # get me outta here
+         break 10
+         ;;
+      r) replied=y ; echo ;;
+      c) echo
+         # get me outta here
+         break 10
+         ;;
+      d) echo; diff -u "$dir/$file" "$tmpfile" | less ;;
+    esac
+  done
+
+  $editor "$tmpfile"
+done
+
+if [ -z "$changed" ]; then
+  co -u -f "$dir/$file"
+  exit 0
+fi
+
+cp "$tmpfile" "$dir" # rather than mv, preserves permissions
+ci -u "$dir/$file"
