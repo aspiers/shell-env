@@ -13,7 +13,7 @@
 # }}}
 # {{{ Try to switch shell
 
-[ -r ~/.switch_shell ] && . ~/.switch_shell ~adams/local/bin/zsh -d
+[ -r ~/.switch_shell ] && . ~/.switch_shell ~/local/bin/zsh -d
 
 # }}}
 # {{{ Source global definitions

@@ -1,3 +1,5 @@
 p	set-mark z%'z
 l   noaction 50\e(
 L   noaction 50\e)
+\kl noaction 6\e(
+\kr noaction 6\e)
