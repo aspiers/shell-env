@@ -79,6 +79,7 @@ cx () {
   set_title icon "$full_ititle"
   [[ -n "$IN_SCREEN" ]] && 
     set_title screen "$full_ititle" # "${title:-$isuffix}"
+  return 0
 }
 
 cx "$@"
