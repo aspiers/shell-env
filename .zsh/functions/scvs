@@ -9,8 +9,8 @@ scvs () {
   if [[ -z "$1" ]]; then
     cat <<EOF
 Usage: scvs <tag> [ options ]
-Current CVSROOT: ${CVSROOT-undefined}
-Current CVS_RSH: ${CVS_RSH-undefined}
+CVSROOT=${CVSROOT-undefined}
+CVS_RSH=${CVS_RSH-undefined}
 EOF
     return
   fi
@@ -20,12 +20,14 @@ EOF
   shift
 
   if (( ${+_CVSROOTS[$tag]} )); then
+    echo   "CVSROOT=$_CVSROOTS[$tag]"
     export CVSROOT="$_CVSROOTS[$tag]"
   else
     echo "Warning: CVSROOT for $tag undefined; not setting." >&2
   fi
 
   if (( ${+_CVS_RSHS[$tag]} )); then
+    echo   "CVS_RSH=$_CVS_RSHS[$tag]"
     export CVS_RSH="$_CVS_RSHS[$tag]"
   else
     echo "Warning: CVS_RSH for $tag undefined; not setting." >&2
