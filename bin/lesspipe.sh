@@ -26,7 +26,7 @@ lesspipe() {
   *.[zZ]|*.gz) gzip -dc -- "$1" ;;
   *.bz2) bzip2 -dc -- "$1" ;;
   *.zip) zipinfo -- "$1" ;;
-  *.rpm) rpm -qpivl --changelog --scripts --triggers -- "$1" ;;
+  *.rpm) rq "$1" ;;
   *.cpi|*.cpio) cpio -itv < "$1" ;;
   esac
 }
