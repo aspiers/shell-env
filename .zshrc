@@ -89,8 +89,8 @@ setopt \
         glob_dots \
         glob_subst \
         hash_cmds \
-        hash_dirs \
-        hash_list_all \
+     NO_hash_dirs \
+     NO_hash_list_all \
         hist_allow_clobber \
         hist_beep \
         hist_ignore_dups \
@@ -255,14 +255,15 @@ zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
-if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   _compdir=/usr/share/zsh/functions
   [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
   autoload -U compinit
   compinit
 else
-  print "Advanced completion system not found; ignoring compstyle settings."
+  print "\nAdvanced completion system not found; ignoring compstyle settings."
   function compstyle { }
+  function compdef { }
 fi
 
 ##
