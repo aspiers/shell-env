@@ -173,7 +173,7 @@ zdotdir=${ZDOTDIR:-$HOME}
 # {{{ Function path
 
 fpath=(
-       ~/{.zsh,lib/zsh}/{functions,scripts}(N) 
+       {$zdotdir,$HOME}/{.zsh,lib/zsh}/{functions,scripts}(N) 
 
        $fpath
 
