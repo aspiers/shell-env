@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [ -z "$*" ]; then
+mode=`basename $0`
+
+if [ "$mode" = 'cm' ] && [ -z "$*" ]; then
   echo -n "Setting up handy shortcuts ..."
   cd ~/bin/shortcuts
   for mode in 400 440 444 500 550 555 \
@@ -13,8 +15,6 @@ if [ -z "$*" ]; then
   echo
   exit 0
 fi
-
-mode=`basename $0`
 
 case "$mode" in
   *[0-7]) exec chmod "$mode" "$@" ;;
