@@ -686,6 +686,7 @@ autoload zmv
 # {{{ Job/process control
 
 alias j='jobs -l'
+alias dn=disown
 
 # }}}
 # {{{ History
