@@ -49,7 +49,7 @@ while (<CFG>) {
     my $diff = `diff -u "$old" "$new"`;
     if ($diff) {
       $changes++;
-      $diff =~ s!--- $cache/!--- !;
+      $diff =~ s!^--- $cache/!--- !m;
       print $diff;
     }
   }
