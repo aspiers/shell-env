@@ -1,0 +1,53 @@
+#!/opt/perl-5.6.1/bin/perl
+#
+# Feed keystrokes to a command then interact with it as normal.
+#
+# $Id$
+
+use strict;
+use warnings;
+
+my $ESCAPE = '~@@';
+
+use lib '/home/lonlxadm/lib/perl5';
+
+use FindBin '$RealScript';
+use Getopt::Long;
+
+use lib '/home/aspiers/lib/perl5';
+use ASpiers 'qqexpand';
+use Expect;
+
+@ARGV or usage();
+
+sub usage {
+  die <<EOF;
+Usage: $RealScript connect-command [arg1 [arg2 ...]]
+Connect to remote site, get a prompt, then hit $ESCAPE
+EOF
+}
+
+my $exp = new Expect;
+$exp->slave->clone_winsize_from(\*STDIN);
+#$exp->slave->stty(qw(raw -echo));
+$exp->log_user(0);
+
+$exp->spawn(@ARGV) or die "Cannot spawn $ARGV[0]: $!\n";
+
+print "Login and get a prompt, then hit $ESCAPE\n";
+$exp->interact(\*STDIN, $ESCAPE);
+print "\nEscape received; switching to keepalive mode.\n";
+
+# Send a control-U to cancel escape sequence
+$exp->send("\cu\n");
+$exp->expect(0);
+$exp->send("cat > /dev/null\n");
+$exp->expect(0);
+
+my $mins = 0;
+while (1) {
+  $exp->send("$mins minute" . ($mins == 1 ? '' : 's') . " of keepalive; press C-c to disconnect\n");
+  $exp->expect(0); # flush expect queue
+  sleep 60;
+  $mins++;
+}
