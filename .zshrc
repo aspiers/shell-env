@@ -275,8 +275,8 @@ zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
 
 # Completion caching
-zstyle ':completion::complete:*:*' use-cache 1
-zstyle ':completion:*' cache-path ~/.zsh/cache/$HOST
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
@@ -840,6 +840,20 @@ End_of_Perl
 
   cvss () {
     cvs status -v "$@"
+  }
+
+  cvs () {
+    quiet='-q'
+    [[ "$*" == *status* ]] && quiet=''
+    command cvs $quiet "$@"
+  }
+
+  cvsu () {
+    cvs update "$@"
+  }
+
+  cvsup () {
+    cvsu "$@"
   }
 
   cvsq () {
