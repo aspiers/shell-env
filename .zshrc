@@ -850,6 +850,7 @@ hash -d SR=/usr/src/redhat/SRPMS
 hash -d SP=/usr/src/redhat/SPECS
 hash -d SO=/usr/src/redhat/SOURCES
 hash -d BU=/usr/src/redhat/BUILD
+hash -d CV=/usr/local/cvsroot
 #hash -df
 
 # }}}
