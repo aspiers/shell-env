@@ -14,11 +14,11 @@ typeset -U path
 
 path=( $path /usr/local/sbin /usr/sbin /sbin )
 if [[ -d ~/packbin ]]; then
-	path=( ~/packbin $path )
+  path=( ~/packbin $path )
 fi
 
 if [[ -d ~/bin ]]; then
-	path=( ~/bin $path )
+  path=( ~/bin $path )
 fi
 
 # }}}
@@ -26,49 +26,6 @@ fi
 
 export IRCNAME='Adam Spiers'
 export IRCNICK='Adze'
-
-# }}}
-# {{{ Pnews
-
-# Lots of cool options including a slight hack on the -X option
-export TRNINIT='-a -B -d~/news -f -F"> " -m=u -M -OsD -p -s -S -T -v -x6ls -X2\
-\
- -/'
-
-# These make the editor open the original article in another
-# buffer; quite handy.
-export MAILPOSTER='QUOTECHARS=%I Rnmail -h %h %A'
-export NEWSPOSTER='QUOTECHARS=%I Pnews -h %h %A'
-
-# Improved header for follow-ups.
-export NEWSHEADER='%(%[followup-to]=^$?:X-ORIGINAL-NEWSGROUPS: %n\
-)Newsgroups: %(%F=^$?%C:%F)\
-Subject: %(%S=^$?%"\n\nSubject: ":Re: %S)\
-Summary:\
-Expires:\
-%(%R=^$?:References: %R\
-)Sender: Adam Spiers <adam@spiers.net>\
-Followup-To: %(%F=^$?%C:%F)\
-Reply-To: adam@spiers.net \(Adam Spiers\)\
-Distribution: %(%i=^$?%"Distribution: ":%D)\
-Organization: %o\
-Keywords: %[keywords]\
-Cc: \n\n'
-
-# Make sure that DOTDIR is a fully expanded pathname
-# (i.e. no ~)
-export DOTDIR=${HOME}/news
-export SAVESCOREFILE=${DOTDIR}/scores
-export SCOREDIR=${DOTDIR}/scores
-export NEWSORG='no'
-#export NEWSORG='Not very much, unfortunately'
-
-# Default to article scan (scoring) mode rather than
-# thread mode when entering a newsgroup.
-export GROUPDEFAULT=';+ynq'
-
-# I'm not a luser, damnit.
-export FAST_PNEWS=y
 
 # }}}
 # {{{ Editor
@@ -102,11 +59,11 @@ export REPLYTO='adam@spiers.net (Adam Spiers)'
 # {{{ Specific to hosts
 
 if [[ -r $HOME/.zshenv.local ]]; then
-    . $HOME/.zshenv.local
+  . $HOME/.zshenv.local
 fi
 
 if [[ -r $HOME/.zshenv.${HOST%%.*} ]]; then
-	. $HOME/.zshenv.${HOST%%.*}
+  . $HOME/.zshenv.${HOST%%.*}
 fi
 
 # }}}
