@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 # Adam's .switch_shell
 #
 # Try switch shell if we're interactive, aiming for safety, but
