@@ -656,6 +656,7 @@ alias man='nocorrect man'
 alias mysql='nocorrect mysql'
 alias mysqlshow='nocorrect mysqlshow'
 alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
 alias rj='nocorrect rj'
 
 # }}}
