@@ -521,6 +521,7 @@ alias lsa='ls -a'
 alias lsh='ls -d .*'
 alias ld='ls -ld'
 # damn, missed out lsd :-)
+alias sl=ls # often screw this up
 
 # }}}
 # {{{ File management
