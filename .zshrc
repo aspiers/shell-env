@@ -865,6 +865,11 @@ alias -g RNS='| sort -nr'
 alias -g DN=/dev/null
 
 # }}}
+# {{{ grep
+
+alias -g G='| egrep'
+
+# }}}
 
 # }}}
 
