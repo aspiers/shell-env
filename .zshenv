@@ -109,6 +109,11 @@ export PILOTRATE=115200
 export PILOTPORT=/dev/pilot
 
 # }}}
+# {{{ rsync uses ssh
+
+export RSYNC_RSH=ssh
+
+# }}}
 
 # }}}
 # {{{ Specific to hosts
