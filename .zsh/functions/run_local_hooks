@@ -10,12 +10,18 @@
 #
 # would check for files in this order:
 #
+# FIXME: work in progress
+#
 #   1. $ZDOTDIR/.shared_env.local
-#   2. $ZDOTDIR/.shared_env.HOSTNAME
-#   3. $HOME/.shared_env.local
-#   4. $HOME/.shared_env.HOSTNAME
+#   2. $ZDOTDIR/.shared_env.h:HOSTNAME
+#   3. $ZDOTDIR/.shared_env.u:USERNAME
+#   4. $HOME/.shared_env.local
+#   5. $HOME/.shared_env.h:HOSTNAME
+#   6. $HOME/.shared_env.u:USERNAME
 #
 # i.e. from least specific to most specific.
+
+DEBUG_LOCAL_HOOKS=1
 
 run_local_hooks () {
   for dir in ${zdotdirpath:-$HOME}; do
@@ -23,7 +29,7 @@ run_local_hooks () {
       for file in "$@"; do
         for suffix in local ${HOST%%.*}; do
           if [ -r "$dir/$file.$suffix" ]; then
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && echo . $dir/$file.$suffix
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$suffix"
             . $dir/$file.$suffix
           fi
         done
