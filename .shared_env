@@ -23,7 +23,8 @@ esac
 
 sh_load_status () {
   # \e[0K is clear to right
-  [ -n "$interactive_shell" ] && echo -e -n "\r${0##*/} load: $* ... \e[0K"
+  [ -n "$interactive_shell" ] && \
+    echo -e -n "\r${shell:-${0##*/}} load: $* ... \e[0K"
 }
 
 # }}}
