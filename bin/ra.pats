@@ -8,6 +8,7 @@
 ^mail
 ^httpd
 ^apache
+init$
 syslogd
 klogd
 login
