@@ -11,7 +11,7 @@ recalc_ssh_agent_cache () {
     return 1
   fi
 
-  : ${SSH_AGENT_PID:=`ps auxww | awk "/$USER"'.*ssh-agent *$/ { print $2; exit }'`}
+  : ${SSH_AGENT_PID:=`ps auxww | awk "/($USER|$UID) "'.*ssh-agent *$/ { print $2; exit }'`}
 
   if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
     # If interactive, prompt whether to start a new one.
