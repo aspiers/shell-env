@@ -192,7 +192,7 @@ End_of_Perl
 
   cvs () {
     quiet='-q'
-    [[ "$*" == *status* ]] && quiet=''
+    [ "$*" = *status* ] && quiet=''
     command cvs $quiet "$@"
   }
 
