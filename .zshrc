@@ -985,6 +985,8 @@ zshrc_load_status 'miscellaneous'
 
 hash -d RP=/usr/src/redhat/RPMS
 hash -d I3=/usr/src/redhat/RPMS/i386
+hash -d I4=/usr/src/redhat/RPMS/i486
+hash -d I5=/usr/src/redhat/RPMS/i586
 hash -d I6=/usr/src/redhat/RPMS/i686
 hash -d NA=/usr/src/redhat/RPMS/noarch
 hash -d SR=/usr/src/redhat/SRPMS
