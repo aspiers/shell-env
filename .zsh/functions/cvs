@@ -5,8 +5,8 @@ quiet=''
 
 home=${ZDOTDIR:-$HOME}
 
-normal_colourer=$home/bin/awk/colour-cvs-output
-diff_colourer=$home/bin/awk/colour-diff-output
+normal_colourer=$home/bin/shortcuts/colour-cvs-output
+diff_colourer=$home/bin/shortcuts/colour-diff-output
 
 colourer=''
 
@@ -17,7 +17,7 @@ elif [[ -n "$*[(r)(diff|rdiff|patch)]" ]]; then
 fi
 
 if [[ -n "$colourer" ]]; then
-  command cvs $quiet "$@" | awk -f $colourer
+  command cvs $quiet "$@" | $colourer
 else
   command cvs $quiet "$@"
 fi
