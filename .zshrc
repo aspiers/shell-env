@@ -973,6 +973,22 @@ alias -g XG='| xargs egrep'
 alias -g X0G='| xargs -0 egrep'
 
 # }}}
+# {{{ awk
+
+alias -g A='| awk '
+alias -g A1="| awk '{print \$1}'"
+alias -g A2="| awk '{print \$2}'"
+alias -g A3="| awk '{print \$3}'"
+alias -g A4="| awk '{print \$4}'"
+alias -g A5="| awk '{print \$5}'"
+alias -g EA='|& awk '
+alias -g EA1="|& awk '{print \$1}'"
+alias -g EA2="|& awk '{print \$2}'"
+alias -g EA3="|& awk '{print \$3}'"
+alias -g EA4="|& awk '{print \$4}'"
+alias -g EA5="|& awk '{print \$5}'"
+
+# }}}
 
 # }}}
 
