@@ -202,7 +202,7 @@ LISTMAX=0
 # {{{ Watching for other users
 
 LOGCHECK=60
-WATCHFMT="%n has %a %l from %M"
+WATCHFMT="%B[%t]%b %n has %a %l from %M"
 
 # }}}
 # {{{ Auto logout
