@@ -87,7 +87,7 @@ setopt \
         glob \
      NO_glob_assign \
         glob_complete \
-        glob_dots \
+     NO_glob_dots \
         glob_subst \
         hash_cmds \
         hash_dirs \
