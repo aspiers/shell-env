@@ -711,6 +711,15 @@ autoload zmv
 alias mmv='noglob zmv -W'
 
 # }}}
+# {{{ find based on file extension
+
+fext () {
+  suffix="$1"
+  shift
+  find -name "*.$suffix" "$@"
+}
+
+# }}}
 
 # }}}
 # {{{ Job/process control
