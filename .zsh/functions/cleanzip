@@ -13,6 +13,10 @@ if [[ -z "$1" ]]; then
 fi
 
 for file in $(unzip -qql $1 | awk '{print $4}'); do
-  echo $force $file
+  [[ -e "$file" ]] || continue
+  if [[ -f "$file" ]]; then
+    rm $force "$file"
+  else
+    echo "NOT removing directory $file"
+  fi
 done
-
