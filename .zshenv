@@ -5,6 +5,20 @@
 # This gets run even for non-interactive shells;
 # keep it as fast as possible.
 
+# {{{ What version are we running?
+
+if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
+if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
+
+ZSH_VERSION_TYPE=old
+if [[ $ZSH_VERSION == 3.1.<6->* ||
+      $ZSH_VERSION == 3.<2->.<->*  ||
+      $ZSH_VERSION == 4.<->* ]]
+then
+  ZSH_VERSION_TYPE=new
+fi
+
+# }}}
 # {{{ Environment
 
 # {{{ LD_PRELOAD
@@ -35,7 +49,7 @@ export MAIL=~/mail/inboxes/Mailbox
 # }}}
 # {{{ Perl libraries
 
-typeset -T PERL5LIB perl5lib
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PERL5LIB perl5lib
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 

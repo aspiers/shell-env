@@ -29,22 +29,6 @@ zshrc_load_status () {
 
 # }}}
 
-# {{{ What version are we running?
-
-zshrc_load_status 'checking version'
-
-if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
-if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
-
-ZSH_VERSION_TYPE=old
-if [[ $ZSH_VERSION == 3.1.<6->* ||
-      $ZSH_VERSION == 3.2.<->*  ||
-      $ZSH_VERSION == 4.<->* ]]
-then
-  ZSH_VERSION_TYPE=new
-fi
-
-# }}}
 # {{{ Options
 
 zshrc_load_status 'setting options'
@@ -177,7 +161,7 @@ fpath=(
        /usr/doc/zsh*/Functions(N)
       )
 
-typeset -gU fpath
+#[[ "$ZSH_VERSION_TYPE" == 'new' ]] || typeset -gU fpath
 
 # }}}
 # {{{ Choose word delimiter characters in line editor
@@ -632,6 +616,10 @@ alias mysqlshow='nocorrect mysqlshow'
 
 # {{{ Changing terminal window/icon titles
 
+# can't be bothered to support this on old zshs
+
+if [[ "$ZSH_VERSION_TYPE" != 'old' ]]; then
+
 set_title () {
   local num title
 
@@ -674,8 +662,11 @@ cx () {
     title_host=$long_host
   fi
 
-  (( $+title )) || typeset -gT TITLE title
-  (( $+title )) || typeset -gT ITITLE ititle
+  if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+    (( $+title )) || typeset -gT TITLE title
+    (( $+title )) || typeset -gT ITITLE ititle
+  fi
+  
   : ${TITLE_SHLVL:=$SHLVL}
   export TITLE_SHLVL
 
@@ -734,6 +725,11 @@ cxx () {
 if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
+fi
+
+else
+  cx () { }
+  cxx () { }
 fi
 
 # }}}
