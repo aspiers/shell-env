@@ -337,26 +337,24 @@ hosts=(
     {casals,tulip}.home
 
     # New College
-    thelonious.new.ox.ac.uk newjcr.new.ox.ac.uk
+    thelonious.new.ox.ac.uk
+
+    # RAM
+    {bach,gw,jascha,purcell,lib}.ram.ac.uk
+    general.ulcc.ac.uk
 
     # OUCS
-    ermine.ox.ac.uk sable.ox.ac.uk
+    {ermine,sable}.ox.ac.uk
 
     # Robots
-#    beatrice.robots.ox.ac.uk borachio.robots.ox.ac.uk
-#    hamlet.robots.ox.ac.uk don-jon.robots.ox.ac.uk
-#    leonato.robots.ox.ac.uk tybalt.robots.ox.ac.uk
-#    iris.robots.ox.ac.uk witch3.robots.ox.ac.uk
-#    robin.robots.ox.ac.uk armando.robots.ox.ac.uk
-#    slender.robots.ox.ac.uk
+#   {beatrice,borachio,hamlet,don-jon,leonato,tybalt,iris,witch3,robin,armando,slender}.robots.ox.ac.uk
 
     # Chris Evans
     ferret.lmh.ox.ac.uk
-#    enif.pcl.ox.ac.uk rage.pcl.ox.ac.uk
+#   {enif,rage}.pcl.ox.ac.uk
 
     # Chris Cladingboel
-    plato.wadham.ox.ac.uk
-    calvin.wadham.ox.ac.uk
+    {plato,calvin}.wadham.ox.ac.uk
 
     # reqng
     scuttlebutt.explore.com
@@ -372,8 +370,8 @@ hosts=(
     # Darren Nickerson
     hewes.icl.ox.ac.uk
 
-    # Mediaconsult
-    proxy.mediaconsult.com 195.217.36.66
+    # guideguide
+    proxy.guideguide.com 194.203.206.225
 
     # W3
     server1.w3w.net
@@ -563,7 +561,7 @@ alias mps='ps -o user,pcpu,command'
 pst () {
   pstree -p "$@" | less -S
 }
-which gps >/dev/null && alias gps='gitps -p afx; cx'
+which gps >&/dev/null && alias gps='gitps -p afx; cx'
 alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
 rj () {
   ps auxww | grep -E "($*|^USER)"
@@ -750,13 +748,13 @@ scvs_thelonious () {
   CVS_RSH=ssh
 }
 
-scvs_mediaconsult_remote () {
-  CVSROOT=proxy.mediaconsult.com:/share/cvsroot
+scvs_guideguide_remote () {
+  CVSROOT=proxy.guideguide.com:/share/cvsroot
   CVS_RSH=~/bin/cvs_rsh
 }
 
-scvs_mediaconsult_local () {
-  CVSROOT=prophet5.mediaconsult.com:/share/cvsroot
+scvs_guideguide_local () {
+  CVSROOT=prophet5.guideguide.com:/share/cvsroot
   CVS_RSH=ssh
 }
 
@@ -789,7 +787,7 @@ alias v=less
 # }}}
 # {{{ CVS
 
-if which cvs >/dev/null; then
+if which cvs >&/dev/null; then
   cvst () {
     perl -MGetopt::Std -wl -- - "$@" <<'End_of_Perl'
       $dir = '';
@@ -914,9 +912,9 @@ alias th='ssh -l adam thelonious.new.ox.ac.uk'
 # }}}
 # {{{ ftp
 
-if which lftp >/dev/null; then
+if which lftp >&/dev/null; then
   alias ftp=lftp
-elif which ncftp >/dev/null; then
+elif which ncftp >&/dev/null; then
   alias ftp=ncftp
 fi
 
@@ -1028,7 +1026,7 @@ hash -d CV=/usr/local/cvsroot
 # }}}
 # {{{ ls colours
 
-if which dircolors >/dev/null; then
+if which dircolors >&/dev/null; then
   # show directories in yellow
   eval "`dircolors -b <(echo 'DIR 01;33')`"
 fi
