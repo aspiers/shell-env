@@ -8,6 +8,8 @@
 # interactive shells via a hook in my .bash_profile; also when bash is
 # invoked from rshd (or similar?)
 
+# Allow disabling of all meddling with the environment
+[ -n "$INHERIT_ENV" ] && return 0
 
 # {{{ Environment
 

@@ -14,6 +14,9 @@
 # old ksh's don't even support ~ expansion, or 'source' (use '.' 
 # instead).
 
+# Allow disabling of all meddling with the environment
+[ -n "$INHERIT_ENV" ] && return 0
+
 shell=bash
 
 [ -r $HOME/.shared_env ] && . $HOME/.shared_env
