@@ -52,6 +52,7 @@ _CVS_RSHS=(
            thelonious        ssh
            guideguide_remote ~/bin/cvs_rsh
            guideguide_local  ssh
+           sourceforge       ssh
            zsh_local_write   ssh
            zsh_local         ssh
            zsh_remote_write  ssh
