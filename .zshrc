@@ -137,67 +137,6 @@ fi
 
 # REMINDER: Put non-interactive environment settings in .zshenv
 
-# {{{ Common hostnames
-
-hostnames=(\
-    localhost \
-
-### BEGIN PRIVATE
-    # New College
-    thelonious.new.ox.ac.uk newjcr.new.ox.ac.uk \
-    cornholio.new.ox.ac.uk miles.new.ox.ac.uk \
-    toots.new.ox.ac.uk ella.new.ox.ac.uk \
-    nb5r1.new.ox.ac.uk \
-
-    # OUCS
-    ermine.ox.ac.uk sable.ox.ac.uk \
-
-    # Robots
-#    beatrice.robots.ox.ac.uk borachio.robots.ox.ac.uk \
-#    hamlet.robots.ox.ac.uk don-jon.robots.ox.ac.uk \
-#    leonato.robots.ox.ac.uk tybalt.robots.ox.ac.uk \
-#    iris.robots.ox.ac.uk witch3.robots.ox.ac.uk \
-#    robin.robots.ox.ac.uk armando.robots.ox.ac.uk \
-#    slender.robots.ox.ac.uk \
-
-    # Chris Evans
-    ferret.lmh.ox.ac.uk \
-#    enif.pcl.ox.ac.uk rage.pcl.ox.ac.uk \
-
-    # Chris Cladingboel
-    plato.wadham.ox.ac.uk \
-    calvin.wadham.ox.ac.uk \
-
-    # reqng
-    scuttlebutt.explore.com \
-
-    # Quake-related
-#    totally.dappy.com utterly.barmy.com \
-#    richard.lse.ac.uk www.unu.nottingham.ac.uk \
-#    quake.minos.co.uk \
-
-    # Micromedia
-#    foundation.bsnet.co.uk www.mbn.co.uk lon-radius.intensive.net
-
-    # Darren Nickerson
-    hewes.icl.ox.ac.uk \
-
-    # Mediaconsult
-    proxy.mediaconsult.com 195.217.36.66 \
-    tb303.mediaconsult.com 192.168.1.10 \
-    prophet5.mediaconsult.com 192.168.1.17 \
-    omni.mediaconsult.com 192.168.1.12 \
-    tr808.mediaconsult.com 192.168.1.2 \
-
-    # W3
-    server1.w3w.net
-
-### END PRIVATE
-    # ftp sites
-    sunsite.doc.ic.ac.uk
-)
-
-# }}}
 # {{{ Colours
 
 reset_colour="$(echo -n '\e[0m')"
@@ -248,50 +187,13 @@ bg_zzzz_clear=$bg_grey
 fg_zzzz_clear=$fg_white$reset_colour
 
 # }}}
-# {{{ Hostnames involved in rc transfers
-
-# Should be in `rcp' style format, e.g.
-# rc_home='user@host.com:'
-
-### BEGIN PRIVATE
-rc_home='adam@thelonious.new.ox.ac.uk:'
-### END PRIVATE
-
-# }}}
-# {{{ Filenames involved in rc transfers
-
-# Let's not rely on this one to always work, m'kay? :-)
-#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME#\\\\\~#) )
-
-#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME/##) )
-#emacs_rcfiles=( \
-#                ~/.[e]macs(N:s#$HOME/##) \
-#                ~/lib/emacs/init/**/*.el(N:s#$HOME/##) \
-#              )
-
-#misc_rcfiles=( \
-#               ~/.{bash,complete,ex,lftp,lynx,shell,ytalk}[r]c(N:s#$HOME/##) \
-#             )
-
-zsh_rcfiles=( .zshrc .zshenv )
-emacs_rcfiles=( .emacs .emacs-common \
-		lib/emacs/init/{common/{XEmacs,emacs},XEmacs/{options,custom},GNU_Emacs/custom}.el \
-	      )
-
-misc_rcfiles=( \
-               .{bash,complete,ex,lftp,lynx,shell,ytalk}rc \
-             )
-
-all_rcfiles=( $zsh_rcfiles $emacs_rcfiles $misc_rcfiles )
-
-# }}}
 
 # Variables used by zsh
 
 # {{{ Function path
 
 fpath=(
-       $HOME/{lib/zsh,.zsh}/{functions,scripts}(N) 
+       ~/{lib/zsh,.zsh}/{functions,scripts}(N) 
        $fpath
        /usr/doc/zsh*/Functions(N)
       )
@@ -306,7 +208,7 @@ WORDCHARS=''
 # }}}
 # {{{ Save a large history
 
-HISTFILE=$HOME/.zshhistory
+HISTFILE=~/.zshhistory
 HISTSIZE=5000
 SAVEHIST=5000
 
@@ -536,7 +438,7 @@ alias ld='ls -ld'
 # damn, missed out lsd :-)
 
 function fbig {
-    ls -alFR $* | sort -r -k5 | less -r
+    ls -alFR $* | sort -rn -k5 | less -r
 }
 
 # }}}
@@ -567,7 +469,7 @@ alias pwd='pwd -r'
 # {{{ du1 (du with depth 1)
 
 du1 () {
-  du $* | egrep -v '/.*/.*/'
+  du $* | egrep -v '/.*/'
 }
 
 # }}}
@@ -682,7 +584,7 @@ function cx {
         longhost=${HOST}
     fi
         
-    if [[ "$*" == "" ]]; then
+    if [[ -z "$*" ]]; then
         # Change window title
         echo -n "\e]2;$USER@${longhost}\a"
 
@@ -698,14 +600,14 @@ function cx {
 }
 alias cxx=cx
 
-if [[ "$TERM" == 'xterm' || "$TERM" == 'xterm-color' ]]; then
+if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
 
 # Change rxvt font size
 function cf {
-    if [[ "$*" == "" ]]; then
+    if [[ -z "$*" ]]; then
     echo -n "\e]50;#3\a"
     else
     echo -n "\e]50;#$*\a"
@@ -714,7 +616,7 @@ function cf {
 
 # Change rxvt pixmap
 function cb {
-    if [[ "$*" == "" ]] && which randomise_textures >/dev/null; \
+    if [[ -z "$*" ]] && which randomise_textures >/dev/null; \
     then
         echo -n "\e]20;`randomise_textures`\a"
     else
@@ -724,7 +626,7 @@ function cb {
 
 # Change Eterm pixmap
 function epix {
-    if [[ "$*" == "" ]] && which randomise_textures >/dev/null; \
+    if [[ -z "$*" ]] && which randomise_textures >/dev/null; \
     then
         echo -n "\e]20;`randomise_textures`\a"
     else
@@ -754,7 +656,7 @@ function etint {
 function eshade {
     local percent
 
-    if [[ "$*" == "" ]]; then
+    if [[ -z "$*" ]]; then
 	percent=0
     else
 	percent="$*"
@@ -778,6 +680,7 @@ alias sd='export DISPLAY=:0.0'
 # }}}
 # {{{ xauth add of current host
 
+# This is unreliable
 alias xa='xauth add `hostname`/unix:0 `xauth list | head -1 | awk "{print \\$2 \" \" \\$3}"`'
 
 # }}}
@@ -785,19 +688,41 @@ alias xa='xauth add `hostname`/unix:0 `xauth list | head -1 | awk "{print \\$2 \
 # }}}
 # {{{ rc files
 
-# {{{ Reloading .zshrc or functions
+# {{{ Hostnames involved in rc transfers
 
-reload () {
-  if [[ "$#*" -eq 0 ]]; then
-    . ~/.zshrc
-  else
-    local fn
-    for fn in $*; do
-      unfunction $fn
-      autoload -U $fn
-    done
-  fi
-}
+# Should be in `rcp' style format, e.g.
+# rc_home='user@host.com:'
+
+### BEGIN PRIVATE
+rc_home='adam@thelonious.new.ox.ac.uk:'
+### END PRIVATE
+
+# }}}
+# {{{ Filenames involved in rc transfers
+
+# Let's not rely on this one to always work, m'kay? :-)
+#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME#\\\\\~#) )
+
+#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME/##) )
+#emacs_rcfiles=( \
+#                ~/.[e]macs(N:s#$HOME/##) \
+#                ~/lib/emacs/init/**/*.el(N:s#$HOME/##) \
+#              )
+
+#misc_rcfiles=( \
+#               ~/.{bash,complete,ex,lftp,lynx,shell,ytalk}[r]c(N:s#$HOME/##) \
+#             )
+
+zsh_rcfiles=( .zshrc .zshenv )
+emacs_rcfiles=( .emacs .emacs-common \
+		lib/emacs/init/{common/{XEmacs,emacs},XEmacs/{options,custom},GNU_Emacs/custom}.el \
+	      )
+
+misc_rcfiles=( \
+               .{bash,complete,ex,lftp,lynx,shell,ytalk}rc \
+             )
+
+all_rcfiles=( $zsh_rcfiles $emacs_rcfiles $misc_rcfiles )
 
 # }}}
 # {{{ rc file transfers
@@ -856,14 +781,25 @@ function gethome {
 
 # }}}
 
+# {{{ Reloading .zshrc or functions
+
+reload () {
+  if [[ "$#*" -eq 0 ]]; then
+    . ~/.zshrc
+  else
+    local fn
+    for fn in $*; do
+      unfunction $fn
+      autoload -U $fn
+    done
+  fi
+}
+
+# }}}
+
 # }}}
 # {{{ Other programs
 
-# {{{ apropos
-
-alias ap=apropos
-
-# }}}
 # {{{ CVS
 
 if which cvs >/dev/null; then
@@ -906,10 +842,15 @@ End_of_Perl
 	rcs2log $* | less
     }
 
-    function cvsv {
-	cvs log $* 2>/dev/null | egrep '^(head|Working file): '
+    function cvss {
+	cvs status -v $*
     }
 fi
+
+# }}}
+# {{{ apropos
+
+alias ap=apropos
 
 # }}}
 # {{{ editors
@@ -942,23 +883,25 @@ elif which ncftp >/dev/null; then
 fi
 
 # }}}
-# {{{ Paging with less / head / tail
-
-alias -g L='| less'
-alias -g H='| head -20'
-alias -g T='| tail -20'
-
-# }}}
 # {{{ Viewing files in $PATH
 
-# wl stands for `Which Less'
+# wl stands for `which less'
 
 wl () {
     if which $* >/dev/null; then
-	which $*
-    else
 	less `which $*`
+    else
+	which $*
     fi
+}
+
+# }}}
+# {{{ strings(1)
+
+# sl stands for `strings less'
+
+sl () {
+  strings `which $*` | less
 }
 
 # }}}
@@ -967,6 +910,26 @@ wl () {
 dl () {
     diff -u $* | less
 }
+
+# }}}
+
+# WARNING: These two use global aliases, which is slightly evil.
+
+# {{{ Paging with less / head / tail
+
+alias -g L='| less'
+alias -g H='| head -20'
+alias -g T='| tail -20'
+
+# }}}
+# {{{ Sorting / counting
+
+alias -g W='| wc -l'
+
+alias -g S='| sort'
+alias -g SU='| sort -u'
+alias -g NS='| sort -n'
+alias -g NSR='| sort -nr'
 
 # }}}
 
@@ -993,56 +956,130 @@ bindkey '^[,' _reverse_history_complete_word
 
 # }}}
 
-# {{{ Set variables to be used by completions
+# {{{ Common usernames
 
-groups=( $(cut -d: -f1 /etc/group) )
-#groups=( "${${(f)$(</etc/group)}%%:*}" )
-
-# Set commonly-used usernames (for completions)
-# usernames=( )
+# users=( tom dick harry )
 ### BEGIN PRIVATE
-usernames=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
-### END PRIVATE
-
-_users () {
-    local expl
-
-    _description expl user
-    compgen "$@" "$expl[@]" -k usernames -u
-}
+users=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
 
 # }}}
+# {{{ Common hostnames
 
-# {{{ Local & remote users
+hostnames=(\
+    localhost \
+
+### BEGIN PRIVATE
+    # New College
+    thelonious.new.ox.ac.uk newjcr.new.ox.ac.uk \
+
+    # OUCS
+    ermine.ox.ac.uk sable.ox.ac.uk \
+
+    # Robots
+#    beatrice.robots.ox.ac.uk borachio.robots.ox.ac.uk \
+#    hamlet.robots.ox.ac.uk don-jon.robots.ox.ac.uk \
+#    leonato.robots.ox.ac.uk tybalt.robots.ox.ac.uk \
+#    iris.robots.ox.ac.uk witch3.robots.ox.ac.uk \
+#    robin.robots.ox.ac.uk armando.robots.ox.ac.uk \
+#    slender.robots.ox.ac.uk \
+
+    # Chris Evans
+    ferret.lmh.ox.ac.uk \
+#    enif.pcl.ox.ac.uk rage.pcl.ox.ac.uk \
+
+    # Chris Cladingboel
+    plato.wadham.ox.ac.uk \
+    calvin.wadham.ox.ac.uk \
+
+    # reqng
+    scuttlebutt.explore.com \
+
+    # Quake-related
+#    totally.dappy.com utterly.barmy.com \
+#    richard.lse.ac.uk www.unu.nottingham.ac.uk \
+#    quake.minos.co.uk \
+
+    # Micromedia
+#    foundation.bsnet.co.uk www.mbn.co.uk lon-radius.intensive.net
+
+    # Darren Nickerson
+    hewes.icl.ox.ac.uk \
+
+    # Mediaconsult
+    proxy.mediaconsult.com 195.217.36.66 \
+    tb303.mediaconsult.com 192.168.1.10 \
+    prophet5.mediaconsult.com 192.168.1.17 \
+    omni.mediaconsult.com 192.168.1.12 \
+    tr808.mediaconsult.com 192.168.1.2 \
+
+    # W3
+    server1.w3w.net
+
+### END PRIVATE
+    # ftp sites
+    sunsite.doc.ic.ac.uk
+)
+
+# }}}
+# {{{ (user,host) pairs for all my accounts
+
+#  myaccounts_users_hosts=(
+#    {fred,root}:mymachine.com
+#  )
+### BEGIN PRIVATE
+myaccounts_users_hosts=(
+  {localadams,root}:\
+     {pulse.{localdomain,mediaconsult.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
+  {adam,root}:thelonious.new.ox.ac.uk
+  adam:hewes.icl.ox.ac.uk
+  {adams,root}:
+  security:{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
+  {adams,root}:server1.w3w.net
+)
+### END PRIVATE
+
+# }}}
+# {{{ (user, host) pairs for other people's accounts
+
+#  otheraccounts_users_hosts=(
+#    {fred,root}:mymachine.com
+#  )
+### BEGIN PRIVATE
+otheraccounts_users_hosts=(
+  {root,ben,nmcgroga,chris,cclading,nick,stephen,bear,jo,cmb,dave,davetm}:\
+    thelonious.new.ox.ac.uk
+  {root,tpcadmin}:hewes.icl.ox.ac.uk
+  dnicker:ermine.ox.ac.uk
+  chris:plato.wadham.ox.ac.uk
+  {chris,weejock}:ferret.lmh.ox.ac.uk
+  {root,adam,rian}:server1.w3w.net
+)
+### END PRIVATE
+
+# }}}
+# {{{ (host, port, user) triples for telnet
+
+#  telnet_hosts_ports_users=(
+#    host1::user1
+#    host2::user2
+#    mail-server:{smtp,pop3}:
+#    news-server:nntp:
+#    proxy-server:8000:
+#  )
+### BEGIN PRIVATE
+telnet_hosts_ports_users=(
+  {localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}:
+)
+### END PRIVATE
+
+# }}}
+# {{{ Old compctls for finger etc. 
 
 compctl -k usernames -K compctl_whoson -S '@' -q -x 'C[0,newc????]' -K compctl_dummy -S '@sable.ox.ac.uk' - 'n[-1,@]' -k hostnames -- finger f
 
 compctl -k usernames -K compctl_whoson -S '@' -q -x 'C[0,newc????]' -K compctl_dummy -S '@sable.ox.ac.uk' - 'p[1] S[-]' -k '(-x)' - 'n[-1,@]' -k hostnames - 'p[3,-1] W[1,-*],p[2] W[1,^-*]' -k '(&)' -Q -- ytalk
 
 compctl -K compctl_whoson last lh write
-
-# }}}
-# {{{ Connecting to remote hosts
-
-_hosts () {
-  local expl
-
-  : ${(A)hosts:=${(s: :)${(ps:\t:)${${(f)"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
-  hosts=( $hostnames $hosts )
-
-  _description expl host
-  compadd -M 'm:{a-zA-Z}={A-Za-z} r:|.=* r:|=*' "$@" "$expl[@]" - "$hosts[@]"
-}
-
-compctl -x 'n[1,:]' -f - \
-           'n[1,@]' -k hostnames -S ':' - \
-           'p[1] W[2,*:*]' -f - \
-           'p[2] W[1,*:*]' -f -- \
-      + -k usernames -S '@' \
-      + -K whoson -S '@' -u -S '@' \
-      + -k hostnames -S ':' \
-      + -f \
-    rcp scp
 
 # }}}
 
@@ -1096,26 +1133,23 @@ fi
 # }}}
 # {{{ Specific to hosts
 
-if [[ -r $HOME/.zshrc.local ]]; then
-    . $HOME/.zshrc.local
-fi
-
-if [[ -r $HOME/.zshrc.${HOST%%.*} ]]; then
-    . $HOME/.zshrc.${HOST%%.*}
-fi
+[[ -r ~/.zshrc.local ]]	      && . ~/.zshrc.local
+[[ -r ~/.zshrc.${HOST%%.*} ]] && . ~/.zshrc.${HOST%%.*}
 
 # }}}
 
 # {{{ New advanced completion system
 
 # The following lines were added by compinstall
-_compdir=/usr/share/zsh/functions
+#_compdir=/usr/share/zsh/functions
+_compdir=~/zsh/Completion/Core
 [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
 autoload -U compinit
 compinit
 compconf completer=_complete 
 # End of lines added by compinstall
 
+# Enable the way cool bells and whistles
 compconf description_format="$fg_bold_white%d$fg_white"
 compconf group_matches=yep
 compconf describe_options=yep
