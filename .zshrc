@@ -337,6 +337,9 @@ zstyle ':completion:*' squeeze-slashes 'yes'
 #  tag-order 'globbed-files directories' all-files 
 #zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
+# Don't complete backup files as executables
+zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
+
 # Separate matches into groups
 zstyle ':completion:*:matches' group 'yes'
 
