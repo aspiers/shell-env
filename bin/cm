@@ -3,7 +3,8 @@
 if [ -z "$*" ]; then
   echo -n "Setting up handy shortcuts ..."
   cd ~/bin/shortcuts
-  for mode in 600 640 644 664 660 666 \
+  for mode in 400 440 444 500 550 555 \
+              600 640 644 664 660 666 \
               700 750 755 775 770 777; do
     [ -e $mode ] || ln -s cm $mode
     echo -n " $mode"
