@@ -1,5 +1,5 @@
 #!/bin/sh
 
 exec diff -u "$@" | \
-  awk -f ~/bin/colour-diff-output.awk | \
+  awk -f $ZDOTDIR/bin/colour-diff-output.awk | \
   diff-less
