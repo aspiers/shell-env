@@ -337,7 +337,7 @@ hosts=(
     {casals,tulip}.home
 
     # New College
-    thelonious.new.ox.ac.uk
+    thelonious.new.ox.ac.uk 163.1.145.129
 
     # RAM
     {bach,gw,jascha,purcell,lib}.ram.ac.uk
@@ -371,7 +371,7 @@ hosts=(
     hewes.icl.ox.ac.uk
 
     # guideguide
-    proxy.guideguide.com 194.203.206.225
+    proxy.london.guideguide.com 194.203.206.225
 
     # W3
     server1.w3w.net
@@ -867,46 +867,45 @@ ssh () {
   cx
 }
 
-if [[ -x ~/bin/detect_ssh-agent ]]; then
-  dsa () {
-    # comment this if you want
-    unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
+dsa () {
+  # comment this if you want
+  unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
 
-    : ${SSH_AGENT_PID:=`/sbin/pidof ssh-agent`}
+  /sbin/pidof ssh-agent | grep -q '[0-9]' || ssh-agent
 
-    if [[ -z "$SSH_AGENT_PID" ]]; then
-      echo "ssh-agent process not found; aborting ..."
-      return 1
-    fi
+  : ${SSH_AGENT_PID:=`/sbin/pidof ssh-agent`}
 
-    : ${SSH_AUTH_SOCK:=`/usr/sbin/lsof -p $SSH_AGENT_PID |
-         awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
-         head -1`}
+  if [[ -z "$SSH_AGENT_PID" ]]; then
+    echo "ssh-agent process not found; aborting ..."
+    return 1
+  fi
 
-    if [[ -z "$SSH_AUTH_SOCK" ]]; then
-      echo "Huh? lsof didn't do the biz; aborting ..."
-      return 2
-    fi
+  : ${SSH_AUTH_SOCK:=`/usr/sbin/lsof -p $SSH_AGENT_PID |
+       awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
+       head -1`}
 
-    cat <<EOF 
-    Detected ssh-agent:
-       pid:    $SSH_AGENT_PID
-       socket: $SSH_AUTH_SOCK
+  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    echo "Huh? lsof didn't do the biz; aborting ..."
+    return 2
+  fi
 
+  cat <<EOF 
+  Detected ssh-agent:
+     pid:    $SSH_AGENT_PID
+     socket: $SSH_AUTH_SOCK
 EOF
 
-    echo -n "Setting up environment ... "
+  echo -n "Setting up environment ... "
 
-    export SSH_AGENT_PID SSH_AUTH_SOCK
+  export SSH_AGENT_PID SSH_AUTH_SOCK
 
-    echo done.
-  }
+  echo done.
+}
 
-  alias sa=ssh-add
+alias sa=ssh-add
 
-  # Sod it; run it now
-  dsa >&/dev/null
-fi
+# Sod it; run it now
+dsa >&/dev/null
 
 ### BEGIN PRIVATE
 alias th='ssh -l adam thelonious.new.ox.ac.uk'
