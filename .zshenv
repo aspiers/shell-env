@@ -22,6 +22,19 @@ if [[ -d ~/bin ]]; then
 fi
 
 # }}}
+# {{{ Mail
+
+export MAIL=~/mail/inboxes/Mailbox
+
+# }}}
+# {{{ Perl libraries
+
+typeset -T PERL5LIB perl5lib
+typeset -U perl5lib
+export PERL5LIB
+perl5lib=( $perl5lib ~/lib/perl(N) )
+
+# }}}
 # {{{ IRC
 
 export IRCNAME='Adam Spiers'
@@ -52,6 +65,11 @@ export LESS='-h100 -i -j1 -M -q -y100'
 
 export NAME='Adam Spiers'
 export REPLYTO='adam@spiers.net (Adam Spiers)'
+
+# }}}
+# {{{ POSIXLY_CORRECT for patch
+
+#export POSIXLY_CORRECT=yes
 
 # }}}
 
