@@ -30,20 +30,23 @@ else
 #   myshell=`which zsh` 2>/dev/null
 fi
 
-[ -z "$myshell" ] && return 0
+if [ -z "$myshell" ]; then
+  [ -n "$debug" ] && echo "No shell preference found; not switching shell."
+  return 0
+fi
 
 # Very cute trick from Bart Schaefer which is a valid alternative approach
-#eval `$myshell -f -c "echo exec $myshell" || echo :` '"$@"'
+#eval `$myshell -f -c "echo exec $myshell" || echo :` '$myshell_args'
 
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
   [ -n "$debug" ] && echo "Switching to $myshell safely ..."
-  SHELL="$myshell" "$myshell" "$@" && exit
+  SHELL="$myshell" "$myshell" $myshell_args && exit
 }
 
 switch_shell_dangerously () {
   [ -n "$debug" ] && echo "Switching to $myshell dangerously ..."
-  SHELL="$myshell" exec "$myshell" "$@"
+  SHELL="$myshell" exec "$myshell" $myshell_args
 }
 
 switch_shell () {
@@ -57,25 +60,27 @@ switch_shell () {
     return
   fi
 
-  export SHELL_ARGS="$@" # no other way of retrieving these?
+  export SHELL_ARGS="$myshell_args" # no other way of retrieving these?
+
+  [ -n "$debug" ] && echo "Switching to $myshell, args: $myshell_args"
 
   case "$SHLVL" in
    "") # unknown, be careful
-       switch_shell_safely "$@"
+       switch_shell_safely $myshell_args
        ;;
     1) # login shell, be careful
-       switch_shell_safely "$@"
+       switch_shell_safely $myshell_args
        ;;
     *) # other shell, be risky and save memory
-       switch_shell_dangerously "$@"
-#       switch_shell_safely "$@"
+       switch_shell_dangerously $myshell_args
+#       switch_shell_safely $myshell_args
        ;;
   esac
 }
 
 # only switch if we're interactive
 case "$-" in
-  *i*) switch_shell "$@"
+  *i*) switch_shell $myshell_args
        ;;
 esac
 
