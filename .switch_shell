@@ -25,7 +25,7 @@ if [ -n "$1" ]; then
   shift
 fi
 
-myshell_args=( "$@" )
+myshell_args="$@"
 
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
