@@ -34,13 +34,21 @@ fi
 
 # {{{ zdotdir
 
+# ZDOTDIR is a zsh-ism but it's a good concept so we generalize it to
+# the other shells.
+
+# This allows us to have a good set of .*rc files etc. in one place
+# and to be able to reuse that from a different account (e.g. root).
+
+# We have to do some of this both here and in .shared_env to avoid
+# a chicken and egg thing when looking for the right .shared_env.
+
 zdotdir=${ZDOTDIR:-$HOME}
 export ZDOTDIR="$zdotdir"
 if [[ "$ZDOTDIR" == "$HOME" ]]; then
   zdotdirpath=( $ZDOTDIR )
 else
   zdotdirpath=( $ZDOTDIR $HOME )
-  export OTHER_USER=1
 fi
 
 # }}}
