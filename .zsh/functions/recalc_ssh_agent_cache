@@ -25,7 +25,7 @@ SSH_AGENT_PID=$pids[0]
 if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
   # If interactive, prompt whether to start a new one.
   # UPDATE: don't prompt; I always answer yes.
-  if /bin/false && [[ -t 1 ]]; then
+  if false && [[ -t 1 ]]; then
     echo "ssh-agent process not found; start a new one [y/N] ?"
     if read -q; then
       eval `ssh-agent`
