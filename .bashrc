@@ -192,6 +192,11 @@ alias tf='less +F'
 # }}}
 
 # }}}
+# {{{ Other hosts
+
+alias th='ssh -l adam thelonious.new.ox.ac.uk'
+
+# }}}
 
 # }}}
 
