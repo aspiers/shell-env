@@ -1,0 +1,13 @@
+#autoload
+
+if [[ -z "$1" ]]; then
+  echo 'Usage: scvs <tag> [ options ]'
+  return
+fi
+
+tag="$1"
+
+shift
+
+CVSROOT=$_CVSROOTS[$tag]
+CVS_RSH=$_CVS_RSHS[$tag]
