@@ -42,7 +42,8 @@ cx () {
     fi
   else
     # push new setting
-    # N.B. we allow pushing of "" but not sure how it should handle -l and -l ""
+
+    # N.B. we allow pushing of "" to force default
     new_title="$*"
 
     if (( $#titles )); then
@@ -52,28 +53,32 @@ cx () {
     fi
   fi
 
-  # Determine suffix.  Allow overriding of auto-suffix via -l
+  # Determine suffix.  Allow force appending of auto-suffix via -l
   # (either from $argv or from saved title)
-  if [[ "$new_title" == -l* ]]; then
-    suffix=
-    new_title="${new_title#-l }"
-  else
+  if [[ "$new_title" == -l* || -z "$new_title" ]]; then
+    new_title="${new_title##-l?( )}"
+
     if [[ "$USERNAME" == 'root' ]]; then
       suffix="${short_host}#"
     else
       suffix="$USERNAME@${short_host}"
     fi
 
+    # w/i/s == window/icon/screen
     wsuffix=" : $suffix"
     isuffix=" : $suffix"
     ssuffix="|$suffix"
+  else
+    suffix=
   fi
 
   if [[ -z "$new_title" ]]; then
+    # w/i/s == window/icon/screen
     full_wtitle="$suffix"
     full_ititle="$suffix"
     full_stitle="$suffix"
   else
+    # w/i/s == window/icon/screen
     full_wtitle="$new_title$wsuffix"
     full_ititle="$new_title$isuffix"
     full_stitle="$new_title$ssuffix"
