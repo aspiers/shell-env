@@ -123,6 +123,11 @@ alias llrS='ls -lrS'
 alias sl=ls # often screw this up
 
 # }}}
+# {{{ which/where
+
+alias wh='type -a'
+
+# }}}
 # {{{ File management
 
 # {{{ Changing/making/removing directory
