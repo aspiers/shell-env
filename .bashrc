@@ -44,7 +44,7 @@ export IRCNICK='Adze'
 # {{{ Editor
 
 export EDITOR=emacs
-export VISUAL='emacs -nw'
+export VISUAL=fe
 
 # }}}
 # {{{ WWW home
