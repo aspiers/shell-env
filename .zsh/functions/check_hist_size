@@ -1,0 +1,7 @@
+#autoload
+
+fc_out=( $(wc -l $HISTFILE) )
+
+if (( fc_out[1] < 100 )); then
+  print "\nWARNING: small $HISTFILE detected\! (${fc_out[1]:-0} lines)"
+fi
