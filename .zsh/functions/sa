@@ -1,5 +1,5 @@
 #autoload
 
 dsa
-ssh-add
+ssh-add "$@"
 
