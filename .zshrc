@@ -1144,14 +1144,14 @@ fi
 # }}}
 # {{{ Specific to hosts
 
-if [[ -r $zdotdir/.zshrc.local ]]; then
+if [[ -r ~/.zshrc.local ]]; then
   zshrc_load_status '.zshrc.local'
-  . $zdotdir/.zshrc.local
+  . ~/.zshrc.local
 fi
 
-if [[ -r $zdotdir/.zshrc.${HOST%%.*} ]]; then
+if [[ -r ~/.zshrc.${HOST%%.*} ]]; then
   zshrc_load_status ".zshrc.${HOST%%.*}"
-  . $zdotdir/.zshrc.${HOST%%.*}
+  . ~/.zshrc.${HOST%%.*}
 fi
 
 # }}}
