@@ -5,7 +5,8 @@ if tty | grep -q tty; then
   (( $EUID == 0 )) && prefix=sudo
   $prefix loadkeys /usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
 else
-  xmodmap $HOME/.keymaps/dvorak
+  xmodmap -pke > ~/.keymaps/qwerty &&
+    xmodmap ~/.keymaps/dvorak
 fi
 
 if (( $? == 0 )); then
