@@ -46,8 +46,8 @@ path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/lib/[p]erl5{/site_perl,}{/5.*,}{/i?86*,}(N)
-          ~/lib/[p]erl5(N)
+          ~/{local/,}lib/[p]erl5{/site_perl,}{/5.*,}{/i?86*,}(N)
+          ~/{local/,}lib/[p]erl5(N)
           $perl5lib
          )
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] && PERL5LIB="${(j/:/)perl5lib}"
