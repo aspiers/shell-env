@@ -256,35 +256,49 @@ zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
-# The following lines were added by compinstall
-_compdir=/usr/share/zsh/functions
-[[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
-autoload -U compinit
-compinit
-
-compstyle '*' completer '_complete'
-# End of lines added by compinstall
+if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+  _compdir=/usr/share/zsh/functions
+  [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
+  autoload -U compinit
+  compinit
+else
+  print "Advanced completion system not found; ignoring compstyle settings."
+  function compstyle { }
+fi
 
 ##
 ## Enable the way cool bells and whistles.
 ##
 
-compstyle '*:matches' group 'yes'
-compstyle '*:options' description 'yep'
-compstyle '*:options' auto-description '%d'
+# General completion technique
+compstyle '*' completer _complete _correct _approximate
+compstyle ':incremental' completer _complete _correct
+compstyle ':predict' completer _complete
 
+# Cache functions created by _regex_arguments
+compstyle '*' cache-path ~/.zsh/.cache-path
+
+# Expand partial paths
+compstyle '*' expand 'yes'
+
+# Separate matches into groups
+compstyle '*:matches' group 'yes'
+
+# Describe each match group.
 # This one assumes that your terminal has a dark background.
 compstyle '*:descriptions' format "$fg_bold[white]%d$fg[white]"
 
-# }}}
+# Describe options in full
+compstyle '*:options' description 'yes'
+compstyle '*:options' auto-description '%d'
 
+# }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
 compstyle '*:history-words' stop 'verbose'
 compstyle '*:history-words' remove_all_dups 'yep'
 
 # }}}
-
 # {{{ Common usernames
 
 # users=( tom dick harry )
@@ -292,6 +306,8 @@ compstyle '*:history-words' remove_all_dups 'yep'
 ### BEGIN PRIVATE
 #users=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
 ### END PRIVATE
+
+#compstyle '*' users $users
 
 # }}}
 # {{{ Common hostnames
@@ -348,6 +364,8 @@ hosts=(
     sunsite.doc.ic.ac.uk
 )
 
+compstyle '*' hosts $hosts
+
 # }}}
 # {{{ (user,host) pairs
 
@@ -387,6 +405,9 @@ other_accounts=(
   {root,adam,rian}:server1.w3w.net
 )
 ### END PRIVATE
+
+compstyle '*:my-accounts' users-hosts $my_accounts
+compstyle '*:other-accounts' users-hosts $other_accounts
 
 # }}}
 # {{{ (host, port, user) triples for telnet
@@ -749,6 +770,8 @@ bindkey '^[P' history-beginning-search-backward
 bindkey '^[N' history-beginning-search-forward
 bindkey '^W' kill-region
 bindkey '^I' expand-or-complete-prefix
+bindkey '^[b' emacs-backward-word
+bindkey '^[f' emacs-forward-word
 
 # Fix weird sequence that rxvt produces
 bindkey -s '^[[Z' '\t'
