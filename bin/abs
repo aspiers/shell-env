@@ -33,10 +33,16 @@ sub abs_path {
 
   my ($dir, $file) = $path =~ m!(.+)/(.+)!;
 
-  if (-l $path) {
-    return File::Spec->rel2abs(readlink $path, Cwd::abs_path($dir));
+  $dir = Cwd::abs_path($dir);
+
+  # keep chasing links until we arrive at a non-link
+  while (-l $path) {
+    $path = File::Spec->rel2abs(readlink $path, $dir);
+    $path = File::Spec->canonpath($path);
+    1 while $path =~ s!/[^/]+/\.\./!/!g; # can't believe canonpath doesn't do this
+    ($dir, $file) = $path =~ m!(.+)/(.+)!;
+    $dir = Cwd::abs_path($dir);
   }
-  else {
-    return Cwd::abs_path($dir) . '/' . $file;
-  }
+
+  return "$dir/$file";
 }
