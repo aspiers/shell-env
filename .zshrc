@@ -1004,7 +1004,6 @@ VL=/var/log
 # {{{ ls colours
 
 if which dircolors >&/dev/null && [[ -e "${zdotdir}/.dircolors" ]]; then
-  # show directories in yellow
   eval `dircolors -b $zdotdir/.dircolors`
 fi
 
