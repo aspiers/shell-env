@@ -9,5 +9,5 @@ file="$1"
 angle=${2:-90}
 newfile="${file}.$angle"
 
-jpegtran -rotate $angle -copy all "$file" > "$newfile" \
-  && mv "$newfile" "$file"
+jpegtran -rotate $angle -copy all "$file" > "$newfile"
+[ -e "$newfile" ] && mv "$newfile" "$file"
