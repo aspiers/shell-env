@@ -14,7 +14,7 @@ MYSHELL=$HOME/local/bin/zsh
 switch_shell () {
   if [ -x $MYSHELL ] && [ -z "$NO_ZSH" ]; then
     # we do this rather than exec() just in case $MYSHELL fails to run
-    $MYSHELL -d "$@" && exit
+    $MYSHELL -d "$@"; exit
   fi
 }
 
