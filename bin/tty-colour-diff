@@ -3,7 +3,7 @@
 awkdir=${ZDOTDIR:-$HOME}/bin/awk
 
 if [ -t 1 ]; then
-  # connected to a tty => use glorious technicolour
+  # connected to a tty => use glorious technicolour and paging
   exec awk -f $awkdir/colour-diff-output.awk | diff-less "$@"
 else
   # probably piping to a file, use black and white
