@@ -550,13 +550,15 @@ zshrc_load_status 'aliases and functions'
 autoload zrecompile
 
 # }}}
-# {{{ which
+# {{{ which/where
 
 # reverse unwanted aliasing of `which' by distribution startup
 # files (e.g. /etc/profile.d/which*.sh); zsh's which is perfectly
 # good as is.
 
 alias which >&/dev/null && unalias which
+
+alias wh=where
 
 # }}}
 # {{{ run-help
