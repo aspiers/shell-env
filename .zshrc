@@ -545,7 +545,7 @@ alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
 # }}}
 
 # }}}
-# {{{ Use this one to untar after doing a tar ztvf/tvf/ztf command
+# {{{ Use this to untar after doing a tar ztvf/tvf/ztf command
 
 # Thanks to Bart Schaefer for this one
 alias xt='fc -e - tvf=xf ztf=zxf -1'
@@ -560,7 +560,7 @@ alias mps='ps -o user,pcpu,command'
 pst () {
   pstree -p "$@" | less -S
 }
-alias gps='gitps -p afx; cx'
+which gps >/dev/null && alias gps='gitps -p afx; cx'
 alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
 rj () {
   ps auxww | grep -E "($*|^USER)"
