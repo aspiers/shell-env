@@ -29,14 +29,22 @@ cx () {
 
   short_host=${HOST%%.*}
 
-  if [[ "$USERNAME" == 'root' ]]; then
-    suffix="${short_host}#"
+  # Allow overriding auto suffix via -l.
+  # Not sure how it should handle -l and -l ""
+  if [[ "$1" == '-l' ]]; then
+    shift
+    suffix=
   else
-    suffix="$USERNAME@${short_host}"
-  fi
+    if [[ "$USERNAME" == 'root' ]]; then
+      suffix="${short_host}#"
+    else
+      suffix="$USERNAME@${short_host}"
+    fi
 
-  isuffix="$suffix"
-  ssuffix="$suffix"
+    tsuffix=" : $suffix"
+    isuffix="$suffix"
+    ssuffix="$suffix"
+  fi
 
   # We use the fact that the environment variable TITLE_SHLVL can
   # cross process boundaries, even though the array.
