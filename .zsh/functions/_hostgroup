@@ -14,10 +14,10 @@ _hostgroup_hosts () {
 
 _hostgroup () {
   _arguments \
-    '(--intersection)-i[intersection not union]' \
-    '(-i)--intersection[intersection not union]' \
-    '(--hosts)-h[input is hostnames not groups]:*:host:_hostgroup_hosts' \
-    '(-h)--hosts[input is hostnames not groups]:*:host:_hostgroup_hosts' \
+    '(--hosts)-h[input contains hostnames not groups]:*:host:_hostgroup_hosts' \
+    '(-h)--hosts[input contains hostnames not groups]:*:host:_hostgroup_hosts' \
+    '(-e)--expression[input is expression not list]' \
+    '(--expression)-e[input is expression not list]' \
     '(-h --hosts)*:hostgroup:_hostgroups'
 }
 
