@@ -84,12 +84,12 @@ PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \$ "
 
 # {{{ ls aliases
 
-if ls --color -F >&/dev/null; then
-  alias ls='/bin/ls --color -F'
-elif ls --color >&/dev/null; then
-  alias ls='/bin/ls --color'
+if ls -F --color >&/dev/null; then
+  alias ls='/bin/ls -F --color -F'
 elif ls -F >&/dev/null; then
   alias ls='/bin/ls -F'
+elif ls --color >&/dev/null; then
+  alias ls='/bin/ls --color'
 fi
 
 # jeez I'm lazy ...
