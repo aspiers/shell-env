@@ -377,6 +377,9 @@ hosts=(
     localhost
 
 ### BEGIN PRIVATE
+    # home
+    adamspiers.{dyndns,homelinux}.org
+
     # guideguide
     proxy.london.guideguide.com 194.203.206.225
     {aviator,vaeth}.guideguide.com
