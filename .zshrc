@@ -407,7 +407,7 @@ my_accounts=(
   {adams,root}:{proxy.guideguide.com,195.217.36.66}
   adamspiers:zsh.sourceforge.net
   adam:landfill.tequilarista.org
-  aspiers@194.202.166.101
+  {aspiers,root}@194.202.166.101
 )
 ### END PRIVATE
 
@@ -962,6 +962,13 @@ m () {
   cx mutt
   mutt "$@"
   cxx
+}
+
+# }}}
+# {{{ diff
+
+only () {
+  awk '/^Only in '"$1"'/ {s=$3 $4; sub(": *", "/", s); print s}'
 }
 
 # }}}
