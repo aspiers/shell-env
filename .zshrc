@@ -869,6 +869,9 @@ ssh () {
 
 if [[ -x ~/bin/detect_ssh-agent ]]; then
   dsa () {
+    # comment this if you want
+    unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
+
     : ${SSH_AGENT_PID:=`/sbin/pidof ssh-agent`}
 
     if [[ -z "$SSH_AGENT_PID" ]]; then
