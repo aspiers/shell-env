@@ -860,6 +860,7 @@ fi
 # {{{ watching log files
 
 alias tf='less +F'
+alias tfs='less -S +F'
 
 # }}}
 # {{{ arch
@@ -898,7 +899,7 @@ alias -g ELS='|& less -S'
 alias -g H='| head'
 alias -g HL='| head -20'
 alias -g EH='|& head'
-alias -g HL='|& head -20'
+alias -g EHL='|& head -20'
 
 alias -g T='| tail'
 alias -g TL='| tail -20'
