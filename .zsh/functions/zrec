@@ -1,0 +1,16 @@
+#autoload
+
+_Core_dir=$fpath[(r)*Core*]
+_func_dir=${_Core_dir%/Completion/Core}
+
+zrecompile "$@" -p -- \
+  -R ~/.zshenv -- \
+  -R ~/.zshrc  -- \
+  -R ~/.zcompdump  -- \
+  -R $_Core_dir/compinit -- \
+  -R $_Core_dir/compaudit -- \
+  -R $_Core_dir/compdump -- \
+  -M -U ~/.zsh/funcs.zwc \
+        ~/.zsh/functions/*(*) \
+        $_func_dir/Completion/*/_* \
+        $_func_dir/Prompts/*
