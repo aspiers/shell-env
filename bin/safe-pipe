@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# This guarantees that piping data through a command which might fail
+# is equivalent to piping it through cat (i.e. untouched), rather than
+# just losing the data.  E.g.:
+#    
+#    wget http://foo.bar/baz.html | \
+#      safe-pipe riskily-munge-HTML | grep foo
+#
+
 tmp=`mktemp /tmp/safe-pipe.XXXXXXXXX`
 cat >> $tmp
 "$@" < $tmp || cat $tmp
+rm $tmp
