@@ -85,7 +85,7 @@ PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \$ "
 # {{{ ls aliases
 
 if ls -F --color >&/dev/null; then
-  alias ls='/bin/ls -F --color -F'
+  alias ls='/bin/ls -F --color'
 elif ls -F >&/dev/null; then
   alias ls='/bin/ls -F'
 elif ls --color >&/dev/null; then
