@@ -625,7 +625,8 @@ alias lt='ls -lth'
 alias lrt='ls -lrth'
 alias lart='ls -larth'
 alias lr='ls -lRh'
-alias lL='ls -L'
+alias lsL='ls -Ll'
+alias lL='ls -Ll'
 # damn, missed out lsd :-)
 alias sl=ls # often screw this up
 
