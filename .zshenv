@@ -103,6 +103,11 @@ export REPLYTO='adam@spiers.net (Adam Spiers)'
 #export POSIXLY_CORRECT=yes
 
 # }}}
+# {{{ Palm Pilot
+
+export PILOTRATE=115200
+
+# }}}
 
 # }}}
 # {{{ Specific to hosts
