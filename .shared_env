@@ -110,7 +110,7 @@ export METAMAIL_PAGER='less -r'
 export PERLDOC_PAGER='less -r'
 export PAGER='less'
 export LESS='-h100 -i -j1 -M -q -y100'
-#export LESSOPEN='|/usr/local/bin/lesspipe.sh %s'
+export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 #export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
 
 # }}}
