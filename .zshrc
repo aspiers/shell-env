@@ -393,13 +393,16 @@ hosts=(
     proxy.london.guideguide.com 194.203.206.225
     aviator.guideguide.com
 
-    # RAM
-    {bach,gw,jascha,purcell,lib}.ram.ac.uk
-    general.ulcc.ac.uk
+    # plig
+    {,riffraff.}plig.net
 
     # New College
     corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
     163.1.145.129 163.1.145.123
+
+    # RAM
+    {bach,gw,jascha,purcell,lib}.ram.ac.uk
+    general.ulcc.ac.uk
 
     # OUCS
     {ermine,sable}.ox.ac.uk
