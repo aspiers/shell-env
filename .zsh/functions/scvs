@@ -15,9 +15,20 @@ scvs () {
 
   shift
 
-  export CVSROOT CVS_RSH
-  eval "CVSROOT=$_CVSROOTS[$tag]"
-  eval "CVS_RSH=$_CVS_RSHS[$tag]"
+  new_CVSROOT="$_CVSROOTS[$tag]"
+  new_CVS_RSH="$_CVS_RSHS[$tag]"
+
+  if [[ -z "$new_CVSROOT" ]]; then
+    echo "Warning: CVSROOT for $tag undefined; not setting." >&2
+  else
+    export CVSROOT="$new_CVSROOT"
+  fi
+
+  if [[ -z "$new_CVS_RSH" ]]; then
+    echo "Warning: CVS_RSH for $tag undefined; not setting." >&2
+  else
+    export CVS_RSH="$new_CVS_RSH"
+  fi
 }
 
 typeset -Ag _CVSROOTS _CVS_RSHS
@@ -27,11 +38,9 @@ _CVSROOTS=(
            local             $HOME/.CVSROOT
            mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
-           lb                 $SSH_STEPPING_STONE:/home/adams/.CVSROOT
+#           lb-plig            $SSH_STEPPING_STONE:/home/adams/.CVSROOT
            plig               plig.net:/home/adams/.CVSROOT
            thelonious         adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
-           guideguide_remote  proxy.guideguide.com:/share/cvsroot
-           guideguide_local   prophet5.london.guideguide.com:/share/cvsroot
            sourceforge_anon   :pserver:anonymous@cvs.sourceforge.net:/cvsroot/\$1
            sourceforge        :ext:adamspiers@cvs.sourceforge.net:/cvsroot/\$\{1:l\}
 
@@ -47,11 +56,9 @@ _CVS_RSHS=(
 #          foo.bar.com       ssh
 #          foo.baz.com       rsh
 ### BEGIN PRIVATE
-           lb                ~/bin/cvs-ssh
+#           lb-plig           ~/bin/cvs-ssh
            plig              ssh
            thelonious        ssh
-           guideguide_remote ~/bin/cvs_rsh
-           guideguide_local  ssh
            sourceforge       ssh
            zsh_local_write   ssh
            zsh_local         ssh
