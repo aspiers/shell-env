@@ -1,6 +1,0 @@
-#compdef adm doc pcd
-
-local expl
-
-_description expl 'PVCS directories'
-compgen "$expl[@]" -W /PACK -/
