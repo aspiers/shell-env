@@ -165,13 +165,6 @@ fi
 
 zshrc_load_status 'setting environment'
 
-# {{{ export COLUMNS
-
-# Some programs might find this handy.  Shouldn't do any harm.
-
-export COLUMNS
-
-# }}}
 # {{{ INFOPATH
 
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T INFOPATH infopath
