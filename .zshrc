@@ -436,11 +436,9 @@ hosts=(
     localhost
 
 ### BEGIN PRIVATE
-    # home
     adamspiers.dyndns.org
-
-    # plig
     adamspiers.org
+    f5.mandolinarchive.com
 ### END PRIVATE
 )
 
