@@ -17,13 +17,21 @@ else
   _site_funcs=( $_func_dir/*~*.zwc*(.) )
 fi
 
+if [[ -w $_compinit_dir ]]; then
+  _compinits=(
+    -R $_compinit_dir/compinit -- 
+    -R $_compinit_dir/compaudit --
+    -R $_compinit_dir/compdump -- 
+  )
+else
+  _compinits=()
+fi
+
 zrecompile "$@" -p -- \
   -R ~/.zshenv -- \
   -R ~/.zshrc  -- \
   -R ~/.zcompdump  -- \
-  -R $_compinit_dir/compinit -- \
-  -R $_compinit_dir/compaudit -- \
-  -R $_compinit_dir/compdump -- \
+  "$_compinits[@]" \
   -M -U ~/.zsh/functions.zwc \
         ~/.zsh/functions/*(*) \
         "$_site_funcs[@]"
