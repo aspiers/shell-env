@@ -7,6 +7,12 @@
 
 # {{{ Environment
 
+# {{{ LD_PRELOAD
+
+# Fix obscure gtk problem
+LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
+
+# }}}
 # {{{ Path
 
 # No duplicates
