@@ -440,16 +440,8 @@ hosts=(
     adamspiers.{dyndns,homelinux}.org
 
     # plig
-    {,riffraff.}plig.net adamspiers.org
-
-    # RAM
-    {bach,gw,jascha,purcell,lib}.ram.ac.uk
-    general.ulcc.ac.uk
-
+    adamspiers.org
 ### END PRIVATE
-
-    # ftp sites
-    sunsite.org.uk
 )
 
 zstyle ':completion:*' hosts $hosts
@@ -469,7 +461,6 @@ my_accounts=(
   adams@adamspiers.org
   security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
   adamspiers@ssh.sourceforge.net
-  adams@plig.net
 )
 ### END PRIVATE
 
