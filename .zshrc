@@ -220,6 +220,9 @@ TMOUT=1800
 # }}}
 # {{{ Prompts
 
+# Load the theme-able prompt system and use it to set a prompt.
+# Probably only suitable for a dark background terminal.
+
 local _find_promptinit
 _find_promptinit=( $^fpath/promptinit(N) )
 if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
@@ -686,6 +689,11 @@ if which lftp >/dev/null; then
 elif which ncftp >/dev/null; then
   alias ftp=ncftp
 fi
+
+# }}}
+# {{{ watching log files
+
+alias tf='less +F'
 
 # }}}
 
