@@ -698,6 +698,7 @@ fi
 # {{{ Paging with less / head / tail
 
 alias -g L='| less'
+alias -g EL='|& less'
 alias -g H='| head -20'
 alias -g T='| tail -20'
 
