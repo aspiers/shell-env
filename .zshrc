@@ -910,7 +910,7 @@ bindkey '^[b' emacs-backward-word
 bindkey '^[v' emacs-backward-word
 bindkey '^[f' emacs-forward-word
 
-zmodload zsh/deltochar && bindkey '^[z' zap-to-char
+zmodload zsh/deltochar >&/dev/null && bindkey '^[z' zap-to-char
 
 # Fix weird sequence that rxvt produces
 bindkey -s '^[[Z' '\t'
