@@ -141,6 +141,31 @@ export RSYNC_RSH=ssh
 export CVS_RSH=ssh
 
 # }}}
+# {{{ Commonly used directories
+
+# Have cdable_vars set in zsh, so don't need 'hash -d' in front of these
+# and can be reused from any shell
+RP=/usr/src/redhat/RPMS
+I3=/usr/src/redhat/RPMS/i386
+I4=/usr/src/redhat/RPMS/i486
+I5=/usr/src/redhat/RPMS/i586
+I6=/usr/src/redhat/RPMS/i686
+NA=/usr/src/redhat/RPMS/noarch
+SR=/usr/src/redhat/SRPMS
+SP=/usr/src/redhat/SPECS
+SO=/usr/src/redhat/SOURCES
+BU=/usr/src/redhat/BUILD
+LI=/usr/src/linux
+L4=/usr/src/linux-2.4
+CV=/usr/local/cvsroot
+RC=/etc/rc.d/init.d
+VL=/var/log
+SC=/etc/sysconfig
+NS=/etc/sysconfig/network-scripts
+# in zsh:
+#hash -df
+
+# }}}
 
 # {{{ Specific to local setups
 

@@ -1007,27 +1007,6 @@ alias no=ls  # for Dvorak
 
 zshrc_load_status 'miscellaneous'
 
-# {{{ Hash named directories
-
-# cdable_vars is set, so don't need 'hash -d' in front of these
-RP=/usr/src/redhat/RPMS
-I3=/usr/src/redhat/RPMS/i386
-I4=/usr/src/redhat/RPMS/i486
-I5=/usr/src/redhat/RPMS/i586
-I6=/usr/src/redhat/RPMS/i686
-NA=/usr/src/redhat/RPMS/noarch
-SR=/usr/src/redhat/SRPMS
-SP=/usr/src/redhat/SPECS
-SO=/usr/src/redhat/SOURCES
-BU=/usr/src/redhat/BUILD
-LI=/usr/src/linux
-L4=/usr/src/linux-2.4
-CV=/usr/local/cvsroot
-RC=/etc/rc.d/init.d
-VL=/var/log
-#hash -df
-
-# }}}
 # {{{ ls colours
 
 if which dircolors >&/dev/null && [[ -e "${zdotdir}/.dircolors" ]]; then
