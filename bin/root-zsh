@@ -1,0 +1,17 @@
+#!/usr/bin/expect -f
+
+eval spawn -noecho $argv
+stty -echo
+expect {
+    -timeout 3
+    "root]#" {
+        send "/home/aspiers/bin/zsh\n"
+        interact
+    }
+
+    # Match prompts here
+    {\$} interact
+
+    timeout interact
+    eof
+}
