@@ -1,0 +1,3 @@
+#!/usr/bin/perl -wl
+
+print scalar localtime $ARGV[0];
