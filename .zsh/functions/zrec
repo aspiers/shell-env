@@ -1,8 +1,12 @@
 #autoload
 
 _func_dir="${fpath[(r)*share/zsh*/functions*]/functions\/*/functions}"
+
 _Core_dir=( $_func_dir/**/compinit )
 _Core_dir=${${_Core_dir[1]}%/compinit}
+
+: ${_Completions_glob:="$_func_dir/Completion/*/_*"}
+: ${_Prompts_glob:="$_func_dir/Prompts/prompt*"}
 
 zrecompile "$@" -p -- \
   -R ~/.zshenv -- \
@@ -13,5 +17,5 @@ zrecompile "$@" -p -- \
   -R $_Core_dir/compdump -- \
   -M -U ~/.zsh/funcs.zwc \
         ~/.zsh/functions/*(*) \
-        $_func_dir/Completion/*/_* \
-        $_func_dir/Prompts/*
+        $_Completions_glob \
+        $_Prompts_glob
