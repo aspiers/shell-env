@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec rj | grep -vE "(^(${USERNAME:-$USER}|nobody|root|bin|named|lp|mysql|xfs|mail|syslog))|login|mutt|pine|httpd|-?(ba|k|t?c|z)?sh( -o (vi|emacs))?$"
+exec rj | grep -vE "(^(${USERNAME:-$USER}|nobody|root|bin|named|lp|mysql|xfs|mail|syslog))|login|mutt|pine|httpd|-?(ba|k|t?c|z)?sh( -o (vi|emacs)| \((ba|k|t?c|z)?sh\))?$|^postfix"
