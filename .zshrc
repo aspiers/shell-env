@@ -1,6 +1,7 @@
 #!/bin/zsh
 #
-# .zshrc file
+# .zshrc
+# for zsh 3.1.6 and newer (may work OK with earlier versions)
 #
 # by Adam Spiers <adam@spiers.net>
 #
@@ -10,15 +11,11 @@
 # {{{ To do list
 
 #
-#    - cx to figure out whether to output or not, then always load
-#      on startup
-#    - Cache $(rpm -qa) results and other stuff if poss.
-#    - Set completions for Eterm stuff
+#    - special user@host cases?
+#    - Completions: eterm stuff
 #    - Add 'this shell used by others' mode
 #    - Do safes?kill(all)? functions
 #    - Fix zx alias
-#    - Remove all assumptions (e.g. don't define CVS-related
-#      functions if CVS isn't installed on this system)
 #
 
 # }}}
@@ -68,11 +65,12 @@ setopt \
         hash_cmds \
         hash_dirs \
         hash_list_all \
-     NO_hist_allow_clobber \
+        hist_allow_clobber \
         hist_beep \
         hist_ignore_dups \
         hist_ignore_space \
      NO_hist_no_store \
+     NO_hist_save_no_dups \
         hist_verify \
      NO_hup \
      NO_ignore_braces \
@@ -114,6 +112,25 @@ setopt \
      NO_verbose \
      NO_xtrace \
         zle
+
+if [[ $ZSH_VERSION > 3.1.5 ]]; then
+  setopt \
+	hist_expire_dups_first \
+        hist_ignore_all_dups \
+     NO_hist_save_no_dups \
+        inc_append_history
+fi
+
+if [[ $ZSH_VERSION == 3.0.6 || $ZSH_VERSION > 3.1.5 ]]; then
+  setopt \
+        hist_reduce_blanks
+fi
+
+if [[ $ZSH_VERSION > 3.1 ]]; then
+  setopt \
+     NO_hist_no_functions \
+     NO_rm_star_wait
+fi
 
 # }}}
 # {{{ Environment
@@ -184,29 +201,47 @@ hostnames=(\
 # {{{ Colours
 
 reset_colour="$(echo -n '\e[0m')"
-fg_bold="$(echo -n '\e[1m')"
+bold_colour="$(echo -n '\e[1m')"
 
 # Foreground
 
-fg_grey="$(echo -n '\e[30m')"
-fg_red="$(echo -n '\e[31m')"
-fg_green="$(echo -n '\e[32m')"
-fg_yellow="$(echo -n '\e[33m')"
-fg_blue="$(echo -n '\e[34m')"
-fg_magenta="$(echo -n '\e[35m')"
-fg_cyan="$(echo -n '\e[36m')"
-fg_white="$(echo -n '\e[37m')"
+fg_grey="$(echo -n '\e[0;30m')"
+fg_red="$(echo -n '\e[0;31m')"
+fg_green="$(echo -n '\e[0;32m')"
+fg_yellow="$(echo -n '\e[0;33m')"
+fg_blue="$(echo -n '\e[0;34m')"
+fg_magenta="$(echo -n '\e[0;35m')"
+fg_cyan="$(echo -n '\e[0;36m')"
+fg_white="$(echo -n '\e[0;37m')"
+
+fg_bold_grey="$(echo -n '\e[1;30m')"
+fg_bold_red="$(echo -n '\e[1;31m')"
+fg_bold_green="$(echo -n '\e[1;32m')"
+fg_bold_yellow="$(echo -n '\e[1;33m')"
+fg_bold_blue="$(echo -n '\e[1;34m')"
+fg_bold_magenta="$(echo -n '\e[1;35m')"
+fg_bold_cyan="$(echo -n '\e[1;36m')"
+fg_bold_white="$(echo -n '\e[1;37m')"
 
 # Background
 
-bg_grey="$(echo -n '\e[40m')"
-bg_red="$(echo -n '\e[41m')"
-bg_green="$(echo -n '\e[42m')"
-bg_yellow="$(echo -n '\e[43m')"
-bg_blue="$(echo -n '\e[44m')"
-bg_magenta="$(echo -n '\e[45m')"
-bg_cyan="$(echo -n '\e[46m')"
-bg_white="$(echo -n '\e[47m')"
+bg_grey="$(echo -n '\e[0;40m')"
+bg_red="$(echo -n '\e[0;41m')"
+bg_green="$(echo -n '\e[0;42m')"
+bg_yellow="$(echo -n '\e[0;43m')"
+bg_blue="$(echo -n '\e[0;44m')"
+bg_magenta="$(echo -n '\e[0;45m')"
+bg_cyan="$(echo -n '\e[0;46m')"
+bg_white="$(echo -n '\e[0;47m')"
+
+bg_bold_grey="$(echo -n '\e[1;40m')"
+bg_bold_red="$(echo -n '\e[1;41m')"
+bg_bold_green="$(echo -n '\e[1;42m')"
+bg_bold_yellow="$(echo -n '\e[1;43m')"
+bg_bold_blue="$(echo -n '\e[1;44m')"
+bg_bold_magenta="$(echo -n '\e[1;45m')"
+bg_bold_cyan="$(echo -n '\e[1;46m')"
+bg_bold_white="$(echo -n '\e[1;47m')"
 
 # Stop these screwing the environment listing up
 bg_zzzz_clear=$bg_grey
@@ -225,7 +260,7 @@ rc_home='adam@thelonious.new.ox.ac.uk:'
 # }}}
 # {{{ Filenames involved in rc transfers
 
-# Let's not rely on that one to always work shall we :-)
+# Let's not rely on this one to always work, m'kay? :-)
 #zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME#\\\\\~#) )
 
 #zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME/##) )
@@ -253,57 +288,13 @@ all_rcfiles=( $zsh_rcfiles $emacs_rcfiles $misc_rcfiles )
 
 # Variables used by zsh
 
-# {{{ Prompts
-
-# Note: ANSI escape sequences need to be quoted with %{ ... %}
-# to tell zsh that they don't change the cursor position.
-
-BASE_PROMPT="%{$bg_blue%}%n@%m%{$reset_colour%} "
-POST_PROMPT="%{$reset_colour%}"
-
-BASE_PROMPT_NO_COLOUR=$(echo "$BASE_PROMPT" | perl -pe "s/%{.*?%}//g")
-POST_PROMPT_NO_COLOUR=$(echo "$POST_PROMPT" | perl -pe "s/%{.*?%}//g")
-
-# Define prompts
-
-PROMPT_NEWLINE=$(echo -ne "\n%{\r%}")
-
-function precmd {
-    setopt noxtrace localoptions
-    local base_prompt base_prompt_etc prompt_length space_left
-
-    base_prompt=$(print -P "$BASE_PROMPT_NO_COLOUR")
-    base_prompt_etc=$(print -P "$base_prompt%(4~|...|)%3.")
-    prompt_length=${#base_prompt_etc}
-#    echo "Prompt length is $prompt_length"
-#    echo "Base prompt length is $#base_prompt"
-    if [[ $prompt_length -lt 40 ]]; then
-        PATH_PROMPT="%{$fg_bold$fg_cyan%}%(4~|...|)%3.%{$fg_white%}"
-    else
-        space_left=$(( $COLUMNS - $#base_prompt - 2 ))
-#        echo "Space left is $space_left"
-        PATH_PROMPT="%{$fg_bold$fg_green%}%${space_left}<...<%~$PROMPT_NEWLINE%{$fg_white%}"
-    fi
-    PS1="$BASE_PROMPT$PATH_PROMPT %# $POST_PROMPT"
-    PS2="$BASE_PROMPT$PATH_PROMPT %_> $POST_PROMPT"
-    PS3="$BASE_PROMPT$PATH_PROMPT ?# $POST_PROMPT"
-}
-
-PS4="traced-> "
-#RPS1="$fg_bold$bg_red              $reset_colour"
-
-# }}}
 # {{{ Function path
 
-if [[ -d $HOME/.zsh/scripts ]]; then
-    fpath=( $HOME/.zsh/scripts $fpath)
-fi
-
-temp_zshfuncs=( /usr/doc/zsh*/Functions(N) )
-if [[ $#temp_zshfuncs -gt 0 ]]; then
-    fpath=($fpath /usr/doc/zsh*/Functions(N) )
-fi
-unset temp_zshfuncs
+fpath=(
+       $HOME/{lib/zsh,.zsh}/{functions,scripts}(N) 
+       $fpath
+       /usr/doc/zsh*/Functions(N)
+      )
 
 typeset -U fpath
 
@@ -322,6 +313,7 @@ SAVEHIST=5000
 # }}}
 # {{{ Maximum size of completion listing
 
+# Only ask if line would scroll off screen
 LISTMAX=0
 
 # }}}
@@ -344,6 +336,191 @@ TMOUT=1800
 #}
 
 # }}}
+
+# }}}
+# {{{ Prompts
+
+# Note: ANSI escape sequences need to be quoted with %{ ... %}
+# to tell zsh that they don't change the cursor position.
+
+# Variables common to all prompt styles
+prompt_newline=$(echo -ne "\n%{\r%}")
+
+# {{{ adam1
+
+prompt_adam1_setup () {
+    base_prompt="%{$bg_blue%}%n@%m%{$reset_colour%} "
+    post_prompt="%{$reset_colour%}"
+
+    base_prompt_no_colour=$(echo "$base_prompt" | perl -pe "s/%{.*?%}//g")
+    post_prompt_no_colour=$(echo "$post_prompt" | perl -pe "s/%{.*?%}//g")
+}
+
+prompt_adam1_precmd () {
+    setopt noxtrace localoptions
+    local base_prompt_expanded_no_colour base_prompt_etc
+    local prompt_length space_left
+
+    base_prompt_expanded_no_colour=$(print -P "$base_prompt_no_colour")
+    base_prompt_etc=$(print -P "$base_prompt%(4~|...|)%3~")
+    prompt_length=${#base_prompt_etc}
+#    echo "Prompt length is $prompt_length"
+#    echo "Base prompt length is $#base_prompt_expanded_no_colour"
+    if [[ $prompt_length -lt 40 ]]; then
+        path_prompt="%{$fg_bold_cyan%}%(4~|...|)%3~%{$fg_bold_white%}"
+    else
+        space_left=$(( $COLUMNS - $#base_prompt_expanded_no_colour - 2 ))
+#        echo "Space left is $space_left"
+        path_prompt="%{$fg_bold_green%}%${space_left}<...<%~$prompt_newline%{$fg_bold_white%}"
+    fi
+    PS1="$base_prompt$path_prompt %# $post_prompt"
+    PS2="$base_prompt$path_prompt %_> $post_prompt"
+    PS3="$base_prompt$path_prompt ?# $post_prompt"
+}
+
+prompt_adam1 () {
+    prompt_adam1_setup
+    precmd  () { prompt_adam1_precmd }
+    preexec () { }
+}
+
+available_prompt_styles=( $available_prompt_styles adam1 )
+
+# }}}
+# {{{ adam2
+
+# And you thought the last one was extreme.  If you've ever seen a
+# more complex prompt in your whole life, please e-mail it to me; I'd
+# love to know that I'm not the saddest person on the planet.
+
+prompt_adam2_setup () {
+    # Some can't be local
+    local prompt_gfx_tlc prompt_gfx_mlc prompt_gfx_blc prompt_gfx_bbox 
+
+    if [[ $1 == 'plain' ]]; then
+	shift
+	prompt_gfx_tlc='.'
+	prompt_gfx_mlc='|'
+	prompt_gfx_blc='\`'
+	prompt_gfx_hyphen='-'
+    else
+	prompt_gfx_tlc=$(echo "\xda")
+	prompt_gfx_mlc=$(echo "\xc3")
+	prompt_gfx_blc=$(echo "\xc0")
+	prompt_gfx_hyphen=$(echo "\xc4")
+    fi
+
+    # Colour scheme
+    prompt_scheme_colour1=${1:-'cyan'}    # hyphens
+    prompt_scheme_colour2=${2:-'green'}   # current directory
+    prompt_scheme_colour3=${3:-'cyan'}    # user@host
+
+    local num
+    for num in 1 2 3; do
+	# Grok this!
+	eval "prompt_colour$num="'${(P)$(echo "fg_$prompt_scheme_colour'"$num\")}"
+	eval "prompt_bold_colour$num="'${(P)$(echo "fg_bold_$prompt_scheme_colour'"$num\")}"
+    done
+
+    prompt_gfx_tbox=$(echo "%{$prompt_bold_colour1%}${prompt_gfx_tlc}%{$prompt_colour1%}${prompt_gfx_hyphen}")
+    prompt_gfx_bbox=$(echo "%{$prompt_bold_colour1%}${prompt_gfx_blc}${prompt_gfx_hyphen}%{$prompt_colour1%}")
+
+    # This has to be the coolest prompt hack in the entire world.
+    # Uhhhh ... or something.
+    prompt_gfx_bbox_to_mbox=$(echo "%{\e[A\r$prompt_bold_colour1${prompt_gfx_mlc}$prompt_colour1${prompt_gfx_hyphen}\e[B%}")
+
+    l_paren=$(echo "%{$fg_bold_grey%}(")
+    r_paren=$(echo "%{$fg_bold_grey%})")
+
+    l_bracket=$(echo "%{$fg_bold_grey%}[")
+    r_bracket=$(echo "%{$fg_bold_grey%}]")
+
+    prompt_machine=$(echo "%{$prompt_colour3%}%n%{$prompt_bold_colour3%}@%{$prompt_colour3%}%m")
+
+    prompt_padding_text=`perl -e "print qq{${prompt_gfx_hyphen}} x 200"`
+
+    prompt_line_1a="$prompt_gfx_tbox$l_paren%{$prompt_bold_colour2%}%~$r_paren%{$prompt_colour1%}"
+    prompt_line_1a_no_colour=$(echo "$prompt_line_1a" | perl -pe "s/%{.*?%}//g")
+    prompt_line_1b=$(echo "$l_paren$prompt_machine$r_paren%{$prompt_colour1%}${prompt_gfx_hyphen}")
+    prompt_line_1b_no_colour=$(echo "$prompt_line_1b" | perl -pe "s/%{.*?%}//g")
+
+    prompt_line_2="$prompt_gfx_bbox${prompt_gfx_hyphen}%{$fg_white%}"
+
+    prompt_char="%(!.#.>)"
+}
+
+prompt_adam2_precmd () {
+    setopt noxtrace localoptions
+    local prompt_line_1a_no_colour_expanded prompt_line_2a_no_colour_expanded
+    local prompt_padding_size prompt_padding prompt_line_1 pre_prompt
+    local prompt_pwd_size
+
+    prompt_line_1a_no_colour_expanded=$(print -P "$prompt_line_1a_no_colour")
+    prompt_line_1b_no_colour_expanded=$(print -P "$prompt_line_1b_no_colour")
+    prompt_padding_size=$(( $COLUMNS
+			      - $#prompt_line_1a_no_colour_expanded 
+			      - $#prompt_line_1b_no_colour_expanded ))
+
+    if [[ $prompt_padding_size -ge 0 ]]; then
+	prompt_padding=$(printf "%$prompt_padding_size.${prompt_padding_size}s" "$prompt_padding_text")
+	prompt_line_1="$prompt_line_1a$prompt_padding$prompt_line_1b"
+    else
+        prompt_padding_size=$(( $COLUMNS
+				  - $#prompt_line_1a_no_colour_expanded ))
+
+	if [[ $prompt_padding_size -ge 0 ]]; then
+	    prompt_padding=$(printf "%$prompt_padding_size.${prompt_padding_size}s" "$prompt_padding_text")
+	    prompt_line_1="$prompt_line_1a$prompt_padding"
+	else
+	    prompt_pwd_size=$(( $COLUMNS - 5 ))
+	    prompt_line_1="$prompt_gfx_tbox$l_paren%{$prompt_bold_colour2%}%$prompt_pwd_size<...<%~%<<$r_paren%{$prompt_colour1$prompt_gfx_hyphen%}"
+	fi
+    fi
+
+    pre_prompt="$prompt_line_1$prompt_newline$prompt_line_2"
+
+    PS1="$pre_prompt%{$fg_bold_white%}$prompt_char "
+    PS2="$prompt_line_2%{$prompt_gfx_bbox_to_mbox$fg_bold_white%}%_: "
+    PS3="$prompt_line_2%{$prompt_gfx_bbox_to_mbox$fg_bold_white%}?# "
+}
+
+prompt_adam2_preexec () {
+    print -n "$fg_white"
+}
+
+prompt_adam2 () {
+    prompt_adam2_setup $*
+    precmd () { prompt_adam2_precmd }
+    preexec () { prompt_adam2_preexec }
+}
+
+available_prompt_styles=( $available_prompt_styles adam2 )
+
+# }}}
+# {{{ Switching prompt styles
+
+prompt () {
+    if [[ $#* -eq 0 || -z "$available_prompt_styles[(r)$1]" ]]; then
+        echo "Usage: prompt <new prompt style> <params>"
+	echo "Available styles: $available_prompt_styles[*]"
+	return 1
+    fi
+
+    eval prompt_$1 $argv[2,-1]
+}
+
+# }}}
+
+PS4="trace %N:%i> "
+#RPS1="$bold_colour$bg_red              $reset_colour"
+
+# Default prompt style
+if [[ -r /proc/$PPID/cmdline ]] && egrep -q 'Eterm|nexus|vga' /proc/$PPID/cmdline; then
+    # probably OK for fancy graphic prompt
+    prompt adam2
+else
+    prompt adam2 plain
+fi
 
 # }}}
 # {{{ Aliases and functions
@@ -389,14 +566,21 @@ alias pwd='pwd -r'
 # }}}
 # {{{ du1 (du with depth 1)
 
-alias du1='du | grep -v "\.\/.*\/"'
+du1 () {
+  du $* | egrep -v '/.*/.*/'
+}
 
 # }}}
 # {{{ Making stuff publicly accessible
 
-function mp {
-    chgrp $1 $*[2,-1]
-    chmod go+rX $*[2,-1]
+mp () {
+  if [[ $#* -lt 3 ]]; then
+    echo "Usage: mp <group> <files> ..."
+    return 1
+  fi
+
+  chgrp $1 $*[2,-1]
+  chmod go+rX $*[2,-1]
 }
 
 # }}}
@@ -514,6 +698,11 @@ function cx {
 }
 alias cxx=cx
 
+if [[ "$TERM" == 'xterm' || "$TERM" == 'xterm-color' ]]; then
+  # Could also look at /proc/$PPID/cmdline ...
+  cx
+fi
+
 # Change rxvt font size
 function cf {
     if [[ "$*" == "" ]]; then
@@ -525,8 +714,7 @@ function cf {
 
 # Change rxvt pixmap
 function cb {
-    if [[ "$*" == "" ]] && \
-       [[ "`which randomise_textures`" != "randomise_textures not found" ]]; \
+    if [[ "$*" == "" ]] && which randomise_textures >/dev/null; \
     then
         echo -n "\e]20;`randomise_textures`\a"
     else
@@ -536,8 +724,7 @@ function cb {
 
 # Change Eterm pixmap
 function epix {
-    if [[ "$*" == "" ]] && \
-       [[ "`which randomise_textures`" != "randomise_textures not found" ]]; \
+    if [[ "$*" == "" ]] && which randomise_textures >/dev/null; \
     then
         echo -n "\e]20;`randomise_textures`\a"
     else
@@ -598,9 +785,19 @@ alias xa='xauth add `hostname`/unix:0 `xauth list | head -1 | awk "{print \\$2 \
 # }}}
 # {{{ rc files
 
-# {{{ Reload .zshrc
+# {{{ Reloading .zshrc or functions
 
-alias reload='. ~/.zshrc'
+reload () {
+  if [[ "$#*" -eq 0 ]]; then
+    . ~/.zshrc
+  else
+    local fn
+    for fn in $*; do
+      unfunction $fn
+      autoload -U $fn
+    done
+  fi
+}
 
 # }}}
 # {{{ rc file transfers
@@ -611,7 +808,7 @@ function sendhome {
         return 1
     fi
 
-    if [[ "`which rsync`" != "rsync not found" ]]; then
+    if which rsync >/dev/null; then
         pushd ~ >/dev/null
         rsync -aHRuvz -e ssh $* $rc_home
         if [[ $OLDPWD != $PWD ]] popd >/dev/null
@@ -626,7 +823,7 @@ function gethome {
         return 1
     fi
 
-    if [[ "`which rsync`" != "rsync not found" ]]; then
+    if which rsync >/dev/null; then
         rsync -aHRuvz -e ssh $rc_home"$^^*" ~
     else
         echo rsync not found and no other transfer method implemented yet
@@ -669,48 +866,50 @@ alias ap=apropos
 # }}}
 # {{{ CVS
 
-function cvst {
-    perl -MGetopt::Std -wl -- - $* <<'End_of_Perl'
-        $dir = '';
-        getopts('av', \%opts);
-	$| = 1;
-        open(CVS, "cvs status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
-        open(STDERR, ">&STDOUT") or die "Can't dup stdout";
-        while (<CVS>) {
-          chomp;
-          if (/cvs (?:status|server): Examining (.*)/) {
-            $dir = "$1/";
-          } elsif (/^File:\s+(.*)\s+Status:\s+(.*)/) {
-            ($file, $status) = ($1, $2);
-            next if ($status eq 'Up-to-date' && ! $opts{'a'});
-            $str = "File: $dir$file";
-            print $str, ' ' x (45 - length($str)), "Status: $status";
-          } elsif (/revision/ && $opts{'v'}) {
-            next if ($status eq 'Up-to-date' && ! $opts{'a'});
-            print;
-          } elsif (/^cvs status:/ || /password:/i) {
-            print;
-          }
-        }
-        close(CVS);
+if which cvs >/dev/null; then
+    function cvst {
+	perl -MGetopt::Std -wl -- - $* <<'End_of_Perl'
+	    $dir = '';
+	    getopts('av', \%opts);
+	    $| = 1;
+	    open(CVS, "cvs status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
+	    open(STDERR, ">&STDOUT") or die "Can't dup stdout";
+	    while (<CVS>) {
+	      chomp;
+	      if (/cvs (?:status|server): Examining (.*)/) {
+		$dir = "$1/";
+	      } elsif (/^File:\s+(.*)\s+Status:\s+(.*)/) {
+		($file, $status) = ($1, $2);
+		next if ($status eq 'Up-to-date' && ! $opts{'a'});
+		$str = "File: $dir$file";
+		print $str, ' ' x (45 - length($str)), "Status: $status";
+	      } elsif (/revision/ && $opts{'v'}) {
+		next if ($status eq 'Up-to-date' && ! $opts{'a'});
+		print;
+	      } elsif (/^cvs status:/ || /password:/i) {
+		print;
+	      }
+	    }
+	    close(CVS);
 End_of_Perl
-}
+    }
 
-function cvsd {
-    cvs diff $* |& less
-}
+    function cvsd {
+	cvs diff $* |& less
+    }
 
-function cvsl {
-    cvs log $* |& less
-}
+    function cvsl {
+	cvs log $* |& less
+    }
 
-function cvsll {
-    rcs2log $* | less
-}
+    function cvsll {
+	rcs2log $* | less
+    }
 
-function cvsv {
-    cvs log $* 2>/dev/null | egrep '^(head|Working file): '
-}
+    function cvsv {
+	cvs log $* 2>/dev/null | egrep '^(head|Working file): '
+    }
+fi
 
 # }}}
 # {{{ editors
@@ -736,16 +935,18 @@ alias th='ssh -l adam thelonious.new.ox.ac.uk'
 # }}}
 # {{{ ftp
 
-if [[ `which ncftp` != "ncftp not found" ]]; then
+if which lftp >/dev/null; then
+    alias ftp=lftp
+elif which ncftp >/dev/null; then
     alias ftp=ncftp
 fi
 
 # }}}
-# {{{ Viewing files with strings
+# {{{ Paging with less / head / tail
 
-sl () {
-    strings $* | less
-}
+alias -g L='| less'
+alias -g H='| head -20'
+alias -g T='| tail -20'
 
 # }}}
 # {{{ Viewing files in $PATH
@@ -753,7 +954,7 @@ sl () {
 # wl stands for `Which Less'
 
 wl () {
-    if [[ "`which $*`" == "$* not found" ]]; then
+    if which $* >/dev/null; then
 	which $*
     else
 	less `which $*`
@@ -774,16 +975,24 @@ dl () {
 # }}}
 # {{{ Completions
 
-# {{{ Set default completion
+# {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
-# Don't need this now we have history-dabbrev-expand.  (For anyone
-# else reading this, I wrote a patch for 3.0.5 which implemented the
-# equivalent of tcsh's history-dabbrev-expand.  It's possible to do it
-# neater since 3.1.x, I believe, but I haven't investigated that yet.)
+_history_complete_word () {
+  local expl
 
-# compctl -D -f + -H 0 '' -X '(No file found; using history)'
+  compstate[list]=
+  compstate[insert]=menu
+
+  _description -V expl 'history word'
+#  compgen "$expl[@]" -Q -H 0 ''
+  compgen -V 'history words' -Q -H 0 ''
+}
+
+zle -C _reverse_history_complete_word reverse-menu-complete _history_complete_word
+bindkey '^[,' _reverse_history_complete_word
 
 # }}}
+
 # {{{ Set variables to be used by completions
 
 groups=( $(cut -d: -f1 /etc/group) )
@@ -795,210 +1004,12 @@ groups=( $(cut -d: -f1 /etc/group) )
 usernames=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
 ### END PRIVATE
 
-if [[ -r /proc/filesystems ]]; then
-    # Linux
-    filesystems="${${(f)$(</proc/filesystems)}#*    }"
-else
-    filesystems='ufs 4.2 4.3 nfs tmp mfs S51K S52K'
-fi
+_users () {
+    local expl
 
-# Find out all of Perl's base pods
-if [[ "`which basepods`" == 'basepods not found' ]]; then
-    foo=( `find /usr/lib/perl5 -name perl.pod` )
-    perl_basepods=( ${foo:h}/*.pod(:r:t) )
-    unset foo
-else
-    local foo
-    foo=( `basepods` )
-    perl_basepods=( $foo:t:r )
-    unset foo
-fi
-
-# Find out all of Perl's built-in functions from perlfunc man page
-
-perlfunc=`man -w perlfunc` && \
-perl_funcs=(`perl -lne '$in_funcs++, next if /Alphabetical/; \
-                        next unless $in_funcs; \
-                        if (/^\.Ip "(\w+)/) { \
-                          print $1 unless $func{$1}; $func{$1}++ \
-                        }' $perlfunc` )
-
-# This one does something similar to pminst from tchrist's pmtools.
-# We don't call it dynamically from the completion because it's
-# too slow.
-
-compctl_pminst () {
-    local inc libdir new_pms_absolute new_pms
-    inc=( $( perl -e 'print "@INC"' ) )
-    reply=( )
-    for libdir in $inc; do
-        if [[ $libdir != '.' ]]; then
-#           echo Searching in $libdir ...
-            new_pms_absolute=( ${^libdir}/**/*.pm(N) )
-            new_pms=( $new_pms_absolute(:s#$libdir/##:s#site_perl/##:r:fs#/#::#) )
-            reply=( $new_pms $reply )
-        fi
-    done
+    _description expl user
+    compgen "$@" "$expl[@]" -k usernames -u
 }
-
-compctl_pminst_refresh () {
-    local reply
-    compctl_pminst
-    perl_modules=( $reply )
-    typeset -U perl_modules
-}
-
-if [[ "`which pminst`" == 'pminst not found' ]] compctl_pminst_refresh
-
-# }}}
-# {{{ Set functions to be used by completions
-
-compctl_whoson () {
-    # remember to remove duplicates, while keeping reply unlocal
-    typeset -U reply2
-    reply2=( `users` )
-    reply=( $reply2 )
-}
-
-compctl_dummy () {
-    reply=( $1 )
-}
-
-# These won't be necessary once we move to 3.1 or 3.2.
-# Extraneous variables needed because array interpolation inside
-# functions seems a little broken.
-
-compctl_glob_files_dirs_links () {
-    local dirs files files2 links link2
-
-    # Globbing flags:
-    #   /  directories
-    #   @  symlinks
-    #   N  avoid errors if non-existent
-    #   M  set MARK_DIRS for this glob (append a trailing / for dirs)
-    #
-    # ${^foo} construct turns on RC_EXPAND_PARAM (double for off)
-
-    dirs=( $1*(/NM) )
-    files=( $1$2(NM) )
-    links=( $1*(@NM) )
-    files2=( ${^files}" " )
-    links2=( ${^links}"/" )
-    reply=( ${dirs:-''} ${links2:-''} ${files:-''} )
-}
-
-
-compctl_spec () {
-    compctl_glob_files_dirs_links ${1:-''} "*.spec"
-}
-
-compctl_rpm () {
-    compctl_glob_files_dirs_links ${1:-''} "*.rpm"
-}
-
-compctl_targz () {
-    compctl_glob_files_dirs_links ${1:-''} "*.(tar.gz|t[ag]z|tar.Z|tz|tarZ)"
-}
-
-compctl_tar () {
-    compctl_glob_files_dirs_links ${1:-''} "*.tar"
-}
-
-compctl_pack () {
-    local dirs links link2
-    dirs=( /PACK/$1*(/NM) )
-    links=( /PACK/$1*(@NM) )
-    dirs2=( ${^dirs#/PACK/} )
-    links2=( ${^links#/PACK/}"/" )
-    reply=( ${dirs2:-''} ${links2:-''} )
-}
-
-# }}}
-
-# {{{ Shell builtins
-
-compctl -g '*(-/)' -n cd chdir dirs pushd
-compctl -c which
-compctl -a alias unalias
-compctl -v getln getopts read unset vared
-compctl -E export
-compctl -A shift
-compctl -c type whence where which
-compctl -m -x 'W[1,-*d*]' -n - 'W[1,-*a*]' -a - 'W[1,-*f*]' -F -- unhash
-compctl -m -q -S '=' -x 'W[1,-*d*] n[1,=]' -g '*(-/)' - \
-    'W[1,-*d*]' -n -q -S '=' - 'n[1,=]' -g '*(*)' -- hash
-compctl -F functions unfunction
-compctl -k '(al dc dl do le up al bl cd ce cl cr dc dl do ho is le ma nd nl se so up)' echotc
-compctl -v -S '=' -q declare export integer local readonly typeset
-compctl -eB -x 'p[1] s[-]' -k '(a f m r)' - \
-    'C[1,-*a*]' -ea - 'C[1,-*f*]' -eF - 'C[-1,-*r*]' -ew -- disable
-compctl -dB -x 'p[1] s[-]' -k '(a f m r)' - \
-    'C[1,-*a*]' -da - 'C[1,-*f*]' -dF - 'C[-1,-*r*]' -dw -- enable
-compctl -k "(${(j: :)${(f)$(limit)}%% *})" limit unlimit
-compctl -l '' -x 'p[1]' -f -- . source
-# Redirection below makes zsh silent when completing unsetopt xtrace
-compctl -s '$(setopt 2>/dev/null)' + -o + -x 's[no]' -o -- unsetopt
-compctl -s '$(unsetopt)' + -o + -x 's[no]' -o -- setopt
-compctl -s '${^fpath}/*(N:t)' autoload
-compctl -b bindkey
-compctl -c -x 'C[-1,-*k]' -A - 'C[-1,-*K]' -F - 'C[-1,-*L]' -s '$(compctl -L | grep -vE "^compctl -[CDT]" | awk "{print \$NF}")' -- compctl
-compctl -x 'C[-1,-*e]' -c - 'C[-1,-[ARWI]##]' -f -- fc
-compctl -x 'p[1]' - 'p[2,-1]' -l '' -- sched
-compctl -x 'C[-1,[+-]o]' -o - 'c[-1,-A]' -A -- set
-# Anything after nohup is a command by itself with its own completion
-compctl -l '' nohup noglob exec nice eval - time rusage
-compctl -l '' -x 'p[1]' -eB -- builtin
-compctl -l '' -x 'p[1]' -em -- command
-compctl -x 'p[1]' -c - 'p[2,-1]' -k signals -- trap
-
-# Another possibility for cd/pushd is to use it in conjunction with the
-# cdmatch function (in the Functions subdirectory of zsh distribution).
-#compctl -K cdmatch -S '/' -q -x 'p[2]' -Q -K cdmatch2 - \
-#    'S[/][~][./][../]' -g '*(-/)' + -g '*(-/D)' - \
-#    'n[-1,/]' -K cdmatch -S '/' -q -- cd chdir pushd
-
-# }}}
-
-# {{{ File management
-
-compctl -g '*(-/)' -n md mkdir rd rmdir
-compctl -s '$(groups)' + -k groups newgrp mp
-
-# }}}
-# {{{ Compression and decompression
-
-compctl -f -g '*(-/)' -x 'p[1],s[-]' -k '(ztvf zcvf zxf zxvf tvf cvf xvf -ztvf -zcvf -zxf -zxvf -tvf -cvf -xvf)' - 'W[1,*c*]' -f -g '*(-/)' - 'W[1,*(z*f|f*z)*] p[2]' -K compctl_targz -Q -S '' - 'W[1,*f*] p[2]' -K compctl_tar -Q -S '' -- gnutar gtar tar
-compctl -x 'R[-*[dt],^*]' -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' + -f - \
-    's[]' -g '^*(.(tz|gz|t[agp]z|tarZ|zip|ZIP|jpg|JPG|gif|GIF|[zZ])|[~#])' \
-    + -f -- gzip
-compctl -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' gunzip gzcat zcat
-compctl -g '*.Z' + -g '*(-/)' uncompress zmore
-compctl -g '*.F' + -g '*(-/)' melt fcat
-
-# }}}
-# {{{ Changing permissions
-
-compctl -f -x 'p[1], p[2] C[-1,-*]' -k groups -- chgrp
-compctl -f -x 'p[1] n[-1,.][-1,:], p[2] C[-1,-*] n[-1,.][-1,:]' -k groups - \
-    'p[1], p[2] C[-1,-*]' -u -S ':' -q -- chown
-compctl -f -x 'p[1]' -k '(600 644 700 755 1775 4775 -R)' - 'p[2] w[1,-R]' -k '(600 644 700 755 1775 4775)' - 'p[2] s[-]' -k '(R)' -- chmod
-
-# }}}
-# {{{ Processes and jobs
-
-compctl -x 's[-],p[1]' -k '(aux auxww)' -- ps
-compctl -X 'ra does not take arguments' ra
-compctl -K compctl_whoson rj
-compctl -K compctl_whoson ru
-compctl -z -P '%' bg
-compctl -j -P '%' fg jobs disown
-compctl -j -P '%' + -s '`ps -x | tail +2 | cut -c1-5`' wait
-
-# kill takes signal names as the first argument after -, but job names
-# after % or PIDs as a last resort
-
-compctl -j -P '%' + -s '`ps -x | tail +2 | cut -c1-5`' + \
-    -x 's[-] p[1]' -k "($signals[1,-3])" -- kill
 
 # }}}
 
@@ -1013,17 +1024,15 @@ compctl -K compctl_whoson last lh write
 # }}}
 # {{{ Connecting to remote hosts
 
-compctl -k hostnames ping telnet ftp host nslookup rup rusers
+_hosts () {
+  local expl
 
-# If the command is rsh, make the first argument complete to hosts and treat the
-# rest of the line as a command on its own.
-compctl -k hostnames -x 'p[2,-1]' -l '' -- rsh
+  : ${(A)hosts:=${(s: :)${(ps:\t:)${${(f)"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+  hosts=( $hostnames $hosts )
 
-# rlogin takes hosts and users after `-l'
-compctl -k hostnames -x 'c[-1,-l]' -k usernames -- rlogin
-
-compctl -k hostnames -x 'c[-1,-l]' -k usernames -- \
-    + -k usernames -S '@' -x 'n[1,@]' -k hostnames -- ssh
+  _description expl host
+  compadd -M 'm:{a-zA-Z}={A-Za-z} r:|.=* r:|=*' "$@" "$expl[@]" - "$hosts[@]"
+}
 
 compctl -x 'n[1,:]' -f - \
            'n[1,@]' -k hostnames -S ':' - \
@@ -1034,287 +1043,6 @@ compctl -x 'n[1,:]' -f - \
       + -k hostnames -S ':' \
       + -f \
     rcp scp
-
-# talk completion: complete local users, or users at hosts listed via rwho
-#compctl -K talkmatch talk ytalk ytalk3
-#function talkmatch {
-#    local u
-#    reply=($(users))
-#    for u in "${${(f)$(rwho 2>/dev/null)}%%:*}"; do
-#    reply=($reply ${u%% *}@${u##* })
-#    done
-#}
-
-# }}}
-# {{{ Running new shells
-
-# shells: compctl needs some more enhancement to do -c properly.
-compctl -f -x 'C[-1,-*c]' -c - 'C[-1,[-+]*o]' -o -- bash ksh sh zsh
-
-# su takes a username and args for the shell.
-compctl -u -x 'w[1,-]p[3,-1]' -l sh - 'w[1,-]' -u - 'p[2,-1]' -l sh -- su
-
-# }}}
-
-# {{{ dd
-
-compctl -k '(if of conv ibs obs bs cbs files skip file seek count)' \
-    -S '=' -x 's[if=], s[of=]' -f - 'C[0,conv=*,*] n[-1,,], s[conv=]' \
-    -k '(ascii ebcdic ibm block unblock lcase ucase swap noerror sync)' \
-    -q -S ',' - 'n[-1,=]' -X '<number>'  -- dd
-
-# }}}
-# {{{ man
-
-# There are (at least) two ways to complete manual pages. 
-
-#compctl -c -x 's[-]' -k '(M P S a c d D f k K w W)' + -f -- man
-
-# This one is extremely memory expensive if you have lots of man pages
-
-man_var() {
-    man_pages=( ${^$(man -w | sed 's/:/ /g')}/man*/*(N:t:r) )
-    compctl -k man_pages -x 'C[-1,-P]' -m - \
-        'R[-*l*,;]' -- + -g '*.(man|[0-9nlpo](|[a-z])) *(-/)' man
-    reply=( $man_pages )
-}
-compctl -K man_var -x 'C[-1,-P]' -m - \
-    'R[-*l*,;]' -- + -g '*.(man|[0-9nlpo](|[a-z])) *(-/)' man
-
-# This one isn't that expensive but somewhat slower
-
-#man_glob () {
-#   local a
-#   read -cA a
-#   if [[ $a[2] == -s ]] then         # Or [[ $a[2] == [0-9]* ]] for BSD
-#     reply=( ${^$(man -w | sed 's/:/ /g')}/man$a[3]/$1*$2(N:t:r) )
-#   else
-#     reply=( ${^$(man -w | sed 's/:/ /g')}/man*/$1*$2(N:t:r) )
-#   fi
-#}
-#compctl -K man_glob -x 'C[-1,-P]' -m - \
-#    'R[-*l*,;]' -g '*.(man|[0-9nlpo](|[a-z]))' + -g '*(-/)' -- man
-
-# }}}
-# {{{ find
-
-compctl  -g '*(-/)' -d -x 'c[-1,-name]' -f - 'c[-1,-newer]' -f - 'c[-1,-{,n}cpio]' -f - 'c[-1,-exec]' -c - 'c[-1,-ok]' -c - 'c[-1,-user]' -u - 'c[-1,-group]'  - 'c[-1,-fstype]' -k '(nfs 4.2)' - 'c[-1,-type]' -k '(b c d f l p s)' - 's[-]' -k '(name newer cpio ncpio exec ok user group fstype type atime ctime depth inum ls mtime nogroup nouser perm print prune size xdev)' -- find
-# Find is very system dependent, this one is for GNU find.
-# Note that 'r[-exec,;]' must come first
-compctl -x \
-    'r[-exec,;][-ok,;]' -l '' - 's[-]' \
-    -s 'daystart {max,min,}depth follow noleaf version xdev {a,c,}newer {a,c,m}{min,time} empty false {fs,x,}type gid inum links {i,}{l,}name {no,}{user,group} path perm regex size true uid used exec {f,}print{f,0,} ok prune ls' - \
-    'p[1]' -g '. .. *(-/)' - \
-    'C[-1,-((a|c|)newer|fprint(|0|f))]' -f - \
-    'c[-1,-fstype]' -s $filesystems - \
-    'c[-1,-group]' -k groups - \
-    'c[-1,-user]' -u -- find
-
-# }}}
-# {{{ xsetroot
-
-compctl -k '(-help -def -display -cursor -cursor_name -bitmap -mod -fg -bg -grey -rv -solid -name)' -x \
-    'c[-1,-display]' -s '$DISPLAY' -k hosts -S ':0' - \
-    'c[-1,-cursor]' -f -  'c[-2,-cursor]' -f - \
-    'c[-1,-bitmap]' -g '/usr/include/X11/bitmaps/*' - \
-    'c[-1,-cursor_name]' -K Xcursor - \
-    'C[-1,-(solid|fg|bg)]' -K Xcolours -- xsetroot
-
-# }}}
-# {{{ wl
-
-compctl -c wl
-
-# }}}
-
-# {{{ Box administration-type commands
-
-# {{{ RedHat Linux rpm utility
-
-compctl -s '$(rpm -qa)' -x \
-    's[--]' -s 'oldpackage percent replacefiles replacepkgs noscripts root excludedocs includedocs test upgrade test clean short-circuit sign recompile rebuild resign querytags queryformat version help quiet rcfile force hash' - \
-    's[ftp:]' -P '//' -s '$(<~/.zsh/ftphosts)' -S '/' - \
-    'c[-1,--root]' -g '*(-/)' - \
-    'c[-1,--rcfile]' -f - \
-    'p[1] s[-b],s[-t]' -k '(p l c i b a)' - \
-    'C[-1,-b*]' -K compctl_spec -Q -S '' - \
-    'C[-1,-t*]' -K compctl_targz -Q -S '' - \
-    'c[-1,--queryformat] N[-1,{]' \
-        -s '"${${(f)$(rpm --querytags)}#RPMTAG_}"' -S '}' - \
-    'W[1,-q*] C[-1,-([^-]*|)f*]' -f - \
-    'W[1,-([^-]*|)([iU])*], W[1,-q*] C[-1,-([^-]*|)p*], r[--rebuild,qux][--recompile,qux]' \
-      -K compctl_rpm -Q -S '' -- \
-  rpm
-
-# }}}
-# {{{ edquota
-
-compctl -k usernames edquota
-
-# }}}
-# {{{ loadkeys
-
-compctl -g '/usr/lib/kbd/keytables/*(:t)' loadkeys
-
-# }}}
-# {{{ setfont
-
-compctl -g '/usr/lib/kbd/consolefonts/*(:t)' setfont
-
-# }}}
-
-# }}}
-
-# {{{ C/C++/program building
-
-# {{{ make and relations
-
-compctl -s "\$(awk '/^[a-zA-Z0-9][^     ]+:/ {print \$1}' FS=: [mM]akefile)" \
-  -x 'c[-1,-f]' -f -- make gmake pmake
-
-# }}}
-# {{{ cc
-
-# Generic completion for C compiler.
-compctl -g "*.[cCoa]" -x 's[-I]' -g "*(-/)" - \
-    's[-l]' -s '${(s.:.)^LD_LIBRARY_PATH}/lib*.a(:t:r:s/lib//)' -- cc
-
-# }}}
-# {{{ gcc
-
-# GCC completion, by Andrew Main
-# completes to filenames (*.c, *.C, *.o, etc.); to miscellaneous options after
-# a -; to various -f options after -f (and similarly -W, -g and -m); and to a
-# couple of other things at different points.
-# The -l completion is nicked from the cc compctl above.
-# The -m completion should be tailored to each system; the one below is i386.
-compctl -g '*.([cCmisSoak]|cc|cxx|ii|k[ih])' -x \
-    's[-l]' -s '${(s.:.)^LD_LIBRARY_PATH}/lib*.a(:t:r:s/lib//)' - \
-    'c[-1,-x]' -k '(none c objective-c c-header c++ cpp-output assembler assembler-with-cpp)' - \
-    'c[-1,-o]' -f - \
-    'C[-1,-i(nclude|macros)]' -g '*.h' - \
-    'C[-1,-i(dirafter|prefix)]' -g '*(-/)' - \
-    's[-B][-I][-L]' -g '*(-/)' - \
-    's[-fno-],s[-f]' -k '(all-virtual cond-mismatch dollars-in-identifiers enum-int-equiv external-templates asm builtin strict-prototype signed-bitfields signd-char this-is-variable unsigned-bitfields unsigned-char writable-strings syntax-only pretend-float caller-saves    cse-follow-jumps cse-skip-blocks delayed-branch elide-constructors expensive-optimizations fast-math float-store force-addr force-mem inline-functions keep-inline-functions memoize-lookups default-inline defer-pop function-cse inline peephole omit-frame-pointer rerun-cse-after-loop schedule-insns schedule-insns2 strength-reduce thread-jumps unroll-all-loops unroll-loops)' - \
-    's[-g]' -k '(coff xcoff xcoff+ dwarf dwarf+ stabs stabs+ gdb)' - \
-    's[-mno-][-mno][-m]' -k '(486 soft-float fp-ret-in-387)' - \
-    's[-Wno-][-W]' -k '(all aggregate-return cast-align cast-qual char-subscript comment conversion enum-clash error format id-clash-6 implicit inline missing-prototypes missing-declarations nested-externs import parentheses pointer-arith redundant-decls return-type shadow strict-prototypes switch template-debugging traditional trigraphs uninitialized unused write-strings)' - \
-    's[-]' -k '(pipe ansi traditional traditional-cpp trigraphs pedantic pedantic-errors nostartfiles nostdlib static shared symbolic include imacros idirafter iprefix iwithprefix nostdinc nostdinc++ undef)' \
-    -X 'Use "-f", "-g", "-m" or "-W" for more options' -- gcc g++
-
-# }}}
-# {{{ Utilities for executables
-
-# strip, profile, and debug only executables.  The compctls for the
-# debuggers could be better, of course.
-
-#compctl -g '*(*)' strip gprof adb dbx xdbx ups
-#compctl -g '*.[ao]|*(*)' nm
-
-# }}}
-
-# }}}
-# {{{ Perl
-
-if [[ "`which pminst`" == "pminst not found" ]]; then
-    compctl -k perl_modules + -f pmpath pmvers pmdesc pmload pmexp pmeth pmls pmcat pman pmfunc podgrep podtoc podpath
-    compctl -k perl_modules -k perl_basepods -f -x 'c[-1,-f]' -k perl_funcs -- + -k man_pages perldoc
-else
-    compctl -s '$(pminst)' + -f pmpath pmvers pmdesc pmload pmexp pmeth pmls pmcat pman pmfunc podgrep podtoc podpath
-    compctl -s '$(pminst)' -k perl_basepods -f -x 'c[-1,-f]' -k perl_funcs -- + -k man_pages perldoc
-fi
-
-# }}}
-# {{{ RCS
-
-# For rcs users, co and rlog from the RCS directory.  We don't want to see
-# the RCS and ,v though.
-compctl -g 'RCS/*(:s@RCS/@@:s/,v//)' co rlog rcs rcsdiff
-
-# }}}
-# {{{ CVS
-
-# By Bart Schaefer, tweaked by Adam Spiers
-#
-# There's almost no way to make this all-inclusive, but ...
-#
-#
-cvsflags=(-H -Q -q -r -w -l -n -t -v -b -e -d)
-cvscmds=(add admin checkout commit diff history import export log rdiff
-	    release remove status tag rtag update)
-cvshelpcmds=(--help --help-commands --help-options --help-synonyms)
-
-# diff assumes gnu rcs using gnu diff
-# log assumes gnu rcs
-
-compctl -k "($cvscmds $cvsflags)" \
-    -x "c[-1,-D]" -k '(today yesterday 1\ week\ ago)' \
-    - "r[add,;][new,;]" -k "(-k -m)" -f \
-    - "r[admin,;][rcs,;]" -K cvstargets \
-    - "r[checkout,;][co,;][get,;]" -k "(-A -N -P -Q -c -f -l -n -p -q -s -r -D -d -k -j)" \
-    - "r[commit,;][ci,;]" -k "(-n -R -l -f -m -r)"  -K cvstargets \
-    - "r[diff,;]" -k "(-l -D -r -c -u -b -w)" -K cvstargets \
-    - "r[history,;] c[-1,-u]" -u \
-    - "r[history,;]" \
-	-k "(-T -c -o -m -x -a -e -l -w -D -b -f -n -p -r -t -u)" \
-	-K cvstargets \
-    - "r[import,;]" -k "(-Q -q -I -b -m)" -f \
-    - "r[export,;]" -k "(-N -Q -f -l -n -q -r -D -d)" -f \
-    - "r[rlog,;][log,;]" -k "(-l -R -h -b -t -r -w)" -K cvstargets \
-    - 'r[rlog,;][log,;] s[-w] n[-1,,],s[-w]' -u -S , -q \
-    - "r[rdiff,;][patch,;]" -k "(-Q -f -l -c -u -s -t -D -r -V)" -K cvstargets \
-    - "r[release,;]" -k "(-Q -d -q)" -f \
-    - "r[remove,;][rm,;][delete,;]" -k "(-l -R)" -K cvstargets \
-    - "r[status,;]" -k "(-v -l -R)" -K cvstargets \
-    - "r[tag,;][freeze,;]" -k "(-Q -l -R -q -d -b)" -K cvstargets \
-    - "r[rtag,;][rfreeze,;]" -k "(-Q -a -f -l -R -n -q -d -b -r -D)" -f \
-    - "r[update,;]" -k "(-A -P -Q -d -f -l -R -p -q -k -r -D -j -I)" \
-	-K cvstargets \
-    - "p[1]" -k "($cvscmds $cvsflags $cvshelpcmds)" \
-    -- cvs
-unset cvsflags cvscmds
-
-cvstargets() {
-    local nword args pref f
-    setopt localoptions nullglob
-    read -nc nword; read -Ac args
-    pref=$args[$nword]
-    if [[ -d $pref:h && ! -d $pref ]]
-    then
-	pref=$pref:h
-    elif [[ $pref != */* ]]
-    then
-	pref=
-    fi
-    [[ -n "$pref" && "$pref" != */ ]] && pref=$pref/
-    if [[ -f ${pref}CVS/Entries ]]
-    then
-	reply=( "${pref}${^${${(f@)$(<${pref}CVS/Entries)}#/}%%/*}"
-		${pref}*/**/CVS(:h) )
-    else
-	reply=( ${pref}*/**/CVS(:h) )
-    fi
-}
-
-# }}}
-
-# {{{ TeX-/LaTeX-/PS- related
-
-# {{{ xdvi
-
-compctl -g '*.dvi' -x 's[-]' -k '(nogrey gamma margins sidemargin topmargin offsets xoffset yoffset paper altfont expert hush hushspecials hushchars hushchecksums display geometry icongeometry iconic keep copy thorough nopostscript noghostscript version maketexpk mfmode)' -- xdvi
-
-# }}}
-
-# Run ghostscript on postscript files, but if no postscript file matches what
-# we already typed, complete directories as the postscript file may not be in
-# the current directory.
-compctl -g '*.(e|E|)(ps|PS)' + -g '*(-/)' \
-    gs ghostview nup psps pstops psmulti psnup psselect
-
-# Similar things for tex, texinfo and dvi files.
-compctl -g '*.tex*' + -g '*(-/)' {,la,gla,ams{la,},{g,}sli}tex texi2dvi
-compctl -g '*.dvi' + -g '*(-/)' dvips
 
 # }}}
 
@@ -1345,9 +1073,15 @@ bindkey -s '^[[Z' '\t'
 # }}}
 # {{{ ls colours
 
-if [[ `which dircolors` != "dircolors not found" ]]; then
-    eval "`dircolors -b`"
+if which dircolors >/dev/null; then
+  # show directories in yellow
+  eval "`dircolors -b <(echo 'DIR 01;33')`"
 fi
+
+if [[ $ZSH_VERSION > 3.1.5 ]]; then
+  zmodload -i complist
+  ZLS_COLOURS=${LS_COLORS-${LS_COLOURS-''}}
+fi  
 
 # }}}
 
@@ -1355,7 +1089,7 @@ fi
 
 # {{{ Specific to xterms
 
-if [[ ${TERM:-''} == 'xterm' ]]; then
+if [[ ${TERM:-''} == xterm* ]]; then
     unset TMOUT
 fi
 
@@ -1372,14 +1106,18 @@ fi
 
 # }}}
 
-# {{{ Lines added by compinstall from zsh 3.1.6
+# {{{ New advanced completion system
 
 # The following lines were added by compinstall
-_compdir=/opt/zsh-3.1.6/share/zsh/functions
+_compdir=/usr/share/zsh/functions
 [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
 autoload -U compinit
 compinit
-compconf completer=_complete:_correct:_approximate
+compconf completer=_complete 
 # End of lines added by compinstall
+
+compconf description_format="$fg_bold_white%d$fg_white"
+compconf group_matches=yep
+compconf describe_options=yep
 
 # }}}
