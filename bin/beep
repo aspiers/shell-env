@@ -1,2 +1,19 @@
-#!/bin/sh
-echo -ne "\a"
+#!/usr/bin/perl
+
+if ($ARGV[0] =~ /^--?h(elp)?$/) {
+  die <<USAGE
+Usage: beep <count> <delay_secs>
+USAGE
+}
+
+$| = 1;
+
+my ($count, $sleep) = @ARGV;
+$count ||= 1;
+$sleep ||= 1;
+
+while ($count) {
+  print "\a";
+  $count--;
+  sleep $sleep if $count;
+}
