@@ -1,7 +1,5 @@
 #autoload
 
-cxx () {
-  # pop
-  (( $#title )) && shift title ititle
-  cx "$@"
-}
+# Pop a title, and optionally push a new one.
+(( $#titles )) && shift titles
+cx "$@"
