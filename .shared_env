@@ -77,9 +77,11 @@ PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 # Note order gets reversed
 for newpath in                                        \
                ~/local/bin                            \
+               ~/local/sbin                           \
                ~/local/$OSTYPE/bin                    \
                ~/bin/{shortcuts,awk,palm,backgrounds} \
                ~/bin                                  \
+               ~/sbin                                 \
 ; do
   [ -d $newpath ] && PATH=$newpath:$PATH
 done

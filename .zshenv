@@ -68,7 +68,7 @@ typeset -U path # No duplicates
 
 # notice nasty hack for old zsh
 path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin /[u]sr/X11R6/bin(N) )
-path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}(N) $path )
+path=( $zdotdir/{[l]ocal/{s,}bin,[p]ackbin,{s,}[b]in,[b]in/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
 # {{{ manpath
