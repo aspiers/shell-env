@@ -24,6 +24,7 @@
 # {{{ Loading status
 
 zshrc_load_status () {
+  # \e[0K is clear to right
   echo -n "\r.zshrc load: $* ... \e[0K"
 }
 
