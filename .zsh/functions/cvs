@@ -5,8 +5,8 @@ quiet=''
 
 home=${ZDOTDIR:-$HOME}
 
-normal_colourer=$home/bin/colour-cvs-output.awk
-diff_colourer=$home/bin/colour-diff-output.awk
+normal_colourer=$home/bin/awk/colour-cvs-output.awk
+diff_colourer=$home/bin/awk/colour-diff-output.awk
 
 colourer=''
 
