@@ -207,6 +207,7 @@ L4=/usr/src/linux-2.4
 CV=/usr/local/cvsroot
 RC=/etc/rc.d/init.d
 VL=/var/log
+VLH=$VL/httpd
 SC=/etc/sysconfig
 NS=/etc/sysconfig/network-scripts
 # in zsh:
