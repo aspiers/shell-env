@@ -3,8 +3,8 @@
 # dbm -- simple DBM file reader/writer
 #
 # Copyright (c) 1999 Adam Spiers <adam@spiers.net>. All rights
-# reserved. This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl itself.
+# reserved. This program is free software; you can redistribute it
+# and/or modify it under the same terms as Perl itself.
 #
 # Version 0.17
 #
