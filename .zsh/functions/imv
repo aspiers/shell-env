@@ -42,6 +42,11 @@ fi
 dest="$src"
 vared -p 'New name: ' dest
 
+if [[ "$src" == "$dest" ]]; then
+  print "$me: cannot move $src to itself"
+  return 1
+fi
+
 if [[ -e "$dest" ]]; then
   print "$me: $dest already exists; aborting"
   return 1
