@@ -5,6 +5,8 @@
 # $Id$
 
 # .bashrc is invoked by non-login interactive shells
+# and by login interactive shells via a hook in my
+# .bash_profile
 
 # {{{ Environment
 
