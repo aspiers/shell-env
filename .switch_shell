@@ -12,6 +12,9 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
+# Give hook a .local suffix for consistency in case we need to exclude local stuff
+preferred_hook=$HOME/.preferred_shell.local
+
 if [ "$1" = '-d' ]; then
   debug=yes
   shift
@@ -25,7 +28,7 @@ if [ -n "$1" ]; then
   shift
   myshell_args="$@"
 else
-  [ -e ~/.preferred_shell ] && . ~/.preferred_shell
+  [ -e $preferred_hook ] && . $preferred_hook
 #   # Sensible default shell to switch to.
 #   myshell=`which zsh` 2>/dev/null
 fi
