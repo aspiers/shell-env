@@ -198,7 +198,7 @@ fpath=(
 
 for dirname in $fpath; do
   fns=( $dirname/*~*~(N.x:t) )
-  (( $#fns )) && autoload $fns
+  (( $#fns )) && autoload "$fns"
 done
 
 #[[ "$ZSH_VERSION_TYPE" == 'new' ]] || typeset -gU fpath
@@ -780,7 +780,10 @@ alias tf='less +F'
 # }}}
 # {{{ arch
 
-which larch >&/dev/null && alias a=larch
+if which larch >&/dev/null; then
+  alias a=larch
+  compdef _larch a
+fi
 
 # }}}
 
