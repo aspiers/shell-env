@@ -710,10 +710,6 @@ dsa >&/dev/null
 
 alias sa=ssh-add
 
-### BEGIN PRIVATE
-alias th='ssh -l adam thelonious.new.ox.ac.uk'
-### END PRIVATE
-
 # }}}
 # {{{ ftp
 
