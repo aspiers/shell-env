@@ -17,13 +17,20 @@ if [ "$1" = '-d' ]; then
   shift
 fi
 
+myshell=
+myshell_args=
+
 if [ -n "$1" ]; then
   myshell="$1"
   shift
+  myshell_args="$@"
 else
-  # Sensible default shell to switch to.
-  myshell=`which zsh` 2>/dev/null
+  . ~/.preferred_shell
+#   # Sensible default shell to switch to.
+#   myshell=`which zsh` 2>/dev/null
 fi
+
+[ -z "$myshell" ] && return 0
 
 # Very cute trick from Bart Schaefer which is a valid alternative approach
 #eval `$myshell -f -c "echo exec $myshell" || echo :` '"$@"'
@@ -61,6 +68,7 @@ switch_shell () {
        ;;
     *) # other shell, be risky and save memory
        switch_shell_dangerously "$@"
+#       switch_shell_safely "$@"
        ;;
   esac
 }

@@ -16,8 +16,7 @@
 
 # {{{ Try to switch shell
 
-[ -r ~/.preferred_shell ] && [ -r ~/.switch_shell ] && \
-  eval ". ~/.switch_shell `cat ~/.preferred_shell`"
+[ -r ~/.switch_shell ] && . ~/.switch_shell
 
 # }}}
 # {{{ Source global definitions
