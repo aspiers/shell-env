@@ -12,6 +12,8 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
+# FIXME: move shell chooser code into .ns
+
 # Give hook a .local suffix for consistency in case we need to exclude local stuff
 preferred_hook=$HOME/.preferred_shell.local
 
@@ -28,13 +30,30 @@ if [ -n "$1" ]; then
   shift
   myshell_args="$@"
 else
-  [ -e $preferred_hook ] && . $preferred_hook
-#   # Sensible default shell to switch to.
-#   myshell=`which zsh` 2>/dev/null
+  if [ -e $preferred_hook ]; then
+    if grep '=' $preferred_hook >/dev/null 2>&1; then
+      . $preferred_hook
+#     # Sensible default shell to switch to.
+#     myshell=`which zsh` 2>/dev/null
+    else
+      echo "$preferred_hook doesn't look like a shell script; aborting shell switch" >&2
+      return 0
+    fi
+  fi
+fi
+
+if [ -n "$ZDOTDIR" ]; then
+  . "$ZDOTDIR/.shared_env"
+fi
+
+if sh_load_status "testing if we have sh_load_status" >/dev/null 2>&1; then
+  _have_sh_load_status=1
+else
+  echo "Warning: no sh_load_status" >&2
 fi
 
 switch_shell_debug () {
-  [ -n "$debug" ] && sh_load_status "$*\n"
+  [ -n "$debug" ] && [ -n "$_have_sh_load_status" ] && sh_load_status "$*\n"
 }
 
 if [ -z "$myshell" ]; then

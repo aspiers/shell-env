@@ -3,20 +3,25 @@
 # .ns - Nice Shell
 # (short name for quick invocation from other shells)
 #
-# Source this to get a decent setup from another
-# account.
+# Source this to get a decent setup from another account.
 #
 # $Id$
 #
 
 if [ -z "$ZDOTDIR" ]; then
   # We have to intelligently guess where this file is.
-  here="`dirname ${1:-$0}`"
+
+  # When this file is sourced:
+  #   in sh/bash/ksh, $0 becomes the interpreter name (i.e. 'bash' etc.)
+  #   in zsh,         $0 becomes the argument to source (i.e. this file)
+
+  here="`dirname $0`"
   if ! [ -e $here/.zshrc ]; then
     echo "$here missing .zshrc, aborting."
     return
   fi
 
+  # not sure why I bothered with this
   here="`$here/bin/shortcuts/abs $0`"
   here="`dirname $here`"
 
@@ -40,13 +45,13 @@ case "$SHELL" in
   *bash) source "$ZDOTDIR/.bashenv"
          source "$ZDOTDIR/.bashrc"
          # Are you feeling lucky, punk?
-         SHLVL=force_danger source "$ZDOTDIR/.switch_shell"
+         SHLVL=force_danger source "$ZDOTDIR/.switch_shell" "$@"
          ;;
 
    *zsh) source "$ZDOTDIR/.zshenv"
          source "$ZDOTDIR/.zshrc"
          ;;
 
-      *) source "$ZDOTDIR/.switch_shell"
+      *) source "$ZDOTDIR/.switch_shell" "$@"
          ;;
 esac

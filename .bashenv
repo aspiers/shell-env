@@ -19,7 +19,7 @@
 
 shell=bash
 
-[ -r $HOME/.shared_env ] && . $HOME/.shared_env
+[ -r ${ZDOTDIR:-$HOME}/.shared_env ] && . ${ZDOTDIR:-$HOME}/.shared_env
 
 sh_load_status .bashenv
 
