@@ -7,10 +7,10 @@ Meta-n: history-search-forward
 
 # Crap from RedHat 6.2's /etc/inputrc
 
-set meta-flag on
-set input-meta on
-set convert-meta off
-set output-meta on
+set meta-flag On
+set input-meta On
+set convert-meta Off
+set output-meta On
 
 "\eOd": backward-word
 "\eOc": forward-word
