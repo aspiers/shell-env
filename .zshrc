@@ -326,9 +326,6 @@ hosts=(
     localhost
 
 ### BEGIN PRIVATE
-    # Home
-    {casals,tulip}.home
-
     # New College
     thelonious.new.ox.ac.uk 163.1.145.129
 
@@ -390,7 +387,6 @@ zstyle ':completion:*' hosts $hosts
 ### BEGIN PRIVATE
 my_accounts=(
   {localadams,root}:{pulse.{localdomain,guideguide.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
-  {adam,yan,root}:{casals,tulip}.home
   {adam,root}:thelonious.new.ox.ac.uk
   adam:hewes.icl.ox.ac.uk
   {adams,root}:
@@ -398,6 +394,7 @@ my_accounts=(
   {adams,root}:server1.w3w.net
   {adams,root}:{proxy.guideguide.com,195.217.36.66}
   adamspiers:zsh.sourceforge.net
+  adam:landfill.tequilarista.org
 )
 ### END PRIVATE
 
