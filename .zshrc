@@ -854,7 +854,7 @@ fi
 # {{{ remote logins
 
 ssh () {
-  cx -l "${(M)argv:#*@*}" # pick out user@host word from argv
+  cx -l "${${(M@)argv:#*@*}:-$1}" # pick out user@host word from argv
   command ssh "$@"
   cxx
 }
