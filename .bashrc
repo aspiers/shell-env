@@ -4,9 +4,10 @@
 #
 # $Id$
 
-# .bashrc is invoked by non-login interactive shells
-# and by login interactive shells via a hook in my
-# .bash_profile
+# .bashrc is invoked by non-login interactive shells and by login
+# interactive shells via a hook in my .bash_profile; also when bash is
+# invoked from rshd (or similar?)
+
 
 # {{{ Environment
 
@@ -77,12 +78,28 @@ elif ls --color >&/dev/null; then
 fi
 
 # jeez I'm lazy ...
-alias l='ls -l'
-alias la='ls -la'
-alias lsa='ls -a'
-alias lsh='ls -d .*'
-alias ld='ls -ld'
-# damn, missed out lsd :-)
+alias l='ls -lh'
+alias ll='ls -l'
+alias la='ls -lha'
+alias lla='ls -la'
+alias lsa='ls -ah'
+alias lsd='ls -d'
+alias lsh='ls -dh .*'
+alias lsr='ls -Rh'
+alias ld='ls -ldh'
+alias lt='ls -lth'
+alias llt='ls -lt'
+alias lrt='ls -lrth'
+alias llrt='ls -lrt'
+alias lart='ls -larth'
+alias llart='ls -lart'
+alias lr='ls -lRh'
+alias llr='ls -lR'
+alias lsL='ls -L'
+alias lL='ls -Ll'
+alias lS='ls -lSh'
+alias llS='ls -lS'
+alias sl=ls # often screw this up
 
 # }}}
 # {{{ File management
