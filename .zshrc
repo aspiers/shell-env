@@ -101,7 +101,7 @@ setopt \
         hist_allow_clobber \
         hist_beep \
         hist_ignore_dups \
-        hist_ignore_space \
+     NO_hist_ignore_space \
      NO_hist_no_store \
         hist_verify \
      NO_hup \
