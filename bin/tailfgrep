@@ -27,15 +27,17 @@
 use strict;
 use Getopt::Long;
 
-my ($quiet, $inverse) = (0, 0);
+my ($quiet, $inverse, $match) = (0, 0, 0);
 GetOptions(
            "quiet|q" => \$quiet,
-           "inverse|v" => \$inverse
+           "inverse|v" => \$inverse,
+           "match|m" => \$match,
           );
 
 unless (@ARGV) {
   die <<EOF;
 Usage: tailfgrep [ options ] <Perl regexp> <file1> [ <file2> [ <file3> ... ] ]
+   -m, --match    --  echo everything to STDOUT, exit when first match found
    -q, --quiet    --  quiet mode, same as grep -q; don't print matches,
                       exit when first match found
    -v, --inverse  --  inverse mode (print lines which don't match)
@@ -61,22 +63,14 @@ while (1) {
     my $fh = $fh{$file};
     while (defined($_ = <$fh>)) {
       if ($quiet) {
-        match($_) && exit 0;
+        exit 0 if match($_);
+      }
+      elsif ($match) {
+        output_line($file);
+        exit 0 if match($_);
       }
       else {
-        if(match($_)) {
-          if (@files > 1) {
-            if ($file ne $last_file) {
-              print "\n==> $file <==\n\n";
-            }
-            print;
-            $last_file = $file;
-          }
-          else {
-            print;
-            $last_file = $file;
-          }
-        }
+        output_line($file) if match($_);
       }
     }
     seek($fh, 0, 1); # clear EOF
@@ -92,4 +86,20 @@ foreach my $file (@files) {
 sub match {
   my ($line) = @_;
   return ($line =~ /$re/) ^ $inverse;
+}
+
+sub output_line {
+  my ($file) = @_;
+  
+  if (@files > 1) {
+    if ($file ne $last_file) {
+      print "\n==> $file <==\n\n";
+    }
+    print;
+    $last_file = $file;
+  }
+  else {
+    print;
+    $last_file = $file;
+  }
 }
