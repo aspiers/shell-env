@@ -499,6 +499,7 @@ alias ls='/bin/ls --color -F'
 alias l='ls -l'
 alias la='ls -la'
 alias lsa='ls -a'
+alias lsh='ls -d .*'
 alias ld='ls -ld'
 # damn, missed out lsd :-)
 
