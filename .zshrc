@@ -816,7 +816,7 @@ End_of_Perl
       -u "adam	Adam Spiers	adam@spiers.net" \
       -u "localadams	Adam Spiers	adam@spiers.net" \
       -u "adams	Adam Spiers	aspiers@guideguide.com" \
-      $@" | less
+      "$@" | less
   }
 
   cvss () {
