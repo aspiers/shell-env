@@ -88,7 +88,7 @@ my $diff_opts = $opts{unified} ? '-u ' :
                 $opts{context} ? '-d ' :
                 $opts{quiet}   ? '-q ' : '';
 
--d $opts{cache} or mkdir $opts{cache};
+-d $opts{cache} or mkdir $opts{cache}, 0777;
 
 my $hash = md5_base64($cmd);
 my $old = "$opts{cache}/$hash";
