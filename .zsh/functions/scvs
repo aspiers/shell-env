@@ -20,7 +20,7 @@ scvs () {
   CVS_RSH=$_CVS_RSHS[$tag]
 }
 
-typeset -A _CVSROOTS _CVS_RSHS
+typeset -Ag _CVSROOTS _CVS_RSHS
 _CVSROOTS=(
            # Put your own CVSROOTs here
 #          local             /usr/local/cvsroot
