@@ -789,7 +789,11 @@ compdef _mutt m
 
 # emacs, windowed
 e () {
-  emacs "$@" &!
+  if [[ -n "$OTHER_USER" ]]; then
+    emacs -l $ZDOTDIR/.emacs "$@" &!
+  else
+    emacs "$@" &!
+  fi
 }
 
 # enable ^Z
