@@ -43,7 +43,7 @@ _CVSROOTS=(
 ### BEGIN PRIVATE
            adamspiers         adam@adamspiers.org:/home/adam/.CVSROOT
            banjo              adam@banjo.celticmusic.com:/home/adam/.CVSROOT
-           f5                 adam@f5.celticmusic.com:/home/adam/.CVSROOT
+           f5                 adam@f5.mandolinarchive.com:/home/adam/.CVSROOT
            sourceforge_anon   :pserver:anonymous@cvs.sourceforge.net:/cvsroot/\$1
            sourceforge        :ext:adamspiers@cvs.sourceforge.net:/cvsroot/\$\{1:l\}
 
@@ -63,6 +63,7 @@ _CVS_RSHS=(
 #           lb-plig           ~/bin/cvs-ssh
            adamspiers        ssh
            banjo             ssh
+           f5                ssh
            sourceforge       ssh
            zsh_local_write   ssh
            zsh_local         ssh
