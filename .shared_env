@@ -140,6 +140,6 @@ export CVS_RSH=ssh
 : ${HOSTNAME:=$HOST}
 export HOST HOSTNAME
 
-source ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .shared_env
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .shared_env
 
 # }}}
