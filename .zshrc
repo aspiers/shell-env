@@ -264,7 +264,9 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
 
   if [[ -r $zdotdir/.zsh_prompt ]]; then
     . $zdotdir/.zsh_prompt
-  elif [[ -r /proc/$PPID/cmdline ]] &&
+  fi
+
+  if [[ -r /proc/$PPID/cmdline ]] &&
        egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
