@@ -1,0 +1,57 @@
+#!/usr/bin/perl -w
+##
+## tailfgrep -- monitor a file a la tail -f, looking for a given regexp
+## Copyright (C) 1999 Adam Spiers <adam@spiers.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## For a copy of the GNU General Public License, see
+## http://www.gnu.org/ or write to the Free Software Foundation, Inc.,
+## 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+##
+##
+## Version 0.1
+
+# TODO: extend to multiple files
+
+use strict;
+use Getopt::Long;
+
+my $quiet;
+GetOptions("quiet|q" => \$quiet);
+
+unless (@ARGV == 2) {
+  die <<EOF;
+Usage: tailfgrep [ --quiet | -q ] <Perl regexp> <file>
+   --quiet, -q  --  quiet mode, same as grep -q.  Don't print matches,
+                    exit when first match found.
+EOF
+}
+
+my ($re, $file) = (qr/$ARGV[0]/, $ARGV[1]);
+
+-f $file or die "$file isn't a file.\n";
+open(LOG, $file) or die "Couldn't open $file: $!\n";
+seek(LOG, 0, 2);
+
+while (1) {
+  if (defined($_ = <LOG>)) {
+    if ($quiet) {
+      /$re/ && exit 0;
+    }
+    else {
+      /$re/ && print;
+    }
+  }
+  sleep 1;
+  seek(LOG, 0, 1); # clear EOF
+}
+close(LOG);
