@@ -21,7 +21,7 @@ fi
 # }}}
 # {{{ Environment
 
-. ~/.shared_env
+[[ -e ~/.shared_env ]] && . ~/.shared_env
 
 # {{{ path
 
