@@ -1,0 +1,13 @@
+#autoload
+
+grep_args=()
+
+while [[ "$1" == -* ]]; do
+  grep_args=( "$1" "$grep_args[@]" )
+  shift
+done
+
+grep_args=( "$1" "$grep_args[@]" )
+shift
+
+find "$@" -name \*.pm | xargs grep "$grep_args[@]"
