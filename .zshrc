@@ -952,9 +952,9 @@ alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
 alias -g C='| wc -l'
 
 alias -g S='| sort'
-alias -g US='| sort -u'
-alias -g NS='| sort -n'
-alias -g RNS='| sort -nr'
+alias -g Su='| sort -u'
+alias -g Sn='| sort -n'
+alias -g Snr='| sort -nr'
 
 # }}}
 # {{{ Common filenames
@@ -966,11 +966,14 @@ alias -g VM=/var/log/messages
 # {{{ grep, xargs
 
 alias -g G='| egrep'
+alias -g Gv='| egrep -v'
 alias -g EG='|& egrep'
+alias -g EGv='|& egrep -v'
 alias -g X='| xargs'
 alias -g X0='| xargs -0'
 alias -g XG='| xargs egrep'
-alias -g X0G='| xargs -0 egrep'
+alias -g XGv='| xargs egrep -v'
+alias -g X0Gv='| xargs -0 egrep -v'
 
 # }}}
 # {{{ awk
