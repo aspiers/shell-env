@@ -5,4 +5,4 @@ here=${here:-.}
 
 user="${USERNAME:-${USER:-dontmatch}}"
 [ "$user" = root ] && user=dontmatch 
-exec rj "$@" | grep -vEf $here/ra.pats | grep -v "^$user"
+exec rj "$@" | grep -vEf $here/ra.pats | grep -vE "^$user|$0\$"
