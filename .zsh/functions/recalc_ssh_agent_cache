@@ -6,22 +6,28 @@ recalc_ssh_agent_cache () {
 
   echo "Recalculating ssh-agent info ..."
 
-  if ! which lsof pidof >&/dev/null; then
-    echo 'lsof and pidof must both be present on $PATH; aborting.'
+  if ! which lsof ps >&/dev/null; then
+    echo 'lsof and ps must both be present on $PATH; aborting.'
     return 1
   fi
 
-  : ${SSH_AGENT_PID:=`pidof ssh-agent`}
+  : ${SSH_AGENT_PID:=`ps auxww | awk "/$USER"'.*ssh-agent *$/ { print $2; exit }'`}
 
   if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
-    echo "ssh-agent process not found; start a new one [y/N] ?"
-    if read -q; then
+    if [[ -t 1 ]]; then
+      echo "ssh-agent process not found; start a new one [y/N] ?"
+      if read -q; then
+        eval `ssh-agent`
+        write_ssh_agent_cache
+        return 0
+      else
+        echo "Unable to determine ssh-agent info; aborting."
+        return 1
+      fi
+    else
       eval `ssh-agent`
       write_ssh_agent_cache
       return 0
-    else
-      echo "Unable to determine ssh-agent info; aborting."
-      return 1
     fi
   fi
 
