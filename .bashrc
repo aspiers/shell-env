@@ -6,6 +6,11 @@
 
 # .bashrc is invoked by non-login interactive shells
 
+# {{{ Load .bashenv
+
+[ -r ~/.bashenv ] && . ~/.bashenv
+
+# }}}
 # {{{ Try to switch shell
 
 [ -r ~/.switch_shell ] && . ~/.switch_shell ~adams/local/bin/zsh -d
