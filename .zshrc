@@ -15,7 +15,6 @@
 
 #
 #    - du1
-#    - Add prot and unprot
 #    - Do safes?kill(all)? functions
 #
 
