@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # Make eXecutable
-chmod +x "$@"
+exec chmod +x "$@"

@@ -1,2 +1,2 @@
 #!/bin/sh
-QUICK_EMACS=1 emacs -nw "$@"
+QUICK_EMACS=1 exec emacs -nw "$@"

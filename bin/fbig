@@ -2,4 +2,4 @@
 
 # Find big files
 
-ls -alFR "$@" | sort -rn -k5 | less -r
+exec ls -alFR "$@" | sort -rn -k5 | less -r

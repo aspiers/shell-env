@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
+exec ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"

@@ -8,4 +8,4 @@ if [[ $#* -lt 3 ]]; then
 fi
 
 chgrp $1 $*[2,-1]
-chmod go+rX $*[2,-1]
+exec chmod go+rX $*[2,-1]
