@@ -27,6 +27,7 @@ _CVSROOTS=(
            local             $HOME/.CVSROOT
            mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
+           lb                 $SSH_STEPPING_STONE:/home/adams/.CVSROOT
            plig               plig.net:/home/adams/.CVSROOT
            thelonious         adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
            guideguide_remote  proxy.guideguide.com:/share/cvsroot
@@ -42,8 +43,11 @@ _CVSROOTS=(
 )
 
 _CVS_RSHS=(
-           # Put your own CVS_RSHs here
+           # Put your own CVS_RSHs here, e.g.
+#          foo.bar.com       ssh
+#          foo.baz.com       rsh
 ### BEGIN PRIVATE
+           lb                ~/bin/cvs-ssh
            plig              ssh
            thelonious        ssh
            guideguide_remote ~/bin/cvs_rsh
