@@ -6,12 +6,28 @@
 # We're not going to bother supporting dysfunctional
 # shells like Solaris' /bin/sh.
 
+# Example:
+#
+#   run_local_hooks .shared_env
+#
+# would source these files in this order:
+#
+#   1. $ZDOTDIR/.shared_env.local
+#   2. $ZDOTDIR/.shared_env.HOSTNAME
+#   3. $HOME/.shared_env.local
+#   4. $HOME/.shared_env.HOSTNAME
+#
+# i.e. from least specific to most specific.
+
 run_local_hooks () {
   for dir in ${zdotdirpath:-$HOME}; do
     if [ -n "$dir" ]; then
       for file in "$@"; do
         for suffix in local ${HOST%%.*}; do
-          [ -r "$dir/$file.$suffix" ] && source $dir/$file.$suffix
+          if [ -r "$dir/$file.$suffix" ]; then
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && echo source $dir/$file.$suffix
+            source $dir/$file.$suffix
+          fi
         done
       done
     fi
