@@ -1,0 +1,5 @@
+#autoload
+
+suffix="$1"
+shift
+find "$@" -name "*.$suffix"
