@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+my %opts;
+GetOptions(\%opts, 'prefixes|p', 'eof|e') or usage();
+
+sub usage {
+  die <<EOF;
+Usage: $0 file1 file2 [...]
+       $0 [ -p | --prefixes ] prefix1 file1 prefix2 file2 [...]
+  -e, --eof   Abort as soon as EOF is reached on any file.
+EOF
+}
+
+my (@files, %prefixes);
+if ($opts{prefixes}) {
+  usage() unless @ARGV % 2 == 0;
+  while (@ARGV) {
+    my $prefix = shift;
+    my $file   = shift;
+    push @files, $file;
+    $prefixes{$file} = $prefix;
+  }
+}
+else {
+  @files = @ARGV;
+}
+
+my %fh;
+foreach my $file (@files) {
+  open($fh{$file}, $file) or die "open($file) failed: $!\n";
+}
+
+my %eof;
+
+OUTER:
+while (1) {
+  foreach my $i (0 .. $#files) {
+    my $file = $files[$i];
+    my $line = get_line($file);
+    unless (defined $line) {
+      last OUTER if $opts{eof};
+      next;
+    }
+    print $prefixes{$file}, ' ' if $opts{prefixes};
+    print $line if $line;
+  }
+
+  # prune files which have reached EOF
+  @files = grep ! $eof{$_}, @files;
+
+#  print "@files\n";
+
+  last if @files == 0;
+#  sleep 1;
+}
+
+sub get_line {
+  my ($file) = @_;
+  return undef if $eof{$file};
+  my $fh = $fh{$file};
+  my $line = <$fh>;
+  defined $line or $eof{$file}++;
+  return $line;
+}
