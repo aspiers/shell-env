@@ -674,8 +674,10 @@ fi
 
 # jeez I'm lazy ...
 alias l='ls -lh'
+alias ll='ls -l'
 alias la='ls -lha'
 alias lsa='ls -ah'
+alias lsd='ls -d'
 alias lsh='ls -dh .*'
 alias lsr='ls -Rh'
 alias ld='ls -ldh'
@@ -685,7 +687,6 @@ alias lart='ls -larth'
 alias lr='ls -lRh'
 alias lsL='ls -L'
 alias lL='ls -Ll'
-# damn, missed out lsd :-)
 alias sl=ls # often screw this up
 
 # }}}
