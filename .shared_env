@@ -79,7 +79,8 @@ export OSTYPE
 # {{{ IRC
 
 export IRCNAME='Adam Spiers'
-export IRCNICK='Adam'
+export IRCNICK='tigerpig'
+#export IRCNICK='Adam'
 
 # }}}
 # {{{ Editor
