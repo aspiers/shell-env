@@ -444,7 +444,7 @@ my_accounts=(
   adam@hewes.icl.ox.ac.uk
   security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
   {adams,root}@server1.w3w.net
-  {adams,root}@{proxy.guideguide.com,195.217.36.66}
+  adams@{proxy.guideguide.com,195.217.36.66}
   adamspiers@ssh.sourceforge.net
   adam@landfill.tequilarista.org
   {aspiers,root}@194.202.166.101
