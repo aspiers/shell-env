@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 ##
 ## tailfgrep -- monitor a file a la tail -f, looking for a given regexp
 ## Copyright (C) 1999 Adam Spiers <adam@spiers.net>
