@@ -1004,7 +1004,7 @@ VL=/var/log
 # {{{ ls colours
 
 if which dircolors >&/dev/null && [[ -e "${zdotdir}/.dircolors" ]]; then
-  eval `dircolors -b $zdotdir/.dircolors`
+  eval "`dircolors -b $zdotdir/.dircolors`"
 fi
 
 if [[ $ZSH_VERSION > 3.1.5 ]]; then
