@@ -15,7 +15,6 @@ use FindBin '$RealScript';
 use Getopt::Long;
 
 use lib '/home/aspiers/lib/perl5';
-use ASpiers 'qqexpand';
 use Expect;
 
 @ARGV or usage();
