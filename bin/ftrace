@@ -1,2 +1,6 @@
 #!/bin/sh
-strace -e trace=file "$@"
+if which strace 2>&1 >/dev/null; then
+  strace -e trace=file "$@"
+else
+  echo strace not found
+fi
