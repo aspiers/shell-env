@@ -34,5 +34,5 @@ rpc.statd$
 ntpd( -U ntp)?$
 /atd$
 sched
-init( -)?$
+init( -)?(\[[0-9]+\])$
 \[[[:alnum:]_]+\]$
