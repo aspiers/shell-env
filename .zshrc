@@ -717,15 +717,20 @@ scvs_local () {
   CVS_RSH=
 }
 
+scvs_mutt () {
+  CVSROOT=:pserver:anonymous@ftp.guug.de:/home/roessler/cvs
+  CVS_RSH=
+}
+
+scvs_alsa () {
+  CVSROOT=:pserver:anonymous@cvs.alsa-project.org:/home/alsa/cvsroot
+  CVS_RSH=
+}
+
 # Add any other CVS setups you want here
 ### BEGIN PRIVATE
 scvs_thelonious () {
   CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
-  CVS_RSH=ssh
-}
-
-scvs_alsa () {
-  CVSROOT=
   CVS_RSH=ssh
 }
 
