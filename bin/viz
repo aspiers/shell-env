@@ -32,8 +32,8 @@ cp "$dir/$file" "$tmpfile"
 editor="${EDITOR:-${VISUAL:-vi}}"
 
 validate () {
-  if [ -e "$dir/.vizrc" ]; then
-    . "$dir/.vizrc"
+  if [ -x "$dir/.vizrc" ]; then
+    "$dir/.vizrc" "$tmpfile" "$dir" "$file" "$viz_tmpdir"
     return $?
   fi
   return 0
@@ -57,7 +57,7 @@ while [ 1 = 1 ]; do
     if [ -n "$validates" ]; then
       read -n 1 -p "Re-edit, diff, check in, or abandon [r/d/c/a]? " reply
     else
-      read -n 1 -p "Re-edit or abandon [r/a]? " reply
+      read -n 1 -p "Re-edit, diff, or abandon [r/d/a]? " reply
     fi
     case "$reply" in
       a) changed=
@@ -67,10 +67,13 @@ while [ 1 = 1 ]; do
          ;;
       r) replied=y ; echo ;;
       c) echo
-         # get me outta here
-         break 10
+         if [ -n "$validates" ]; then
+           # get me outta here
+           break 10
+         fi
          ;;
       d) echo; diff -u "$dir/$file" "$tmpfile" | less ;;
+      *) echo ;;
     esac
   done
 
