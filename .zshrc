@@ -629,19 +629,25 @@ alias lr='ls -lRh'
 alias sl=ls # often screw this up
 
 # }}}
-# {{{ File management
+# {{{ File management/navigation
 
 # {{{ Changing/making/removing directory
 
-# blegh
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
+alias -g ...=../..
+alias -g ....=../../..
+alias -g .....=../../../..
+alias -g ......=../../../../..
 alias cd..='cd ..'
 alias cd...='cd ../..'
 alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
+# blegh
+alias ..='cd ..'
+alias ../..='cd ../..'
+alias ../../..='cd ../../..'
+alias ../../../..='cd ../../../..'
+alias ../../../../..='cd ../../../../..'
+
 alias cd/='cd /'
 
 alias 1='cd -'
@@ -850,10 +856,6 @@ alias -g RNS='| sort -nr'
 # }}}
 # {{{ Common filenames
 
-alias -g ...=../..
-alias -g ....=../../..
-alias -g .....=../../../..
-alias -g ......=../../../../..
 alias -g DN=/dev/null
 alias -g VM=/var/log/messages
 alias -g VL=/var/log
