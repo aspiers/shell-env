@@ -1,0 +1,24 @@
+#compdef hostgroup hg
+
+_hostgroups () {
+  local expl
+  _description hostgroup expl 'hostgroup'
+  compadd "$expl[@]" - $(hostgroup -h ALL)
+}
+
+_hostgroup_hosts () {
+  local expl
+  _description host expl 'host'
+  compadd "$expl[@]" - $(hostgroup ALL)
+}
+
+_hostgroup () {
+  _arguments \
+    '(--intersection)-i[intersection not union]' \
+    '(-i)--intersection[intersection not union]' \
+    '(--hosts)-h[input is hostnames not groups]:*:host:_hostgroup_hosts' \
+    '(-h)--hosts[input is hostnames not groups]:*:host:_hostgroup_hosts' \
+    '(-h --hosts)*:hostgroup:_hostgroups'
+}
+
+_hostgroup "$@"
