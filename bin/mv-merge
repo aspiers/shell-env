@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+me=`basename $0`
+
+if [ $# != 2 ]; then
+  echo "Usage: $me <src dir> <dest dir>" >&2
+  exit 1
+fi
+
+if ! which cp-merge 2>&1 >/dev/null; then
+  echo "cp-merge must be on \$PATH for $me to work." >&2
+  exit 1
+fi
+
+oldpwd=`pwd`
+
+cp-merge "$@"
+
+cd "$oldpwd"
+rm -rf "$1"
+

@@ -1,0 +1,50 @@
+#!/bin/sh
+# 
+# Copies the entire contents of one directory to another, even if some
+# subdirectories are common to both source and destination directories.
+#
+# Adam Spiers <me@adamspiers.org>
+#
+
+set -e
+me=`basename $0`
+
+if [ $# != 2 ]; then
+  echo "Usage: $me <src dir> <dest dir>" >&2
+  exit 1
+fi
+
+src="$1"
+dest="$2"
+if ! [ -d "$src"  ]; then
+  echo "No such directory '$src'" >&2
+  exit 1
+fi
+if ! [ -d "$dest"  ]; then
+  echo "No such directory '$dest'" >&2
+  exit 1
+fi
+
+oldpwd=`pwd`
+
+cd "$dest"
+absdest=`pwd`
+temptar="`mktemp $absdest/$me.$$.tar.XXXXXX`"
+
+cd "$oldpwd"
+cd "$src"
+# Could fail on huge directories.
+if ! tar cf "$temptar" `find . -maxdepth 1`; then
+  echo "$me: failed to create '$temptar'" >&2
+  exit 1
+fi
+
+cd "$oldpwd"
+cd "$dest"
+if ! tar xf "$temptar"; then
+  echo "$me: failed to untar '$temptar'" >&2
+  exit 1
+fi
+rm "$temptar"
+
+
