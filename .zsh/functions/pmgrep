@@ -3,11 +3,12 @@
 grep_args=()
 
 while [[ "$1" == -* ]]; do
-  grep_args=( "$1" "$grep_args[@]" )
+  grep_args=( "$grep_args[@]" "$1" )
   shift
+  [[ "$grep_args[-1]" == '--' ]] && break
 done
 
-grep_args=( "$1" "$grep_args[@]" )
+grep_args=( "$grep_args[@]" "$1" )
 shift
 
 find "$@" -name \*.pm | xargs grep "$grep_args[@]"
