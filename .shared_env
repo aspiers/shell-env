@@ -82,6 +82,10 @@ export CVS_RSH=ssh
 
 # {{{ Specific to hosts
 
+: ${HOST:=HOSTNAME}
+: ${HOSTNAME:=HOST}
+export HOST HOSTNAME
+
 [ -r $HOME/.shared_env.local ]       && . $HOME/.shared_env.local
 [ -r $HOME/.shared_env.${HOST%%.*} ] && . $HOME/.shared_env.${HOST%%.*}
 
