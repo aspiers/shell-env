@@ -407,6 +407,7 @@ my_accounts=(
   {adams,root}:{proxy.guideguide.com,195.217.36.66}
   adamspiers:zsh.sourceforge.net
   adam:landfill.tequilarista.org
+  aspiers@194.202.166.101
 )
 ### END PRIVATE
 
