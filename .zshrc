@@ -503,6 +503,8 @@ zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 
 zshrc_load_status 'aliases and functions'
 
+# {{{ Motion/editing
+
 # {{{ Better word navigation
 
 # Remember, WORDCHARS is defined as a 'list of non-alphanumeric
@@ -560,6 +562,13 @@ zle -N backward-to-space
 zle -N forward-to-space
 zle -N backward-to-/
 zle -N forward-to-/
+
+# }}}
+# {{{ kill-region-or-backward-word
+
+zle -N kill-region-or-backward-word
+
+# }}}
 
 # }}}
 # {{{ zrecompile
@@ -942,7 +951,8 @@ bindkey '^[p' history-beginning-search-backward
 bindkey '^[n' history-beginning-search-forward
 bindkey '^[P' history-beginning-search-backward
 bindkey '^[N' history-beginning-search-forward
-bindkey '^W' kill-region
+bindkey '^w' kill-region-or-backward-word
+bindkey '^W' kill-region-or-backward-word
 bindkey '^I' complete-word
 bindkey '^Xi' incremental-complete-word
 # bindkey '^[b' emacs-backward-word
