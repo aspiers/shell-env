@@ -1099,8 +1099,8 @@ if [[ $ZSH_VERSION > 3.1.5 ]]; then
   zstyle ':completion:*:*:kill:*:processes' list-colors \
     '=(#b) #([0-9]#)*=0=01;31'
 
-  # show directories in yellow
-  zstyle ':completion:*' list-colors 'di=01;33'
+  # completion colours
+  zstyle ':completion:*' list-colors "$LS_COLORS"
 fi  
 
 # }}}
