@@ -153,6 +153,11 @@ export COLUMNS
 
 # Variables used by zsh
 
+# {{{ zdotdir
+
+zdotdir=${ZDOTDIR:-$HOME}
+
+# }}}
 # {{{ Function path
 
 fpath=(
@@ -171,7 +176,7 @@ WORDCHARS=''
 # }}}
 # {{{ Save a large history
 
-HISTFILE=~/.zshhistory
+HISTFILE=$zdotdir/.zshhistory
 HISTSIZE=3000
 SAVEHIST=3000
 
@@ -262,7 +267,7 @@ zstyle ':completion:predict:*' completer _complete
 
 # Completion caching
 zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
+zstyle ':completion::complete:*' cache-path $zdotdir/.zsh/cache/$HOST
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
@@ -461,7 +466,7 @@ restart () {
 
 reload () {
   if [[ "$#*" -eq 0 ]]; then
-    . ~/.zshrc
+    . $zdotdir/.zshrc
   else
     local fn
     for fn in "$@"; do
@@ -853,6 +858,11 @@ End_of_Perl
     cvs diff -N "$@" 2>&1 | less
   }
 
+  # see new stuff
+  cvsn () {
+    cvs diff -rBASE -rHEAD "$@" 2>&1 | egrep -v 'tag BASE is not in file' | less
+  }
+
   cvsl () {
     cvs log "$@" 2>&1 | less
   }
@@ -868,7 +878,7 @@ End_of_Perl
 
 ### END PRIVATE
   cvss () {
-    cvs status -v "$@"
+    cvs status "$@"
   }
 
   cvs () {
@@ -1125,14 +1135,14 @@ fi
 # }}}
 # {{{ Specific to hosts
 
-if [[ -r ~/.zshrc.local ]]; then
+if [[ -r $zdotdir/.zshrc.local ]]; then
   zshrc_load_status '.zshrc.local'
-  . ~/.zshrc.local
+  . $zdotdir/.zshrc.local
 fi
 
-if [[ -r ~/.zshrc.${HOST%%.*} ]]; then
+if [[ -r $zdotdir/.zshrc.${HOST%%.*} ]]; then
   zshrc_load_status ".zshrc.${HOST%%.*}"
-  . ~/.zshrc.${HOST%%.*}
+  . $zdotdir/.zshrc.${HOST%%.*}
 fi
 
 # }}}
