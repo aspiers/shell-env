@@ -17,6 +17,8 @@
 
 # {{{ What version are we running?
 
+shell=zsh
+
 if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
 if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
 
