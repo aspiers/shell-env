@@ -39,7 +39,7 @@ switch_shell_dangerously () {
 }
 
 switch_shell () {
-  if [ ! -x $myshell  ]; then
+  if [ ! -x $myshell ]; then
     [ -n "$debug" ] && echo "$myshell not executable; aborting switch."
     return
   fi
