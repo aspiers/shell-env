@@ -40,6 +40,11 @@ done
 # In order to avoid forks here, this is done in .zshrc
 
 # }}}
+# {{{ grep
+
+export GREP_OPTIONS='--directories=skip'
+
+# }}}
 # {{{ GNU screen
 
 case "$TERM" in
