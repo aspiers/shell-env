@@ -296,7 +296,7 @@ fi
 
 zshrc_load_status 'completion system'
 
-# {{{ New advanced completion system
+# {{{ Set up new advanced completion system
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   autoload -U compinit
@@ -310,11 +310,9 @@ else
   which zmodload >&/dev/null && zmodload zsh/compctl
 fi
 
-##
-## Enable the way cool bells and whistles.
-##
+# }}}
+# {{{ General completion technique
 
-# General completion technique
 zstyle ':completion:*' completer \
   _complete _prefix _approximate:-one _ignored \
   _complete:-extended _approximate:-four
@@ -329,27 +327,38 @@ zstyle ':completion:*:approximate-four:*' max-errors 4
 zstyle ':completion:*:complete-extended:*' \
   matcher 'r:|[.,_-]=* r:|=*'
 
-# Fancy menu selection when there's ambiguity
+# }}}
+# {{{ Fancy menu selection when there's ambiguity
+
 zstyle ':completion:*' menu yes select=long-list select=5 interactive
 
-# Completion caching
+# }}}
+# {{{ Completion caching
+
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
 
-# Expand partial paths
+# }}}
+# {{{ Expand partial paths
+
 zstyle ':completion:*' expand 'yes'
 zstyle ':completion:*' squeeze-slashes 'yes'
 
-# Include non-hidden directories in globbed file completions
-# for certain commands
+# }}}
+# {{{ Include non-hidden dirs in globbed file completions for certain commands
+
 #zstyle ':completion::complete:*' \
 #  tag-order 'globbed-files directories' all-files 
 #zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
-# Don't complete backup files as executables
+# }}}
+# {{{ Don't complete backup files as executables
+
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 
-# Don't complete uninteresting users
+# }}}
+# {{{ Don't complete uninteresting users
+
 zstyle ':completion:*:*:*:users' ignored-patterns \
         adm apache bin daemon games gdm halt ident junkbust lp mail mailnull \
         named news nfsnobody nobody nscd ntp operator pcap postgres radvd \
@@ -357,6 +366,9 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 
 # ... unless we really want to.
 zstyle '*' single-ignored show
+
+# }}}
+# {{{ Output formatting
 
 # Separate matches into groups
 zstyle ':completion:*:matches' group 'yes'
@@ -373,12 +385,14 @@ zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
 
 # }}}
+# {{{ Array/association subscripts
 
 # When completing inside array or association subscripts, the array
 # elements are more useful than parameters so complete them first:
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters 
 
-# {{{ completion for 'kill'
+# }}}
+# {{{ Completion for 'kill'
 
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*' force-list always
