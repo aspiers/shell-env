@@ -1,33 +1,53 @@
 # Adam's .switch_shell
 #
-# try switch shell from bash to zsh if we're interactive 
+# Try switch shell if we're interactive, aiming for safety, but
+# not so much that we end up hogging memory.
 #
 # $Id$
+#
+# Usage:
+#
+# . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
+#    -d turns on debugging
 
-MYSHELL=$HOME/local/bin/zsh
-MYSHELLARGS=-d
+# Sensible default shell to switch to; change if you want.
+myshell=$(which zsh)
 
-#echo $0
-#[ -x $MYSHELL ] && echo 1
-#[ -n "$HISTFILE" ] && echo 2
-#[ -z "$NO_ZSH" ] && echo 3
+##############################################################################
 
-DEBUG=
+if [ "$1" = '-d' ]; then
+  debug=yes
+  shift
+fi
+
+if [ -n "$1" ]; then
+  myshell="$1"
+  shift
+fi
+
+myshell_args=( "$@" )
 
 switch_shell_safely () {
-  # we do this rather than exec() just in case $MYSHELL fails to run.
-  [ -n "$DEBUG" ] && echo "Switching to $MYSHELL safely ..."
-  $MYSHELL $MYSHELLARGS "$@" && exit
+  # we do this rather than exec() just in case $myshell fails to run.
+  [ -n "$debug" ] && echo "Switching to $myshell safely ..."
+  $myshell $myshell_args "$@" && exit
 }
 
 switch_shell_dangerously () {
-  [ -n "$DEBUG" ] && echo "Switching to $MYSHELL dangerously ..."
-  exec $MYSHELL $MYSHELLARGS "$@"
+  [ -n "$debug" ] && echo "Switching to $myshell dangerously ..."
+  exec $myshell $myshell_args "$@"
 }
 
 switch_shell () {
-  [ -x $MYSHELL  ] || return
-  [ -n "$NO_ZSH" ] && return
+  if [ ! -x $myshell  ]; then
+    [ -n "$debug" ] && echo "$myshell not executable; aborting switch."
+    return
+  fi
+
+  if [ -n "$NO_SWITCH" ]; then
+    [ -n "$debug" ] && echo 'Shell switching disabled by $NO_SWITCH; aborting.'
+    return
+  fi
 
   case "$SHLVL" in
     1) # login shell, be careful
