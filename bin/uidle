@@ -21,8 +21,8 @@ EOUSAGE
 
 my $who = shift || scalar(getpwuid $<);
 
-open(FINGER, "finger -l $who|")
-  or die "open(finger -l $who|) failed: $!\n";
+open(FINGER, "finger -l -m $who|")
+  or die "open(finger -l -m $who|) failed: $!\n";
 
 my $least_idle_secs;
 
@@ -43,7 +43,8 @@ while (<FINGER>) {
   }
 
   if ($state == NEED_ON_SINCE) {
-    $state = NEED_IDLE if /\bon since\b/i;
+    $state = NEED_IDLE if s/\bon since.*? on \S+\s*( from \S+)?//i;
+    redo if /\bidle\b/;
     next;
   }
 
@@ -64,6 +65,7 @@ while (<FINGER>) {
     
     debug("Got:\n$_\ninstead of idle line; assuming not idle at all.\n");
     $least_idle_secs = 0;
+    $state = NEED_ON_SINCE;
     last;
   }
 }
@@ -103,15 +105,16 @@ if ($opts{human}) {
   my @units = Delta_Format(
     $least_idle_secs . 'S',
     0,
-    map "%${_}v", qw{M d h m s},
+    map "%${_}v", qw{y M w d h m s},
   );
   
   my $i = 0;
   my @out;
-  for my $unit (qw{month day hour minute second}) {
+  for my $unit (qw{year month week day hour minute second}) {
     if (my $val = $units[$i]) {
       my $out = "$val $unit";
       $out   .= "s" if $val != 1;
+      debug("adding $out\n");
       push @out, $out;
     }
     $i++;
