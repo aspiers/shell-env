@@ -945,6 +945,7 @@ alias -g VL=/var/log
 # }}}
 # {{{ grep, xargs
 
+alias -g EG='| egrep'
 alias -g G='| egrep'
 alias -g X='| xargs'
 
