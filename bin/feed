@@ -1,0 +1,30 @@
+#!/usr/bin/env perl
+#
+# Feed keystrokes to a command then interact with it as normal.
+#
+# $Id$
+
+use strict;
+use warnings;
+
+use Expect;
+use FindBin '$RealScript';
+use Getopt::Long;
+
+use ASpiers 'qqexpand';
+
+my %opts;
+GetOptions(\%opts, 'command=s')
+  or usage();
+@ARGV or usage();
+
+sub usage {
+  die "Usage: $RealScript -c 'text to feed' command [arg1 [arg2 ...]]\n";
+}
+
+my $exp = Expect->spawn(@ARGV)
+  or die "Cannot spawn $ARGV[0]: $!\n";
+
+$exp->send(qqexpand($opts{command}));
+$exp->interact;
+
