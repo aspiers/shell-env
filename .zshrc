@@ -97,7 +97,6 @@ setopt \
         hist_ignore_dups \
         hist_ignore_space \
      NO_hist_no_store \
-     NO_hist_save_no_dups \
         hist_verify \
      NO_hup \
      NO_ignore_braces \
@@ -256,6 +255,9 @@ zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
+# N.B. compstyle is sort of deprecated; you should use zstyle instead.
+# I just use it because it keeps column width down :-)
+
 if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   _compdir=/usr/share/zsh/functions
   [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
@@ -324,7 +326,11 @@ compstyle ':*:history-words' remove_all_dups 'yep'
 # }}}
 # {{{ Common hostnames
 
-: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+  : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+else
+  _etc_hosts=()
+fi
 
 hosts=(
     "$_etc_hosts[@]"
