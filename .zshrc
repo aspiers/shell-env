@@ -273,7 +273,10 @@ zstyle ':completion:*' completer _complete _correct _approximate _prefix
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
+
+# Completion caching
 zstyle ':completion::complete:*:*' use-cache 1
+zstyle ':completion:*' cache-path ~/.zsh/cache/$HOST
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
