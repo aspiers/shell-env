@@ -12,7 +12,7 @@
 # No duplicates
 typeset -U path
 
-path=( $path /usr/local/sbin /usr/sbin /sbin )
+path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
 if [[ -d ~/packbin ]]; then
   path=( ~/packbin $path )
 fi
