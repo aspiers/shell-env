@@ -1,9 +1,8 @@
+#autoload
 # Change rxvt pixmap
 
-cb () {
-  if [[ -z "$*" ]] && which randomise_textures >/dev/null; then
-    echo -n "\e]20;`randomise_textures`\a"
-  else
-    echo -n "\e]20;$*\a"
-  fi
-}
+if [[ -z "$*" ]] && which randomise_textures >/dev/null; then
+  echo -n "\e]20;`randomise_textures`\a"
+else
+  echo -n "\e]20;$*\a"
+fi
