@@ -1,6 +1,6 @@
 #!/bin/sh
 
-awkdir=${ZDOTDIR:-$HOME}/bin
+awkdir=${ZDOTDIR:-$HOME}/bin/awk
 
 if [ -t 1 ]; then
   # connected to a tty => use glorious technicolour
