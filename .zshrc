@@ -865,6 +865,8 @@ e () {
   fi
 }
 
+alias ec=emacsclient
+
 # enable ^Z
 alias pico='/usr/bin/pico -z'
 
