@@ -1,0 +1,8 @@
+#autoload
+
+if [[ "$MARK" -eq 0 || "$MARK" -eq "$CURSOR" ]]; then
+  local WORDCHARS="${_my_extended_wordchars_slash}"
+  zle .backward-kill-word
+else
+  zle .kill-region
+fi

@@ -564,9 +564,10 @@ zle -N backward-to-/
 zle -N forward-to-/
 
 # }}}
-# {{{ kill-region-or-backward-word
+# {{{ kill-region-or-backward-(big-)word
 
 zle -N kill-region-or-backward-word
+zle -N kill-region-or-backward-big-word
 
 # }}}
 
@@ -947,14 +948,14 @@ bindkey '^[e' expand-cmd-path
 #bindkey -s '^X?' '\eb=\ef\C-x*'
 bindkey '^[^I' reverse-menu-complete
 bindkey '^X^N' accept-and-infer-next-history
-bindkey '^[p' history-beginning-search-backward
-bindkey '^[n' history-beginning-search-forward
-bindkey '^[P' history-beginning-search-backward
-bindkey '^[N' history-beginning-search-forward
-bindkey '^w' kill-region-or-backward-word
-bindkey '^W' kill-region-or-backward-word
-bindkey '^I' complete-word
-bindkey '^Xi' incremental-complete-word
+bindkey '^[p'  history-beginning-search-backward
+bindkey '^[n'  history-beginning-search-forward
+bindkey '^[P'  history-beginning-search-backward
+bindkey '^[N'  history-beginning-search-forward
+bindkey '^w'   kill-region-or-backward-word
+bindkey '^[^W' kill-region-or-backward-big-word
+bindkey '^I'   complete-word
+bindkey '^Xi'  incremental-complete-word
 # bindkey '^[b' emacs-backward-word
 # bindkey '^[f' emacs-forward-word
 bindkey "^[B"  backward-to-space
