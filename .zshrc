@@ -945,7 +945,7 @@ fi
 
 # {{{ Specific to xterms
 
-if [[ "${TERM}" == (xterm*|dtterm) ]]; then
+if [[ "${TERM}" == (xterm*|dtterm|screen*) ]]; then
   unset TMOUT
 fi
 
