@@ -125,7 +125,7 @@ alias term='echo $TERM'
 # }}}
 # {{{ History
 
-alias h='history -$LINES'
+alias h='history $LINES'
 
 # }}}
 # {{{ Other users
