@@ -1,0 +1,4 @@
+#compdef sst ssp ssta sre srl
+
+_services "$@"
+
