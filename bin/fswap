@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# swap the names of two files
+
+if [ $# != 2 ]; then
+  echo "Usage: $0 <file1> <file2>"
+  exit 1
+fi
+
+if ! mv -i $1 $1.fswap.tmp.$$; then
+  echo "Failed to mv $1 $1.fswap.tmp.$$ !  Aborting."
+  exit 1
+fi
+
+if ! mv -i $2 $1; then
+  echo "Failed to mv $2 $1 !  Restoring $1."
+  if ! mv -i $1.fswap.tmp.$$ $1; then
+    echo "Failed to restore $1 !!"
+    exit 1
+  fi
+fi
+
+if ! mv -i $1.fswap.tmp.$$ $2; then
+  echo "Failed to mv $1.fswap.tmp.$$ to $2 !"
+  exit 1
+fi
