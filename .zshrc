@@ -468,7 +468,7 @@ rcup () {
 # {{{ Restarting zsh, reloading .zshrc or functions
 
 restart () {
-  exec $0 "$@"
+  exec $SHELL "$@"
 }
 
 reload () {
