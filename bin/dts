@@ -1,0 +1,37 @@
+#!/usr/bin/env perl
+#
+# dts - runs a command, date/time-stamping each line of STDOUT
+#
+# Understands a single optional argument for the type of format to use.
+# l => localtime long format - DEFAULT
+# g => gmtime long format, e.g. 2003/09/05 09:52:17.139092
+# a => absolute seconds
+
+use strict;
+use Time::HiRes;
+
+$| = 1; # turn output buffering off
+
+my $style = ($ARGV[0] =~ /^-[lga]$/) ? shift : "l";
+my $printformat = "%04d/%02d/%02d %02d:%02d:%02d.%06d: ";
+
+open(CMD, "@ARGV |") or die $!;
+while(<CMD>) {
+  my ($seconds, $usec) = Time::HiRes::gettimeofday();
+  if ($style =~ /^-?[sa]/io) {
+    print $seconds . "." . $usec . ": " . $_;
+  }
+  else {
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)
+      = ($style =~ /^-?g/io) ? gmtime($seconds) : localtime($seconds);
+    printf $printformat,
+           1900 + $year,
+           $mon + 1,
+           $mday,
+           $hour,
+           $min,
+           $sec,
+           $usec;
+    print;
+  }
+}
