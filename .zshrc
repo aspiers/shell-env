@@ -880,7 +880,9 @@ fi
 ssh () {
   setopt local_traps
   trap 'cxx' INT EXIT QUIT KILL
-  cx "${${(M@)argv:#*@*}:-$1}" # pick out user@host word from argv
+  # Pick out user@host word from argv; if it's not found, default to $1.
+  # Finally, strip off .* domain component, if any.
+  cx "${${${(M@)argv:#*@*}:-$1}%%.*}" 
   command ssh "$@"
 }
 
