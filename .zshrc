@@ -280,9 +280,9 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
      egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
-    prompt adam2 $adam2_colors
+    prompt adam2 8bit $adam2_colors
   else
-    prompt adam2 plain $adam2_colors
+    prompt adam2 $adam2_colors
   fi
 
   if [[ $TERM == tgtelnet ]]; then
