@@ -951,13 +951,12 @@ alias -g RNS='| sort -nr'
 
 alias -g DN=/dev/null
 alias -g VM=/var/log/messages
-alias -g VL=/var/log
 
 # }}}
 # {{{ grep, xargs
 
-alias -g EG='| egrep'
 alias -g G='| egrep'
+alias -g EG='|& egrep'
 alias -g X='| xargs'
 
 # }}}
@@ -1011,6 +1010,7 @@ hash -d LI=/usr/src/linux
 hash -d L4=/usr/src/linux-2.4
 hash -d CV=/usr/local/cvsroot
 hash -d RC=/etc/rc.d/init.d
+hash -d VL=/var/log
 #hash -df
 
 # }}}
