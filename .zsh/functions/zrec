@@ -14,7 +14,7 @@ if [[ -d "$_func_dir/Completion" ]]; then
 else
   echo "This version was not compiled with --enable-function-subdirs"
   _compinit_dir="$_func_dir"
-  _site_funcs=( $_func_dir/*(.) )
+  _site_funcs=( $_func_dir/*~*.zwc*(.) )
 fi
 
 zrecompile "$@" -p -- \
