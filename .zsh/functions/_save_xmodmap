@@ -1,0 +1,3 @@
+#compdef save-xmodmap
+
+_files -W ~/.keymaps -g '*(.)'
