@@ -2,4 +2,4 @@
 
 local expl
 _description files expl 'Sitescooper-generated pdbs'
-_files "$@" "$expl[@]" -W ~/.sitescooper/pdb
+_files "$@" "$expl[@]" -W ~/.sitescooper/pdb -g \*.pdb
