@@ -220,8 +220,10 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
   #RPS1="$bold_colour$bg_red              $reset_colour"
 
   # Default prompt style
-  adam2_colors=( white white white green )
-  if [[ -r /proc/$PPID/cmdline ]] && egrep -q 'Eterm|nexus|vga' /proc/$PPID/cmdline; then
+  adam2_colors=( white cyan cyan green )
+  if [[ -r /proc/$PPID/cmdline ]] &&
+     egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+  then
     # probably OK for fancy graphic prompt
     prompt adam2 $adam2_colors
   else
