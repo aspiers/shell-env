@@ -886,7 +886,7 @@ End_of_Perl
   }
 
   cvsq () {
-    cvs -nq update |& grep -v -- '-- ignored'
+    cvs -nq update "$@" |& grep -v -- '-- ignored'
   }
 
   cvsls () {
