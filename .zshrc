@@ -285,9 +285,9 @@ zstyle ':completion:*' squeeze-slashes 'yes'
 
 # Include non-hidden directories in globbed file completions
 # for certain commands
-zstyle ':completion::complete:*' \
-  tag-order 'globbed-files directories' all-files 
-zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
+#zstyle ':completion::complete:*' \
+#  tag-order 'globbed-files directories' all-files 
+#zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
 # Separate matches into groups
 zstyle ':completion:*:matches' group 'yes'
@@ -812,7 +812,11 @@ End_of_Perl
   }
 
   cvsll () {
-    rcs2log "$@" | less
+    rcs2log \
+      -u "adam	Adam Spiers	adam@spiers.net" \
+      -u "localadams	Adam Spiers	adam@spiers.net" \
+      -u "adams	Adam Spiers	aspiers@guideguide.com" \
+      $@" | less
   }
 
   cvss () {
