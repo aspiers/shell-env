@@ -700,9 +700,10 @@ alias sd='export DISPLAY=:0.0'
 # }}}
 # {{{ Different CVS setups
 
+# Sensible defaults
 unset CVS_SERVER
 export CVSROOT
-export CVS_RSH
+export CVS_RSH=ssh
 
 setcvs_local () {
   CVSROOT=/usr/local/cvsroot
