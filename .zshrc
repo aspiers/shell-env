@@ -21,6 +21,22 @@
 
 # }}}
 
+# {{{ What version are we running?
+
+## I do this in my .zshenv, but you'll need to uncomment it.
+#
+# if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
+# if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
+#
+# ZSH_VERSION_TYPE=old
+# if [[ $ZSH_VERSION == 3.1.<6->* ||
+#       $ZSH_VERSION == 3.<2->.<->*  ||
+#       $ZSH_VERSION == 4.<->* ]]
+# then
+#   ZSH_VERSION_TYPE=new
+# fi
+
+# }}}
 # {{{ Profiling
 
 [[ -n "$ZSH_PROFILE_RC" ]] && zmodload zsh/zprof
