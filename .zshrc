@@ -615,16 +615,16 @@ elif ls --color >&/dev/null; then
 fi
 
 # jeez I'm lazy ...
-alias l='ls -l'
-alias la='ls -la'
-alias lsa='ls -a'
-alias lsh='ls -d .*'
-alias lsr='ls -R'
-alias ld='ls -ld'
-alias lt='ls -lt'
-alias lrt='ls -lrt'
-alias lart='ls -lart'
-alias lr='ls -lR'
+alias l='ls -lh'
+alias la='ls -lha'
+alias lsa='ls -ah'
+alias lsh='ls -dh .*'
+alias lsr='ls -Rh'
+alias ld='ls -ldh'
+alias lt='ls -lth'
+alias lrt='ls -lrth'
+alias lart='ls -larth'
+alias lr='ls -lRh'
 # damn, missed out lsd :-)
 alias sl=ls # often screw this up
 
