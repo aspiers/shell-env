@@ -49,11 +49,6 @@ if [[ -d ~/bin ]]; then
 fi
 
 # }}}
-# {{{ Mail
-
-export MAIL=~/mail/inboxes/Mailbox
-
-# }}}
 # {{{ Perl libraries
 
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PERL5LIB perl5lib
@@ -112,6 +107,11 @@ export PILOTPORT=/dev/pilot
 # {{{ rsync uses ssh
 
 export RSYNC_RSH=ssh
+
+# }}}
+# {{{ cvs uses ssh
+
+export CVS_RSH=ssh
 
 # }}}
 
