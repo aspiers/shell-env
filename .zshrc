@@ -441,6 +441,7 @@ zstyle ':completion:*' hosts $hosts
 my_accounts=(
   {localadams,root}@pulse
   adam@corelli.new.ox.ac.uk
+  adam@aviator.guideguide.com
   {adam,root}@thelonious.new.ox.ac.uk
   adam@hewes.icl.ox.ac.uk
   security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
