@@ -394,7 +394,7 @@ hosts=(
 #   {enif,rage}.pcl.ox.ac.uk
 
     # Chris Cladingboel
-    {plato,calvin}.wadham.ox.ac.uk
+    plato.wadham.ox.ac.uk
 
     # reqng
     scuttlebutt.explore.com
