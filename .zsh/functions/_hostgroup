@@ -1,6 +1,6 @@
 #compdef hostgroup hostgroups
 
-_hostgroups () {
+_hostgroup_hostgroups () {
   local expl
   _description hostgroup expl 'hostgroup'
   compadd "$expl[@]" - $(hostgroup -h ALL)
@@ -18,7 +18,7 @@ _hostgroup () {
     '(-h)--hosts[input contains hostnames not groups]:*:host:_hostgroup_hosts' \
     '(-e)--expression[input is expression not list]' \
     '(--expression)-e[input is expression not list]' \
-    '(-h --hosts)*:hostgroup:_hostgroups'
+    '(-h --hosts)*:hostgroup:_hostgroup_hostgroups'
 }
 
 _hostgroups () {
