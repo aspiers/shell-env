@@ -39,7 +39,7 @@
 # }}}
 # {{{ Profiling
 
-[[ -n "$ZSH_PROFILE_RC" ]] && zmodload zsh/zprof
+[[ -n "$ZSH_PROFILE_RC" ]] && which zmodload >&/dev/null && zmodload zsh/zprof
 
 # }}}
 # {{{ Loading status
@@ -183,12 +183,12 @@ infopath=(
 # {{{ Function path
 
 fpath=(
-       $zdotdir/{.zsh/*.zwc,{.zsh,lib/zsh}/{functions,scripts}}(N) 
+       $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions,scripts}}(N) 
 
        $fpath
 
        # very old versions
-       /usr/doc/zsh*/Functions(N)
+       /usr/doc/zsh*/[F]unctions(N)
       )
 
 # Autoload all shell functions from all directories in $fpath that
@@ -297,7 +297,7 @@ else
   function compdef { }
 
   # an antiquated, barebones completion system is better than nowt
-  zmodload zsh/compctl
+  which zmodload >&/dev/null && zmodload zsh/compctl
 fi
 
 ##
@@ -691,35 +691,7 @@ unset CVS_SERVER
 export CVSROOT
 export CVS_RSH=ssh
 
-# for use with the scvs function
-typeset -A _CVSROOTS _CVS_RSHS
-_CVSROOTS=(
-           # Put your own CVSROOTs here
-           local             /usr/local/cvsroot
-           mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
-### BEGIN PRIVATE
-           thelonious        adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
-           guideguide_remote proxy.guideguide.com:/share/cvsroot
-           guideguide_local  prophet5.london.guideguide.com:/share/cvsroot
-           zsh_local_write   adamspiers@cvs1:/cvsroot/zsh
-           zsh_local         :pserver:anonymous@cvs1:/cvsroot/zsh
-           zsh_remote_write  adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
-           zsh_remote        :pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
-### END PRIVATE
-)
-
-_CVS_RSHS=(
-           # Put your own CVS_RSHs here
-### BEGIN PRIVATE
-           thelonious        ssh
-           guideguide_remote ~/bin/cvs_rsh
-           guideguide_local  ssh
-           zsh_local_write   ssh
-           zsh_local         ssh
-           zsh_remote_write  ssh
-           zsh_remote        ssh
-### END PRIVATE
-          )
+# see scvs function
 
 # }}}
 # {{{ Other programs
