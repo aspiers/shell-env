@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Source Only
+#
+# filters non-source files from a list of files, assuming one per line
+
+here=`dirname $0`
+here=${here:-.}
+
+set -e
+tmpfile=`mktemp /tmp/source-only.XXXXXXX`
+(
+  cat $ZDOTDIR/.cvsignore
+  # Allow files in other directories
+  sed 's/^/\*\//g' $ZDOTDIR/.cvsignore
+) | $here/../glob-to-re >  $tmpfile
+
+grep -vEf $tmpfile
+
+rm "$tmpfile"
