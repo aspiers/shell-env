@@ -1,9 +1,12 @@
+# -*- mode: sh -*-
 #
 # .ns - Nice Shell
 # (short name for quick invocation from other shells)
 #
 # Source this to get a decent setup from another
 # account.
+#
+# $Id$
 #
 
 # We have to intelligently guess where this file is.
