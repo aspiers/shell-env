@@ -1,5 +1,3 @@
 #!/bin/sh
 
-exec diff -u "$@" | \
-  awk -f $ZDOTDIR/bin/colour-diff-output.awk | \
-  diff-less
+exec diff -u "$@" | tty-colour-diff
