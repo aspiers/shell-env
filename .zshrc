@@ -187,7 +187,7 @@ fpath=(
 # function).
 
 for dirname in $fpath; do
-  fns=( $dirname/*(N.x:t) )
+  fns=( $dirname/*~*~(N.x:t) )
   (( $#fns )) && autoload $fns
 done
 
@@ -291,7 +291,8 @@ fi
 ##
 
 # General completion technique
-zstyle ':completion:*' completer _complete _correct _approximate _prefix
+#zstyle ':completion:*' completer _complete _correct _approximate _prefix
+zstyle ':completion:*' completer _complete _prefix
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
