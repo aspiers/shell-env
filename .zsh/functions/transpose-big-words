@@ -18,5 +18,4 @@ zle backward-to-space
 zle .yank
 
 # add a space back in between
-LBUFFER+=' '
-
+LBUFFER="${LBUFFER} "
