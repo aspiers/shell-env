@@ -514,7 +514,14 @@ compdef _functions reload
 # }}}
 # {{{ ls aliases
 
-alias ls='/bin/ls --color -F'
+if ls --color -F >&/dev/null; then
+  alias ls='/bin/ls --color -F'
+elif ls --color >&/dev/null; then
+  alias ls='/bin/ls --color'
+elif ls -F >&/dev/null; then
+  alias ls='/bin/ls -F'
+fi
+
 # jeez I'm lazy ...
 alias l='ls -l'
 alias la='ls -la'
@@ -848,4 +855,3 @@ fi
 echo -n "\r"
 
 # }}}
-
