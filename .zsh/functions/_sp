@@ -1,0 +1,3 @@
+#compdef sp
+
+_parameters "$@"
