@@ -4,5 +4,5 @@ here=`dirname $0`
 here=${here:-.}
 
 user="${USERNAME:-${USER:-dontmatch}}"
-[ "$user" = root ] && user=dontmatch 
+[ "$user" = root ] && user=dontmatch
 exec rj "$@" | grep -vEf $here/ra.pats | grep -vE "^$user|$0\$"
