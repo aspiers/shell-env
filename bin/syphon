@@ -87,3 +87,11 @@ sub get_dest {
   return (\*STDOUT) unless $opts{'in-place'};
   return mkstemp( "/tmp/syphon-XXXXXXX" );
 }
+
+=head1 LICENSE
+
+Copyright (c) 2003 Adam Spiers <adam@spiers.net>.  All rights
+reserved. This program is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
+
+=cut
