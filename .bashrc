@@ -6,11 +6,13 @@
 
 # .bashrc is invoked by non-login interactive shells
 
-# {{{ Load .bashenv
+# {{{ Environment
 
+[ -r ~/.shared_env ] && . ~/.shared_env
 [ -r ~/.bashenv ] && . ~/.bashenv
 
 # }}}
+
 # {{{ Try to switch shell
 
 [ -r ~/.preferred_shell ] && [ -r ~/.switch_shell ] && \
@@ -24,9 +26,6 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # }}}
-# {{{ Environment
-
-[ -e ~/.shared_env ] && . ~/.shared_env
 
 # {{{ ls colours
 
@@ -34,8 +33,6 @@ if which dircolors >&/dev/null && [ -e ~/.dircolors ]; then
   # show directories in yellow
   eval `dircolors -b ~/.dircolors`
 fi
-
-# }}}
 
 # }}}
 # {{{ Key bindings
@@ -79,7 +76,10 @@ alias cd...='cd ../..'
 alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
 alias cd......='cd ../../../../..'
-alias cd/='cd /'
+alias 'cd/'='cd /'
+z () {
+  cd ~/"$@"
+}
 
 alias md='mkdir -p'
 alias rd=rmdir
@@ -105,12 +105,6 @@ du1 () {
 }
 
 # }}}
-
-# }}}
-# {{{ Use this to untar after doing a tar ztvf/tvf/ztf command
-
-# Thanks to Bart Schaefer for this one
-alias xt='fc -e - tvf=xf ztf=zxf -1'
 
 # }}}
 
@@ -160,12 +154,6 @@ alias tf='less +F'
 # }}}
 
 # }}}
-# {{{ Other hosts
-
-alias th='ssh -l adam thelonious.new.ox.ac.uk'
-
-# }}}
-
 # }}}
 
 # {{{ Specific to hosts
