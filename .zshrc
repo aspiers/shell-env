@@ -590,6 +590,29 @@ alias man='nocorrect man'
 
 # {{{ Changing terminal window/icon titles
 
+set_title () {
+  local num title
+
+  case "$1" in
+    window) num=2
+	    ;;
+      icon) num=1
+	    ;;
+         *) print "Usage: set_title ( window | title ) <title>"
+	    return 1 
+	    ;;
+  esac
+
+  title="$2"
+
+  # Other checks will need to be added here.
+  if [[ "$TERM" == 'linux' ]]; then
+    print "Cannot currently display $1 title; only remembering value set."
+  else
+    echo -n "\e]$num;$title\a"
+  fi
+}
+
 cx () {
   local long_host short_host title_host short_from_opts
 
@@ -615,19 +638,19 @@ cx () {
   if [[ -z "$*" ]]; then
     # Revert window title to previous setting or default
     : ${TITLE="$USERNAME@${title_host}"}
-    echo -n "\e]2;$TITLE\a"
+    set_title window "$TITLE"
 
     # Revert window icon title to previous setting or default
     : ${ITITLE="$USERNAME@${short_host}"}
-    echo -n "\e]1;$ITITLE\a"
+    set_title icon "$ITITLE"
   else
     # Change window title
     TITLE="$* : $USERNAME@${title_host}"
-    echo -n "\e]2;$TITLE\a"
+    set_title window "$TITLE"
 
     # Change window icon title
     ITITLE="$* @ $USERNAME@${short_host}"
-    echo -n "\e]1;$ITITLE\a"
+    set_title icon "$ITITLE"
   fi
 }
 
@@ -641,7 +664,6 @@ if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
-
 
 # }}}
 # {{{ export DISPLAY=:0.0
