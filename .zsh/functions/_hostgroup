@@ -18,6 +18,11 @@ _hostgroup () {
     '(-h)--hosts[input contains hostnames not groups]:*:host:_hostgroup_hosts' \
     '(-e)--expression[input is expression not list]' \
     '(--expression)-e[input is expression not list]' \
+    {'(--database)-f+','(-f)--database='}':alternative database file:_files' \
+    '(-l --lines '{'--delimiter)-d+','-d)--delimiter='}':output delimiter:' \
+    '(-d --delimiter '{' -l)--lines',' --lines)-l'}'[list one item per line]' \
+    {'(-c)--count','(--count)-c'}'[output number of items rather than actual items]' \
+    {'*-v','*--verbose'}'[increase verbosity (can be repeated)]' \
     '(-h --hosts)*:hostgroup:_hostgroup_hostgroups'
 }
 
