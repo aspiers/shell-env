@@ -31,7 +31,7 @@ unset INPUTRC
 # {{{ LD_PRELOAD
 
 # Fix obscure gtk problem
-LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
+#LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
 
 # }}}
 # {{{ Path
@@ -40,13 +40,7 @@ LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
 typeset -U path
 
 path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
-if [[ -d ~/packbin ]]; then
-  path=( ~/packbin $path )
-fi
-
-if [[ -d ~/bin ]]; then
-  path=( ~/bin $path )
-fi
+path=( ~/{packbin,bin,bin/shortcuts}(N) $path )
 
 # }}}
 # {{{ Perl libraries
