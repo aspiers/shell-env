@@ -14,7 +14,9 @@ recalc_ssh_agent_cache () {
   : ${SSH_AGENT_PID:=`ps auxww | awk "/$USER"'.*ssh-agent *$/ { print $2; exit }'`}
 
   if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
-    if [[ -t 1 ]]; then
+    # If interactive, prompt whether to start a new one.
+    # UPDATE: don't propmt; I always answer yes.
+    if /bin/false && [[ -t 1 ]]; then
       echo "ssh-agent process not found; start a new one [y/N] ?"
       if read -q; then
         eval `ssh-agent`

@@ -15,3 +15,9 @@ EOF
 
 export SSH_AGENT_PID SSH_AUTH_SOCK
 
+if [[ -e /proc ]] &&
+   ( [[ ! -e /proc/$SSH_AGENT_PID ]] ||
+     ! grep -q ssh-agent /proc/$SSH_AGENT_PID/cmdline ); then
+  echo "\nInvalid ssh-agent pid $SSH_AGENT_PID; restarting ...\n"
+  dsa restart
+fi
