@@ -103,7 +103,6 @@ typeset -U ld_library_path # No duplicates
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/{local/,}lib/[p]erl5{/site_perl,}{/5.*,}{/i?86*,}(N)
           ~/{local/,}lib/[p]erl5(N)
           $perl5lib
          )
