@@ -5,7 +5,7 @@ if [[ $ZSH_VERSION_TYPE != 'new' ]]; then
   exit 1
 fi
 
-scvs() {
+scvs () {
   if [[ -z "$1" ]]; then
     echo 'Usage: scvs <tag> [ options ]'
     return
@@ -47,3 +47,5 @@ _CVS_RSHS=(
            zsh_remote        ssh
 ### END PRIVATE
           )
+
+scvs "$@"
