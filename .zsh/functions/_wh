@@ -1,0 +1,5 @@
+#compdef wh
+
+service=where
+_which "$@"
+

@@ -562,7 +562,6 @@ autoload zrecompile
 alias which >&/dev/null && unalias which
 
 alias wh=where
-compdef _which wh
 
 # }}}
 # {{{ run-help
