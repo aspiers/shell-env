@@ -678,6 +678,7 @@ po () {
 # {{{ Renaming
 
 autoload zmv
+alias mmv='noglob zmv -W'
 
 # }}}
 
