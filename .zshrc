@@ -743,7 +743,7 @@ alias rj='nocorrect rj'
 
 which cx >&/dev/null || cx () { }
 
-if [[ "$TERM" == (xterm*|screen*) ]]; then
+if [[ "$TERM" == ([Ex]term*|screen*) ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
@@ -940,16 +940,16 @@ if [[ $ZSH_VERSION > 3.1.5 ]]; then
 fi  
 
 # }}}
+# {{{ Don't always autologout
 
-# }}}
-
-# {{{ Specific to xterms
-
-if [[ "${TERM}" == (xterm*|dtterm|screen*) ]]; then
+if [[ "${TERM}" == ([Ex]term*|dtterm|screen*) ]]; then
   unset TMOUT
 fi
 
 # }}}
+
+# }}}
+
 # {{{ Specific to local setups
 
 zshrc_load_status 'local hooks'
