@@ -4,9 +4,20 @@ eshade () {
   local percent
 
   if [[ -z "$*" ]]; then
-    percent=0
+    value=0
   else
-    percent="$*"
+    value="$*"
   fi
-  echo -e "\e]6;1;$percent%\a"
+
+  # old Eterm: 0% -- 100%
+  #echo -e "\e]6;1;$value%\a"
+
+  # new Eterm: 0x00 -- 0x200
+  echo -e "\e]6;1;bg;image;brightness;0x$value\a"
 }
+
+_eshade () {
+  _message "Hex value from 00 (black) to 200 (double bright)"
+}
+
+compdef _eshade eshade

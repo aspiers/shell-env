@@ -2,18 +2,40 @@
 
 etint () {
   case "$*" in
-        red)  echo -e "\e]6;2;0xff8080\a" ;;
-      green)  echo -e "\e]6;2;0x80ff80\a" ;;
-       blue)  echo -e "\e]6;2;0x8080ff\a" ;;
-       cyan)  echo -e "\e]6;2;0x80ffff\a" ;;
-    magenta)  echo -e "\e]6;2;0xff80ff\a" ;;
-     yellow)  echo -e "\e]6;2;0xffff80\a" ;;
-          *)  echo -e "\e]6;2;0xffffff\a" ;;
+
+# old Eterm codes:
+#       red)  echo -e "\e]6;2;0xff8080\a" ;;
+#     green)  echo -e "\e]6;2;0x80ff80\a" ;;
+#      blue)  echo -e "\e]6;2;0x8080ff\a" ;;
+#      cyan)  echo -e "\e]6;2;0x80ffff\a" ;;
+#   magenta)  echo -e "\e]6;2;0xff80ff\a" ;;
+#    yellow)  echo -e "\e]6;2;0xffff80\a" ;;
+#         *)  echo -e "\e]6;2;0xffffff\a" ;;
+
+# new eterm codes:
+        red)  cmod=( a0 50 50 ) ;;
+      green)  cmod=( 50 a0 50 ) ;;
+       blue)  cmod=( 50 50 a0 ) ;;
+       cyan)  cmod=( 50 a0 a0 ) ;;
+    magenta)  cmod=( a0 50 a0 ) ;;
+     yellow)  cmod=( a0 a0 50 ) ;;
+          *)  cmod=( a0 a0 a0 ) ;;
   esac
+
+  i=1
+  echo -ne "\e]"
+  for rgb in red green blue; do
+    brightness=$cmod[$i]
+    echo -ne "6;1;bg;$rgb;brightness;0x$brightness"
+    (( i < 3 )) && echo -n ';'
+    (( i++ ))
+  done
+  echo -ne "\a"
 }
+
 _etint () {
   local expl
-  _description expl 'tint colour'
+  _description tint expl 'tint colour'
   compadd "$expl[@]" - red green blue cyan magenta yellow
 }
 compdef _etint etint
