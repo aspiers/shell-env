@@ -80,7 +80,10 @@ export IRCNICK='Adam'
 # }}}
 # {{{ Editor
 
-export EDITOR=emacs
+# Not sure which of these is right.
+#export EDITOR=emacs
+export EDITOR=fe
+
 export VISUAL=fe
 
 # }}}
