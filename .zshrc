@@ -827,7 +827,7 @@ if which cvs >&/dev/null; then
       $dir = '';
       getopts('av', \%opts);
       $| = 1;
-      open(CVS, "cvs status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
+      open(CVS, "cvs -n status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
       open(STDERR, ">&STDOUT") or die "Can't dup stdout";
       while (<CVS>) {
         chomp;
