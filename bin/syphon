@@ -88,6 +88,11 @@ sub get_dest {
   return mkstemp( "/tmp/syphon-XXXXXXX" );
 }
 
+=head1 SEE ALSO
+
+L<csplit(1)>, which I only discovered after writing this :-(
+I needed the "in-place" feature though.
+
 =head1 VERSION
 
 $Id$
