@@ -48,6 +48,8 @@ switch_shell () {
     return
   fi
 
+  export SHELL_ARGS="$@" # no other way of retrieving these?
+
   case "$SHLVL" in
     1) # login shell, be careful
        switch_shell_safely "$@"

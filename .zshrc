@@ -532,7 +532,7 @@ bash () {
 }
 
 restart () {
-  exec $SHELL "$@"
+  exec $SHELL "$SHELL_ARGS" "$@"
 }
 
 profile () {
