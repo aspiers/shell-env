@@ -21,40 +21,75 @@
 ## 
 
 # TODO:
-#   - extend to multiple files
 #   - extend to multiple patterns (one for each file?)
 #   - include more options from tail (e.g. -n) and grep (e.g. -i)
 
 use strict;
 use Getopt::Long;
 
-my $quiet;
-GetOptions("quiet|q" => \$quiet);
+my ($quiet, $inverse) = (0, 0);
+GetOptions(
+           "quiet|q" => \$quiet,
+           "inverse|v" => \$inverse
+          );
 
-unless (@ARGV == 2) {
+unless (@ARGV) {
   die <<EOF;
-Usage: tailfgrep [ --quiet | -q ] <Perl regexp> <file>
-   --quiet, -q  --  quiet mode, same as grep -q.  Don't print matches,
-                    exit when first match found.
+Usage: tailfgrep [ options ] <Perl regexp> <file1> [ <file2> [ <file3> ... ] ]
+   -q, --quiet    --  quiet mode, same as grep -q; don't print matches,
+                      exit when first match found
+   -v, --inverse  --  inverse mode (print lines which don't match)
 EOF
 }
 
-my ($re, $file) = @ARGV[0, 1];
+my ($re, @files) = @ARGV;
 
--f $file or die "$file isn't a file.\n";
-open(LOG, $file) or die "Couldn't open $file: $!\n";
-seek(LOG, 0, 2);
+my %fh = ();
+foreach my $file (@files) {
+  -f $file or die "$file isn't a file.\n";
+  local *FH;
+  open(FH, $file) or die "Couldn't open $file: $!\n";
+  seek(FH, 0, 2);
+  $fh{$file} = *FH;
+}
+
+my $last_file = '';
 
 while (1) {
-  if (defined($_ = <LOG>)) {
-    if ($quiet) {
-      /$re/ && exit 0;
+ FILE:
+  foreach my $file (@files) {
+    my $fh = $fh{$file};
+    if (defined($_ = <$fh>)) {
+      if ($quiet) {
+        match($_) && exit 0;
+      }
+      else {
+        if(match($_)) {
+          if (@files > 1) {
+            if ($file ne $last_file) {
+              print "\n==> $file <==\n\n";
+            }
+            print;
+            $last_file = $file;
+          }
+          else {
+            print;
+            $last_file = $file;
+          }
+        }
+      }
     }
-    else {
-      /$re/ && print;
-    }
+    seek($fh, 0, 1); # clear EOF
   }
   sleep 1;
-  seek(LOG, 0, 1); # clear EOF
 }
-close(LOG);
+
+foreach my $file (@files) {
+  my $fh = $fh{$file};
+  close($fh);
+}
+
+sub match {
+  my ($line) = @_;
+  return ($line =~ /$re/) ^ $inverse;
+}
