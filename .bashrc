@@ -155,6 +155,11 @@ rj () {
 }
 
 # }}}
+# {{{ Terminals
+
+alias vx='export TERM=xterm-color'
+
+# }}}
 # {{{ Other users
 
 alias f=finger
