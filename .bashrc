@@ -21,7 +21,19 @@ sh_load_status .bashrc
 
 if [ -f /etc/bashrc ]; then
   sh_load_status "/etc/bashrc"
-  . /etc/bashrc
+
+  if ! [ -e /etc/redhat-release ]; then
+    . /etc/bashrc
+  else
+    # RedHat bashrc has imbecilic stty erase which we avoid by
+    # caching to ~/.sysbashrc and modifying.
+    if ! [ -e $ZDOTDIR/.sysbashrc ]; then
+        awk '/^    if \[ -x .*tput/,/^    fi/{next}{print}' \
+            /etc/bashrc > $ZDOTDIR/.sysbashrc
+    fi
+
+    . $ZDOTDIR/.sysbashrc
+  fi
 fi
 
 # }}}
