@@ -16,7 +16,8 @@
 
 # {{{ Try to switch shell
 
-[ -r ~/.switch_shell ] && . ~/.switch_shell
+# "" is to force shell choice from ~/.preferred_shell
+[ -r ~/.switch_shell ] && . ~/.switch_shell ""
 
 # }}}
 # {{{ Source global definitions
