@@ -8,10 +8,7 @@
 
 # {{{ Try to switch shell
 
-preferred_shell=$(<~/.preferred_shell)
-preferred_shell_args=$(<~/.preferred_shell_args)
-[ -r ~/.switch_shell ] &&
-   . ~/.switch_shell "$preferred_shell" $preferred_shell_args
+[ -r ~/.switch_shell ] && . ~/.switch_shell ~adams/local/bin/zsh -d
 
 # }}}
 # {{{ Source global definitions
