@@ -904,7 +904,7 @@ echo -n "\r"
 # {{{ Profile report
 
 if [[ -n "$ZSH_PROFILE_RC" ]]; then
-  zprof >! zshrc.zprof
+  zprof >! ~/zshrc.zprof
   exit
 fi
 
