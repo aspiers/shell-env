@@ -40,8 +40,10 @@ print "\nEscape received; switching to keepalive mode.\n";
 
 # Send a control-U to cancel escape sequence
 $exp->send("\cu\n");
+sleep 1;
 $exp->expect(0);
 $exp->send("cat > /dev/null\n");
+sleep 1;
 $exp->expect(0);
 
 my $mins = 0;
