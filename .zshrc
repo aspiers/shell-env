@@ -1001,21 +1001,22 @@ zshrc_load_status 'miscellaneous'
 
 # {{{ Hash named directories
 
-hash -d RP=/usr/src/redhat/RPMS
-hash -d I3=/usr/src/redhat/RPMS/i386
-hash -d I4=/usr/src/redhat/RPMS/i486
-hash -d I5=/usr/src/redhat/RPMS/i586
-hash -d I6=/usr/src/redhat/RPMS/i686
-hash -d NA=/usr/src/redhat/RPMS/noarch
-hash -d SR=/usr/src/redhat/SRPMS
-hash -d SP=/usr/src/redhat/SPECS
-hash -d SO=/usr/src/redhat/SOURCES
-hash -d BU=/usr/src/redhat/BUILD
-hash -d LI=/usr/src/linux
-hash -d L4=/usr/src/linux-2.4
-hash -d CV=/usr/local/cvsroot
-hash -d RC=/etc/rc.d/init.d
-hash -d VL=/var/log
+# cdable_vars is set, so don't need 'hash -d' in front of these
+RP=/usr/src/redhat/RPMS
+I3=/usr/src/redhat/RPMS/i386
+I4=/usr/src/redhat/RPMS/i486
+I5=/usr/src/redhat/RPMS/i586
+I6=/usr/src/redhat/RPMS/i686
+NA=/usr/src/redhat/RPMS/noarch
+SR=/usr/src/redhat/SRPMS
+SP=/usr/src/redhat/SPECS
+SO=/usr/src/redhat/SOURCES
+BU=/usr/src/redhat/BUILD
+LI=/usr/src/linux
+L4=/usr/src/linux-2.4
+CV=/usr/local/cvsroot
+RC=/etc/rc.d/init.d
+VL=/var/log
 #hash -df
 
 # }}}
