@@ -859,9 +859,11 @@ End_of_Perl
 
   cvsll () {
     rcs2log \
+### BEGIN PRIVATE
       -u "adam	Adam Spiers	adam@spiers.net" \
       -u "localadams	Adam Spiers	adam@spiers.net" \
       -u "adams	Adam Spiers	aspiers@guideguide.com" \
+### END PRIVATE
       "$@" | less
   }
 
