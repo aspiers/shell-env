@@ -41,8 +41,8 @@ usage() unless @ARGV >= 2;
 
 my ($file, @age) = @ARGV;
 my $age_str = "@age";
-
-my $st = stat $file;
+my $st = stat($file);
+$st or die "stat($file) failed: $!\n";
 my $file_age = $opts{atime} ? $st->atime
              : $opts{ctime} ? $st->ctime
              :                $st->mtime;
