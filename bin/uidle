@@ -7,7 +7,8 @@ use Date::Manip 'Delta_Format';
 use File::Basename;
 use Getopt::Long;
 my %opts;
-GetOptions(\%opts, 'human|h', 'help') or usage();
+GetOptions(\%opts, 'human|h', 'help', 'debug|d') or usage();
+usage() if $opts{help};
 
 use constant NEED_ON_SINCE => 1;
 use constant NEED_IDLE     => 2;
@@ -16,6 +17,11 @@ use constant NEED_LOGIN    => 3;
 sub usage {
   my $me = basename $0;
   die <<EOUSAGE;
+Usage: $me [options] [username[\@host]]
+Options:
+  -h, --human  Output idle time in human-readable format (defaults to seconds)
+  -d, --debug
+      --help
 EOUSAGE
 }
 
@@ -44,7 +50,7 @@ while (<FINGER>) {
 
   if ($state == NEED_ON_SINCE) {
     $state = NEED_IDLE if s/\bon since.*? on \S+\s*( from \S+)?//i;
-    redo if /\bidle\b/;
+    debug("Merged line; redoing\n"), redo if /\bidle\b/;
     next;
   }
 
@@ -127,5 +133,5 @@ else {
 }
 
 sub debug {
-#  warn @_;
+  warn @_ if $opts{debug};
 }
