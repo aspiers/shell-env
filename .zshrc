@@ -895,6 +895,8 @@ End_of_Perl
     cvs status "$@"
   }
 
+  alias cvsv='cvst -av'
+
   cvs () {
     quiet='-q'
     [[ "$*" == *status* ]] && quiet=''
