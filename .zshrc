@@ -414,22 +414,20 @@ zstyle ':completion:*' hosts $hosts
 
 # All my accounts:
 #my_accounts=(
-#  joe:
-#  {joe,root}:mymachine.com
-#  jbloggs:myothermachine.com
+#  {joe,root}@mymachine.com
+#  jbloggs@myothermachine.com
 #)
 
 ### BEGIN PRIVATE
 my_accounts=(
-  {localadams,root}:{pulse.{localdomain,guideguide.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
-  {adam,root}:thelonious.new.ox.ac.uk
-  adam:hewes.icl.ox.ac.uk
-  {adams,root}:
-  security:{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
-  {adams,root}:server1.w3w.net
-  {adams,root}:{proxy.guideguide.com,195.217.36.66}
-  adamspiers:ssh.sourceforge.net
-  adam:landfill.tequilarista.org
+  {localadams,root}@pulse
+  {adam,root}@thelonious.new.ox.ac.uk
+  adam@hewes.icl.ox.ac.uk
+  security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
+  {adams,root}@server1.w3w.net
+  {adams,root}@{proxy.guideguide.com,195.217.36.66}
+  adamspiers@ssh.sourceforge.net
+  adam@landfill.tequilarista.org
   {aspiers,root}@194.202.166.101
   adams@plig.net
 )
@@ -437,19 +435,18 @@ my_accounts=(
 
 # Other people's accounts:
 #other_accounts=(
-#  bob:
-#  {fred,root}:hismachine.com
-#  vera:hermachine.com
+#  {fred,root}@hismachine.com
+#  vera@hermachine.com
 #)
 
 ### BEGIN PRIVATE
 other_accounts=(
-  {root,ben,nmcgroga,cclading,nick,stephen,bear,jo,cmb,dave,davetm}:thelonious.new.ox.ac.uk
-  {root,tpcadmin}:hewes.icl.ox.ac.uk
-  dnicker:ermine.ox.ac.uk
-  chris:plato.wadham.ox.ac.uk
-  {chris,weejock}:ferret.lmh.ox.ac.uk
-  {root,adam,rian}:server1.w3w.net
+  {root,ben,nmcgroga,cclading,nick,stephen,bear,jo,cmb,dave,davetm}@thelonious.new.ox.ac.uk
+  {root,tpcadmin}@hewes.icl.ox.ac.uk
+  dnicker@ermine.ox.ac.uk
+  chris@plato.wadham.ox.ac.uk
+  {chris,weejock}@ferret.lmh.ox.ac.uk
+  {root,adam,rian}@server1.w3w.net
 )
 ### END PRIVATE
 
@@ -459,19 +456,19 @@ zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 # }}}
 # {{{ (host, port, user) triples for telnet
 
-#  telnet_hosts_ports_users=(
-#    host1::user1
-#    host2::user2
-#    mail-server:{smtp,pop3}:
-#    news-server:nntp:
-#    proxy-server:8000:
+#  telnet_users_hosts_ports=(
+#    user1@host1:
+#    user2@host2:
+#    @mail-server:{smtp,pop3}
+#    @news-server:nntp
+#    @proxy-server:8000
 #  )
 ### BEGIN PRIVATE
-telnet_hosts_ports_users=(
-  {localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}:
+telnet_users_hosts_ports=(
+  @{localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}
 )
 ### END PRIVATE
-zstyle ':completion:*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
+zstyle ':completion:*:*:telnet:*' users-hosts-ports $telnet_users_hosts_ports
 
 # }}}
 
