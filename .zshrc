@@ -89,8 +89,8 @@ setopt \
         glob_dots \
         glob_subst \
         hash_cmds \
-     NO_hash_dirs \
-     NO_hash_list_all \
+        hash_dirs \
+        hash_list_all \
         hist_allow_clobber \
         hist_beep \
         hist_ignore_dups \
@@ -312,7 +312,7 @@ compstyle '*:history-words' remove_all_dups 'yep'
 # }}}
 # {{{ Common hostnames
 
-: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
 
 hosts=(
     "$_etc_hosts[@]"
@@ -608,7 +608,7 @@ set_title () {
 
   # Other checks will need to be added here.
   if [[ "$TERM" == 'linux' ]]; then
-    print "Cannot currently display $1 title; only remembering value set."
+#    print "Cannot currently display $1 title; only remembering value set."
   else
     echo -n "\e]$num;$title\a"
   fi
@@ -747,6 +747,7 @@ alias ap=apropos
 # }}}
 # {{{ editors
 
+alias e='emacs &!'
 alias fe='emacs -nw --eval "(setq make-backup-files nil)"'
 alias pico='/usr/bin/pico -z'
 
@@ -860,7 +861,7 @@ if which dircolors >/dev/null; then
 fi
 
 if [[ $ZSH_VERSION > 3.1.5 ]]; then
-  zmodload -i complist
+  zmodload -i zsh/complist
   ZLS_COLOURS=${LS_COLORS-${LS_COLOURS-''}}
 fi  
 
