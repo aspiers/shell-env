@@ -8,7 +8,7 @@
 #
 #   run_local_hooks .shared_env
 #
-# would source these files in this order:
+# would check for files in this order:
 #
 #   1. $ZDOTDIR/.shared_env.local
 #   2. $ZDOTDIR/.shared_env.HOSTNAME
