@@ -38,7 +38,7 @@ export MAIL=~/mail/inboxes/Mailbox
 typeset -T PERL5LIB perl5lib
 typeset -U perl5lib
 export PERL5LIB
-perl5lib=( $perl5lib ~/lib/perl(N) )
+perl5lib=( $perl5lib ~/lib/perl/site_perl(N)  ~/lib/perl(N) )
 
 # }}}
 # {{{ IRC
