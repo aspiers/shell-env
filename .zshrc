@@ -754,7 +754,7 @@ scvs_guideguide_remote () {
 }
 
 scvs_guideguide_local () {
-  CVSROOT=prophet5.guideguide.com:/share/cvsroot
+  CVSROOT=prophet5.london.guideguide.com:/share/cvsroot
   CVS_RSH=ssh
 }
 
