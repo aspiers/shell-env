@@ -18,7 +18,9 @@ fi
 # {{{ Try to switch shell
 
 preferred_shell=$(<~/.preferred_shell)
-[ -r ~/.switch_shell ] && . ~/.switch_shell $preferred_shell
+preferred_shell_args=$(<~/.preferred_shell_args)
+[ -r ~/.switch_shell ] &&
+   . ~/.switch_shell "$preferred_shell" $preferred_shell_args
 
 # }}}
 # {{{ User specific environment and startup programs
