@@ -2,4 +2,9 @@
 
 quiet='-q'
 [[ "$*" == *status* ]] && quiet=''
-command cvs $quiet "$@" | awk -f ~/bin/colour-cvs-output.awk
+
+if [[ -n "$*[(r)(com|commit)]" ]]; then
+  command cvs $quiet "$@"
+else
+  command cvs $quiet "$@" | awk -f ~/bin/colour-cvs-output.awk
+fi
