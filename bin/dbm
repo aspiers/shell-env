@@ -1,0 +1,170 @@
+#!/usr/bin/perl -w
+#
+# dbm -- simple DBM file reader/writer
+#
+# Copyright (c) 1999 Adam Spiers <adam@spiers.net>. All rights
+# reserved. This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl itself.
+#
+# $Id$
+#
+
+use strict;
+
+use Fcntl qw(:DEFAULT);
+use Text::Abbrev;
+use Text::ParseWords;
+use Getopt::Long;
+
+my $type;
+GetOptions("type|t=s" => \$type);
+$type ||= 'AnyDBM_File';
+{
+  local $SIG{__DIE__} = sub { };
+  eval "require $type;";
+  die "Import of `$type' failed: $@" if $@;
+}
+
+unless ($ARGV[0]) {
+  usage('You must supply the name of a DBM file.');
+  exit 1;
+}
+
+my $dbm_file = shift;
+
+my $action = shift;
+my %actions = ();
+abbrev \%actions, qw/add remove delete edit list lookup create clear/;
+unless ($action) {
+  usage("You must specify an action.");
+  exit 1;
+}
+$action = $actions{$action} if $action && exists $actions{$action};
+$action =~ s/remove/delete/;
+$action =~ s/lookup/list/;
+
+if (! -e $dbm_file && $action ne 'create') {
+  usage("$dbm_file doesn't exist; use `create' to create.");
+  exit 1;
+}
+
+my %hash = ();
+tie %hash, $type, $dbm_file, O_RDWR | O_CREAT, 0600;
+die "tie() failed; maybe $dbm_file isn't of type $type?\n"
+  unless tied %hash;
+
+if ($action eq 'create') {
+  # nothing to do
+}
+elsif ($action eq 'add') {
+  unless (@ARGV and @ARGV % 2 == 0) {
+    usage("`add' needs an even number of arguments " .
+          "(key1, val1, key2, val2 ...)");
+    exit 1;
+  }
+  my %new = @ARGV;
+  while (my ($key, $value) = each %new) {
+    $hash{$key} = $value;
+  }
+}
+elsif ($action eq 'delete') {
+  unless (@ARGV) {
+    usage("`delete' needs at least one argument.");
+    exit 1;
+  }
+  delete @hash{@ARGV};
+}
+elsif ($action eq 'list') {
+  my @keys = @ARGV;
+  @keys = keys %hash unless @keys;
+  foreach my $key (@keys) {
+    print "$key, $hash{$key}\n";
+  }
+}
+elsif ($action eq 'edit') {
+  if (@ARGV) {
+    usage("`edit' doesn't take any arguments.");
+    exit 1;
+  }
+
+  my $dbm_file_name = $dbm_file;
+  $dbm_file_name =~ s,.*/,,;
+  my $tmpfile = "/tmp/dbmedit.$dbm_file_name.$$";
+  my $editor  = $ENV{VISUAL} || $ENV{EDITOR} || 'emacs -nw';
+  open(TMP, ">$tmpfile")
+    or die "Couldn't open $tmpfile for writing: $!\n";
+  while (my ($key, $value) = each %hash) {
+    print TMP join ', ', map maybe_quote($_), $key, $value;
+    print TMP "\n";
+  }
+  close(TMP);
+  my ($mtime_before) = (stat $tmpfile)[9];
+  system "$editor $tmpfile";
+  my ($mtime_after) = (stat $tmpfile)[9];
+  if ($mtime_before != $mtime_after) {
+    open(TMP, $tmpfile)
+      or die "Couldn't open $tmpfile for reading: $!\n";
+    %hash = ();
+    while (<TMP>) {
+      chomp;
+      my $line = $_;
+      my @words = parse_line(',\s*', 0, $line);
+      unless (@words == 2) {
+        warn "Line didn't contain key and value and nothing else; " .
+             "ignoring:\n$line\n";
+        next;
+      }
+      $hash{$words[0]} = $words[1];
+    }
+    close(TMP);
+  }
+  else {
+    print "Nothing modified.\n";
+  }
+  unlink $tmpfile or warn "Couldn't unlink('$tmpfile'): $!\n";
+}
+elsif ($action eq 'clear') {
+  unless ("@ARGV" eq 'everything yes really') {
+    usage("You must invoke clear exactly as shown below.");
+    exit 1;
+  }
+  %hash = ();
+}
+else {
+  usage("Action `$action' not recognised.");
+  exit 1;
+}
+
+untie %hash;
+
+exit 0;
+
+sub usage {
+  my ($text) = @_;
+
+  print "$text\n\n" if $text;
+
+  print <<EOF;
+Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
+   Actions:
+      create
+      add <key> <value>
+      remove <key> [ <key> ... ]    (`delete' may be used instead')
+      list [ <key> ... ]            (`lookup' may be used instead')
+      edit
+      clear everything yes really
+
+Actions can be abbreviated.
+EOF
+}
+
+sub maybe_quote {
+  my ($in) = @_;
+  
+  if ($in =~ s/"/\\"/g) {
+    return qq{"$in"};
+  }
+  else {
+    return $in;
+  }
+}
