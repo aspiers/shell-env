@@ -730,6 +730,16 @@ setcvs_mediaconsult_local () {
   CVSROOT=prophet5.mediaconsult.com:/share/cvsroot
   CVS_RSH=ssh
 }
+
+setcvs_zsh_local () {
+  CVSROOT=adamspiers@cvs1:/cvsroot/zsh
+  CVS_RSH=ssh
+}
+
+setcvs_zsh_remote () {
+  CVSROOT=adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
+  CVS_RSH=ssh
+}
 ### END PRIVATE
 
 # }}}
