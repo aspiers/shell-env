@@ -33,8 +33,12 @@ else
 #   myshell=`which zsh` 2>/dev/null
 fi
 
+switch_shell_debug () {
+  [ -n "$debug" ] && sh_load_status "$*\n"
+}
+
 if [ -z "$myshell" ]; then
-  [ -n "$debug" ] && echo "No shell preference found; not switching shell."
+  switch_shell_debug "No shell preference found; not switching shell."
   return 0
 fi
 
@@ -43,34 +47,34 @@ fi
 
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
-  [ -n "$debug" ] && echo "Switching to $myshell safely ..."
+  switch_shell_debug "Switching to $myshell safely ..."
   if SHELL="$myshell" "$myshell" $myshell_args; then
-    [ -n "$debug" ] && echo "$myshell exited OK; exiting parent shell."
+    switch_shell_debug "$myshell exited OK; exiting parent shell."
     exit
   else
-    [ -n "$debug" ] && echo "$myshell had exit code $?, back to pid $$"
+    switch_shell_debug "$myshell had exit code $?, back to pid $$"
   fi
 }
 
 switch_shell_dangerously () {
-  [ -n "$debug" ] && echo "Switching to $myshell dangerously ..."
+  switch_shell_debug "Switching to $myshell dangerously ..."
   SHELL="$myshell" exec "$myshell" $myshell_args
 }
 
 switch_shell () {
   if [ ! -x $myshell ]; then
-    [ -n "$debug" ] && echo "$myshell not executable; aborting switch."
+    switch_shell_debug "$myshell not executable; aborting switch."
     return
   fi
 
   if [ -n "$NO_SWITCH" ]; then
-    [ -n "$debug" ] && echo 'Shell switching disabled by $NO_SWITCH; aborting.'
+    switch_shell_debug 'Shell switching disabled by $NO_SWITCH; aborting.'
     return
   fi
 
   export SHELL_ARGS="$myshell_args" # no other way of retrieving these?
 
-  [ -n "$debug" ] && echo "Switching to $myshell, args: $myshell_args"
+  switch_shell_debug "Switching to $myshell, args: $myshell_args"
 
   case "$SHLVL" in
    "") # unknown, be careful
