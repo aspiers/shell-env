@@ -8,7 +8,7 @@
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+  . /etc/bashrc
 fi
 
 # {{{ Key bindings
@@ -72,22 +72,6 @@ du1 () {
 }
 
 # }}}
-# {{{ fbig
-
-# Find big files
-
-fbig () {
-  ls -alFR "$@" | sort -rn -k5 | less -r
-}
-
-# }}}
-# {{{ fbigrpms
-
-# Find rpms which take lots of space
-
-alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
-
-# }}}
 
 # }}}
 # {{{ Use this to untar after doing a tar ztvf/tvf/ztf command
@@ -101,25 +85,12 @@ alias xt='fc -e - tvf=xf ztf=zxf -1'
 # {{{ Job/process control
 
 alias j='jobs -l'
-alias mps='ps -o user,pcpu,command'
-pst () {
-  pstree -p "$@" | less -S
-}
-which gps >&/dev/null && alias gps='gitps -p afx; cx'
-alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
 rj () {
   ps auxww | grep -E "($*|^USER)"
-}
-ru () {
-  ps auxww | grep -E "^($*|USER)" | grep -vE "^$USERNAME|login"
 }
 
 # }}}
 # {{{ Other users
-
-lh () {
-  last "$@" | head
-}
 
 alias f=finger
 
@@ -131,85 +102,6 @@ alias f=finger
 alias v=less
 
 # }}}
-# {{{ CVS
-
-if which cvs >&/dev/null; then
-  cvst () {
-    perl -MGetopt::Std -wl -- - "$@" <<'End_of_Perl'
-      $dir = '';
-      getopts('av', \%opts);
-      $| = 1;
-      open(CVS, "cvs -n status @ARGV 2>&1 |") or die "cvs status failed: $!\n";
-      open(STDERR, ">&STDOUT") or die "Can't dup stdout";
-      while (<CVS>) {
-        chomp;
-        if (/cvs (?:status|server): Examining (.*)/) {
-          $dir = "$1/";
-        } elsif (/^File:\s+(.*)\s+Status:\s+(.*)/) {
-          ($file, $status) = ($1, $2);
-          next if ($status eq 'Up-to-date' && ! $opts{'a'});
-          $str = "File: $dir$file";
-          print $str, ' ' x (45 - length($str)), "Status: $status";
-        } elsif (/revision/ && $opts{'v'}) {
-          next if ($status eq 'Up-to-date' && ! $opts{'a'});
-          print;
-        } elsif (/^cvs status:/ || /password:/i) {
-          print;
-        }
-      }
-      close(CVS);
-End_of_Perl
-  }
-
-  cvsd () {
-    cvs diff -N "$@" 2>&1 | less
-  }
-
-  # see new stuff
-  cvsn () {
-    cvs diff -rBASE -rHEAD "$@" 2>&1 | egrep -v 'tag BASE is not in file' | less
-  }
-
-  cvsl () {
-    cvs log "$@" 2>&1 | less
-  }
-
-### BEGIN PRIVATE
-  cvsll () {
-    rcs2log \
-      -u "adam	Adam Spiers	adam@spiers.net" \
-      -u "localadams	Adam Spiers	adam@spiers.net" \
-      -u "adams	Adam Spiers	aspiers@guideguide.com" \
-      "$@" | less
-  }
-
-### END PRIVATE
-  cvss () {
-    cvs status "$@"
-  }
-
-  alias cvsv='cvst -av'
-
-  cvs () {
-    quiet='-q'
-    [ "$*" = *status* ] && quiet=''
-    command cvs $quiet "$@"
-  }
-
-  cvsu () {
-    cvs update "$@"
-  }
-
-  cvsup () {
-    cvsu "$@"
-  }
-
-  cvsq () {
-    cvs -nq update "$@" 2>&1 | grep -v -- '-- ignored'
-  }
-fi
-
-# }}}
 # {{{ editors
 
 e () {
@@ -217,7 +109,6 @@ e () {
 }
 
 alias fe='emacs -nw --eval "(setq make-backup-files nil)"'
-alias pico='/usr/bin/pico -z'
 
 # }}}
 # {{{ ftp
