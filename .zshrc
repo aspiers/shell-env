@@ -331,7 +331,7 @@ zstyle ':completion:*:complete-extended:*' \
 
 #zstyle ':completion:*' menu yes select interactive
 #zstyle ':completion:*' menu yes=long select=long interactive
-zstyle ':completion:*' menu yes=5 select=5 interactive
+zstyle ':completion:*' menu yes=10 select=10 interactive
 
 # }}}
 # {{{ Completion caching
