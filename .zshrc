@@ -924,6 +924,7 @@ hash -d BU=/usr/src/redhat/BUILD
 hash -d LI=/usr/src/linux
 hash -d L4=/usr/src/linux-2.4
 hash -d CV=/usr/local/cvsroot
+hash -d RC=/etc/rc.d/init.d
 #hash -df
 
 # }}}
