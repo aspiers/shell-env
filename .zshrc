@@ -626,7 +626,11 @@ bash () {
 }
 
 restart () {
-  exec $SHELL $SHELL_ARGS "$@"
+  if jobs | grep -q .; then
+    echo "Jobs running; won't restart." >&2
+  else
+    exec $SHELL $SHELL_ARGS "$@"
+  fi
 }
 
 profile () {
