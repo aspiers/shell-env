@@ -345,9 +345,10 @@ zstyle ':completion:*:options' auto-description '%d'
 # }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
-zstyle ':completion:*:history-words' stop verbose
+zstyle ':completion:*:history-words' stop yes
 zstyle ':completion:*:history-words' remove-all-dups yes
 zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
 
 # }}}
 # {{{ Common usernames
