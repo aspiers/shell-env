@@ -711,15 +711,6 @@ autoload zmv
 alias mmv='noglob zmv -W'
 
 # }}}
-# {{{ find based on file extension
-
-fext () {
-  suffix="$1"
-  shift
-  find . -name "*.$suffix" "$@"
-}
-
-# }}}
 
 # }}}
 # {{{ Job/process control
@@ -840,8 +831,9 @@ fi
 # {{{ remote logins
 
 ssh () {
+  cx -l "${(M)argv:#*@*}" # pick out user@host word from argv
   command ssh "$@"
-  cx
+  cxx
 }
 
 # Best to run this from .zshrc.local
