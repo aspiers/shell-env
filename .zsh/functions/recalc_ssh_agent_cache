@@ -6,12 +6,12 @@ recalc_ssh_agent_cache () {
 
   echo "Recalculating ssh-agent info ..."
 
-  if ! which lsof ps >&/dev/null; then
-    echo 'lsof and ps must both be present on $PATH; aborting.'
+  if ! which rj ps >&/dev/null; then
+    echo 'rj and ps must both be present on $PATH; aborting.'
     return 1
   fi
 
-  : ${SSH_AGENT_PID:=`ps auxww | awk "/($USER|$UID) "'.*ssh-agent *$/ { print $2; exit }'`}
+  : ${SSH_AGENT_PID:=`rj | awk "/^ *($USER|$UID) "'.*ssh-agent *$/ { print $2; exit }'`}
 
   if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
     # If interactive, prompt whether to start a new one.
@@ -33,13 +33,16 @@ recalc_ssh_agent_cache () {
     fi
   fi
 
-  : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
-       awk '/agent-socket|^ssh-agent.*unix/ {print $NF; exit}'`}
+#   : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
+#        awk '/agent-socket|^ssh-agent.*unix/ {print $NF; exit}'`}
 
-  if [ -z "$SSH_AUTH_SOCK" ]; then
-    echo "Huh? lsof didn't do the biz; aborting ..."
-    return 1
-  fi
+#   if [ -z "$SSH_AUTH_SOCK" ]; then
+#     echo "Huh? lsof didn't do the biz; aborting ..."
+#     return 1
+#   fi
+
+  sockets=( /tmp/ssh-*/*(=U) )
+  : ${SSH_AUTH_SOCK:=$sockets[0]}
 
   write_ssh_agent_cache
   return 0
