@@ -1,2 +1,4 @@
 #!/usr/bin/perl -wl
-print join ' ', eval "@ARGV";
+
+$format = $ARGV[0] =~ /%/ ? shift : '%s';
+print join ' ', map { sprintf $format, $_ } eval "@ARGV";
