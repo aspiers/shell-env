@@ -1,0 +1,22 @@
+#autoload
+
+local WORDCHARS="${_my_extended_wordchars_slash}"
+
+# first make sure we're aligned with the start of the 2nd word,
+# removing all spaces in between the two words so that there's
+# no trailing spaces at the end after the transpose is complete.
+while [[ "$RBUFFER[0]" == ' ' ]]; do
+  zle .delete-char
+done
+while [[ "$LBUFFER[-1]" == ' ' ]]; do
+  zle .backward-delete-char
+done
+
+# transpose
+zle kill-big-word
+zle backward-to-space
+zle .yank
+
+# add a space back in between
+LBUFFER+=' '
+
