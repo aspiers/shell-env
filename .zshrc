@@ -179,7 +179,7 @@ zdotdir=${ZDOTDIR:-$HOME}
 # {{{ Function path
 
 fpath=(
-       {$zdotdir,$HOME}/{.zsh,lib/zsh}/{functions,scripts}(N) 
+       {$zdotdir,$HOME}/{.zsh/*.zwc,{.zsh,lib/zsh}/{functions,scripts}}(N) 
 
        $fpath
 
@@ -483,6 +483,11 @@ zstyle ':completion:*:*:telnet:*' users-hosts-ports $telnet_users_hosts_ports
 
 zshrc_load_status 'aliases and functions'
 
+# {{{ zrecompile
+
+autoload zrecompile
+
+# }}}
 # {{{ which
 
 # reverse unwanted aliasing of `which' by distribution startup
