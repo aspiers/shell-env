@@ -4,12 +4,15 @@
 #
 # $Id$
 
-# User specific aliases and functions
+[ -e ~/.switch_shell ] && . ~/.switch_shell
 
-# Source global definitions
+# {{{ Source global definitions
+
 if [ -f /etc/bashrc ]; then
   . /etc/bashrc
 fi
+
+# }}}
 
 # {{{ Environment
 
@@ -137,4 +140,3 @@ alias tf='less +F'
 
 # }}}
 
-[ -e ~/.switch_shell ] && . ~/.switch_shell
