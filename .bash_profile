@@ -10,9 +10,9 @@ if [ -f ~/.bashrc ]; then
 fi
 
 # User specific environment and startup programs
-
-[ -d ~/bin ]       && PATH=$HOME/bin:$PATH
-[ -d ~/local/bin ] && PATH=$HOME/local/bin:$PATH
+for newpath in ~/bin ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
+  [ -d $newpath ] && PATH=$newpath:$PATH
+done
 
 #ENV=$HOME/.bashrc
 USERNAME=""
