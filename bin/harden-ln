@@ -7,6 +7,8 @@
 use strict;
 use warnings;
 
+use Cwd;
+use File::Basename;
 use File::Copy;
 use Getopt::Long;
 
@@ -38,10 +40,13 @@ if (! @ARGV && ! -t 0) {
   }
 }
 
+my $start_dir = cwd();
 harden($_) foreach @links;
 
 sub harden {
   my ($link) = @_;
+
+  chdir($start_dir) or die "chdir($start_dir) failed: $!\n";
 
   unless (-l $link) {
     warn "$link not a symlink; skipping.\n";
@@ -57,11 +62,14 @@ sub harden {
   
   unlink $link or die "$me: unlink($link): $!\n";
 
-  return if $opts{copy} ? copy($dest, $link) : link($dest, $link);
+  my $link_dir  = dirname($link);
+  my $link_file = basename($link);
+  chdir($link_dir) or die "chdir($link_dir) failed: $!\n";
+  return if $opts{copy} ? copy($dest, $link_file) : link($dest, $link_file);
   warn "$me: ", $opts{copy} ? 'copy' : 'link',
        "($dest, $link) failed: $!\n";
 
-  symlink($dest, $link)
+  symlink($dest, $link_file)
     or warn "$me: WARNING!  Couldn't restore symlink $link -> $dest ",
             "after hardening failed ($!)\n";
 }
