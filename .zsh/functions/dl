@@ -1,9 +1,3 @@
-# {{{ Unified diffing files
+#autoload
 
-dl () {
-  diff -u $* | less
-}
-
-dl "$@"
-
-# }}}
+diff -u $* | less
