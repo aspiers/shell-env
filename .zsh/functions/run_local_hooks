@@ -3,8 +3,6 @@
 # NOTE!  This file not only gets used by zsh, but by
 # .shared_env, and so has to work when source'd from
 # any sh-compatible shell.  Well, any sensible sh.
-# We're not going to bother supporting dysfunctional
-# shells like Solaris' /bin/sh.
 
 # Example:
 #
@@ -25,8 +23,8 @@ run_local_hooks () {
       for file in "$@"; do
         for suffix in local ${HOST%%.*}; do
           if [ -r "$dir/$file.$suffix" ]; then
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && echo source $dir/$file.$suffix
-            source $dir/$file.$suffix
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && echo . $dir/$file.$suffix
+            . $dir/$file.$suffix
           fi
         done
       done
