@@ -145,9 +145,11 @@ alias v=less
 # }}}
 # {{{ editors
 
-e () {
-  emacs "$@" 2>&1 &
-}
+if which emacs >/dev/null 2>&1; then
+  e () {
+    emacs "$@" 2>&1 &
+  }
+fi
 
 # }}}
 # {{{ ftp
