@@ -1,17 +1,31 @@
-#!/usr/bin/expect -f
+#!/opt/bin/perl
 
-eval spawn -noecho $argv
-stty -echo
-expect {
-    -timeout 3
-    "root]#" {
-        send "/home/aspiers/bin/zsh\n"
-        interact
-    }
+use strict;
+use warnings;
 
-    # Match prompts here
-    {\$} interact
+use Expect;
 
-    timeout interact
-    eof
+my $exp = new Expect;
+$exp->slave->clone_winsize_from(\*STDIN);
+$exp->spawn(@ARGV) or die "Cannot spawn $ARGV[0]: $!\n";
+$exp->stty('-echo');
+
+$exp->expect(
+  3,
+  [ qr/root]#|\$/ => sub {
+      my $exp = shift;
+      $exp->send("/home/aspiers/bin/zsh\n");
+      my_interact($exp);
+    } ],
+  [ timeout => sub { my_interact(shift) } ],
+  [ eof     => sub { my_interact(shift) } ],
+);
+
+sub my_interact {
+  shift->interact(
+#     \*STDIN,
+#     'root]#',
+  );
+#   $exp->send("exit\n");
 }
+
