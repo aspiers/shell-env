@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+for my $dir (@ARGV) {
+  if (! opendir(DIR, $dir)) {
+    warn "Couldn't open $dir: $!; skipping.\n";
+    next;
+  }
+
+  print "$dir " if @ARGV > 1;
+  my @dirents = readdir(DIR);
+  my $count = @dirents - 2; # ignore . and ..
+  print "$count\n";
+  closedir(DIR);
+}
