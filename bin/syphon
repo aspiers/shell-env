@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+syphon - removal of lines from start of file 
+
+=head1 SYNOPSIS
+
+    $ syphon    [-v] $regexp $src_filename > $outfile
+    $ syphon -i [-v] $regexp $src_filename [ $removed_file ]
+
+=head1 DESCRIPTION
+
+Removes of lines from the beginning of a file.  Stops when a pattern
+is encountered (the first line matching the pattern is not removed).
+Outputs to STDOUT, unless C<-i> is specified, in which case the inode
+is preserved by filtering to a temporary file and then copying back
+over the original file.  This means it will work with log files whose
+daemon opens them with C<O_APPEND>.  If C<$removed_file> is specified,
+the removed lines will be written to that file.
+
+=cut
+
+use strict;
+use warnings;
+
+use File::Copy;
+use File::Temp qw/ :mktemp  /;
+use Getopt::Long;
+
+(my $me = $0) =~ s,.*/,,;
+
+sub usage {
+  warn @_, "\n" if @_;
+  die <<EOF;
+Usage: $me    [-v] \$regexp \$src_filename > \$outfile
+       $me -i [-v] \$regexp \$src_filename [ \$removed_file ]
+EOF
+}
+
+my %opts;
+GetOptions(\%opts, 'in-place|i', 'verbose|v') or usage();
+
+usage() unless @ARGV == 2 or ($opts{'in-place'} && @ARGV == 3);
+my ($re, $src, $removed) = @ARGV;
+my $compiled = qr/$re/;
+
+open(FILE, $src) or die "$me: open($src): $!\n";
+if ($removed) {
+  usage("$removed already exists.\n") if -e $removed;
+  open(REMOVED, ">$removed") or die "$me: open(>$removed): $!\n";
+}
+
+my ($temp_fh, $temp_fn) = get_dest();
+
+remove_lines();
+warn "Line removal finished.\n"
+  if $opts{'in-place'} && $opts{verbose};
+print $temp_fh $_;
+print $temp_fh $_ while <FILE>;
+close(FILE);
+
+if ($opts{'in-place'}) {
+  warn "Remainder written to $temp_fn.\n"
+    if $opts{verbose};
+  close($temp_fh);
+#  print "Written to $temp_fn\n";
+  copy $temp_fn, $src;
+  unlink $temp_fn;
+}
+
+sub remove_lines {
+  if ($removed) {
+    while (<FILE>) {
+      last if /$compiled/;
+      print REMOVED $_;
+    }
+  }
+  else {
+    while (<FILE>) {
+      last if /$compiled/;
+    }
+  }
+}
+
+sub get_dest {
+  return (\*STDOUT) unless $opts{'in-place'};
+  return mkstemp( "/tmp/syphon-XXXXXXX" );
+}
