@@ -150,7 +150,7 @@ sub usage {
   my ($text) = @_;
 
   print "$text\n\n" if $text;
-
+  
   print <<EOF;
 Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
    Actions:
