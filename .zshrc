@@ -414,9 +414,9 @@ zstyle ':completion:*' hosts $hosts
 
 # All my accounts:
 #my_accounts=(
-#    joe:
-#    {joe,root}:mymachine.com
-#    jbloggs:myothermachine.com
+#  joe:
+#  {joe,root}:mymachine.com
+#  jbloggs:myothermachine.com
 #)
 
 ### BEGIN PRIVATE
@@ -437,9 +437,9 @@ my_accounts=(
 
 # Other people's accounts:
 #other_accounts=(
-#    bob:
-#    {fred,root}:hismachine.com
-#    vera:hermachine.com
+#  bob:
+#  {fred,root}:hismachine.com
+#  vera:hermachine.com
 #)
 
 ### BEGIN PRIVATE
