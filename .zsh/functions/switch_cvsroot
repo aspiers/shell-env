@@ -1,0 +1,12 @@
+#autoload
+
+dirs=( `list-checked-out-dirs -t` )
+echo "Will switch following dirs to \$CVSROOT ($CVSROOT):"
+echo "  $dirs"
+read -q yesno"?Continue? " || return
+
+for d in "$dirs[@]"; do
+  z $d
+  cvsroot -r $CVSROOT
+  echo Switched $d
+done
