@@ -129,7 +129,7 @@ setopt                       \
         prompt_subst         \
         pushd_ignore_dups    \
      NO_pushd_minus          \
-     NO_pushd_silent         \
+        pushd_silent         \
         pushd_to_home        \
         rc_expand_param      \
      NO_rc_quotes            \
@@ -614,13 +614,12 @@ cd () {
 alias md='mkdir -p'
 alias rd=rmdir
 
-alias dirs='dirs -v'
-alias d=dirs
+alias d='dirs -v'
 
-# Don't need this because auto_pushd is set
-#alias pu=pushd
-
-alias po=popd
+po () {
+  popd "$@"
+  dirs -v
+}
 
 # }}}
 # {{{ Renaming
