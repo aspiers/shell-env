@@ -11,9 +11,6 @@
 # {{{ To do list
 
 #
-#    - special user@host cases?
-#    - Completions: eterm stuff
-#    - Add 'this shell used by others' mode
 #    - Do safes?kill(all)? functions
 #    - Fix zx alias
 #
@@ -595,10 +592,6 @@ alias lsa='ls -a'
 alias ld='ls -ld'
 # damn, missed out lsd :-)
 
-fbig () {
-  ls -alFR $* | sort -rn -k5 | less -r
-}
-
 # }}}
 # {{{ File management
 
@@ -624,11 +617,27 @@ alias po=popd
 alias pwd='pwd -r'
 
 # }}}
+# {{{ finding out disk hogs
+
 # {{{ du1 (du with depth 1)
 
 du1 () {
   du $* | egrep -v '/.*/'
 }
+
+# }}}
+# {{{ fbig
+
+fbig () {
+  ls -alFR $* | sort -rn -k5 | less -r
+}
+
+# }}}
+# {{{ fbigrpms
+
+alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -n | less'
+
+# }}}
 
 # }}}
 # {{{ Making stuff publicly accessible
