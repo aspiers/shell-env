@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# quietrun -- run a command and only allow output if the exit code
+# didn't reflect success.
+# Copyright (C) 1999 Adam Spiers <adam@spiers.net>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# For a copy of the GNU General Public License, see
+# http://www.gnu.org/ or write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+# $Revision$
+#
+
+tmpdir=/tmp/quietrun.$$
+# Half-heartedly guard against symlink attacks/accidents.  There's
+# still a race.  Hmm.  Does anyone actually care?
+[ -e $tmpdir ] && rm -rf $tmpdir
+if [ -e $tmpdir ]; then
+  echo "Couldn't remove $tmpdir; aborting."
+  exit 1
+fi
+if ! mkdir $tmpdir; then
+  echo "Couldn't create $tmpdir; aborting."
+  exit 1
+fi
+
+if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+    cat <<'EOF'
+Usage: quietrun [ -m | --merge ] <command> [ <args> ... ]
+
+If the merge option is specified, stdout and stderr are merged into
+stdout, but the output order is preserved.  Otherwise they kept
+separate, but output from stderr only appears after output from stdout.
+EOF
+  exit 0
+fi
+
+if [ "$1" = '-m' ] || [ "$1" = '--merge' ]; then
+  shift
+  merge=yes
+fi
+
+if [ $# -eq 0 ]; then
+  echo "quietrun: no command supplied"
+  exit 1
+fi
+
+if [ "$merge" = 'yes' ]; then
+  if ! "$@" 2>&1 >$tmpdir/both; then
+    [ -e "$tmpdir/both" ] && cat $tmpdir/both
+  fi
+else
+  if ! "$@" >$tmpdir/stdout 2>$tmpdir/stderr; then
+    [ -e "$tmpdir/stdout" ] && cat $tmpdir/stdout
+    [ -e "$tmpdir/stderr" ] && cat $tmpdir/stderr 1>&2 2>/dev/null
+  fi
+fi
+
+rm -rf $tmpdir
