@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if which $* >/dev/null; then
+  less `which $*`
+else
+  which $*
+fi

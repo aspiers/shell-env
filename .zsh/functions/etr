@@ -1,7 +1,0 @@
-# Toggle Eterm transparency
-
-etr () {
-  echo -e "\e]6;0\a"
-}
-
-etr "$@"

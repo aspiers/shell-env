@@ -1,5 +1,0 @@
-#autoload
-
-# Find rpms which take lots of space
-
-rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less

@@ -1,7 +1,0 @@
-#autoload
-
-( cd &&
-  CVS_RSH=ssh CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot \
-  cvs update "$@"
-)
-
