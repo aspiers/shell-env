@@ -1,7 +1,8 @@
 #autoload
+# eXTract
 
-# Use this to untar after doing a tar ztvf/tvf/ztf command
+# Use this to untar after doing a tar ztvf/tvf/ztf or unzip -l command
 
 # Thanks to Bart Schaefer for this one
-fc -e - tvf=xf ztf=zxf -1
+fc -e - tvf=xf ztf=zxf '-l '= -1
 
