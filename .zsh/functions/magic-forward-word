@@ -6,10 +6,9 @@
 # then
 #    l foo
 if [[ "$#BUFFER" == 0 ]]; then
-  zle .up-line-or-history
-  zle .beginning-of-line
-  zle .emacs-forward-word
+  zle up-line-or-history
+  zle beginning-of-line
+  zle emacs-forward-word
 else
-  zle .forward-word
+  zle forward-word
 fi
-  
