@@ -13,6 +13,7 @@
 
 case `tty` in
   /dev/tty[0-9])
+    echo "Fixing broken keyboard ..."
     echo -e "keymaps 0-15
              keycode 58 = Control
              keycode 29 = Caps_Lock" | loadkeys
