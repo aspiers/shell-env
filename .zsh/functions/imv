@@ -34,14 +34,19 @@ fi
 
 src="$1"
 
-if ! [[ -e "$1" ]]; then
-  print "$me: can't stat source $1"
+if ! [[ -e "$src" ]]; then
+  print "$me: can't stat source $src"
   return 1
 fi
 
 dest="$src"
 vared -p 'New name: ' dest
 
-mv "$opts[@]" "$src" "$dest"
+if [[ -e "$dest" ]]; then
+  print "$me: $dest already exists; aborting"
+  return 1
+fi
+
+mv "$opts[@]" -- "$src" "$dest"
 
 
