@@ -220,11 +220,12 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
   #RPS1="$bold_colour$bg_red              $reset_colour"
 
   # Default prompt style
+  adam2_colors=( white white white green )
   if [[ -r /proc/$PPID/cmdline ]] && egrep -q 'Eterm|nexus|vga' /proc/$PPID/cmdline; then
     # probably OK for fancy graphic prompt
-    prompt adam2
+    prompt adam2 $adam2_colors
   else
-    prompt adam2 plain
+    prompt adam2 plain $adam2_colors
   fi
 else
   PS1='%n@%m %B%3~%b %# '
@@ -1087,7 +1088,7 @@ hash -d CV=/usr/local/cvsroot
 
 if which dircolors >&/dev/null; then
   # show directories in yellow
-  eval "`dircolors -b <(echo 'DIR 01;33')`"
+  eval `dircolors -b <(echo "DIR 36\nLINK 01;33")`
 fi
 
 if [[ $ZSH_VERSION > 3.1.5 ]]; then
