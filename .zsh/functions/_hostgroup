@@ -1,4 +1,4 @@
-#compdef hostgroup hg
+#compdef hostgroup hostgroups
 
 _hostgroups () {
   local expl
@@ -21,4 +21,8 @@ _hostgroup () {
     '(-h --hosts)*:hostgroup:_hostgroups'
 }
 
-_hostgroup "$@"
+_hostgroups () {
+  _arguments '*:hostgroup:_hostgroup_hosts'
+}
+
+_$service "$@"
