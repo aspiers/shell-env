@@ -48,10 +48,13 @@ LINK 01;33
 
 FIFO 40;33	# pipe
 SOCK 01;35	# socket
-DOOR 01;35	# door
+
+# This one totally breaks tcsh!!
+#DOOR 01;35	# door
+
 BLK 40;33;01	# block device driver
 CHR 40;33;01 	# character device driver
-ORPHAN 41;37;01 # symlink to nonexistent file
+ORPHAN 05;41;37;01 # symlink to nonexistent file
 
 # This is for files with execute permission:
 EXEC 01;32
