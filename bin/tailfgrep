@@ -36,7 +36,7 @@ Usage: tailfgrep [ --quiet | -q ] <Perl regexp> <file>
 EOF
 }
 
-my ($re, $file) = (qr/$ARGV[0]/, $ARGV[1]);
+my ($re, $file) = @ARGV[0, 1];
 
 -f $file or die "$file isn't a file.\n";
 open(LOG, $file) or die "Couldn't open $file: $!\n";
