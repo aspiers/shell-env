@@ -332,7 +332,7 @@ zstyle ':completion:*:complete-extended:*' \
 
 #zstyle ':completion:*' menu yes select interactive
 #zstyle ':completion:*' menu yes=long select=long interactive
-zstyle ':completion:*' menu yes=10 select=10 interactive
+#zstyle ':completion:*' menu yes=10 select=10 interactive
 
 # }}}
 # {{{ Completion caching
@@ -941,7 +941,7 @@ fi
 
 # {{{ Specific to xterms
 
-if [[ "${TERM}" == xterm* ]]; then
+if [[ "${TERM}" == (xterm*|dtterm) ]]; then
   unset TMOUT
 fi
 
