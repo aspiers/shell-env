@@ -921,10 +921,16 @@ alias -g L='| less'
 alias -g LS='| less -S'
 alias -g EL='|& less'
 alias -g ELS='|& less -S'
+
 alias -g H='| head'
 alias -g HL='| head -20'
+alias -g EH='|& head'
+alias -g HL='|& head -20'
+
 alias -g T='| tail'
 alias -g TL='| tail -20'
+alias -g ET='|& tail'
+alias -g ETL='|& tail -20'
 
 # }}}
 # {{{ Sorting / counting
