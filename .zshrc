@@ -676,6 +676,8 @@ alias lr='ls -lRh'
 alias llr='ls -lR'
 alias lsL='ls -L'
 alias lL='ls -Ll'
+alias lS='ls -lSh'
+alias llS='ls -lS'
 alias sl=ls # often screw this up
 
 # }}}
@@ -785,7 +787,7 @@ alias sc=screen
 
 compdef _users lh
 
-alias f=finger
+alias f='finger -m'
 compdef _finger f
 
 # su changes window title, even if we're not a login shell
@@ -923,14 +925,14 @@ alias -g EL='|& less'
 alias -g ELS='|& less -S'
 
 alias -g H='| head'
-alias -g HL='| head -20'
+alias -g HL='| head -n $(( +LINES ? LINES - 4 : 20 ))'
 alias -g EH='|& head'
-alias -g EHL='|& head -20'
+alias -g EHL='|& head -n $(( +LINES ? LINES - 4 : 20 ))'
 
 alias -g T='| tail'
-alias -g TL='| tail -20'
+alias -g TL='| tail -n $(( +LINES ? LINES - 4 : 20 ))'
 alias -g ET='|& tail'
-alias -g ETL='|& tail -20'
+alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
 
 # }}}
 # {{{ Sorting / counting
