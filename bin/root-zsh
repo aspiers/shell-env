@@ -20,6 +20,7 @@ expect {
 
     # Match prompts here
     {\$} interact
+    -re "#" interact
 
     timeout interact
     eof
