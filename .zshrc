@@ -792,26 +792,7 @@ e () {
   emacs "$@" &!
 }
 
-# Moved fe and se to bin/shortcuts to avoid code duplication.
-
-# emacs, fast, non-windowed (see also $VISUAL)
-# fe () {
-#   if [[ -n "$OTHER_USER" ]]; then
-#     QUICK_EMACS=1 exec emacs -nw -l $ZDOTDIR/.emacs "$@"
-#   else
-#     QUICK_EMACS=1 exec emacs -nw "$@"
-#   fi
-# }
-
-# # emacs, slow, non-windowed
-# se () {
-#   if [[ -n "$OTHER_USER" ]]; then
-#     exec emacs -nw -l $ZDOTDIR/.emacs "$@"
-#   else
-#     exec emacs -nw "$@"
-#   fi
-# }
-
+# enable ^Z
 alias pico='/usr/bin/pico -z'
 
 # }}}
