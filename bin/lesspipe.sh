@@ -28,6 +28,7 @@ lesspipe() {
   *.zip) zipinfo -- "$1" ;;
   *.rpm) rq "$1" ;;
   *.cpi|*.cpio) cpio -itv < "$1" ;;
+  *) cat "$1" ;;
   esac
 }
 
