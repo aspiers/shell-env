@@ -9,7 +9,7 @@ if which lsof pidof >&/dev/null; then
 
     : ${SSH_AGENT_PID:=`pidof ssh-agent`}
 
-    if [[ -z "$SSH_AGENT_PID" ]]; then
+    if [ -z "$SSH_AGENT_PID" ]; then
       echo "ssh-agent process not found; aborting ..."
       return 1
     fi
@@ -18,7 +18,7 @@ if which lsof pidof >&/dev/null; then
          awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
          head -1`}
 
-    if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    if [ -z "$SSH_AUTH_SOCK" ]; then
       echo "Huh? lsof didn't do the biz; aborting ..."
       return 2
     fi
@@ -39,6 +39,6 @@ EOF
   dsa "$@"
 else
   echo "\nlsof/pidof not found; disabling dsa."
-  dsa () {}
+  dsa () { echo "" > /dev/null } # hack nop function for bash 
 fi
 
