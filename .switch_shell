@@ -10,11 +10,6 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
-# Sensible default shell to switch to; change if you want.
-myshell=$(which zsh)
-
-##############################################################################
-
 if [ "$1" = '-d' ]; then
   debug=yes
   shift
@@ -23,6 +18,9 @@ fi
 if [ -n "$1" ]; then
   myshell="$1"
   shift
+else
+  # Sensible default shell to switch to.
+  myshell=`which zsh`
 fi
 
 myshell_args="$@"
