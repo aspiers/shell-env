@@ -912,6 +912,8 @@ hash -d SR=/usr/src/redhat/SRPMS
 hash -d SP=/usr/src/redhat/SPECS
 hash -d SO=/usr/src/redhat/SOURCES
 hash -d BU=/usr/src/redhat/BUILD
+hash -d LI=/usr/src/linux
+hash -d L4=/usr/src/linux-2.4
 hash -d CV=/usr/local/cvsroot
 #hash -df
 
@@ -973,6 +975,6 @@ fi
 
 # {{{ Search for history loosing bug
 
-which _check_hist_size >&/dev/null &&_check_hist_size
+which check_hist_size >&/dev/null && check_hist_size
 
 # }}}
