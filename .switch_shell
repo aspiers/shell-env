@@ -1,0 +1,25 @@
+# Adam's .switch_shell
+#
+# try switch shell from bash to zsh if we're interactive 
+#
+# $Id$
+
+MYSHELL=$HOME/local/bin/zsh
+
+#echo $0
+#[ -x $MYSHELL ] && echo 1
+#[ -n "$HISTFILE" ] && echo 2
+#[ -z "$NO_ZSH" ] && echo 3
+
+switch_shell () {
+  if [ -x $MYSHELL ] && [ -z "$NO_ZSH" ]; then
+    # we do this rather than exec() just in case $MYSHELL fails to run
+    $MYSHELL "$@" && exit
+  fi
+}
+
+# only switch if we're interactive
+case "$-" in
+  *i*) switch_shell
+       ;;
+esac
