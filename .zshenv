@@ -21,6 +21,13 @@ fi
 # }}}
 # {{{ Environment
 
+# {{{ INPUTRC
+
+# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
+# set convert-meta to off?
+unset INPUTRC
+
+# }}}
 # {{{ LD_PRELOAD
 
 # Fix obscure gtk problem
