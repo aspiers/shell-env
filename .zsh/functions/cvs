@@ -1,17 +1,17 @@
 #autoload
 
-quiet='-q'
-[[ "$*" == *status* ]] && quiet=''
+quiet=''
+[[ -n "$*[(r)(up|update)]" ]] && quiet='-q'
 
 home=${ZDOTDIR:-$HOME}
 
 normal_colourer=$home/bin/colour-cvs-output.awk
 diff_colourer=$home/bin/colour-diff-output.awk
 
-colourer="$normal_colourer"
+colourer=''
 
-if [[ -n "$*[(r)(com|commit|annotate)]" ]]; then
-  colourer=''
+if [[ -n "$*[(r)(up|update|co|checkout|tag|rtag)]" ]]; then
+  colourer="$normal_colourer"
 elif [[ -n "$*[(r)(diff|rdiff|patch)]" ]]; then
   colourer="$diff_colourer"
 fi
