@@ -47,13 +47,7 @@ EOF
 my ($re, @files) = @ARGV;
 
 my %fh = ();
-foreach my $file (@files) {
-  -f $file or die "$file isn't a file.\n";
-  local *FH;
-  open(FH, $file) or die "Couldn't open $file: $!\n";
-  seek(FH, 0, 2);
-  $fh{$file} = *FH;
-}
+open_files();
 
 my $last_file = '';
 
@@ -78,9 +72,25 @@ while (1) {
   sleep 1;
 }
 
-foreach my $file (@files) {
-  my $fh = $fh{$file};
-  close($fh);
+END {
+  close_files();
+}
+
+sub open_files {
+  foreach my $file (@files) {
+    -f $file or die "$file isn't a file.\n";
+    local *FH;
+    open(FH, $file) or die "Couldn't open $file: $!\n";
+    seek(FH, 0, 2);
+    $fh{$file} = *FH;
+  }
+}
+
+sub close_files {
+  foreach my $file (@files) {
+    my $fh = $fh{$file};
+    close($fh);
+  }
 }
 
 sub match {
