@@ -1,0 +1,5 @@
+#!/usr/bin/perl -wl
+
+# epoch date
+
+print time;
