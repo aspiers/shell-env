@@ -1,10 +1,8 @@
 #!/bin/sh
 
-awkdir=${ZDOTDIR:-$HOME}/bin/awk
-
 if [ -t 1 ]; then
   # connected to a tty => use glorious technicolour and paging
-  exec $awkdir/colour-diff-output | diff-less "$@"
+  exec colour-diff-output | diff-less "$@"
 else
   # probably piping to a file, use black and white
   exec cat
