@@ -615,6 +615,10 @@ cd () {
   fi
 }
 
+z () {
+  builtin cd ~/"$1"
+}
+
 alias md='mkdir -p'
 alias rd=rmdir
 
