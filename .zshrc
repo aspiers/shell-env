@@ -399,6 +399,22 @@ telnet_hosts_ports_users=(
 
 zshrc_load_status 'aliases and functions'
 
+# {{{ Reloading .zshrc or functions
+
+reload () {
+  if [[ "$#*" -eq 0 ]]; then
+    . ~/.zshrc
+  else
+    local fn
+    for fn in $*; do
+      unfunction $fn
+      autoload -U $fn
+    done
+  fi
+}
+compdef _functions reload
+
+# }}}
 # {{{ ls aliases
 
 alias ls='/bin/ls --color -F'
