@@ -2,7 +2,7 @@
 
 eval spawn -noecho $argv
 expect {
-    -timeout 3
+    -timeout 20
     -re "Password for .*: " {
         stty -echo
         interact {
