@@ -1,3 +1,20 @@
 #!/bin/sh
 
-exec chmod "$@"
+if [ -z "$*" ]; then
+  echo -n "Setting up handy shortcuts ..."
+  cd ~/bin/shortcuts
+  for mode in 600 640 644 664 660 666 \
+              700 750 755 775 770 777; do
+    [ -e $mode ] || ln -s cm $mode
+    echo -n " $mode"
+  done
+  echo
+  exit 0
+fi
+
+mode=`basename $0`
+
+case "$mode" in
+  *[0-7]) exec chmod "$mode" "$@" ;;
+  *)      exec chmod "$@" ;;
+esac
