@@ -1,3 +1,5 @@
 #compdef pi
 
-_files -g '*.(prc,pdb)'
+local expl
+_description files expl 'Palm PDBs'
+_files "$@" "$expl[@]" -g '*.(prc|pdb)'
