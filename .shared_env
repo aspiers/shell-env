@@ -40,7 +40,7 @@ export VISUAL=fe
 # }}}
 # {{{ WWW home
 
-export WWW_HOME='http://www.new.ox.ac.uk/~adam/'
+export WWW_HOME='http://adamspiers.org/'
 
 # }}}
 # {{{ Pager
@@ -82,12 +82,7 @@ export CVS_RSH=ssh
 
 # {{{ Specific to hosts
 
-if [[ -r $HOME/.shared_env.local ]]; then
-  . $HOME/.shared_env.local
-fi
-
-if [[ -r $HOME/.shared_env.${HOST%%.*} ]]; then
-  . $HOME/.shared_env.${HOST%%.*}
-fi
+[ -r $HOME/.shared_env.local ]       && . $HOME/.shared_env.local
+[ -r $HOME/.shared_env.${HOST%%.*} ] && . $HOME/.shared_env.${HOST%%.*}
 
 # }}}
