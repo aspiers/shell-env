@@ -1,3 +1,0 @@
-#autoload
-
-ssh adams@plig.net "$@"
