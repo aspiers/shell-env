@@ -24,7 +24,7 @@ while (<CFG>) {
   m!^((http|ftp):)//! or die "Weird line $.:\n$_\n";
   my $proto = $1;
 
-  chdir $tempdir;
+  chdir $tempdir or die "chdir($tempdir) failed: $!\n";
   my $wget = `wget -nv -x "$_" 2>&1`;
   my ($path) = $wget =~ /-> "(.+)"/
     or die "Weird output from wget:\n$wget\n";
