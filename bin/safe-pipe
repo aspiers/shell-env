@@ -7,6 +7,8 @@
 #    wget http://foo.bar/baz.html | \
 #      safe-pipe riskily-munge-HTML | grep foo
 #
+# Its Achilles' heel is that it assumes the filter will always play nice
+# and return a non-zero exit code on failure.
 
 tmp=`mktemp /tmp/safe-pipe.XXXXXXXXX`
 cat >> $tmp
