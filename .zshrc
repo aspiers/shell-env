@@ -265,12 +265,20 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
   if [[ -r $zdotdir/.zsh_prompt ]]; then
     . $zdotdir/.zsh_prompt
   elif [[ -r /proc/$PPID/cmdline ]] &&
-     egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+       egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
-    prompt adam2 8bit $adam2_colors
+    if prompt -h adam2 | grep -q 8bit; then
+      prompt adam2 8bit $adam2_colors
+    else
+      prompt adam2 $adam2_colors
+    fi
   else
-    prompt adam2 $adam2_colors
+    if prompt -h adam2 | grep -q plain; then
+      prompt adam2 plain $adam2_colors
+    else
+      prompt adam2 $adam2_colors
+    fi
   fi
 
   if [[ $TERM == tgtelnet ]]; then
@@ -933,6 +941,6 @@ fi
 
 # {{{ Search for history loosing bug
 
-_check_hist_size
+which _check_hist_size >&/dev/null &&_check_hist_size
 
 # }}}
