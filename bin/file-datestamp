@@ -1,6 +1,14 @@
 #!/bin/sh
 
 format="%Y:%m:%d"
-[ "$1" = "-t" ] && format="$format-%T"
+if [ "$1" = "-t" ]; then
+  format="$format-%T"
+  shift
+fi
+
+if [ $# != 0 ]; then
+  echo "Usage: $0 [ -t ]" >&2
+  exit 1
+fi
 
 date +"$format"
