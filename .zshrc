@@ -973,6 +973,7 @@ alias -g X='| xargs'
 alias -g X0='| xargs -0'
 alias -g XG='| xargs egrep'
 alias -g XGv='| xargs egrep -v'
+alias -g X0G='| xargs -0 egrep'
 alias -g X0Gv='| xargs -0 egrep -v'
 
 # }}}
