@@ -458,8 +458,10 @@ zshrc_load_status 'aliases and functions'
 # {{{ Updating rc files
 
 rcup () {
-  CVS_RSH=ssh CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot \
+  ( cd &&
+    CVS_RSH=ssh CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot \
     cvs update "$@"
+  )
 }
 
 # }}}
