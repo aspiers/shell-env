@@ -20,9 +20,9 @@ fi
 
 # {{{ ls colours
 
-if which dircolors >&/dev/null; then
+if which dircolors >&/dev/null && [ -e ~/.dircolors ]; then
   # show directories in yellow
-  eval `dircolors -b <(echo "DIR 36\nLINK 01;33")`
+  eval `dircolors -b ~/.dircolors`
 fi
 
 # }}}

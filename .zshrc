@@ -803,9 +803,9 @@ hash -d CV=/usr/local/cvsroot
 # }}}
 # {{{ ls colours
 
-if which dircolors >&/dev/null; then
+if which dircolors >&/dev/null && [[ -e "${zdotdir}/.dircolors" ]]; then
   # show directories in yellow
-  eval `dircolors -b <(echo "DIR 36\nLINK 01;33")`
+  eval `dircolors -b $zdotdir/.dircolors`
 fi
 
 if [[ $ZSH_VERSION > 3.1.5 ]]; then
