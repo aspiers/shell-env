@@ -315,11 +315,22 @@ fi
 ##
 
 # General completion technique
-#zstyle ':completion:*' completer _complete _correct _approximate _prefix
-zstyle ':completion:*' completer _complete _prefix _ignored
+zstyle ':completion:*' completer \
+  _complete _prefix _approximate:-one _ignored \
+  _complete:-extended _approximate:-four
+
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
+
+zstyle ':completion:*:approximate-one:*'  max-errors 1
+zstyle ':completion:*:approximate-four:*' max-errors 4
+
+zstyle ':completion:*:complete-extended:*' \
+  matcher 'r:|[.,_-]=* r:|=*'
+
+# Fancy menu selection when there's ambiguity
+zstyle ':completion:*' menu yes select=long-list select=5 interactive
 
 # Completion caching
 zstyle ':completion::complete:*' use-cache 1
@@ -343,6 +354,9 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
         adm apache bin daemon games gdm halt ident junkbust lp mail mailnull \
         named news nfsnobody nobody nscd ntp operator pcap postgres radvd \
         rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs
+
+# ... unless we really want to.
+zstyle '*' single-ignored show
 
 # Separate matches into groups
 zstyle ':completion:*:matches' group 'yes'
@@ -467,7 +481,6 @@ my_accounts=(
   adams@{proxy.guideguide.com,195.217.36.66}
   adamspiers@ssh.sourceforge.net
   adam@landfill.tequilarista.org
-  {aspiers,root}@194.202.166.101
   adams@plig.net
 )
 ### END PRIVATE
