@@ -457,6 +457,11 @@ rcup () {
 }
 
 # }}}
+# {{{ View addressbook
+
+alias addr='less ~/.gnome/GnomeCard.gcrd'
+
+# }}}
 ### END PRIVATE
 # {{{ which
 
