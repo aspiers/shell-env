@@ -863,6 +863,10 @@ e () {
 # enable ^Z
 alias pico='/usr/bin/pico -z'
 
+if which vim >&/dev/null; then
+  alias vi=vim
+fi
+
 # }}}
 # {{{ remote logins
 
