@@ -563,6 +563,9 @@ alias la='ls -la'
 alias lsa='ls -a'
 alias lsh='ls -d .*'
 alias ld='ls -ld'
+alias lt='ls -lt'
+alias lrt='ls -lrt'
+alias lart='ls -lart'
 # damn, missed out lsd :-)
 alias sl=ls # often screw this up
 
