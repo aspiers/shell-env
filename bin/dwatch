@@ -35,6 +35,8 @@ use File::Basename;
 use Getopt::Long;
 Getopt::Long::Configure('require_order');
 
+use vars '$new';
+
 my %opt_defaults = (
   repeat => 1,
   delay  => 1,
@@ -57,7 +59,7 @@ usage() if $opts{help};
 usage("Must specify only one of unified/context/quiet.")
   if $opts{unified} + $opts{context} + $opts{quiet} > 1;
 usage("Delay only makes sense with repeat")
-  if $opts{delay} && ! $opts{repeat};
+  if $opts{delay} && ! defined $opts{repeat};
 usage() unless @ARGV;
 my $cmd = "@ARGV";
 
@@ -91,15 +93,18 @@ my $diff_opts = $opts{unified} ? '-u ' :
 -d $opts{cache} or mkdir $opts{cache}, 0777;
 
 my $hash = md5_base64($cmd);
+$hash =~ s!/!_!g;
 my $old = "$opts{cache}/$hash";
-my $new = "$old.new";
+$new = "$old.new";
+
+$SIG{INT} = sub { exit 0 }; # do END block on SIGINT
 
 my $changes = 0;
 my $reps_done = 0;
-do {
-  open(CMD, "$cmd |") or die "open($cmd |): $!\n";
+do {{
+  open(CMD, "$cmd |") or die "open($cmd |) failed: $!\n";
   warn "$new already existed!" if -e $new;
-  open(NEW, ">$new") or die "open(>$new): $!\n";
+  open(NEW, ">$new") or die "open(>$new) failed: $!\n";
   print NEW $_ while <CMD>;
   close(CMD);
   close(NEW);
@@ -130,7 +135,14 @@ do {
   }
 
   sleep $opts{delay} if $reps_done < $opts{repeat} or $opts{repeat} == 0;
-}
+}}
 until $reps_done == $opts{repeat};
 
 exit $changes;
+
+sub END {
+  if ($new && -e $new) {
+    unlink $new or warn "unlink($new) failed: $!\n";
+  }
+  exit 0;
+}
