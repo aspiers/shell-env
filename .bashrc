@@ -18,7 +18,55 @@ fi
 
 # not sure this should be in this file
 
+# {{{ INPUTRC
+
+# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
+# set convert-meta to off?
+unset INPUTRC
+
+# }}}
+# {{{ IRC
+
+export IRCNAME='Adam Spiers'
+export IRCNICK='Adze'
+
+# }}}
+# {{{ Editor
+
+export EDITOR=emacs
+export VISUAL='emacs -nw'
+
+# }}}
+# {{{ WWW home
+
+export WWW_HOME='http://www.new.ox.ac.uk/~adam/'
+
+# }}}
+# {{{ Pager
+
+export METAMAIL_PAGER='less -r'
+export PAGER='less'
+export LESS='-h100 -i -j1 -M -q -y100'
+#export LESSOPEN='|/usr/local/bin/lesspipe.sh %s'
+#export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
+
+# }}}
+# {{{ Name and Reply_To
+
+export NAME='Adam Spiers'
+export REPLYTO='adam@spiers.net (Adam Spiers)'
+
+# }}}
+# {{{ rsync uses ssh
+
+export RSYNC_RSH=ssh
+
+# }}}
+# {{{ cvs uses ssh
+
 export CVS_RSH=ssh
+
+# }}}
 
 # }}}
 # {{{ Key bindings
