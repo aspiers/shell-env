@@ -46,6 +46,13 @@ path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin /[u]sr/X11R6/bin )
 path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
+# {{{ LD_LIBRARY_PATH
+
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] ||
+  typeset -T LD_LIBRARY_PATH ld_library_path
+typeset -U ld_library_path
+
+# }}}
 # {{{ Perl libraries
 
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PERL5LIB perl5lib
