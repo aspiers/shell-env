@@ -35,7 +35,7 @@ foreach my $file (@ARGV) {
   my $rcs     = Rcs->new($rcsfile);
   my $locker  = $rcs->lock;
   if ($locker) {
-    print $short ? "$locker\n" : "$file: locked by $locker\n";
+    print $short ? "$locker\n" : "$file locked by $locker\n";
     push @{ $lockers{$locker} }, $file;
   }
 }
