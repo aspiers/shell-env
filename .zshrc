@@ -770,7 +770,7 @@ export CVS_RSH=ssh
 # {{{ less
 
 alias v=less
-alias vs=less -S
+alias vs='less -S'
 
 # }}}
 # {{{ mutt
