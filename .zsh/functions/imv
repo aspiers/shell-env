@@ -7,12 +7,12 @@ if [[ "$1" == "--help" ]]; then
 Renames SOURCE, allowing interactive editing of the new name.
 
 The following options are passed on to mv(1):
-  -i, -b, -u' >&2
+  -b, -u' >&2
   return 0
 fi
 
 opts=()
-while getopts :biu opt; do
+while getopts :bu opt; do
     if [[ $opt = "?" ]]; then
         print "$me: unrecognized option: -$OPTARG" >&2
         print "Try \`$me --help' for more information." >&2
@@ -48,8 +48,11 @@ if [[ "$src" == "$dest" ]]; then
 fi
 
 if [[ -e "$dest" ]]; then
-  print "$me: $dest already exists; aborting"
-  return 1
+  echo -n "$me: $dest already exists; replace? "
+  if ! read -q replace; then
+    echo "Aborted."
+    return 1
+  fi
 fi
 
 mv "$opts[@]" -- "$src" "$dest"
