@@ -1,4 +1,8 @@
 #!/usr/bin/perl -wl
 
+die <<EOUSAGE if @ARGV < 2 or $ARGV[0] =~ /^--?h(elp)?$/;
+Usage: ran <printf format string> <Perl list>
+EOUSAGE
+
 $format = $ARGV[0] =~ /%/ ? shift : '%s';
 print join ' ', map { sprintf $format, $_ } eval "@ARGV";
