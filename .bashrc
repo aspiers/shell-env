@@ -132,7 +132,6 @@ alias d=dirs
 #alias pu=pushd
 
 alias po=popd
-alias pwd='pwd -r'
 
 # }}}
 # {{{ finding out disk hogs
