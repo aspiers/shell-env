@@ -1,4 +1,4 @@
-#!/bin/awk -f
+#!/usr/bin/awk -f
 
 /^cvs server: /                 { print "\033[1;30m" $0; next }
 /^\? /                          { print "\033[0;33m" $0; next }
