@@ -1,0 +1,12 @@
+#autoload
+
+cat >|/tmp/.dsa-cache-$USER-$HOST <<EOF
+export SSH_AGENT_PID=$SSH_AGENT_PID
+export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+EOF
+
+cat <<EOF 
+Wrote info to ssh-agent cache:
+    pid:    $SSH_AGENT_PID
+    socket: $SSH_AUTH_SOCK
+EOF

@@ -1,29 +1,19 @@
 #autoload
 
+# dsa - Detect Ssh Agent
+
+ssh_agent_valid && return 0
+
 _dsa_cache=/tmp/.dsa-cache-$USER-$HOST
 
-if [[ -n "$*" || ! -r "$_dsa_cache" ]]; then
-  recalc_ssh_agent_cache || return
-fi  
-
-source "$_dsa_cache"
-cat <<EOF 
+if [[ -r "$_dsa_cache" ]]; then
+  source "$_dsa_cache"
+  cat <<EOF 
 Read ssh-agent details from cache:
     pid:    $SSH_AGENT_PID
     socket: $SSH_AUTH_SOCK
 EOF
-
-export SSH_AGENT_PID SSH_AUTH_SOCK
-
-if ( ! /bin/true ); then
-  echo 'zsh has ( ! /bin/true ) negated subshell bug!'
-  echo 'Cannot check validity of ssh-agent cache.'
-else
-  if [[ -e /proc ]] &&
-    ( [[ ! -e /proc/$SSH_AGENT_PID ]] ||
-      ( [[ -e /proc/$SSH_AGENT_PID/cmdline ]] &&
-      ! grep -q ssh-agent /proc/$SSH_AGENT_PID/cmdline ) ); then
-    echo "\nInvalid ssh-agent pid $SSH_AGENT_PID; restarting ...\n"
-    dsa restart
-  fi
+  ssh_agent_valid && return 0
 fi
+
+recalc_ssh_agent_cache
