@@ -827,6 +827,7 @@ bindkey '^[N' history-beginning-search-forward
 bindkey '^W' kill-region
 bindkey '^I' complete-word
 bindkey '^[b' emacs-backward-word
+bindkey '^[v' emacs-backward-word
 bindkey '^[f' emacs-forward-word
 
 # Fix weird sequence that rxvt produces
