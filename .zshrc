@@ -661,6 +661,15 @@ alias 7='cd +7'
 alias 8='cd +8'
 alias 9='cd +9'
 
+# Sweet trick from zshwiki.org :-)
+cd () {
+  if [[ -f $1 ]]; then
+    builtin cd $1:h
+  else
+    builtin cd $1
+  fi
+}
+
 z () {
   cd ~/"$1"
 }
