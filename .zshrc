@@ -934,6 +934,36 @@ bindkey '^[f' emacs-forward-word
 # Fix weird sequence that rxvt produces
 bindkey -s '^[[Z' '\t'
 
+aoeu () {
+  if tty | grep -q tty; then
+    local prefix=''
+    (( $EUID == 0 )) && prefix=sudo
+    $prefix loadkeys /usr/lib/kbd/keymaps/i386/qwerty/uk.no-capslock.kmap.gz
+  else
+    xmodmap $HOME/.keymaps/qwerty
+  fi
+  if (( $? == 0 )); then
+    echo qwerty layout selected
+  else
+    echo "There was an error; qwerty layout /not/ selected."
+  fi
+}  
+
+asdf () {
+  if tty | grep -q tty; then
+    local prefix=''
+    (( $EUID == 0 )) && prefix=sudo
+    $prefix loadkeys /usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
+  else
+    xmodmap $HOME/.keymaps/dvorak
+  fi
+  if (( $? == 0 )); then
+    echo Dvorak layout selected
+  else
+    echo "There was an error; Dvorak layout /not/ selected."
+  fi
+}
+
 # }}}
 # {{{ Miscellaneous
 
@@ -1001,3 +1031,4 @@ fi
 echo -n "\r"
 
 # }}}
+
