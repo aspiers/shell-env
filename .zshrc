@@ -178,7 +178,7 @@ fpath=(
        /usr/doc/zsh*/Functions(N)
       )
 
-typeset -U fpath
+typeset -gU fpath
 
 # }}}
 # {{{ Choose word delimiter characters in line editor
@@ -256,8 +256,6 @@ zshrc_load_status 'completion system'
 # {{{ New advanced completion system
 
 if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
-  _compdir=/usr/share/zsh/functions
-  [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
   autoload -U compinit
   compinit
 else
@@ -618,6 +616,8 @@ su () {
 # {{{ No spelling correction
 
 alias man='nocorrect man'
+alias mysql='nocorrect mysql'
+alias mysqlshow='nocorrect mysqlshow'
 
 # }}}
 # {{{ X windows related
