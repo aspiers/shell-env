@@ -822,7 +822,7 @@ zshrc_load_status 'key bindings'
 
 bindkey -s '^X^Z' '%-^M'
 bindkey '^[e' expand-cmd-path
-bindkey -s '^X?' '\eb=\ef\C-x*'
+#bindkey -s '^X?' '\eb=\ef\C-x*'
 bindkey '^[^I' reverse-menu-complete
 bindkey '^X^N' accept-and-infer-next-history
 bindkey '^[p' history-beginning-search-backward
