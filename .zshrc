@@ -375,13 +375,17 @@ hosts=(
     localhost
 
 ### BEGIN PRIVATE
-    # New College
-    corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
-    163.1.145.129 163.1.145.123
+    # guideguide
+    proxy.london.guideguide.com 194.203.206.225
+    aviator.guideguide.com
 
     # RAM
     {bach,gw,jascha,purcell,lib}.ram.ac.uk
     general.ulcc.ac.uk
+
+    # New College
+    corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
+    163.1.145.129 163.1.145.123
 
     # OUCS
     {ermine,sable}.ox.ac.uk
@@ -409,9 +413,6 @@ hosts=(
 
     # Darren Nickerson
     hewes.icl.ox.ac.uk
-
-    # guideguide
-    proxy.london.guideguide.com 194.203.206.225
 
     # W3
     server1.w3w.net
