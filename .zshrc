@@ -246,6 +246,7 @@ else
 fi
 
 # }}}
+
 # {{{ Completions
 
 zshrc_load_status 'completion system'
@@ -261,11 +262,15 @@ compinit
 compconf completer=_complete 
 # End of lines added by compinstall
 
-# Enable the way cool bells and whistles
-compconf description_format="$fg_bold_white%d$fg_white"
+##
+## Enable the way cool bells and whistles.
+##
+
 compconf group_matches=yep
 compconf describe_options=yep
 compconf autodescribe_options='%d'
+# This one assumes that your terminal has a dark background.
+compconf description_format="$fg_bold_white%d$fg_white"
 
 # }}}
 
