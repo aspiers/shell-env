@@ -16,7 +16,7 @@
 # take effect for bash and ksh.
 
 # Allow disabling of entire environment suite
-[ -n "$CLEAN_ENV" ] && return 0
+[ -n "$INHERIT_ENV" ] && return 0
 
 # {{{ What version are we running?
 
