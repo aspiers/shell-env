@@ -1,0 +1,3 @@
+#autoload
+
+ssh adam@corelli.new.ox.ac.uk "$@"
