@@ -31,12 +31,12 @@ fi
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
   [ -n "$debug" ] && echo "Switching to $myshell safely ..."
-  "$myshell" "$@" && exit
+  SHELL="$myshell" "$myshell" "$@" && exit
 }
 
 switch_shell_dangerously () {
   [ -n "$debug" ] && echo "Switching to $myshell dangerously ..."
-  exec "$myshell" "$@"
+  SHELL="$myshell" exec "$myshell" "$@"
 }
 
 switch_shell () {
