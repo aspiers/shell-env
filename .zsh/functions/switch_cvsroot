@@ -10,3 +10,7 @@ for d in "$dirs[@]"; do
   cvsroot -r $CVSROOT
   echo Switched $d
 done
+
+z
+cvsroot $CVSROOT
+echo "Switched ~"
