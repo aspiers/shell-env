@@ -15,14 +15,6 @@ if [ -z "$DISPLAY" ] && [ "$TERM" = 'linux' ]; then
 fi
 
 # }}}
-# {{{ Try to switch shell
-
-preferred_shell=$(<~/.preferred_shell)
-preferred_shell_args=$(<~/.preferred_shell_args)
-[ -r ~/.switch_shell ] &&
-   . ~/.switch_shell "$preferred_shell" $preferred_shell_args
-
-# }}}
 # {{{ User specific environment and startup programs
 
 for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
