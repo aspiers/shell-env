@@ -2,6 +2,9 @@
 
 local num title
 
+# Don't output anything if STDOUT isn't a tty
+[[ -t 1 ]] || return 1
+
 type="$1"
 shift
 title="$1"
@@ -11,9 +14,7 @@ case "$type" in
       ;;
     icon) num=1
       ;;
-  screen) title="${title/ : /|}"
-          title="${title/(adams|adam|aspiers)@/}"
-          echo -n "\ek$title\e\\"
+  screen) echo -n "\ek$title\e\\"
           return
       ;;
        *) print "Usage: set_title ( window | icon | screen ) <title>"
@@ -21,9 +22,9 @@ case "$type" in
       ;;
 esac
 
-# Other checks will need to be added here.
+# Other checks will need to be added here.  Could switch on output of tty(1).
 if [[ "$TERM" == 'linux' ]]; then
-#  print "Cannot currently display $1 title; only remembering value set."
+#  print "Cannot currently display '$1' title; only remembering value set."
 else
   # note screen will swallow this
   echo -n "\e]$num;$title\a"
