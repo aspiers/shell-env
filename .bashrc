@@ -11,6 +11,13 @@ if [ -f /etc/bashrc ]; then
   . /etc/bashrc
 fi
 
+# {{{ Environment
+
+# not sure this should be in this file
+
+export CVS_RSH=ssh
+
+# }}}
 # {{{ Key bindings
 
 bind '"\ep":history-search-backward'
