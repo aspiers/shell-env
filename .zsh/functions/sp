@@ -1,0 +1,3 @@
+#autoload
+
+echo ${(F)path}

@@ -1,0 +1,3 @@
+#compdef -k complete-word ^Xf
+
+compadd -U -S '' $(abs $words[CURRENT])
