@@ -716,7 +716,7 @@ alias mmv='noglob zmv -W'
 fext () {
   suffix="$1"
   shift
-  find -name "*.$suffix" "$@"
+  find . -name "*.$suffix" "$@"
 }
 
 # }}}
