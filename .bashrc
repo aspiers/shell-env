@@ -13,7 +13,8 @@
 # }}}
 # {{{ Try to switch shell
 
-[ -r ~/.switch_shell ] && . ~/.switch_shell ~/local/bin/zsh -d
+[ -r ~/.preferred_shell ] && [ -r ~/.switch_shell ] && \
+  eval ". ~/.switch_shell `cat ~/.preferred_shell`"
 
 # }}}
 # {{{ Source global definitions
