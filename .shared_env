@@ -14,12 +14,13 @@
 
 sh_load_status () {
   # \e[0K is clear to right
-  echo -e -n "\r${SHELL##*/} load: $* ... \e[0K"
+  echo -e -n "\r${0##*/} load: $* ... \e[0K"
 }
 
 # }}}
 
-sh_load_status .shared_env
+# keep non-interactive shells clean
+#sh_load_status .shared_env
 
 # {{{ HOME
 
