@@ -581,6 +581,9 @@ alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
 alias cd/='cd /'
 
+alias 2='cd +2'
+alias 3='cd +3'
+
 cd () {
   if   [[ "x$*" == "x..." ]]; then
     cd ../..
