@@ -447,7 +447,7 @@ zstyle ':completion:*' hosts $hosts
 
 ### BEGIN PRIVATE
 my_accounts=(
-  {localadams,root}@pulse
+  {localadams,root}@{pulse,adamspiers.{dyndns,homelinux}.org}
   adams@adamspiers.org
   adam@corelli.new.ox.ac.uk
   adam@aviator.guideguide.com
