@@ -6,7 +6,7 @@
 # reserved. This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl itself.
 #
-# Version 0.15
+# Version 0.17
 #
 # $Id$
 #
@@ -36,7 +36,8 @@ my $dbm_file = shift;
 
 my $action = shift;
 my %actions = ();
-abbrev \%actions, qw/set add change
+abbrev \%actions, qw/create initialize
+                     set add change
                      remove delete wipe erase
                      list get fetch lookup
                      find search
@@ -49,21 +50,36 @@ unless ($action) {
 $action = $actions{$action} if $action && exists $actions{$action};
 
 my %hash = ();
-tie %hash, $type, $dbm_file, O_RDWR | O_CREAT, 0600;
-die "tie() to $dbm_file failed: $!\n" unless tied %hash;
 
-if ($action =~ /^(add|set|change)$/) {
+if ($action =~ /^(create|initialize)$/) {
+  if (@ARGV) {
+    usage("`$action' takes no arguments.");
+    exit 1;
+  }
+
+  tie_dbm_bare(O_RDONLY);
+  if (tied %hash) {
+    die "Database already exists!\n";
+  }
+
+  tie_dbm(O_RDWR | O_CREAT);
+}
+elsif ($action =~ /^(add|set|change)$/) {
   unless (@ARGV and @ARGV % 2 == 0) {
     usage("`$action' needs an even number of arguments " .
           "(key1, val1, key2, val2 ...)");
     exit 1;
   }
+
+  tie_dbm(O_RDWR);
+
   my %new = @ARGV;
   while (my ($key, $value) = each %new) {
     $hash{$key} = $value;
   }
 }
 elsif ($action =~ /^(remove|delete|wipe|erase)$/) {
+  tie_dbm(O_RDWR);
   unless (@ARGV) {
     usage("`$action' needs at least one argument.");
     exit 1;
@@ -71,6 +87,7 @@ elsif ($action =~ /^(remove|delete|wipe|erase)$/) {
   delete @hash{@ARGV};
 }
 elsif ($action =~ /^(list|lookup|get|fetch)$/) {
+  tie_dbm(O_RDONLY);
   my @keys = @ARGV;
   @keys = keys %hash unless @keys;
   foreach my $key (@keys) {
@@ -83,7 +100,7 @@ elsif ($action =~ /^(find|search)$/) {
     exit 1;
   }
   my $re = $ARGV[0];
-
+  tie_dbm(O_RDONLY);
   foreach my $key (keys %hash) {
     print_key_val($key) if $key =~ /$re/o;
   }
@@ -93,6 +110,8 @@ elsif ($action eq 'edit') {
     usage("`$action' doesn't take any arguments.");
     exit 1;
   }
+
+  tie_dbm(O_RDWR);
 
   my $dbm_file_name = $dbm_file;
   $dbm_file_name =~ s,.*/,,;
@@ -132,6 +151,7 @@ elsif ($action eq 'edit') {
   unlink $tmpfile or warn "Couldn't unlink('$tmpfile'): $!\n";
 }
 elsif ($action eq 'clear') {
+  tie_dbm(O_RDWR);
   unless ("@ARGV" eq 'everything yes really') {
     usage("You must invoke $action exactly as shown below.");
     exit 1;
@@ -155,6 +175,7 @@ sub usage {
   print <<EOF;
 Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
    Actions:
+      initialize                      (synonyms: create)
       set <key> <value>               (synonyms: add change)
       remove <key> [ <key> ... ]      (synonyms: delete, wipe, erase)
       list [ <key> ... ]              (synonyms: get, fetch, lookup)
@@ -164,6 +185,17 @@ Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
 
 Actions can be abbreviated.
 EOF
+}
+
+sub tie_dbm_bare {
+  my ($flags) = @_;
+  tie %hash, $type, $dbm_file, $flags, 0600;
+}
+
+sub tie_dbm {
+  my ($flags) = @_;
+  tie_dbm_bare($flags);
+  die "tie() to $dbm_file failed: $!\n" unless tied %hash;
 }
 
 sub maybe_quote {
