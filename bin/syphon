@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-syphon - removal of lines from start of file 
+syphon - removes lines from top of file 
 
 =head1 SYNOPSIS
 
@@ -13,11 +13,14 @@ syphon - removal of lines from start of file
 
 Removes lines from the beginning of a file.  Stops when a pattern is
 encountered (the first line matching the pattern is not removed).
-Outputs to STDOUT, unless C<-i> is specified, in which case the inode
-is preserved by filtering to a temporary file and then copying back
-over the original file.  This means it will work with log files whose
-daemon opens them with C<O_APPEND>.  If C<$removed_file> is specified,
-the removed lines will be written to that file.
+Outputs the lines syphoned off to STDOUT, unless C<-i> is specified,
+in which case the inode is preserved by filtering to a temporary file
+and then copying back over the original file.  This means it will work
+with log files whose daemon opens them with C<O_APPEND>.  If
+C<$removed_file> is specified, the removed lines will be written to
+that file.
+
+C<-v> turns on verbose output.
 
 =cut
 
