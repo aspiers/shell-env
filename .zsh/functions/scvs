@@ -15,19 +15,16 @@ scvs () {
 
   shift
 
-  new_CVSROOT="$_CVSROOTS[$tag]"
-  new_CVS_RSH="$_CVS_RSHS[$tag]"
-
-  if [[ -z "$new_CVSROOT" ]]; then
-    echo "Warning: CVSROOT for $tag undefined; not setting." >&2
+  if (( ${+_CVSROOTS[$tag]} )); then
+    export CVSROOT="$_CVSROOTS[$tag]"
   else
-    export CVSROOT="$new_CVSROOT"
+    echo "Warning: CVSROOT for $tag undefined; not setting." >&2
   fi
 
-  if [[ -z "$new_CVS_RSH" ]]; then
-    echo "Warning: CVS_RSH for $tag undefined; not setting." >&2
+  if (( ${+_CVS_RSHS[$tag]} )); then
+    export CVS_RSH="$_CVS_RSHS[$tag]"
   else
-    export CVS_RSH="$new_CVS_RSH"
+    echo "Warning: CVS_RSH for $tag undefined; not setting." >&2
   fi
 }
 
