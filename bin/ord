@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+
+my $ord = ord shift;
+printf "dec %d, %03o, 0x%2x\n", ($ord) x 3;
+
