@@ -8,6 +8,12 @@
 # of any sh-compatible shell, including non-interactive ones;
 # hence it should be kept as fast and as portable as possible.
 
+# {{{ HOME
+
+# Don't leave history files in /
+: ${HOME:=/root}
+
+# }}}
 # {{{ PATH
 
 for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
