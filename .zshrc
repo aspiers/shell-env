@@ -472,7 +472,7 @@ compconf history_remove_all_dups=yep
 # }}}
 # {{{ Common hostnames
 
-hostnames=(
+hosts=(
     localhost
 
 ### BEGIN PRIVATE
@@ -555,7 +555,7 @@ my_accounts=(
 
 ### BEGIN PRIVATE
 other_accounts=(
-  {root,ben,nmcgroga,chris,cclading,nick,stephen,bear,jo,cmb,dave,davetm}:thelonious.new.ox.ac.uk
+  {root,ben,nmcgroga,cclading,nick,stephen,bear,jo,cmb,dave,davetm}:thelonious.new.ox.ac.uk
   {root,tpcadmin}:hewes.icl.ox.ac.uk
   dnicker:ermine.ox.ac.uk
   chris:plato.wadham.ox.ac.uk
@@ -687,6 +687,11 @@ compdef _users ru
 # {{{ History
 
 alias h=history
+
+# }}}
+# {{{ Environment
+
+alias ts=typeset
 
 # }}}
 # {{{ Terminal
@@ -1023,6 +1028,13 @@ End_of_Perl
 fi
 
 # }}}
+### BEGIN PRIVATE
+# {{{ mutt
+
+alias m=mutt
+
+# }}}
+### END PRIVATE
 # {{{ apropos
 
 alias ap=apropos
@@ -1088,7 +1100,11 @@ dl () {
 
 # }}}
 
-# WARNING: These two use global aliases, which is slightly evil.
+# }}}
+
+# {{{ Global aliases
+
+# WARNING: global aliases are evil.  Use with caution.
 
 # {{{ Paging with less / head / tail
 
@@ -1132,6 +1148,12 @@ bindkey -s '^[[Z' '\t'
 
 # {{{ Hash named directories
 
+hash -d I3=/usr/src/redhat/RPMS/i386
+hash -d I6=/usr/src/redhat/RPMS/i686
+hash -d SR=/usr/src/redhat/SRPMS
+hash -d SP=/usr/src/redhat/SPECS
+hash -d SO=/usr/src/redhat/SOURCES
+hash -d BU=/usr/src/redhat/BUILD
 #hash -df
 
 # }}}
