@@ -430,6 +430,7 @@ my_accounts=(
   adamspiers:zsh.sourceforge.net
   adam:landfill.tequilarista.org
   {aspiers,root}@194.202.166.101
+  adams@plig.net
 )
 ### END PRIVATE
 
