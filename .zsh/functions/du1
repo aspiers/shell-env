@@ -1,0 +1,9 @@
+#autoload
+
+# du1 (du with depth 1)
+
+du "$@" | egrep -v '/.*/'
+
+# Another idea from Bart Schaefer, which I need to fix
+# to take parameters
+#du -s *(/)

@@ -1,0 +1,3 @@
+#autoload
+
+ps auxww | grep -E "^($*|USER)" | grep -vE "^$USERNAME|login"

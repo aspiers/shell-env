@@ -1,0 +1,3 @@
+#compdef lh
+
+_users "$@"

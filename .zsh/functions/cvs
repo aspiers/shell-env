@@ -1,0 +1,5 @@
+#autoload
+
+quiet='-q'
+[[ "$*" == *status* ]] && quiet=''
+command cvs $quiet "$@"

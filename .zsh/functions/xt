@@ -1,0 +1,7 @@
+#autoload
+
+# Use this to untar after doing a tar ztvf/tvf/ztf command
+
+# Thanks to Bart Schaefer for this one
+fc -e - tvf=xf ztf=zxf -1
+
