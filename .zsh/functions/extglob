@@ -1,0 +1,14 @@
+# {{{ Temporary extended globbing
+
+# I have extended_glob set all the time anyway, but this is nice
+# for those who don't.  Thanks to Bart Schaefer for this one.
+#
+#  function ext_glob {
+#      setopt localoptions extendedglob
+#      local command="$1"
+#      shift
+#      $==command $==~*                    # redo globbing on arguments
+#  }
+#  alias extglob='noglob ext_glob '        # delay globbing until inside
+
+# }}}

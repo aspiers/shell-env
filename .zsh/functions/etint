@@ -1,0 +1,21 @@
+# Set Eterm tint
+
+etint () {
+  case "$*" in
+        red)  echo -e "\e]6;2;0xff8080\a" ;;
+      green)  echo -e "\e]6;2;0x80ff80\a" ;;
+       blue)  echo -e "\e]6;2;0x8080ff\a" ;;
+       cyan)  echo -e "\e]6;2;0x80ffff\a" ;;
+    magenta)  echo -e "\e]6;2;0xff80ff\a" ;;
+     yellow)  echo -e "\e]6;2;0xffff80\a" ;;
+          *)  echo -e "\e]6;2;0xffffff\a" ;;
+  esac
+}
+_etint () {
+  local expl
+  _description expl 'tint colour'
+  compadd "$expl[@]" - red green blue cyan magenta yellow
+}
+compdef _etint etint
+
+etint "$@"

@@ -1,0 +1,9 @@
+# {{{ Unified diffing files
+
+dl () {
+  diff -u $* | less
+}
+
+dl "$@"
+
+# }}}

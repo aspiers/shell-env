@@ -1,0 +1,11 @@
+# {{{ strings(1)
+
+# sl stands for `strings less'
+
+sl () {
+  strings `which $*` | less
+}
+
+sl "$@"
+
+# }}}

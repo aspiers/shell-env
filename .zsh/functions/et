@@ -1,0 +1,9 @@
+# {{{ Starting emacs with a title
+
+et () {
+  emacs -T "$*: emacs@${HOST}" --xrm="emacs.iconName: $*: emacs@${HOST}" $* &
+}
+
+et "$@"
+
+# }}}

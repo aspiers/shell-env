@@ -1,0 +1,12 @@
+# Set Eterm shade
+
+eshade () {
+  local percent
+
+  if [[ -z "$*" ]]; then
+    percent=0
+  else
+    percent="$*"
+  fi
+  echo -e "\e]6;1;$percent%\a"
+}

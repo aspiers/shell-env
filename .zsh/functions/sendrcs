@@ -1,0 +1,113 @@
+# {{{ rc files
+
+# {{{ Hostnames involved in rc transfers
+
+# Should be in `rcp' style format, e.g.
+# rc_home='user@host.com:'
+
+### BEGIN PRIVATE
+rc_home='adam@thelonious.new.ox.ac.uk:'
+### END PRIVATE
+
+# }}}
+# {{{ Filenames involved in rc transfers
+
+# Let's not rely on this one to always work, m'kay?
+#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME#\\\\\~#) )
+
+#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME/##) )
+#emacs_rcfiles=(
+#                ~/.[e]macs(N:s#$HOME/##)
+#                ~/lib/emacs/init/**/*.el(N:s#$HOME/##)
+#              )
+
+#misc_rcfiles=(
+#               ~/.{bash,complete,ex,lftp,lynx,shell,ytalk}[r]c(N:s#$HOME/##)
+#             )
+
+zsh_rcfiles=( .zshrc .zshenv )
+emacs_rcfiles=( .emacs .emacs-common
+                lib/emacs/init/{common/{XEmacs,emacs},XEmacs/{options,custom},GNU_Emacs/custom}.el
+              )
+
+misc_rcfiles=(
+               .{bash,complete,ex,lftp,lynx,shell,ytalk}rc
+             )
+
+all_rcfiles=( $zsh_rcfiles $emacs_rcfiles $misc_rcfiles )
+
+# }}}
+# {{{ rc file transfers
+
+sendhome () {
+  if [[ $#* -eq 0 ]]; then
+    echo 'Usage: sendhome <files>'
+    return 1
+  fi
+
+  if which rsync >/dev/null; then
+    pushd ~ >/dev/null
+    rsync -aHRuvz -e ssh $* $rc_home
+    if [[ $OLDPWD != $PWD ]] popd >/dev/null
+  else
+    echo rsync not found and no other transfer method implemented yet
+  fi
+}
+
+gethome () {
+  if [[ $#* -eq 0 ]]; then
+    echo 'Usage: gethome <files>'
+    return 1
+  fi
+
+  if which rsync >/dev/null; then
+    rsync -aHRuvz -e ssh $rc_home"$^^*" ~
+  else
+    echo rsync not found and no other transfer method implemented yet
+  fi
+}
+
+#  send_files () {
+#      # Usage: 1st word contains all hosts, 2nd word contains all files
+#      local host hosts files
+#      if [[ $#* -eq 1 ]]; then
+#          hosts="thelonious.new.ox.ac.uk hewes.icl.ox.ac.uk"
+#          files="$1"
+#      elif [[ $#* -eq 2 ]]; then
+#          hosts="$1"
+#          files="$2"
+#      else
+#          echo 'Usage: sendfiles ["hosts"] "files"'
+#          return 1
+#      fi
+#  }
+#
+#  #    echo Copying files ${=files} to hosts ${^^=hosts}:
+#      foreach host ( ${=hosts} ) {
+#          if [[ "$host" != "$HOST" ]]; then
+#              echo -n "${host%%.*} ... "
+#              scp -r ${=files} $host:
+#          fi
+#      }
+#  }    
+
+# }}}
+
+# {{{ Reloading .zshrc or functions
+
+reload () {
+  if [[ "$#*" -eq 0 ]]; then
+    . ~/.zshrc
+  else
+    local fn
+    for fn in $*; do
+      unfunction $fn
+      autoload -U $fn
+    done
+  fi
+}
+compdef _functions reload
+
+# }}}
+
+# }}}

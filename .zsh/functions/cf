@@ -1,0 +1,19 @@
+# Change rxvt font size
+
+cf () {
+  if [[ -z "$*" ]]; then
+    echo -n "\e]50;#3\a"
+  else
+    echo -n "\e]50;#$*\a"
+  fi
+}
+
+_cf () {
+  local expl
+  _description expl 'font size'
+  compadd "$expl[@]" - 1 2 3 4
+}
+
+compdef _cf cf
+
+cf "$@"
