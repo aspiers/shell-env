@@ -1,6 +1,7 @@
 #!/bin/sh
 
-export QUICK_EMACS=1 
+QUICK_EMACS=1 
+export QUICK_EMACS
 
 if [ -n "$OTHER_USER" ]; then
   exec emacs -nw -l $ZDOTDIR/.emacs "$@"
