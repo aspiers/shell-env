@@ -187,8 +187,6 @@ e () {
   emacs "$@" 2>&1 &
 }
 
-alias fe='emacs -nw --eval "(setq make-backup-files nil)"'
-
 # }}}
 # {{{ ftp
 
