@@ -255,17 +255,14 @@ zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
-# N.B. compstyle is sort of deprecated; you should use zstyle instead.
-# I just use it because it keeps column width down :-)
-
 if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   _compdir=/usr/share/zsh/functions
   [[ -z $fpath[(r)$_compdir] ]] && fpath=($fpath $_compdir)
   autoload -U compinit
   compinit
 else
-  print "\nAdvanced completion system not found; ignoring compstyle settings."
-  function compstyle { }
+  print "\nAdvanced completion system not found; ignoring zstyle settings."
+  function zstyle { }
   function compdef { }
 fi
 
@@ -274,43 +271,43 @@ fi
 ##
 
 # General completion technique
-compstyle ':*' completer _complete _correct _approximate _prefix
-compstyle '::prefix-1:*' completer _complete
-compstyle ':incremental:*' completer _complete _correct
-compstyle ':predict:*' completer _complete
+zstyle ':completion:*' completer _complete _correct _approximate _prefix
+zstyle ':completion::prefix-1:*' completer _complete
+zstyle ':completion:incremental:*' completer _complete _correct
+zstyle ':completion:predict:*' completer _complete
 
 # Cache functions created by _regex_arguments
-compstyle ':*' cache-path ~/.zsh/.cache-path
+zstyle ':completion:*' cache-path ~/.zsh/.cache-path
 
 # Expand partial paths
-compstyle ':*' expand 'yes'
-compstyle ':*' squeeze-slashes 'yes'
+zstyle ':completion:*' expand 'yes'
+zstyle ':completion:*' squeeze-slashes 'yes'
 
 # Include non-hidden directories in globbed file completions
 # for certain commands
-compstyle '::complete:*' \
+zstyle ':completion::complete:*' \
   tag-order 'globbed-files directories' all-files 
-compstyle '::complete:*:tar:directories' file-patterns '*~.*(-/)'
+zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
 # Separate matches into groups
-compstyle ':*:matches' group 'yes'
+zstyle ':completion:*:matches' group 'yes'
 
 # Describe each match group.
-compstyle ':*:descriptions' format "%B---- %d%b"
+zstyle ':completion:*:descriptions' format "%B---- %d%b"
 
 # Messages/warnings format
-compstyle ':*:messages' format '%B%U---- %d%u%b' 
-compstyle ':*:warnings' format '%B%U---- no match for: %d%u%b'
+zstyle ':completion:*:messages' format '%B%U---- %d%u%b' 
+zstyle ':completion:*:warnings' format '%B%U---- no match for: %d%u%b'
  
 # Describe options in full
-compstyle ':*:options' description 'yes'
-compstyle ':*:options' auto-description '%d'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
 
 # }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
-compstyle ':*:history-words' stop 'verbose'
-compstyle ':*:history-words' remove_all_dups 'yep'
+zstyle ':completion:*:history-words' stop 'verbose'
+zstyle ':completion:*:history-words' remove_all_dups 'yep'
 
 # }}}
 # {{{ Common usernames
@@ -321,7 +318,7 @@ compstyle ':*:history-words' remove_all_dups 'yep'
 #users=( adam adams ben nmcgroga chris cclading nick stephen bear Jo jo root tpcadmin dnicker )
 ### END PRIVATE
 
-#compstyle ':*' users $users
+#zstyle ':completion:*' users $users
 
 # }}}
 # {{{ Common hostnames
@@ -387,7 +384,7 @@ hosts=(
     sunsite.org.uk
 )
 
-compstyle ':*' hosts $hosts
+zstyle ':completion:*' hosts $hosts
 
 # }}}
 # {{{ (user,host) pairs
@@ -430,8 +427,8 @@ other_accounts=(
 )
 ### END PRIVATE
 
-compstyle ':*:my-accounts' users-hosts $my_accounts
-compstyle ':*:other-accounts' users-hosts $other_accounts
+zstyle ':completion:*:my-accounts' users-hosts $my_accounts
+zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 
 # }}}
 # {{{ (host, port, user) triples for telnet
@@ -448,7 +445,7 @@ telnet_hosts_ports_users=(
   {localhost,thelonious.new.ox.ac.uk}:{smtp,www,pop3,imap}:
 )
 ### END PRIVATE
-compstyle ':*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
+zstyle ':completion:*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
 
 # }}}
 
