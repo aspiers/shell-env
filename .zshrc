@@ -376,7 +376,8 @@ hosts=(
 
 ### BEGIN PRIVATE
     # New College
-    thelonious.new.ox.ac.uk 163.1.145.129
+    corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
+    163.1.145.129 163.1.145.123
 
     # RAM
     {bach,gw,jascha,purcell,lib}.ram.ac.uk
