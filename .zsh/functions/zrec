@@ -1,21 +1,29 @@
 #autoload
 
 _func_dir="${fpath[(r)*share/zsh*/functions*]/functions\/*/functions}"
+echo "Found site-wide functions at $_func_dir"
 
-_Core_dir=( $_func_dir/**/compinit )
-_Core_dir=${${_Core_dir[1]}%/compinit}
 
-: ${_Completions_glob:="$_func_dir/Completion/*/_*"}
-: ${_Prompts_glob:="$_func_dir/Prompts/prompt*"}
+if [[ -d "$_func_dir/Completion" ]]; then
+  echo "This version was compiled with --enable-function-subdirs"
+  _compinit_dir=( $_func_dir/**/compinit )
+  _compinit_dir=${${_compinit_dir[1]}%/compinit}
+  _Completions_glob=( $_func_dir/Completion/**/_*(.N) )
+  _Prompts_glob=( $_func_dir/Prompts/prompt*(.) )
+  _site_funcs=( "$_Completions_glob[@]" "$_Prompts_glob[@]" )
+else
+  echo "This version was not compiled with --enable-function-subdirs"
+  _compinit_dir="$_func_dir"
+  _site_funcs=( $_func_dir/*(.) )
+fi
 
 zrecompile "$@" -p -- \
   -R ~/.zshenv -- \
   -R ~/.zshrc  -- \
   -R ~/.zcompdump  -- \
-  -R $_Core_dir/compinit -- \
-  -R $_Core_dir/compaudit -- \
-  -R $_Core_dir/compdump -- \
+  -R $_compinit_dir/compinit -- \
+  -R $_compinit_dir/compaudit -- \
+  -R $_compinit_dir/compdump -- \
   -M -U ~/.zsh/funcs.zwc \
         ~/.zsh/functions/*(*) \
-        $_Completions_glob \
-        $_Prompts_glob
+        "$_site_funcs[@]"
