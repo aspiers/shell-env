@@ -703,6 +703,16 @@ compdef _vars_eq ts
 
 alias cls='clear'
 alias term='echo $TERM'
+# {{{ Changing terminal window/icon titles
+
+which cx >&/dev/null || cx () { }
+
+if [[ "$TERM" == ([Ex]term*|screen*) ]]; then
+  # Could also look at /proc/$PPID/cmdline ...
+  cx
+fi
+
+# }}}
 
 # }}}
 # {{{ Other users
@@ -731,16 +741,6 @@ alias rj='nocorrect rj'
 # }}}
 # {{{ X windows related
 
-# {{{ Changing terminal window/icon titles
-
-which cx >&/dev/null || cx () { }
-
-if [[ "$TERM" == ([Ex]term*|screen*) ]]; then
-  # Could also look at /proc/$PPID/cmdline ...
-  cx
-fi
-
-# }}}
 # {{{ export DISPLAY=:0.0
 
 alias sd='export DISPLAY=:0.0'
