@@ -10,7 +10,7 @@ diff_colourer=$home/bin/colour-diff-output.awk
 
 colourer="$normal_colourer"
 
-if [[ -n "$*[(r)(com|commit)]" ]]; then
+if [[ -n "$*[(r)(com|commit|annotate)]" ]]; then
   colourer=''
 elif [[ -n "$*[(r)(diff|rdiff|patch)]" ]]; then
   colourer="$diff_colourer"
