@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my ($bytes, $words, $lines);
+while (<>) {
+  open F, $_ or die "open $_: $!\n";
+  while (<F>) {
+    $lines++;
+    $bytes += length $_;
+  }
+  close F;
+}
+    
+printf "%d  %d\n", $lines, $bytes;
