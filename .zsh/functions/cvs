@@ -12,7 +12,7 @@ colourer="$normal_colourer"
 
 if [[ -n "$*[(r)(com|commit)]" ]]; then
   colourer=''
-elif [[ -n "$*[(r)diff]" ]]; then
+elif [[ -n "$*[(r)(diff|rdiff|patch)]" ]]; then
   colourer="$diff_colourer"
 fi
 
