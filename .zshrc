@@ -764,14 +764,20 @@ cxx () {
   cx "$@"
 }
 
+cxl () {
+  # show stack
+  echo ${(F)title}
+}
+
 if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
 
 else
-  cx () { }
+  cx  () { }
   cxx () { }
+  cxl () { }
 fi
 
 # }}}
