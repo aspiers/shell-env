@@ -1,3 +1,4 @@
 #!/bin/sh
 
-df -lhT -x none
+df -lhT -x none "$@"
+
