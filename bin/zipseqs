@@ -19,6 +19,8 @@ programming sense.
 EOF
 }
 
+usage() unless @ARGV;
+
 my (@files, %prefixes);
 if ($opts{prefixes}) {
   usage() unless @ARGV % 2 == 0;
