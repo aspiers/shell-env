@@ -777,6 +777,11 @@ fi
 alias tf='less +F'
 
 # }}}
+# {{{ arch
+
+which larch >&/dev/null && alias a=larch
+
+# }}}
 
 # }}}
 
