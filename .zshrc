@@ -192,12 +192,9 @@ case "$OSTYPE" in
     [ -e $sysmanpath ] || echo "$MANPATH" > $sysmanpath
     manpath=( )
     for dir in "$path[@]"; do
-      echo dir $dir
       [[ "$dir" == */bin ]] || continue
       mandir="${dir//\/bin//man}"
-      echo mandir $mandir
       [[ -d "$mandir" ]] && manpath=( "$mandir" "$manpath[@]" )
-      echo added
     done
 
     # ... or *do* trust system-wide MANPATH
