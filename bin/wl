@@ -1,7 +1,12 @@
 #!/bin/sh
 
-if which $* >/dev/null; then
-  less `which $*`
+if [ $# = 0 ]; then
+  # get usage
+  which
 else
-  which $*
+  if which "$@" >/dev/null; then
+    less `which "$@"`
+  else
+    which "$@"
+  fi
 fi
