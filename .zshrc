@@ -190,6 +190,7 @@ infopath=(
 # {{{ zdotdir
 
 zdotdir=${ZDOTDIR:-$HOME}
+export ZDOTDIR="$zdotdir"
 
 # }}}
 # {{{ Function path
