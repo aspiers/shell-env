@@ -12,6 +12,14 @@ my $short = (@ARGV == 1);
 
 my %seen;
 foreach my $file (@ARGV) {
+  unless (-e $file) {
+    warn "File '$file' does not exist; skipping.\n";
+    next;
+  }
+  unless (-f $file) {
+    warn "'$file' is not a file; skipping.\n";
+    next;
+  }
   my $rcsfile = find_rcs($file);
   next unless $rcsfile;
   next if $seen{$rcsfile}++;
