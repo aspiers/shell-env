@@ -1,0 +1,5 @@
+#!/bin/sh
+
+tmp=`mktemp /tmp/safe-pipe.XXXXXXXXX`
+cat >> $tmp
+"$@" < $tmp || cat $tmp
