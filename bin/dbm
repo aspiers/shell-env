@@ -34,7 +34,7 @@ my $dbm_file = shift;
 
 my $action = shift;
 my %actions = ();
-abbrev \%actions, qw/add remove delete edit list lookup create clear/;
+abbrev \%actions, qw/add remove delete edit list lookup clear/;
 unless ($action) {
   usage("You must specify an action.");
   exit 1;
@@ -43,20 +43,11 @@ $action = $actions{$action} if $action && exists $actions{$action};
 $action =~ s/remove/delete/;
 $action =~ s/lookup/list/;
 
-if (! -e $dbm_file && $action ne 'create') {
-  usage("$dbm_file doesn't exist; use `create' to create.");
-  exit 1;
-}
-
 my %hash = ();
 tie %hash, $type, $dbm_file, O_RDWR | O_CREAT, 0600;
-die "tie() failed; maybe $dbm_file isn't of type $type?\n"
-  unless tied %hash;
+die "tie() to $dbm_file failed: $!\n" unless tied %hash;
 
-if ($action eq 'create') {
-  # nothing to do
-}
-elsif ($action eq 'add') {
+if ($action eq 'add') {
   unless (@ARGV and @ARGV % 2 == 0) {
     usage("`add' needs an even number of arguments " .
           "(key1, val1, key2, val2 ...)");
@@ -89,6 +80,7 @@ elsif ($action eq 'edit') {
 
   my $dbm_file_name = $dbm_file;
   $dbm_file_name =~ s,.*/,,;
+  # FIXME: get proper safe $tmpfile
   my $tmpfile = "/tmp/dbmedit.$dbm_file_name.$$";
   my $editor  = $ENV{VISUAL} || $ENV{EDITOR} || 'emacs -nw';
   open(TMP, ">$tmpfile")
@@ -147,7 +139,6 @@ sub usage {
   print <<EOF;
 Usage: dbm [ -t|--type=<dbm_type> ] <dbm_file> <action> [ <option> ... ]
    Actions:
-      create
       add <key> <value>
       remove <key> [ <key> ... ]    (`delete' may be used instead')
       list [ <key> ... ]            (`lookup' may be used instead')
