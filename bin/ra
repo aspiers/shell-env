@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"
+exec ps auxww | grep -vE "(^(${USERNAME:-$USER}|nobody|root|bin|named|lp|mysql|xfs|mail|syslog))|login|mutt|pine|httpd|-(t?c|z|ba)sh$"
