@@ -857,16 +857,16 @@ End_of_Perl
     cvs log "$@" 2>&1 | less
   }
 
+### BEGIN PRIVATE
   cvsll () {
     rcs2log \
-### BEGIN PRIVATE
       -u "adam	Adam Spiers	adam@spiers.net" \
       -u "localadams	Adam Spiers	adam@spiers.net" \
       -u "adams	Adam Spiers	aspiers@guideguide.com" \
-### END PRIVATE
       "$@" | less
   }
 
+### END PRIVATE
   cvss () {
     cvs status -v "$@"
   }
