@@ -1,0 +1,47 @@
+#autoload
+
+me="$(print -P %N)"
+
+if [[ "$1" == "--help" ]]; then
+  print 'Usage: $me [OPTION]... SOURCE
+Renames SOURCE, allowing interactive editing of the new name.
+
+The following options are passed on to mv(1):
+  -i, -b, -u' >&2
+  return 0
+fi
+
+opts=()
+while getopts :biu opt; do
+    if [[ $opt = "?" ]]; then
+        print "$me: unrecognized option: -$OPTARG" >&2
+        print "Try \`$me --help' for more information." >&2
+        return 1
+    fi
+    opts=( "$opts[@]" "-$opt" )
+done
+(( OPTIND > 1 )) && shift $(( OPTIND - 1 ))
+
+if (( $# == 0 )); then
+  print "$me: missing file argument"
+  return 1
+fi
+
+if (( $# > 1 )); then
+  print "$me: too many arguments"
+  return 1
+fi
+
+src="$1"
+
+if ! [[ -e "$1" ]]; then
+  print "$me: can't stat source $1"
+  return 1
+fi
+
+dest="$src"
+vared -p 'New name: ' dest
+
+mv "$opts[@]" "$src" "$dest"
+
+
