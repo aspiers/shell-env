@@ -28,7 +28,7 @@ fi
 
 # {{{ ls colours
 
-if which dircolors >&/dev/null && [ -e ~/.dircolors ]; then
+if which dircolors >/dev/null 2>&1 && [ -e ~/.dircolors ]; then
   # show directories in yellow
   eval `dircolors -b ~/.dircolors`
 fi
@@ -38,6 +38,7 @@ fi
 
 bind '"\ep":history-search-backward'
 bind '"\en":history-search-forward'
+bind '"\e\C-i":dynamic-complete-history'
 
 # }}}
 # {{{ Prompt
