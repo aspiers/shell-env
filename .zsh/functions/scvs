@@ -16,8 +16,8 @@ scvs () {
   shift
 
   export CVSROOT CVS_RSH
-  CVSROOT=$_CVSROOTS[$tag]
-  CVS_RSH=$_CVS_RSHS[$tag]
+  eval "CVSROOT=$_CVSROOTS[$tag]"
+  eval "CVS_RSH=$_CVS_RSHS[$tag]"
 }
 
 typeset -Ag _CVSROOTS _CVS_RSHS
@@ -27,14 +27,17 @@ _CVSROOTS=(
            local             $HOME/.CVSROOT
            mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
-           plig              plig.net:/home/adams/.CVSROOT
-           thelonious        adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
-           guideguide_remote proxy.guideguide.com:/share/cvsroot
-           guideguide_local  prophet5.london.guideguide.com:/share/cvsroot
-           zsh_local_write   adamspiers@cvs1:/cvsroot/zsh
-           zsh_local         :pserver:anonymous@cvs1:/cvsroot/zsh
-           zsh_remote_write  adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
-           zsh_remote        :pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
+           plig               plig.net:/home/adams/.CVSROOT
+           thelonious         adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
+           guideguide_remote  proxy.guideguide.com:/share/cvsroot
+           guideguide_local   prophet5.london.guideguide.com:/share/cvsroot
+           sourceforge_anon   :pserver:anonymous@cvs.\$1.sourceforge.net:/cvsroot/\$1
+           sourceforge        adamspiers@cvs.\$1.sourceforge.net:/cvsroot/\$1
+
+           zsh_sf_local_write adamspiers@cvs1:/cvsroot/zsh
+           zsh_sf_local       :pserver:anonymous@cvs1:/cvsroot/zsh
+           zsh_remote_write   adamspiers@cvs.zsh.sourceforge.net:/cvsroot/zsh
+           zsh_remote         :pserver:anonymous@cvs.zsh.sourceforge.net:/cvsroot/zsh
 ### END PRIVATE
 )
 
