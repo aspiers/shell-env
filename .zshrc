@@ -16,7 +16,6 @@
 #
 #    - Add prot and unprot
 #    - Do safes?kill(all)? functions
-#    - Fix zx alias
 #
 
 # }}}
@@ -492,7 +491,11 @@ alias pwd='pwd -r'
 # {{{ du1 (du with depth 1)
 
 du1 () {
-  du $* | egrep -v '/.*/'
+  # I used to use this:
+  # du $* | egrep -v '/.*/'
+  # But then Bart Schaefer suggested du -s.
+  du -s *(/)
+  # Thanks Bart!
 }
 
 # }}}
@@ -512,8 +515,8 @@ alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
 # }}}
 # {{{ Use this one to untar after doing a tar ztvf or tvf command
 
-# FIXME! Doesn't work
-#alias zx='!:s/tvf/xvf'
+# Thanks to Bart Schaefer for this one
+alias xt='fc -e - tvf=xvf -1'
 
 # }}}
 
