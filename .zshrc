@@ -59,7 +59,7 @@ setopt                       \
         always_last_prompt   \
      NO_always_to_end        \
         append_history       \
-     NO_auto_cd              \
+        auto_cd              \
         auto_list            \
         auto_menu            \
      NO_auto_name_dirs       \
