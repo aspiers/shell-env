@@ -963,6 +963,7 @@ alias -g VM=/var/log/messages
 alias -g G='| egrep'
 alias -g EG='|& egrep'
 alias -g X='| xargs'
+alias -g XG='| xargs egrep'
 
 # }}}
 
