@@ -703,11 +703,21 @@ m () {
 # }}}
 # {{{ editors
 
+# emacs, windowed
 e () {
   emacs "$@" &!
 }
 
-alias fe='emacs -nw --eval "(setq make-backup-files nil)"'
+# emacs, fast, non-windowed (see also $VISUAL)
+fe () {
+  QUICK_EMACS=1 emacs -nw "$@"
+}
+
+# emacs, slow, non-windowed
+se () {
+  emacs -nw "$@"
+}
+
 alias pico='/usr/bin/pico -z'
 
 # }}}
