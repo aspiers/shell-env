@@ -6,27 +6,30 @@ local num title
 [[ -t 1 ]] || return 1
 
 type="$1"
-shift
-title="$1"
+
+if (( $# > 0 )); then
+  shift
+  title="$1"
+fi
+
+window_or_icon () {
+  code="$1"
+  # Other checks will need to be added here.  Could switch on output of tty(1).
+  if [[ "$TERM" == 'linux' ]]; then
+    :
+    #echo "Cannot currently display '$1' title; only remembering value set."
+  else
+    # note screen will swallow this
+    echo -n "\e]$code;$title\a"
+  fi
+}
 
 case "$type" in
-  window) num=2
-      ;;
-    icon) num=1
-      ;;
-  screen) echo -n "\ek$title\e\\"
-          return
-      ;;
-       *) print "Usage: set_title ( window | icon | screen ) <title>"
-      return 1 
-      ;;
+  icon)   window_or_icon 1;;
+  window) window_or_icon 2;;
+  screen) echo -n "\ek$title\e\\" ;;
+  *)      print "Usage: set_title ( window | icon | screen ) <title>"
+          return 1 ;;
 esac
 
-# Other checks will need to be added here.  Could switch on output of tty(1).
-if [[ "$TERM" == 'linux' ]]; then
-#  print "Cannot currently display '$1' title; only remembering value set."
-else
-  # note screen will swallow this
-  echo -n "\e]$num;$title\a"
-fi
 
