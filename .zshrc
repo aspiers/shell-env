@@ -605,6 +605,7 @@ lh () {
 compdef _users lh
 
 alias f=finger
+compdef _finger f
 
 # su changes window title, even if we're not a login shell
 su () {
@@ -731,6 +732,11 @@ scvs_alsa () {
 
 scvs_mozilla () {
   CVSROOT=:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot
+  CVS_RSH=
+}
+
+scvs_gnokii () {
+  CVSROOT=:pserver:cvs@cvs.samba.org:/cvsroot
   CVS_RSH=
 }
 
