@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -8,6 +8,9 @@ use File::Basename;
 use Getopt::Long;
 my %opts;
 GetOptions(\%opts, 'human|h', 'help') or usage();
+
+use constant NEED_ON_SINCE => 1;
+use constant NEED_IDLE     => 2;
 
 sub usage {
   my $me = basename $0;
@@ -21,11 +24,50 @@ open(FINGER, "finger $who|")
   or die "open(finger $who|) failed: $!\n";
 
 my $least_idle_secs;
-my $logged_on;
-while (<FINGER>) {
-  next if 1 .. /\bon since/i;
 
-  next unless s/\bidle(\s+time)?\b//i;
+# The format of finger(1)'s output is such that an idle time line
+# always follows an 'On since' line.  If the expected idle time line
+# is absent, it indicates that the corresponding session is not idle
+# at all.
+#
+# We aim to find the session with the *least* idle time.
+my $state = NEED_ON_SINCE;
+while (<FINGER>) {
+  if ($state == NEED_ON_SINCE) {
+    $state = NEED_IDLE if /\bon since\b/i;
+    next;
+  }
+
+  if ($state == NEED_IDLE) {
+    if (s/\bidle(\s+time)?\b//i) {
+      my $secs = parse_idle_time($_);
+      if (! defined $least_idle_secs) {
+        $least_idle_secs = $secs;
+        debug("Least idle now $secs seconds\n");
+      }
+      elsif ($secs < $least_idle_secs) {
+        debug("Found smaller idle time of $secs seconds\n");
+        $least_idle_secs = $secs;
+      }
+      $state = NEED_ON_SINCE;
+      next;
+    }
+    
+    debug("Got:\n$_\ninstead of idle line; assuming not idle at all.\n");
+    $least_idle_secs = 0;
+    last;
+  }
+}
+
+if ($state == NEED_IDLE) {
+  debug("Finished expecting an idle line; assuming not idle at all.\n");
+  $least_idle_secs = 0;
+}
+
+sub parse_idle_time {
+  my ($text) = @_;
+  $_ = $text;
+
   chomp;
   s/^\s+//;
   
@@ -34,11 +76,16 @@ while (<FINGER>) {
   $secs += $1 * 3600      if s/(\d+) hours?\s+//i;
   $secs += $1 *   60      if s/(\d+) min(ute)?s?\s+//i;
   $secs += $1             if s/(\d+) sec(ond)?s?\s+//i;
-  $least_idle_secs = $secs
-    if ! defined $least_idle_secs || $secs < $least_idle_secs;
+
+  return $secs;
 }
 
 close(FINGER);
+
+if (! $least_idle_secs) {
+  # Didn't get any idle time; not logged on.
+  exit 1;
+}
 
 if ($opts{human}) {
   my @units = Delta_Format(
@@ -62,4 +109,8 @@ if ($opts{human}) {
 }
 else {
   print "$least_idle_secs\n";
+}
+
+sub debug {
+#  warn @_;
 }
