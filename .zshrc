@@ -729,6 +729,11 @@ scvs_alsa () {
   CVS_RSH=
 }
 
+scvs_mozilla () {
+  CVSROOT=:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot
+  CVS_RSH=
+}
+
 # Add any other CVS setups you want here
 ### BEGIN PRIVATE
 scvs_thelonious () {
