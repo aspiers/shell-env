@@ -515,11 +515,11 @@ compdef _functions reload
 # {{{ ls aliases
 
 if ls -F --color >&/dev/null; then
-  alias ls='/bin/ls -F --color'
+  alias ls='command ls -F --color'
 elif ls -F >&/dev/null; then
-  alias ls='/bin/ls -F'
+  alias ls='command ls -F'
 elif ls --color >&/dev/null; then
-  alias ls='/bin/ls --color'
+  alias ls='command ls --color'
 fi
 
 # jeez I'm lazy ...
