@@ -906,12 +906,12 @@ EOF
 
     echo done.
   }
+
+  # Sod it; run it now
+  dsa >&/dev/null
 fi
 
 alias sa=ssh-add
-
-# Sod it; run it now
-dsa >&/dev/null
 
 ### BEGIN PRIVATE
 alias th='ssh -l adam thelonious.new.ox.ac.uk'
