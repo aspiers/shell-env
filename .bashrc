@@ -115,7 +115,9 @@ alias llr='ls -lR'
 alias lsL='ls -L'
 alias lL='ls -Ll'
 alias lS='ls -lSh'
+alias lrS='ls -lrSh'
 alias llS='ls -lS'
+alias llrS='ls -lrS'
 alias sl=ls # often screw this up
 
 # }}}
