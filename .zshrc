@@ -723,7 +723,7 @@ alias 9='cd +9'
 
 # Sweet trick from zshwiki.org :-)
 cd () {
-  if (( $# > 1 )); then
+  if (( $# != 1 )); then
     builtin cd "$@"
     return
   fi
