@@ -924,7 +924,7 @@ fi
 
 m () {
   cx mutt
-  mutt
+  mutt "$@"
   cxx
 }
 
