@@ -513,10 +513,10 @@ alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -nr | less'
 # }}}
 
 # }}}
-# {{{ Use this one to untar after doing a tar ztvf or tvf command
+# {{{ Use this one to untar after doing a tar ztvf/tvf/ztf command
 
 # Thanks to Bart Schaefer for this one
-alias xt='fc -e - tvf=xvf -1'
+alias xt='fc -e - tvf=xvf ztf=zxf -1'
 
 # }}}
 
@@ -801,7 +801,7 @@ alias -g T='| tail -20'
 # }}}
 # {{{ Sorting / counting
 
-alias -g W='| wc -l'
+alias -g C='| wc -l'
 
 alias -g S='| sort'
 alias -g US='| sort -u'
