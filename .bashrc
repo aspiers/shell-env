@@ -14,17 +14,24 @@
 
 # }}}
 
-# {{{ Try to switch shell
-
-# "" is to force shell choice from ~/.preferred_shell
-[ -r ~/.switch_shell ] && . ~/.switch_shell ""
-
-# }}}
 # {{{ Source global definitions
 
 if [ -f /etc/bashrc ]; then
   . /etc/bashrc
 fi
+
+# }}}
+
+# {{{ Try to switch shell
+
+# For some weird reason this needs to be done after sourcing
+# /etc/bashrc if the latter contains an stty, otherwise if
+# the switched to shell exits non-zero, execution through this
+# file proceeds (possibly without a tty as a result of the exit?)
+# and the stty hangs.
+
+# "" is to force shell choice from ~/.preferred_shell
+[ -r ~/.switch_shell ] && . ~/.switch_shell ""
 
 # }}}
 
@@ -177,3 +184,4 @@ alias tf='less +F'
 [ -r ~/.bashrc.${HOSTNAME%%.*} ] && . ~/.bashrc.${HOSTNAME%%.*}
 
 # }}}
+
