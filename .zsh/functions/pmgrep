@@ -11,4 +11,4 @@ done
 grep_args=( "$grep_args[@]" "$1" )
 shift
 
-find "$@" -name \*.pm | xargs egrep "$grep_args[@]"
+find "$@" -name '*.p[ml]' | xargs egrep "$grep_args[@]"
