@@ -535,7 +535,7 @@ autoload zcalc
 # {{{ Restarting zsh or bash; reloading .zshrc or functions
 
 bash () {
-  NO_ZSH="yes" command bash "$@"
+  NO_SWITCH="yes" command bash "$@"
 }
 
 restart () {
