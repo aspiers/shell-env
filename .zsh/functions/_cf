@@ -1,0 +1,5 @@
+#compdef cf
+
+local expl
+_description expl 'font size'
+compadd "$expl[@]" - 1 2 3 4
