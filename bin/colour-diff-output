@@ -1,0 +1,16 @@
+#!/bin/awk -f
+
+/^cvs server: /                 { print "\033[1;30m" $0; next }
+/^\? /                          { print "\033[0;33m" $0; next }
+/^(Index|======)/               { print "\033[0;1m"  $0; next }
+/^(diff|RCS file|retrieving)/   { print "\033[0m"    $0; next }
+/^(@@|\*\*\*(\*| [0-9]+,))/     { print "\033[1;33m" $0; next }
+/^(---|\*\*\*) [0-9]+,/         { print "\033[1;33m" $0; next }
+/^(---|\+\+\+|\*\*\*) /         { print "\033[1;37m" $0; next }
+/^-/                            { print "\033[0;36m" $0; next }
+/^+/                            { print "\033[1;32m" $0; next }
+/^!/                            { print "\033[1;34m" $0; next }
+
+{ print "\033[0m" $0; lines++ }
+
+END { if (lines > 0) { printf "\033[0m\n" } }
