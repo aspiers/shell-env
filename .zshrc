@@ -590,6 +590,7 @@ alias sl=ls # often screw this up
 # {{{ Changing/making/removing directory
 
 # blegh
+alias ..='cd ..'
 alias cd..='cd ..'
 alias cd...='cd ../..'
 alias cd....='cd ../../..'
