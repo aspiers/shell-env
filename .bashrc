@@ -117,6 +117,15 @@ alias j='jobs -l'
 # {{{ Terminals
 
 alias vx='export TERM=xterm-color'
+alias v1='export TERM=vt100'
+alias v2='export TERM=vt220'
+alias cls='clear'
+alias term='echo $TERM'
+
+# }}}
+# {{{ History
+
+alias h='history -$LINES'
 
 # }}}
 # {{{ Other users
@@ -154,6 +163,7 @@ alias tf='less +F'
 # }}}
 
 # }}}
+
 # }}}
 
 # {{{ Specific to hosts
