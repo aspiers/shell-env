@@ -90,12 +90,12 @@ my $diff_opts = $opts{unified} ? '-u ' :
 
 -d $opts{cache} or mkdir $opts{cache};
 
-our $hash = md5_base64($cmd);
-our $old = "$opts{cache}/$hash";
-our $new = "$old.new";
+my $hash = md5_base64($cmd);
+my $old = "$opts{cache}/$hash";
+my $new = "$old.new";
 
-our $changes = 0;
-our $reps_done = 0;
+my $changes = 0;
+my $reps_done = 0;
 do {
   open(CMD, "$cmd |") or die "open($cmd |): $!\n";
   warn "$new already existed!" if -e $new;
@@ -134,12 +134,3 @@ do {
 until $reps_done == $opts{repeat};
 
 exit $changes;
-
-END {
-  if ($new && -e $new) {
-    unlink $new or warn "unlink($new) failed: $!\n";
-  }
-  else {
-    print "no new\n";
-  }
-}
