@@ -1,0 +1,4 @@
+#autoload
+
+full_stitle="${full_stitle/(adams|adam|aspiers)@/}"
+functions cx_hook_local >/dev/null && cx_hook_local
