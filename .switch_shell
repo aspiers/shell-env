@@ -10,6 +10,10 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
+# Very cute trick from Bart Schaefer which is a valid alternative approach
+#run_shell=`$myshell -f -c "echo exec $myshell" || echo :`
+#eval $run_shell '"$@"'
+
 if [ "$1" = '-d' ]; then
   debug=yes
   shift
@@ -20,7 +24,7 @@ if [ -n "$1" ]; then
   shift
 else
   # Sensible default shell to switch to.
-  myshell=`which zsh`
+  myshell=`which zsh` 2>/dev/null
 fi
 
 myshell_args="$@"
