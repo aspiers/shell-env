@@ -582,6 +582,11 @@ zle -N kill-big-word
 zle -N transpose-big-words
 
 # }}}
+# {{{ magic-forward-char
+
+zle -N magic-forward-char
+
+# }}}
 # {{{ magic-forward-word
 
 zle -N magic-forward-word
@@ -985,24 +990,25 @@ sh_load_status 'key bindings'
 bindkey -s '^X^Z' '%-^M'
 bindkey '^[e' expand-cmd-path
 #bindkey -s '^X?' '\eb=\ef\C-x*'
-bindkey '^[^I' reverse-menu-complete
-bindkey '^X^N' accept-and-infer-next-history
-bindkey '^[p'  history-beginning-search-backward
-bindkey '^[n'  history-beginning-search-forward
-bindkey '^[P'  history-beginning-search-backward
-bindkey '^[N'  history-beginning-search-forward
-bindkey '^w'   kill-region-or-backward-word
-bindkey '^[^W' kill-region-or-backward-big-word
-bindkey '^[T'  transpose-big-words
-bindkey '^I'   complete-word
-bindkey '^Xi'  incremental-complete-word
-# bindkey '^[b' emacs-backward-word
-# bindkey '^[f' emacs-forward-word
-bindkey '^[f' magic-forward-word
-bindkey '^[B'  backward-to-space
-bindkey '^[F'  forward-to-space
-bindkey '^[^b' backward-to-/
-bindkey '^[^f' forward-to-/
+bindkey '^[^I'   reverse-menu-complete
+bindkey '^X^N'   accept-and-infer-next-history
+bindkey '^[p'    history-beginning-search-backward
+bindkey '^[n'    history-beginning-search-forward
+bindkey '^[P'    history-beginning-search-backward
+bindkey '^[N'    history-beginning-search-forward
+bindkey '^w'     kill-region-or-backward-word
+bindkey '^[^W'   kill-region-or-backward-big-word
+bindkey '^[T'    transpose-big-words
+bindkey '^I'     complete-word
+bindkey '^Xi'    incremental-complete-word
+bindkey '^F'     magic-forward-char
+# bindkey '^[b'    emacs-backward-word
+# bindkey '^[f'    emacs-forward-word
+bindkey '^[f'    magic-forward-word
+bindkey '^[B'    backward-to-space
+bindkey '^[F'    forward-to-space
+bindkey '^[^b'   backward-to-/
+bindkey '^[^f'   forward-to-/
 bindkey '^[^[[C' emacs-forward-word
 bindkey '^[^[[D' emacs-backward-word
 
