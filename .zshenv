@@ -64,7 +64,7 @@ typeset -U manpath # No duplicates
 # {{{ fpath/autoloads
 
 fpath=(
-       $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions,scripts}}(N) 
+       $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,.local,.$HOST},scripts}}(N)
 
        $fpath
 
