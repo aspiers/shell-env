@@ -38,7 +38,7 @@ unset INPUTRC
 # {{{ IRC
 
 export IRCNAME='Adam Spiers'
-export IRCNICK='Adze'
+export IRCNICK='Adam'
 
 # }}}
 # {{{ Editor
