@@ -281,6 +281,9 @@ else
   print "\nAdvanced completion system not found; ignoring zstyle settings."
   function zstyle { }
   function compdef { }
+
+  # an antiquated, barebones completion system is better than nowt
+  zmodload zsh/compctl
 fi
 
 ##
