@@ -176,7 +176,7 @@ WORDCHARS=''
 # }}}
 # {{{ Save a large history
 
-HISTFILE=$zdotdir/.zshhistory
+HISTFILE=~/.zshhistory
 HISTSIZE=3000
 SAVEHIST=3000
 
@@ -267,7 +267,7 @@ zstyle ':completion:predict:*' completer _complete
 
 # Completion caching
 zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path $zdotdir/.zsh/cache/$HOST
+zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
@@ -458,6 +458,15 @@ rcup () {
 
 # }}}
 ### END PRIVATE
+# {{{ which
+
+# reverse unwanted aliasing of `which' by distribution startup
+# files (e.g. /etc/profile.d/which*.sh); zsh's which is perfectly
+# good as is.
+
+alias which >&/dev/null && unalias which
+
+# }}}
 # {{{ Restarting zsh, reloading .zshrc or functions
 
 restart () {
