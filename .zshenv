@@ -35,8 +35,8 @@ export ZDOTDIR="$zdotdir"
 # No duplicates
 typeset -U path
 
-path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
 # notice nasty hack for old zsh
+path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin /[u]sr/X11R6/bin )
 path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
