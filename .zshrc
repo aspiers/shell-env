@@ -284,6 +284,10 @@ if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
   else
     prompt adam2 plain $adam2_colors
   fi
+
+  if [[ $TERM == tgtelnet ]]; then
+    prompt off
+  fi
 else
   PS1='%n@%m %B%3~%b %# '
 fi
@@ -899,7 +903,11 @@ fi
 
 # {{{ Clear up after status display
 
-echo -n "\r"
+if [[ $TERM == tgtelnet ]]; then
+  echo
+else
+  echo -n "\r"
+fi
 
 # }}}
 # {{{ Profile report
