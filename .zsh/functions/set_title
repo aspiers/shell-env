@@ -11,7 +11,9 @@ case "$type" in
       ;;
     icon) num=1
       ;;
-  screen) echo -n "\ek$title\e\\"
+  screen) title="${title/ : /|}"
+          title="${title/(adams|adam|aspiers)@/}"
+          echo -n "\ek$title\e\\"
           return
       ;;
        *) print "Usage: set_title ( window | icon | screen ) <title>"
