@@ -136,7 +136,6 @@ setopt \
      NO_sun_keyboard_hack \
         unset \
      NO_verbose \
-     NO_xtrace \
         zle
 
 if [[ $ZSH_VERSION_TYPE == 'new' ]]; then
@@ -636,7 +635,9 @@ alias mysqlshow='nocorrect mysqlshow'
 set_title () {
   local num title
 
-  case "$1" in
+  type="$1"
+  shift
+  case "$type" in
     window) num=2
 	    ;;
       icon) num=1
@@ -646,7 +647,7 @@ set_title () {
 	    ;;
   esac
 
-  title="$2"
+  title="$1"
 
   # Other checks will need to be added here.
   if [[ "$TERM" == 'linux' ]]; then
@@ -673,34 +674,61 @@ cx () {
     title_host=$long_host
   fi
 
-  if [[ "$USER" != "$USERNAME" ]]; then
-    # We've probably su'ed to a different user but not as a login shell
-    unset TITLE ITITLE
-  fi   
+  (( $+title )) || typeset -gT TITLE title
+  (( $+title )) || typeset -gT ITITLE ititle
+  : ${TITLE_SHLVL:=$SHLVL}
+  export TITLE_SHLVL
 
-  if [[ -z "$*" ]]; then
-    # Revert window title to previous setting or default
-    : ${TITLE="$USERNAME@${title_host}"}
-    set_title window "$TITLE"
-
-    # Revert window icon title to previous setting or default
-    : ${ITITLE="$USERNAME@${short_host}"}
-    set_title icon "$ITITLE"
-  else
-    # Change window title
-    TITLE="$* : $USERNAME@${title_host}"
-    set_title window "$TITLE"
-
-    # Change window icon title
-    ITITLE="$* @ $USERNAME@${short_host}"
-    set_title icon "$ITITLE"
+  if [[ "$SHLVL" != "$TITLE_SHLVL" ]]; then
+    # We've changed shell; assume that the most recently pushed entry
+    # is the starting piont for the new shell.
+    TITLE_SHLVL=$SHLVL
+    [[  ${(t)title} == 'array' ]] &&  title=( "$title[1]" )
+    [[ ${(t)ititle} == 'array' ]] && ititle=( "$ititle[1]" )
   fi
+
+  suffix="$USERNAME@${title_host}"
+  isuffix="$USERNAME@${short_host}"
+
+  export TITLE ITITLE
+
+  if (( $# == 0 )); then
+    # restore current setting
+    if (( $#title == 0 )); then
+      full_title="$suffix"
+      full_ititle="$isuffix"
+    else
+      full_title="$title[1] : $suffix"
+      full_ititle="$ititle[1] : $isuffix"
+    fi
+  else
+    # push new setting
+    if (( $#title )); then
+      title=(  "$*" "$title[@]" )
+      ititle=( "$*" "$ititle[@]" )
+    else
+      title=( "$*" )
+      ititle=( "$*" )
+    fi
+
+    if [[ -z "$*" ]]; then
+      # allow pushing of ""
+      full_title="$suffix"
+      full_ititle="$isuffix"
+    else
+      full_title="$* : $suffix"
+      full_ititle="$* : $isuffix"
+    fi
+  fi
+    
+  set_title window "$full_title"
+  set_title icon "$full_ititle"
 }
 
 cxx () {
-  # Clear titles
-  unset TITLE ITITLE
-  cx 
+  # pop
+  (( $#title )) && shift title ititle
+  cx "$@"
 }
 
 if [[ "$TERM" == xterm* ]]; then
@@ -862,13 +890,15 @@ End_of_Perl
 fi
 
 # }}}
-### BEGIN PRIVATE
 # {{{ mutt
 
-alias m=mutt
+m () {
+  cx mutt
+  mutt
+  cxx
+}
 
 # }}}
-### END PRIVATE
 # {{{ apropos
 
 alias ap=apropos
@@ -876,7 +906,10 @@ alias ap=apropos
 # }}}
 # {{{ editors
 
-alias e='emacs &!'
+e () {
+  emacs "$@" &!
+}
+
 alias fe='emacs -nw --eval "(setq make-backup-files nil)"'
 alias pico='/usr/bin/pico -z'
 
