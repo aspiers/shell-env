@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ $# -lt 2 ]; then
+  echo "Usage: $0 <host> <command> [ <arg> ... ]"
+  exit 1
+fi
+
+host="$1"
+shift
+
+case "$OSTYPE" in
+  solaris*) ping -s "$host" | tailfgrep -q 'bytes from' && "$@"
+            ;;
+
+  # FreeBSD and Linux
+         *) ping "$host" | tailfgrep -q 'bytes from' && "$@"
+            ;; 
+esac
