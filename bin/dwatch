@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+monitor -- simple monitor to watch for when things change
+
+=head1 SYNOPSIS
+
+    $ monitor --help
+
+    $ monitor -u grep RAW /proc/net/sockstat
+
+=head1 DESCRIPTION
+
+monitor is a non-interactive version of C<watch -d> -- instead of 
+outputting the new output with highlighting of changes, it outputs
+the differences in C<diff(1)> format upon each invocation.
+
+=head1 LICENSE
+
+Copyright (c) 2004 Adam Spiers <adam@spiers.net>.  All rights
+reserved. This program is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
+
+=head1 VERSION
+
+$Id$
+
+=cut
+
+use strict;
+use warnings;
+
+use Digest::MD5 'md5_base64';
+use File::Basename;
+use Getopt::Long;
+Getopt::Long::Configure('require_order');
+
+my %opt_defaults = (
+  repeat => 1,
+  delay  => 1,
+  cache  => "$ENV{HOME}/.monitor-cache",
+);
+my %opts = (
+  unified => 0,
+  context => 0,
+  quiet   => 0,
+);
+GetOptions(
+  \%opts,
+  'help|h',
+  'unified|u', 'context|c', 'quiet|q',
+  'repeat|r=i', 'delay|n=i', 'cache=s',
+  'cumulative'
+) or usage();
+
+usage() if $opts{help};
+usage("Must specify only one of unified/context/quiet.")
+  if $opts{unified} + $opts{context} + $opts{quiet} > 1;
+usage("Delay only makes sense with repeat")
+  if $opts{delay} && ! $opts{repeat};
+usage() unless @ARGV;
+my $cmd = "@ARGV";
+
+sub usage {
+  my $me = basename($0);
+  warn @_, "\n\n" if @_;
+  die <<EOUSAGE;
+Usage: $me [options] command [args]
+
+Options (defaults in []):
+  -h, --help       This help text.
+  -u, --unified    Output as unified diffs
+  -c, --context    Output as context diffs
+  -q, --quiet      Do not output, just return exit code
+  -r, --repeat=N   Repeat N times in a row, -1 for infinite [$opt_defaults{repeat}]
+  -n, --delay=N    Delay N seconds in between each repeat [$opt_defaults{delay}]
+      --cache=DIR  Cache in DIR [$opt_defaults{cache}]
+      --cumulative Output accumulated changes, not incrementals
+
+Exit code is the number of changes (each repeat counts as 0 or 1).
+EOUSAGE
+}
+
+for my $key (qw/cache delay repeat/) {
+  $opts{$key} = $opt_defaults{$key} unless defined $opts{$key};
+}
+my $diff_opts = $opts{unified} ? '-u ' :
+                $opts{context} ? '-d ' :
+                $opts{quiet}   ? '-q ' : '';
+
+-d $opts{cache} or mkdir $opts{cache};
+
+our $hash = md5_base64($cmd);
+our $old = "$opts{cache}/$hash";
+our $new = "$old.new";
+
+our $changes = 0;
+our $reps_done = 0;
+do {
+  open(CMD, "$cmd |") or die "open($cmd |): $!\n";
+  warn "$new already existed!" if -e $new;
+  open(NEW, ">$new") or die "open(>$new): $!\n";
+  print NEW $_ while <CMD>;
+  close(CMD);
+  close(NEW);
+  $reps_done++;
+
+  if (! -e $old) {
+    warn "# Created $old\n";
+    rename $new, $old
+      or warn "rename($new, $old) failed: $!\n";
+    next;
+  }
+  
+  my $diff = `diff $diff_opts"$old" "$new" 2>&1`;
+  if ($diff) {
+    $changes++;
+    $diff =~ s!^Files \Q$old\E and \Q$new\E differ\n!!;
+    $diff =~ s!^--- \S+\s+!--- old !m;
+    $diff =~ s!^\+\+\+ \S+\s+!+++ new !m;
+    print $diff;
+  }
+
+  if ($opts{cumulative}) {
+    unlink $new or warn "unlink($new) failed: $!\n";
+  }
+  else {
+    rename $new, $old
+      or warn "rename($new, $old) failed: $!\n";
+  }
+
+  sleep $opts{delay} if $reps_done < $opts{repeat} or $opts{repeat} < 0;
+}
+until $reps_done == $opts{repeat};
+
+exit $changes;
+
+END {
+  if ($new && -e $new) {
+    unlink $new or warn "unlink($new) failed: $!\n";
+  }
+  else {
+    print "no new\n";
+  }
+}
