@@ -862,9 +862,13 @@ alias -g NS='| sort -n'
 alias -g RNS='| sort -nr'
 
 # }}}
-# {{{ common filenames
+# {{{ Common filenames
 
+alias -g ...=../..
+alias -g ....=../../..
 alias -g DN=/dev/null
+alias -g VM=/var/log/messages
+alias -g VL=/var/log
 
 # }}}
 # {{{ grep, xargs
