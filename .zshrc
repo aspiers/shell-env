@@ -347,6 +347,7 @@ zstyle ':completion:*:options' auto-description '%d'
 
 zstyle ':completion:*:history-words' stop verbose
 zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
 
 # }}}
 # {{{ Common usernames
