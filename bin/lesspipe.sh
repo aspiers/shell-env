@@ -1,4 +1,4 @@
-#!/bin/sh -
+#!/bin/sh
 #
 # To use this filter with less, define LESSOPEN:
 # export LESSOPEN="|/path/to/lesspipe.sh %s"
