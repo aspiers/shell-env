@@ -21,6 +21,11 @@
 
 # }}}
 
+# {{{ Profiling
+
+[[ -n "$ZSH_PROFILE_RC" ]] && zmodload zsh/zprof
+
+# }}}
 # {{{ Loading status
 
 zshrc_load_status () {
@@ -503,6 +508,10 @@ restart () {
   exec $SHELL "$@"
 }
 
+profile () {
+  ZSH_PROFILE_RC=1 $SHELL "$@"
+}
+
 reload () {
   if [[ "$#*" -eq 0 ]]; then
     . $zdotdir/.zshrc
@@ -869,5 +878,13 @@ fi
 # {{{ Clear up after status display
 
 echo -n "\r"
+
+# }}}
+# {{{ Profile report
+
+if [[ -n "$ZSH_PROFILE_RC" ]]; then
+  zprof >! zshrc.zprof
+  exit
+fi
 
 # }}}
