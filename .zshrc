@@ -11,6 +11,8 @@
 # $Id$
 #
 
+[ -n "$INHERIT_ENV" ] && return 0
+
 # {{{ To do list
 
 #
@@ -1001,6 +1003,8 @@ bindkey '^[B'  backward-to-space
 bindkey '^[F'  forward-to-space
 bindkey '^[^b' backward-to-/
 bindkey '^[^f' forward-to-/
+bindkey '^[^[[C' emacs-forward-word
+bindkey '^[^[[D' emacs-backward-word
 
 bindkey '^[D'  kill-big-word
 
