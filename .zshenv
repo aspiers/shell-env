@@ -53,8 +53,8 @@ export MAIL=~/mail/inboxes/Mailbox
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/lib/perl{/site_perl,}{/5.*,}{/i?86*,}(N)
-          ~/lib/perl(N)
+          ~/lib/perl5{/site_perl,}{/5.*,}{/i?86*,}(N)
+          ~/lib/perl5(N)
           $perl5lib
          )
 
