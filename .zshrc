@@ -706,11 +706,8 @@ compdef _vars_eq ts
 # }}}
 # {{{ Terminal
 
-# {{{ cls := clear
-
 alias cls='clear'
-
-# }}}
+alias term='echo $TERM'
 
 # }}}
 # {{{ Other users
