@@ -846,9 +846,10 @@ alias vs='less -S'
 # {{{ mutt
 
 m () {
+  setopt local_traps
+  trap 'cxx' INT EXIT QUIT KILL
   cx mutt
   mutt "$@"
-  cxx
 }
 
 compdef _mutt m
@@ -876,9 +877,10 @@ fi
 # {{{ remote logins
 
 ssh () {
+  setopt local_traps
+  trap 'cxx' INT EXIT QUIT KILL
   cx "${${(M@)argv:#*@*}:-$1}" # pick out user@host word from argv
   command ssh "$@"
-  cxx
 }
 
 # Best to run this from .zshrc.local
