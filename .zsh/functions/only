@@ -1,3 +1,7 @@
 #autoload
 
-awk '/^Only in '"$1"'/ {s=$3 $4; sub(": *", "/", s); print s}'
+if [[ "$1" == diffs ]]; then
+  awk '/^diff/ {print $9}'
+else
+  awk '/^Only in '"$1"'/ {s=$3 $4; sub(": *", "/", s); print s}'
+fi
