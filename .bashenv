@@ -4,8 +4,10 @@
 #
 # $Id$
 
-# .bashenv is hopefully invoked by all shells, but 
-# don't bet on it.  .ssh/environment uses a hack to help.
+# .bashenv is invoked by all interactive shells, and hopefully all
+# non-interactive shells too, but don't bet on the latter; it depends
+# on whether ENV or BASH_ENV were set, and the version of bash.
+# ~/.ssh/environment can set it if ssh is involved.
 
 # {{{ PATH
 
