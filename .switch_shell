@@ -5,21 +5,42 @@
 # $Id$
 
 MYSHELL=$HOME/local/bin/zsh
+MYSHELLARGS=-d
 
 #echo $0
 #[ -x $MYSHELL ] && echo 1
 #[ -n "$HISTFILE" ] && echo 2
 #[ -z "$NO_ZSH" ] && echo 3
 
+DEBUG=
+
+switch_shell_safely () {
+  # we do this rather than exec() just in case $MYSHELL fails to run.
+  [ -n "$DEBUG" ] && echo "Switching to $MYSHELL safely ..."
+  $MYSHELL $MYSHELLARGS "$@" && exit
+}
+
+switch_shell_dangerously () {
+  [ -n "$DEBUG" ] && echo "Switching to $MYSHELL dangerously ..."
+  exec $MYSHELL $MYSHELLARGS "$@"
+}
+
 switch_shell () {
-  if [ -x $MYSHELL ] && [ -z "$NO_ZSH" ]; then
-    # we do this rather than exec() just in case $MYSHELL fails to run.
-    $MYSHELL -d "$@" && exit
-  fi
+  [ -x $MYSHELL  ] || return
+  [ -n "$NO_ZSH" ] && return
+
+  case "$SHLVL" in
+    1) # login shell, be careful
+       switch_shell_safely "$@"
+       ;;
+    *) # other shell, be risky and save memory
+       switch_shell_dangerously "$@"
+       ;;
+  esac
 }
 
 # only switch if we're interactive
 case "$-" in
-  *i*) switch_shell
+  *i*) switch_shell "$@"
        ;;
 esac
