@@ -322,6 +322,7 @@ zstyle ':completion:predict:*' completer _complete
 zstyle ':completion:*:approximate-one:*'  max-errors 1
 zstyle ':completion:*:approximate-four:*' max-errors 4
 
+# e.g. f-1.j<TAB> would complete to foo-123.jpeg
 zstyle ':completion:*:complete-extended:*' \
   matcher 'r:|[.,_-]=* r:|=*'
 
@@ -341,6 +342,8 @@ zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
 # }}}
 # {{{ Expand partial paths
 
+# e.g. /u/s/l/D/fs<TAB> would complete to
+#      /usr/src/linux/Documentation/fs
 zstyle ':completion:*' expand 'yes'
 zstyle ':completion:*' squeeze-slashes 'yes'
 
@@ -352,7 +355,7 @@ zstyle ':completion:*' squeeze-slashes 'yes'
 #zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
 # }}}
-# {{{ Don't complete backup files as executables
+# {{{ Don't complete backup files (e.g. 'bin/foo~') as executables
 
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 
