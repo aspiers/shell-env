@@ -692,7 +692,7 @@ alias dn=disown
 # }}}
 # {{{ History
 
-alias h=history
+alias h='history -$LINES'
 
 # }}}
 # {{{ Environment
