@@ -763,7 +763,8 @@ ssh () {
   cx
 }
 
-dsa >&/dev/null
+# Best to run this from .zshrc.local
+#dsa >&/dev/null
 
 alias sa=ssh-add
 
