@@ -173,10 +173,23 @@ zdotdir=${ZDOTDIR:-$HOME}
 # {{{ Function path
 
 fpath=(
-       ~/{lib/zsh,.zsh}/{functions,scripts}(N) 
+       ~/{.zsh,lib/zsh}/{functions,scripts}(N) 
+
        $fpath
+
+       # very old versions
        /usr/doc/zsh*/Functions(N)
       )
+
+# Autoload all shell functions from all directories in $fpath that
+# have the executable bit on (the executable bit is not necessary, but
+# gives you an easy way to stop the autoloading of a particular shell
+# function).
+
+for dirname in $fpath; do
+  fns=( $dirname/*(N.x:t) )
+  (( $#fns )) && autoload $fns
+done
 
 #[[ "$ZSH_VERSION_TYPE" == 'new' ]] || typeset -gU fpath
 
