@@ -16,9 +16,13 @@
 # }}}
 # {{{ PATH
 
-# Don't trust system-wide PATH?
-#PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
+# Don't trust system-wide PATH?  Remember what it was, for reference.
+syspath=$HOME/.syspath
+[ -e $syspath ] || echo "$PATH" > $syspath
+PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+# ... or *do* trust system-wide PATH
+#PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
 # Note order gets reversed
 for newpath in                                    \
@@ -29,6 +33,13 @@ for newpath in                                    \
 ; do
   [ -d $newpath ] && PATH=$newpath:$PATH
 done
+
+# }}}
+# {{{ IN_SCREEN
+
+case "$TERM" in
+  screen*) IN_SCREEN=yes ; export IN_SCREEN ;;
+esac
 
 # }}}
 # {{{ INPUTRC
