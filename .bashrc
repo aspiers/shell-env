@@ -118,9 +118,6 @@ alias xt='fc -e - tvf=xf ztf=zxf -1'
 # {{{ Job/process control
 
 alias j='jobs -l'
-rj () {
-  ps auxww | grep -E "($*|^USER)"
-}
 
 # }}}
 # {{{ Terminals
