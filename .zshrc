@@ -220,20 +220,26 @@ TMOUT=1800
 # }}}
 # {{{ Prompts
 
-zshrc_load_status 'prompt system'
+local _find_promptinit
+_find_promptinit=( $^fpath/promptinit(N) )
+if (( $#_find_promptinit == 1 )) && [[ -r $_find_promptinit[1] ]]; then
+  zshrc_load_status 'prompt system'
 
-autoload -U promptinit
-promptinit
+  autoload -U promptinit
+  promptinit
 
-PS4="trace %N:%i> "
-#RPS1="$bold_colour$bg_red              $reset_colour"
+  PS4="trace %N:%i> "
+  #RPS1="$bold_colour$bg_red              $reset_colour"
 
-# Default prompt style
-if [[ -r /proc/$PPID/cmdline ]] && egrep -q 'Eterm|nexus|vga' /proc/$PPID/cmdline; then
-  # probably OK for fancy graphic prompt
-  prompt adam2
+  # Default prompt style
+  if [[ -r /proc/$PPID/cmdline ]] && egrep -q 'Eterm|nexus|vga' /proc/$PPID/cmdline; then
+    # probably OK for fancy graphic prompt
+    prompt adam2
+  else
+    prompt adam2 plain
+  fi
 else
-  prompt adam2 plain
+  PS1='%n@%m %B%3~%b %# '
 fi
 
 # }}}
