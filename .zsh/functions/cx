@@ -49,16 +49,16 @@ cx () {
       full_ititle="$isuffix"
       full_stitle="$ssuffix"
     else
-      full_title="$title[1] : $suffix"
-      full_ititle="$ititle[1] : $isuffix"
-      full_stitle="$ititle[1] : $isuffix"
+      full_title="$titles[1] : $suffix"
+      full_ititle="$titles[1] : $isuffix"
+      full_stitle="$titles[1]|$isuffix"
     fi
   else
     # push new setting
     if (( $#titles )); then
-      titles=(  "$*" "$titles[@]" )
+      titles=( "$*" "$titles[@]" )
     else
-      titles=(  "$*" )
+      titles=( "$*" )
     fi
 
     if [[ -z "$*" ]]; then
