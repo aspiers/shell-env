@@ -1,0 +1,6 @@
+#compdef scvs
+
+local expl
+
+_description cvs_set expl 'CVS setup'
+compadd "$expl[@]" - ${(k)_CVSROOTS}
