@@ -1,37 +1,53 @@
 #autoload
 
-# comment this if you want
-unset SSH_AUTH_SOCK SSH_AGENT_PID SSH_AGENT_SOCKET
+recalc_ssh_agent_cache () {
+  export SSH_AGENT_PID=
+  export SSH_AUTH_SOCK=
 
-if which lsof pidof >&/dev/null; then
-  pidof ssh-agent | grep -q '[0-9]' || ssh-agent
+  echo "Recalculating ssh-agent info ..."
 
-  : ${SSH_AGENT_PID:=`pidof ssh-agent`}
-
-  if [ -z "$SSH_AGENT_PID" ]; then
-    echo "ssh-agent process not found; aborting ..."
+  if ! which lsof pidof >&/dev/null; then
+    echo 'lsof and pidof must both be present on $PATH; aborting.'
     return 1
   fi
 
+  : ${SSH_AGENT_PID:=`pidof ssh-agent`}
+
+  if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
+    echo "ssh-agent process not found; start a new one [y/N] ?"
+    if read -q; then
+      eval `ssh-agent`
+      write_ssh_agent_cache
+      return 0
+    else
+      echo "Unable to determine ssh-agent info; aborting."
+      return 1
+    fi
+  fi
+
   : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
-       awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
-       head -1`}
+       awk '/agent-socket|^ssh-agent.*unix/ {print $NF; exit}'`}
 
   if [ -z "$SSH_AUTH_SOCK" ]; then
     echo "Huh? lsof didn't do the biz; aborting ..."
-    return 2
+    return 1
   fi
 
+  write_ssh_agent_cache
+  return 0
+}
+
+write_ssh_agent_cache () {
   cat >|/tmp/.dsa-cache-$USER-$HOST <<EOF
 SSH_AGENT_PID=$SSH_AGENT_PID
 SSH_AUTH_SOCK=$SSH_AUTH_SOCK
 EOF
 
   cat <<EOF 
-Detected and cached ssh-agent:
+Wrote info to ssh-agent cache:
     pid:    $SSH_AGENT_PID
     socket: $SSH_AUTH_SOCK
 EOF
+}
 
-  export SSH_AGENT_PID SSH_AUTH_SOCK
-fi
+recalc_ssh_agent_cache "$@"

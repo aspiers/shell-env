@@ -3,13 +3,12 @@
 _dsa_cache=/tmp/.dsa-cache-$USER-$HOST
 
 if [[ -n "$*" || ! -r "$_dsa_cache" ]]; then
-  recalc_ssh_agent_cache
-  return
+  recalc_ssh_agent_cache || return
 fi  
 
 source "$_dsa_cache"
 cat <<EOF 
-Detected ssh-agent from cache:
+Read ssh-agent details from cache:
     pid:    $SSH_AGENT_PID
     socket: $SSH_AUTH_SOCK
 EOF
