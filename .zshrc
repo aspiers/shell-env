@@ -896,6 +896,12 @@ if which larch >&/dev/null; then
 fi
 
 # }}}
+# {{{ bzip2
+
+alias bz=bzip2
+alias buz=bunzip2
+
+# }}}
 
 # }}}
 
