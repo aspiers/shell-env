@@ -195,7 +195,7 @@ zdotdir=${ZDOTDIR:-$HOME}
 # {{{ Function path
 
 fpath=(
-       {$zdotdir,$HOME}/{.zsh/*.zwc,{.zsh,lib/zsh}/{functions,scripts}}(N) 
+       $zdotdir/{.zsh/*.zwc,{.zsh,lib/zsh}/{functions,scripts}}(N) 
 
        $fpath
 
@@ -524,6 +524,11 @@ alias which >&/dev/null && unalias which
 
 alias run-help >&/dev/null && unalias run-help
 autoload run-help
+
+# }}}
+# {{{ zcalc
+
+autoload zcalc
 
 # }}}
 # {{{ Restarting zsh or bash; reloading .zshrc or functions
