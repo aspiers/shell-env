@@ -5,6 +5,9 @@
 #
 # by Adam Spiers <adam@spiers.net>
 #
+# Best viewed in emacs folding mode (folding.el).
+# (That's what all the # {{{ and # }}} are for.)
+#
 # $Id$
 #
 
