@@ -437,7 +437,7 @@ hosts=(
 
 ### BEGIN PRIVATE
     # home
-    adamspiers.{dyndns,homelinux}.org
+    adamspiers.dyndns.org
 
     # plig
     adamspiers.org
@@ -457,9 +457,9 @@ zstyle ':completion:*' hosts $hosts
 
 ### BEGIN PRIVATE
 my_accounts=(
-  {localadams,root}@{pulse,adamspiers.{dyndns,homelinux}.org}
-  adams@adamspiers.org
-  security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
+  adam@adamspiers.dyndns.org
+  adam@adamspiers.org
+#  security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
   adamspiers@ssh.sourceforge.net
 )
 ### END PRIVATE
@@ -998,6 +998,7 @@ alias -g EA5="|& awk '{print \$5}'"
 sh_load_status 'key bindings'
 
 bindkey -s '^X^Z' '%-^M'
+bindkey -s '^[H' ' --help'
 bindkey '^[e' expand-cmd-path
 #bindkey -s '^X?' '\eb=\ef\C-x*'
 bindkey '^[^I'   reverse-menu-complete
