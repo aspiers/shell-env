@@ -16,8 +16,17 @@
 # }}}
 # {{{ PATH
 
-for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
-               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
+# Don't trust system-wide PATH?
+#PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
+
+# Note order gets reversed
+for newpath in                                    \
+               ~/local/bin                        \
+               ~/local/$OSTYPE/bin                \
+               ~/bin/{shortcuts,palm,backgrounds} \
+               ~/bin                              \
+; do
   [ -d $newpath ] && PATH=$newpath:$PATH
 done
 
