@@ -4,22 +4,26 @@ local num title
 
 type="$1"
 shift
+title="$1"
+
 case "$type" in
   window) num=2
       ;;
     icon) num=1
       ;;
-       *) print "Usage: set_title ( window | title ) <title>"
+  screen) echo -n "\ek$title\e\\"
+          return
+      ;;
+       *) print "Usage: set_title ( window | icon | screen ) <title>"
       return 1 
       ;;
 esac
-
-title="$1"
 
 # Other checks will need to be added here.
 if [[ "$TERM" == 'linux' ]]; then
 #  print "Cannot currently display $1 title; only remembering value set."
 else
+  # note screen will swallow this
   echo -n "\e]$num;$title\a"
 fi
 

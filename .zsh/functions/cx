@@ -73,6 +73,7 @@ if [[ "$ZSH_VERSION_TYPE" != 'old' ]]; then
 
     set_title window "$full_title"
     set_title icon "$full_ititle"
+    [[ "$TERM" == screen* ]] && set_title screen "${title:-$isuffix}"
   }
 
   cx "$@"

@@ -741,9 +741,10 @@ alias rj='nocorrect rj'
 
 # {{{ Changing terminal window/icon titles
 
-if [[ "$TERM" == xterm* ]]; then
+which cx >&/dev/null || cx () { }
+
+if [[ "$TERM" == (xterm*|screen*) ]]; then
   # Could also look at /proc/$PPID/cmdline ...
-  which cx >&/dev/null || cx () { }
   cx
 fi
 
