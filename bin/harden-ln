@@ -7,52 +7,61 @@
 use strict;
 use warnings;
 
+use File::Copy;
 use Getopt::Long;
 
 (my $me = $0) =~ s,.*/,,;
 
 my %opts;
-GetOptions(\%opts, 'help|h', 'test|t') or usage();
+GetOptions(\%opts, 'help|h', 'test|t', 'copy|c') or usage();
+usage() if $opts{help};
 
 sub usage {
   die <<EOUSAGE;
-Usage: $me [-t|--test] [symlink1 [symlink 2 ...]] [ < symlink-file ]
+Usage: $me [options] [symlink1 [symlink 2 ...] | [ < symlink-file ] ]
+Options:
+  -t, --test   See what would have happened.
+  -c, --copy   Make copies instead of hard links.
 
 Takes a list of symlinks from arguments and/or STDIN (one per line)
-and converts them to hard links.  Use -t or --test to run in test mode.
+and converts them to hard links or copies.
 EOUSAGE
 }
 
-
-harden($_) foreach @ARGV;
-unless (@ARGV && -t 0) {
+my @links = @ARGV;
+if (! @ARGV && ! -t 0) {
   while (<STDIN>) {
     chomp;
     s/^\s+//;
     s/\s+$//;
-    harden($_);
+    push @links, $_;
   }
 }
 
+harden($_) foreach @links;
+
 sub harden {
   my ($link) = @_;
+
   unless (-l $link) {
     warn "$link not a symlink; skipping.\n";
     return;
   }
-  my $dest = readlink $link
-    or die "$me: readlink($link): $!\n";
+
+  my $dest = readlink $link or die "$me: readlink($link): $!\n";
+
   if ($opts{test}) {
-    print "Would harden $link\n";
+    print "Would ", $opts{copy} ? 'copy' : 'harden', " $link\n";
+    return;
   }
-  else {
-    unlink $link
-      or die "$me: unlink($link): $!\n";
-    unless (link($dest, $link)) {
-      warn "$me: link($dest, link): $!\n";
-      # restore previous symlink
-      symlink($dest, $link)
-        or warn "$me: WARNING!  Couldn't restore symlink $link -> $dest after hard link creation failed ($!)\n";
-    }
-  }
+  
+  unlink $link or die "$me: unlink($link): $!\n";
+
+  return if $opts{copy} ? copy($dest, $link) : link($dest, $link);
+  warn "$me: ", $opts{copy} ? 'copy' : 'link',
+       "($dest, $link) failed: $!\n";
+
+  symlink($dest, $link)
+    or warn "$me: WARNING!  Couldn't restore symlink $link -> $dest ",
+            "after hardening failed ($!)\n";
 }
