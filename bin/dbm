@@ -71,7 +71,8 @@ elsif ($action eq 'list') {
   my @keys = @ARGV;
   @keys = keys %hash unless @keys;
   foreach my $key (@keys) {
-    print "$key, $hash{$key}\n";
+    my $val = $hash{$key} || '__undef__';
+    print "$key, $val\n";
   }
 }
 elsif ($action eq 'edit') {
