@@ -12,8 +12,6 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
-# FIXME: move shell chooser code into .ns
-
 # Give hook a .local suffix for consistency in case we need to exclude local stuff
 preferred_hook=$HOME/.preferred_shell.local
 
