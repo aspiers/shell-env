@@ -21,3 +21,5 @@ _eshade () {
 }
 
 compdef _eshade eshade
+
+eshade "$@"
