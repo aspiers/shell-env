@@ -389,10 +389,10 @@ zstyle ':completion:*:options' auto-description '%d'
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters 
 
 # }}}
-# {{{ Completion for 'kill'
+# {{{ Completion for processes
 
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*:*:*:*:processes' menu yes select
+zstyle ':completion:*:*:*:*:processes' force-list always
 
 # }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
@@ -1024,7 +1024,7 @@ if [[ $ZSH_VERSION > 3.1.5 ]]; then
 
   zstyle ':completion:*' list-colors ''
 
-  zstyle ':completion:*:*:kill:*:processes' list-colors \
+  zstyle ':completion:*:*:*:*:processes' list-colors \
     '=(#b) #([0-9]#)*=0=01;31'
 
   # completion colours
