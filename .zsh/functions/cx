@@ -41,9 +41,9 @@ cx () {
       suffix="$USERNAME@${short_host}"
     fi
 
-    tsuffix=" : $suffix"
-    isuffix="$suffix"
-    ssuffix="$suffix"
+    wsuffix=" : $suffix"
+    isuffix=" : $suffix"
+    ssuffix="|$suffix"
   fi
 
   # We use the fact that the environment variable TITLE_SHLVL can
@@ -53,13 +53,13 @@ cx () {
   if (( $# == 0 )); then
     # restore current setting
     if (( $#titles == 0 )); then
-      full_title="$suffix"
-      full_ititle="$isuffix"
-      full_stitle="$ssuffix"
+      full_wtitle="$suffix"
+      full_ititle="$suffix"
+      full_stitle="$suffix"
     else
-      full_title="$titles[1] : $suffix"
-      full_ititle="$titles[1] : $isuffix"
-      full_stitle="$titles[1]|$isuffix"
+      full_wtitle="$titles[1]$wsuffix"
+      full_ititle="$titles[1]$isuffix"
+      full_stitle="$titles[1]$ssuffix"
     fi
   else
     # push new setting
@@ -71,19 +71,19 @@ cx () {
 
     if [[ -z "$*" ]]; then
       # allow pushing of ""
-      full_title="$suffix"
-      full_ititle="$isuffix"
-      full_stitle="$ssuffix"
+      full_wtitle="$suffix"
+      full_ititle="$suffix"
+      full_stitle="$suffix"
     else
-      full_title="$* : $suffix"
-      full_ititle="$* : $isuffix"
-      full_stitle="$*|$ssuffix"
+      full_wtitle="$*$wsuffix"
+      full_ititle="$*$isuffix"
+      full_stitle="$*$ssuffix"
     fi
   fi
 
   functions cx_hook >/dev/null && cx_hook    
 
-  set_title window "$full_title"
+  set_title window "$full_wtitle"
   set_title icon "$full_ititle"
   [[ -n "$IN_SCREEN" ]] && 
     set_title screen "$full_stitle"
