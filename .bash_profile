@@ -9,7 +9,7 @@
 
 # Allow disabling of all meddling with the environment
 [ -n "$INHERIT_ENV" ] && return 0
-echo 3
+
 if [ -f ~/.bashrc ]; then
   # Get the normal interactive stuff from .bashrc
   . ~/.bashrc
