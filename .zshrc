@@ -571,6 +571,8 @@ zle -N kill-region-or-backward-big-word
 
 # }}}
 
+zle -N incremental-complete-word
+
 # }}}
 # {{{ zrecompile
 
