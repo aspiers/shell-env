@@ -6,23 +6,41 @@
 
 # .bash_profile is invoked by login shells in preference to .profile
 
-. ~/.switch_shell
+# {{{ Fix broken keyboards
 
-# User specific environment and startup programs
+if [ -z "$DISPLAY" ] && [ "$TERM" = 'linux' ]; then
+  echo -e "keymaps 0-15
+           keycode 58 = Control
+           keycode 29 = Caps_Lock" | loadkeys
+fi
+
+# }}}
+# {{{ Try to switch shell
+
+preferred_shell=$(<~/.preferred_shell)
+[ -r ~/.switch_shell ] && . ~/.switch_shell $preferred_shell
+
+# }}}
+# {{{ User specific environment and startup programs
+
 for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
                ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
   [ -d $newpath ] && PATH=$newpath:$PATH
 done
 
-#ENV=$HOME/.bashrc
-USERNAME=""
+# }}}
 
-export USERNAME ENV PATH
+# {{{ Get the normal interactive stuff from .bashrc
 
-[ -e ~/.bash_profile.local ] && . ~/.bash_profile.local
-
-# Get the normal interactive stuff
 if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
+# }}}
+
+# {{{ Specific to hosts
+
+[ -r ~/.bash_profile.local ] && . ~/.bash_profile.local
+[ -r ~/.bash_profile.$ ] && . ~/.bash_profile.local
+
+# }}}
