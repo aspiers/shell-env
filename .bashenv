@@ -1,0 +1,17 @@
+# Adam's .bashenv
+#
+# to simulate .zshenv
+#
+# $Id$
+
+# .bashenv is hopefully invoked by all shells, but 
+# don't bet on it.  .ssh/environment uses a hack to help.
+
+# {{{ PATH
+
+for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
+               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
+  [ -d $newpath ] && PATH=$newpath:$PATH
+done
+
+# }}}
