@@ -1,5 +1,11 @@
 #autoload
 
+echo "Before:"
+history -5
+
 fc -RI
 fc -W
+
+echo
+echo "After (broken?):"
 history -5
