@@ -18,7 +18,17 @@
 
 # }}}
 
+# {{{ Loading status
+
+zshrc_load_status () {
+  echo -n "\r.zshrc load: $* ... \e[0K"
+}
+
+# }}}
+
 # {{{ What version are we running?
+
+zshrc_load_status 'checking version'
 
 if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
 if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
@@ -33,6 +43,8 @@ fi
 
 # }}}
 # {{{ Options
+
+zshrc_load_status 'setting options'
 
 setopt \
      NO_all_export \
@@ -144,7 +156,7 @@ fi
 # }}}
 # {{{ Environment
 
-# REMINDER: Put non-interactive environment settings in .zshenv
+zshrc_load_status 'setting environment'
 
 # {{{ export COLUMNS
 
@@ -208,6 +220,8 @@ TMOUT=1800
 # }}}
 # {{{ Prompts
 
+zshrc_load_status 'prompt system'
+
 autoload -U promptinit
 promptinit
 
@@ -224,6 +238,8 @@ fi
 
 # }}}
 # {{{ Completions
+
+zshrc_load_status 'completion system'
 
 # {{{ New advanced completion system
 
@@ -375,6 +391,8 @@ telnet_hosts_ports_users=(
 # }}}
 # {{{ Aliases and functions
 
+zshrc_load_status 'aliases and functions'
+
 # {{{ ls aliases
 
 alias ls='/bin/ls --color -F'
@@ -433,39 +451,10 @@ alias fbigrpms='rpm --qf "%{SIZE}\t%{NAME}\n" -qa | sort -n | less'
 # }}}
 
 # }}}
-# {{{ Changing permissions
-
-# Make Public
-mp () {
-  if [[ $#* -lt 3 ]]; then
-    echo "Usage: mp <group> <files/dirs> ..."
-    return 1
-  fi
-
-  chgrp $1 $*[2,-1]
-  chmod go+rX $*[2,-1]
-}
-
-# }}}
 # {{{ Use this one to untar after doing a tar ztvf or tvf command
 
 # FIXME! Doesn't work
 #alias zx='!:s/tvf/xvf'
-
-# }}}
-# {{{ Uninstalling src.rpms
-
-# This uninstalls a src.rpm.  Unfortunately it needs the original
-# src.rpm to be supplied as a parameter.
-srpmrm () {
-  local rpmnameroot rpm
-  rpm -qpl $1 | grep -v '\.spec$' | xargs -i rm /usr/src/redhat/SOURCES/{}
-  rpm -qpl $1 | grep '\.spec$' | xargs -i rm /usr/src/redhat/SPECS/{}
-  rpmnameroot=${${1:t}%%-*}
-  foreach rpm in /usr/src/redhat/BUILD/${rpmnameroot}*; do
-    echo $rpm | xargs -p -i rm -rf {}
-  done
-}
 
 # }}}
 
@@ -512,20 +501,6 @@ alias v2='export TERM=vt220'
 alias vx='export TERM=xterm-color'
 
 # }}}
-
-# }}}
-# {{{ Temporary extended globbing
-
-# I have extended_glob set all the time anyway, but this is nice
-# for those who don't.  Thanks to Bart Schaefer for this one.
-#
-#  function ext_glob {
-#      setopt localoptions extendedglob
-#      local command="$1"
-#      shift
-#      $==command $==~*                    # redo globbing on arguments
-#  }
-#  alias extglob='noglob ext_glob '        # delay globbing until inside
 
 # }}}
 # {{{ Other users
@@ -580,213 +555,17 @@ cx () {
     echo -n "\e]1;$* @ ${longhost}\a"
   fi
 }
-alias cxx=cx
 
 if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
 
-# Change rxvt font size
-cf () {
-  if [[ -z "$*" ]]; then
-    echo -n "\e]50;#3\a"
-  else
-    echo -n "\e]50;#$*\a"
-  fi
-}
-_cf () {
-  local expl
-  _description expl 'font size'
-  compadd "$expl[@]" - 1 2 3 4
-}
-compdef _cf cf
-
-# Change rxvt pixmap
-cb () {
-  if [[ -z "$*" ]] && which randomise_textures >/dev/null; then
-    echo -n "\e]20;`randomise_textures`\a"
-  else
-    echo -n "\e]20;$*\a"
-  fi
-}
-
-# Change Eterm pixmap
-epix () {
-  if [[ -z "$*" ]] && which randomise_textures >/dev/null; then
-    echo -n "\e]20;`randomise_textures`\a"
-  else
-    echo -n "\e]20;$*\a"
-  fi
-}
-
-# Toggle Eterm transparency
-etr () {
-  echo -e "\e]6;0\a"
-}
-
-# Set Eterm tint
-etint () {
-  case "$*" in
-        red)  echo -e "\e]6;2;0xff8080\a" ;;
-      green)  echo -e "\e]6;2;0x80ff80\a" ;;
-       blue)  echo -e "\e]6;2;0x8080ff\a" ;;
-       cyan)  echo -e "\e]6;2;0x80ffff\a" ;;
-    magenta)  echo -e "\e]6;2;0xff80ff\a" ;;
-     yellow)  echo -e "\e]6;2;0xffff80\a" ;;
-          *)  echo -e "\e]6;2;0xffffff\a" ;;
-  esac
-}
-_etint () {
-  local expl
-  _description expl 'tint colour'
-  compadd "$expl[@]" - red green blue cyan magenta yellow
-}
-compdef _etint etint
-
-
-# Set Eterm shade
-eshade () {
-  local percent
-
-  if [[ -z "$*" ]]; then
-    percent=0
-  else
-    percent="$*"
-  fi
-  echo -e "\e]6;1;$percent%\a"
-}
-
-# }}}
-# {{{ Starting emacs with a title
-
-et () {
-  emacs -T "$*: emacs@${HOST}" --xrm="emacs.iconName: $*: emacs@${HOST}" $* &
-}
 
 # }}}
 # {{{ export DISPLAY=:0.0
 
 alias sd='export DISPLAY=:0.0'
-
-# }}}
-# {{{ xauth add of current host
-
-# This is unreliable
-alias xa='xauth add `hostname`/unix:0 `xauth list | head -1 | awk "{print \\$2 \" \" \\$3}"`'
-
-# }}}
-
-# }}}
-# {{{ rc files
-
-# {{{ Hostnames involved in rc transfers
-
-# Should be in `rcp' style format, e.g.
-# rc_home='user@host.com:'
-
-### BEGIN PRIVATE
-rc_home='adam@thelonious.new.ox.ac.uk:'
-### END PRIVATE
-
-# }}}
-# {{{ Filenames involved in rc transfers
-
-# Let's not rely on this one to always work, m'kay?
-#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME#\\\\\~#) )
-
-#zsh_rcfiles=( ~/.[z]sh{rc,env}(N:s#$HOME/##) )
-#emacs_rcfiles=(
-#                ~/.[e]macs(N:s#$HOME/##)
-#                ~/lib/emacs/init/**/*.el(N:s#$HOME/##)
-#              )
-
-#misc_rcfiles=(
-#               ~/.{bash,complete,ex,lftp,lynx,shell,ytalk}[r]c(N:s#$HOME/##)
-#             )
-
-zsh_rcfiles=( .zshrc .zshenv )
-emacs_rcfiles=( .emacs .emacs-common
-                lib/emacs/init/{common/{XEmacs,emacs},XEmacs/{options,custom},GNU_Emacs/custom}.el
-              )
-
-misc_rcfiles=(
-               .{bash,complete,ex,lftp,lynx,shell,ytalk}rc
-             )
-
-all_rcfiles=( $zsh_rcfiles $emacs_rcfiles $misc_rcfiles )
-
-# }}}
-# {{{ rc file transfers
-
-sendhome () {
-  if [[ $#* -eq 0 ]]; then
-    echo 'Usage: sendhome <files>'
-    return 1
-  fi
-
-  if which rsync >/dev/null; then
-    pushd ~ >/dev/null
-    rsync -aHRuvz -e ssh $* $rc_home
-    if [[ $OLDPWD != $PWD ]] popd >/dev/null
-  else
-    echo rsync not found and no other transfer method implemented yet
-  fi
-}
-
-gethome () {
-  if [[ $#* -eq 0 ]]; then
-    echo 'Usage: gethome <files>'
-    return 1
-  fi
-
-  if which rsync >/dev/null; then
-    rsync -aHRuvz -e ssh $rc_home"$^^*" ~
-  else
-    echo rsync not found and no other transfer method implemented yet
-  fi
-}
-
-#  send_files () {
-#      # Usage: 1st word contains all hosts, 2nd word contains all files
-#      local host hosts files
-#      if [[ $#* -eq 1 ]]; then
-#          hosts="thelonious.new.ox.ac.uk hewes.icl.ox.ac.uk"
-#          files="$1"
-#      elif [[ $#* -eq 2 ]]; then
-#          hosts="$1"
-#          files="$2"
-#      else
-#          echo 'Usage: sendfiles ["hosts"] "files"'
-#          return 1
-#      fi
-#  }
-#
-#  #    echo Copying files ${=files} to hosts ${^^=hosts}:
-#      foreach host ( ${=hosts} ) {
-#          if [[ "$host" != "$HOST" ]]; then
-#              echo -n "${host%%.*} ... "
-#              scp -r ${=files} $host:
-#          fi
-#      }
-#  }    
-
-# }}}
-
-# {{{ Reloading .zshrc or functions
-
-reload () {
-  if [[ "$#*" -eq 0 ]]; then
-    . ~/.zshrc
-  else
-    local fn
-    for fn in $*; do
-      unfunction $fn
-      autoload -U $fn
-    done
-  fi
-}
-compdef _functions reload
 
 # }}}
 
@@ -887,35 +666,6 @@ elif which ncftp >/dev/null; then
 fi
 
 # }}}
-# {{{ Viewing files in $PATH
-
-# wl stands for `which less'
-
-wl () {
-  if which $* >/dev/null; then
-    less `which $*`
-  else
-    which $*
-  fi
-}
-
-# }}}
-# {{{ strings(1)
-
-# sl stands for `strings less'
-
-sl () {
-  strings `which $*` | less
-}
-
-# }}}
-# {{{ Unified diffing files
-
-dl () {
-  diff -u $* | less
-}
-
-# }}}
 
 # }}}
 
@@ -946,6 +696,8 @@ alias -g RNS='| sort -nr'
 # }}}
 # {{{ Key bindings 
 
+zshrc_load_status 'key bindings'
+
 bindkey -s '^X^Z' '%-^M'
 bindkey '^[e' expand-cmd-path
 bindkey -s '^X?' '\eb=\ef\C-x*'
@@ -963,6 +715,8 @@ bindkey -s '^[[Z' '\t'
 
 # }}}
 # {{{ Miscellaneous
+
+zshrc_load_status 'miscellaneous'
 
 # {{{ Hash named directories
 
@@ -1000,8 +754,20 @@ fi
 # }}}
 # {{{ Specific to hosts
 
-[[ -r ~/.zshrc.local ]]       && . ~/.zshrc.local
-[[ -r ~/.zshrc.${HOST%%.*} ]] && . ~/.zshrc.${HOST%%.*}
+if [[ -r ~/.zshrc.local ]]; then
+  zshrc_load_status '.zshrc.local'
+  . ~/.zshrc.local
+fi
+
+if [[ -r ~/.zshrc.${HOST%%.*} ]]; then
+  zshrc_load_status ".zshrc.${HOST%%.*}"
+  . ~/.zshrc.${HOST%%.*}
+fi
 
 # }}}
 
+# {{{ Clear up after status display
+
+echo -n "\r"
+
+# }}}
