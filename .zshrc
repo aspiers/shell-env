@@ -945,6 +945,12 @@ End_of_Perl
     files=( $( cvs status -l 2>/dev/null | awk '/File: / { print $2 }' ) )
     ls -d "$@" *(/) "$files[@]"
   }
+
+  # revert
+  cvsr () {
+    rm "$@"
+    cvs update "$@"
+  }
 fi
 
 # }}}
