@@ -1,0 +1,3 @@
+#compdef eshade
+
+_message "Hex value from 00 (black) to 200 (double bright)"
