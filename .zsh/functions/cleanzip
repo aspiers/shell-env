@@ -1,0 +1,18 @@
+#autoload
+local force
+
+force=""
+if [[ "$1" = "-f" ]]; then
+  shift
+  force="-f"
+fi
+
+if [[ -z "$1" ]]; then
+  echo "Must specify a filename" >&2
+  exit 1
+fi
+
+for file in $(unzip -qql $1 | awk '{print $4}'); do
+  echo $force $file
+done
+

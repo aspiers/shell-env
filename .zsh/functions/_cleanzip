@@ -1,0 +1,2 @@
+#compdef cleanzip
+_files -g "*.zip"
