@@ -1,0 +1,4 @@
+#!/bin/sh
+
+less -r +/'^\[0mdiff
+g' "$@"
