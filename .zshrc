@@ -777,6 +777,8 @@ m () {
   cxx
 }
 
+compdef _mutt m
+
 # }}}
 # {{{ editors
 
