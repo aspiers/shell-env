@@ -1,4 +1,4 @@
-#compdef plucker-install
+#compdef plucker-install pli
 
 local expl
 _description files expl 'plucker-generated pdbs'
