@@ -11,6 +11,7 @@ GetOptions(\%opts, 'human|h', 'help') or usage();
 
 use constant NEED_ON_SINCE => 1;
 use constant NEED_IDLE     => 2;
+use constant NEED_LOGIN    => 3;
 
 sub usage {
   my $me = basename $0;
@@ -20,8 +21,8 @@ EOUSAGE
 
 my $who = shift || scalar(getpwuid $<);
 
-open(FINGER, "finger $who|")
-  or die "open(finger $who|) failed: $!\n";
+open(FINGER, "finger -l $who|")
+  or die "open(finger -l $who|) failed: $!\n";
 
 my $least_idle_secs;
 
@@ -31,8 +32,16 @@ my $least_idle_secs;
 # at all.
 #
 # We aim to find the session with the *least* idle time.
-my $state = NEED_ON_SINCE;
+my $state = NEED_LOGIN;
 while (<FINGER>) {
+  if ($state == NEED_LOGIN) {
+    if (/^Login( name)?:/i) {
+      debug("Got login line\n");
+      $state = NEED_ON_SINCE;
+    }
+    next;
+  }
+
   if ($state == NEED_ON_SINCE) {
     $state = NEED_IDLE if /\bon since\b/i;
     next;
@@ -62,6 +71,9 @@ while (<FINGER>) {
 if ($state == NEED_IDLE) {
   debug("Finished expecting an idle line; assuming not idle at all.\n");
   $least_idle_secs = 0;
+}
+if ($state == NEED_LOGIN) {
+  die "Didn't get login line.\n";
 }
 
 sub parse_idle_time {
