@@ -51,6 +51,9 @@ switch_shell () {
   export SHELL_ARGS="$@" # no other way of retrieving these?
 
   case "$SHLVL" in
+   "") # unknown, be careful
+       switch_shell_safely "$@"
+       ;;
     1) # login shell, be careful
        switch_shell_safely "$@"
        ;;
