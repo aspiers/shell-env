@@ -1,8 +1,26 @@
 #!/usr/bin/perl -wl
 
-die <<EOUSAGE if @ARGV < 2 or $ARGV[0] =~ /^--?h(elp)?$/;
-Usage: ran <printf format string> <Perl list>
-EOUSAGE
-
+use Getopt::Long;
+my %opts = (delimiter => ' ');
+GetOptions(\%opts, 'help', 'delimiter=s', 'lines') or usage();
+usage() if @ARGV < 2 or $opts{help};
+$opts{delimiter} = "\n" if $opts{lines};
 $format = $ARGV[0] =~ /%/ ? shift : '%s';
-print join ' ', map { sprintf $format, $_ } eval "@ARGV";
+print join qqexpand($opts{delimiter}),
+           map { sprintf $format, $_ } eval "@ARGV";
+
+sub usage {
+  die <<EOUSAGE
+Usage: ran [options] <printf format string> <Perl list>
+Options:
+  -d, --delimiter=STR    Set output delimiter
+  -l, --lines            Set output delimiter to \\n
+EOUSAGE
+}
+
+sub qqexpand {
+  my ($delimiter) = @_;
+  $delimiter =~ s!\\([efnrt]|x\d\d?|0\d{2,3})!qq["$&"]!gee;
+  return $delimiter;
+}
+
