@@ -71,7 +71,7 @@ setopt                       \
         bad_pattern          \
         bang_hist            \
      NO_beep                 \
-        brace_ccl            \
+     NO_brace_ccl            \
         correct_all          \
      NO_bsd_echo             \
         cdable_vars          \
