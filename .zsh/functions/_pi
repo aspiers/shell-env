@@ -1,0 +1,3 @@
+#compdef pi
+
+_files -g '*.(prc,pdb)'
