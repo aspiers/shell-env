@@ -329,6 +329,7 @@ compstyle ':*:history-words' remove_all_dups 'yep'
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
 else
+  # Older versions don't like the above cruft
   _etc_hosts=()
 fi
 
@@ -695,6 +696,41 @@ fi
 alias sd='export DISPLAY=:0.0'
 
 # }}}
+
+# }}}
+# {{{ Different CVS setups
+
+unset CVS_SERVER
+export CVSROOT
+export CVS_RSH
+
+setcvs_local () {
+  CVSROOT=/usr/local/cvsroot
+  CVS_RSH=
+}
+
+# Add any other CVS setups you want here
+### BEGIN PRIVATE
+setcvs_thelonious () {
+  CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot
+  CVS_RSH=ssh
+}
+
+setcvs_alsa () {
+  CVSROOT=
+  CVS_RSH=ssh
+}
+
+setcvs_mediaconsult_remote () {
+  CVSROOT=proxy.mediaconsult.com:/share/cvsroot
+  CVS_RSH=~/bin/cvs_rsh
+}
+
+setcvs_mediaconsult_local () {
+  CVSROOT=prophet5.mediaconsult.com:/share/cvsroot
+  CVS_RSH=ssh
+}
+### END PRIVATE
 
 # }}}
 # {{{ Other programs
