@@ -46,7 +46,6 @@ switch_shell_safely () {
     exit
   else
     [ -n "$debug" ] && echo "$myshell had exit code $?, back to pid $$"
-    set -x
   fi
 }
 
