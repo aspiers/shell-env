@@ -1,0 +1,15 @@
+#autoload
+
+# For easily altering the first word of the previous line;
+# I do this quite a lot, e.g. 
+#    ls foo
+# then
+#    l foo
+if [[ "$#BUFFER" == 0 ]]; then
+  zle .up-line-or-history
+  zle .beginning-of-line
+  zle .emacs-forward-word
+else
+  zle .forward-word
+fi
+  

@@ -579,8 +579,17 @@ zle -N kill-big-word
 zle -N transpose-big-words
 
 # }}}
+# {{{ magic-forward-word
 
+zle -N magic-forward-word
+
+# }}}
+# {{{ incremental-complete-word
+
+# doesn't work?
 zle -N incremental-complete-word
+
+# }}}
 
 # }}}
 # {{{ zrecompile
@@ -977,6 +986,7 @@ bindkey '^I'   complete-word
 bindkey '^Xi'  incremental-complete-word
 # bindkey '^[b' emacs-backward-word
 # bindkey '^[f' emacs-forward-word
+bindkey '^[f' magic-forward-word
 bindkey '^[B'  backward-to-space
 bindkey '^[F'  forward-to-space
 bindkey '^[^b' backward-to-/
