@@ -4,15 +4,13 @@
 #
 # $Id$
 
-# .bash_profile is invoked by login shells in preference to .profile
-
-# {{{ Get the normal interactive stuff from .bashrc
+# .bash_profile is invoked in preference to .profile by interactive
+# login shells, and by non-interactive shells with the --login option.
 
 if [ -f ~/.bashrc ]; then
+  # Get the normal interactive stuff from .bashrc
   . ~/.bashrc
 fi
-
-# }}}
 
 # {{{ Specific to hosts
 
