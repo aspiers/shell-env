@@ -26,7 +26,7 @@ sub usage {
 my $exp = new Expect;
 $exp->slave->clone_winsize_from(\*STDIN);
 $exp->spawn(@ARGV) or die "Cannot spawn $ARGV[0]: $!\n";
-
+sleep 1;
 $exp->send(qqexpand($opts{command}));
 $exp->interact;
 
