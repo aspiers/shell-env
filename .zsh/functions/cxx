@@ -1,0 +1,7 @@
+#autoload
+
+cxx () {
+  # pop
+  (( $#title )) && shift title ititle
+  cx "$@"
+}

@@ -1,5 +1,7 @@
 #autoload
 
+# can't be bothered to support this on old zshs
+
 if [[ "$ZSH_VERSION_TYPE" != 'old' ]]; then
 
   cx () {

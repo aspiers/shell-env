@@ -613,22 +613,9 @@ alias mysqlshow='nocorrect mysqlshow'
 
 # {{{ Changing terminal window/icon titles
 
-# can't be bothered to support this on old zshs
-
-
-cxx () {
-  # pop
-  (( $#title )) && shift title ititle
-  cx "$@"
-}
-
-cxl () {
-  # show stack
-  echo ${(F)title}
-}
-
 if [[ "$TERM" == xterm* ]]; then
   # Could also look at /proc/$PPID/cmdline ...
+  which cx >&/dev/null || cx () { }
   cx
 fi
 

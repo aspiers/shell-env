@@ -1,0 +1,6 @@
+#autoload
+
+cxl () {
+  # show stack
+  echo ${(F)title}
+}
