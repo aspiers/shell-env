@@ -3,8 +3,21 @@
 quiet='-q'
 [[ "$*" == *status* ]] && quiet=''
 
+home=${ZDOTDIR:-$HOME}
+
+normal_colourer=$home/bin/colour-cvs-output.awk
+diff_colourer=$home/bin/colour-diff-output.awk
+
+colourer="$normal_colourer"
+
 if [[ -n "$*[(r)(com|commit)]" ]]; then
-  command cvs $quiet "$@"
+  colourer=''
+elif [[ -n "$*[(r)diff]" ]]; then
+  colourer="$diff_colourer"
+fi
+
+if [[ -n "$colourer" ]]; then
+  command cvs $quiet "$@" | awk -f $colourer
 else
-  command cvs $quiet "$@" | awk -f ~/bin/colour-cvs-output.awk
+  command cvs $quiet "$@"
 fi
