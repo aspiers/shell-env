@@ -282,7 +282,7 @@ zshrc_load_status 'completion system'
 
 if /bin/true && [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   autoload -U compinit
-  compinit -u # don't perform security check
+  compinit -C # don't perform security check
 else
   print "\nAdvanced completion system not found; ignoring zstyle settings."
   function zstyle { }
