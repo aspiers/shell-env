@@ -822,7 +822,7 @@ ssh () {
 }
 
 # Best to run this from .zshrc.local
-#dsa >&/dev/null
+#dsa >&DN || echo "ssh-agent setup failed; run dsa."
 
 alias sa=ssh-add
 
