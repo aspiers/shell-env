@@ -41,7 +41,13 @@ fi
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
   [ -n "$debug" ] && echo "Switching to $myshell safely ..."
-  SHELL="$myshell" "$myshell" $myshell_args && exit
+  if SHELL="$myshell" "$myshell" $myshell_args; then
+    [ -n "$debug" ] && echo "$myshell exited OK; exiting parent shell."
+    exit
+  else
+    [ -n "$debug" ] && echo "$myshell had exit code $?, back to pid $$"
+    set -x
+  fi
 }
 
 switch_shell_dangerously () {
