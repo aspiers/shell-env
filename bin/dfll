@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# dfl:dfll :: l:ll
+
+df -lPT -x none
