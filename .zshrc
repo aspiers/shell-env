@@ -1100,6 +1100,7 @@ aoeu () {
     xmodmap $HOME/.keymaps/qwerty
   fi
   if (( $? == 0 )); then
+    unalias no
     echo qwerty layout selected
   else
     echo "There was an error; qwerty layout /not/ selected."
@@ -1115,6 +1116,7 @@ asdf () {
     xmodmap $HOME/.keymaps/dvorak
   fi
   if (( $? == 0 )); then
+    alias no=ls
     echo Dvorak layout selected
   else
     echo "There was an error; Dvorak layout /not/ selected."
