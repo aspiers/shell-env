@@ -161,20 +161,6 @@ if [[ $ZSH_VERSION == 3.0.<6->* || $ZSH_VERSION_TYPE == 'new' ]]; then
 fi
 
 # }}}
-
-# {{{ Search for history loosing bug
-
-_check_hist_size () {
-  fc_out=( $(fc -l -1) )
-  if (( "$fc_out[1]" < 500 )); then
-    print "\nWARNING: Small history ($fc_out[1]) detected\!"
-  fi
-}
-
-#_check_hist_size
-
-# }}}
-
 # {{{ Environment
 
 zshrc_load_status 'setting environment'
@@ -925,6 +911,6 @@ fi
 
 # {{{ Search for history loosing bug
 
-#_check_hist_size
+_check_hist_size
 
 # }}}
