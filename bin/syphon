@@ -88,6 +88,10 @@ sub get_dest {
   return mkstemp( "/tmp/syphon-XXXXXXX" );
 }
 
+=head1 VERSION
+
+$Id$
+
 =head1 LICENSE
 
 Copyright (c) 2003 Adam Spiers <adam@spiers.net>.  All rights
