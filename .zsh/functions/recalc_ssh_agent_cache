@@ -72,7 +72,8 @@ elif (( $#sockets > 1 )); then
       # of each element for '    ' and rejoining with \n.
     fi
   done
-  echo "Suggested action:\n  rm $_dead_sockets"
+  echo "Action:\n  rm $_dead_sockets"
+  rm "$_dead_sockets[@]"
   return 1
 fi
 : ${SSH_AUTH_SOCK:=$sockets[0]}
