@@ -2,3 +2,4 @@
 
 fc -RI
 fc -W
+history -5
