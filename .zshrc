@@ -273,7 +273,6 @@ zstyle ':completion:*' completer _complete _correct _approximate _prefix
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
-
 # Cache functions created by _regex_arguments
 zstyle ':completion:*' cache-path ~/.zsh/.cache-path
 
@@ -839,7 +838,7 @@ End_of_Perl
   }
 
   cvsq () {
-    cvs -nq update
+    cvs -nq update |& grep -v -- '-- ignored'
   }
 fi
 
@@ -871,11 +870,41 @@ ssh () {
 }
 
 if [[ -x ~/bin/detect_ssh-agent ]]; then
-  alias dsa='. ~/bin/detect_ssh-agent'
+  dsa () {
+    : ${SSH_AGENT_PID:=`/sbin/pidof ssh-agent`}
+
+    if [[ -z "$SSH_AGENT_PID" ]]; then
+      echo "ssh-agent process not found; aborting ..."
+      return 1
+    fi
+
+    : ${SSH_AUTH_SOCK:=`/usr/sbin/lsof -p $SSH_AGENT_PID |
+         awk '/agent-socket|^ssh-agent.*unix/ {print $NF}' |
+         head -1`}
+
+    if [[ -z "$SSH_AUTH_SOCK" ]]; then
+      echo "Huh? lsof didn't do the biz; aborting ..."
+      return 2
+    fi
+
+    cat <<EOF 
+    Detected ssh-agent:
+       pid:    $SSH_AGENT_PID
+       socket: $SSH_AUTH_SOCK
+
+EOF
+
+    echo -n "Setting up environment ... "
+
+    export SSH_AGENT_PID SSH_AUTH_SOCK
+
+    echo done.
+  }
+
   alias sa=ssh-add
 
   # Sod it; run it now
-  . ~/bin/detect_ssh-agent >&/dev/null
+  dsa >&/dev/null
 fi
 
 ### BEGIN PRIVATE
