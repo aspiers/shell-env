@@ -1,0 +1,11 @@
+#!/bin/sh
+
+awkdir=${ZDOTDIR:-$HOME}/bin
+
+if [ -t 1 ]; then
+  # connected to a tty => use glorious technicolour
+  exec awk -f $awkdir/colour-diff-output.awk | diff-less "$@"
+else
+  # probably piping to a file, use black and white
+  exec cat
+fi
