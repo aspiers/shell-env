@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+if [ $# = 0 ] || [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+  echo "Usage: $0 <user1 to authorise> [ <user2> ... ]"
+  exit 0
+fi
+
+if [ -z "$DISPLAY" ]; then
+  echo "\$DISPLAY not set; aborting." >&2
+  exit 1
+fi
+
+cookie="`xauth list $DISPLAY`"
+
+for user in "$@"; do
+  echo "Adding '$cookie' for user $user"
+  su -c "unset XAUTHORITY; xauth add $cookie" "$user"
+done
