@@ -453,6 +453,12 @@ rcup () {
   )
 }
 
+_rcup () {
+  _path_files -W ~
+}
+
+compdef _rcup rcup
+
 # }}}
 # {{{ View addressbook
 
@@ -469,7 +475,11 @@ alias addr='less ~/.gnome/GnomeCard.gcrd'
 alias which >&/dev/null && unalias which
 
 # }}}
-# {{{ Restarting zsh, reloading .zshrc or functions
+# {{{ Restarting zsh or bash; reloading .zshrc or functions
+
+bash () {
+  NO_ZSH="yes" command bash "$@"
+}
 
 restart () {
   exec $SHELL "$@"
