@@ -1,10 +1,10 @@
 #!/bin/sh
 
 case "$OSTYPE" in
-  solaris*) exec ps -ef      | grep -E "($*|^ *UID)" | grep -vE "grep|$0"
+  solaris*) exec ps -ef      | grep -E "($*|^ *UID)" | grep -vE "grep|$0|ps -ef\$"
             ;;
 
   # FreeBSD and Linux
-         *) exec ps -auxwwww | grep -E "($*|^USER)"  | grep -vE "grep|$0"
+         *) exec ps -auxwwww | grep -E "($*|^USER)"  | grep -vE "grep|$0|ps -auxwwww\$"
             ;; 
 esac
