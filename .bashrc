@@ -17,7 +17,7 @@
 
 sh_load_status .bashrc
 
-# {{{ Source global definitions
+# {{{ source /etc/bashrc
 
 if [ -f /etc/bashrc ]; then
   sh_load_status "/etc/bashrc"
@@ -25,6 +25,11 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # }}}
+
+##############################################################################
+# Only interactive stuff follows below.
+
+if [ -n "$shell_interactive" ]; then
 
 # {{{ Try to switch shell
 
@@ -202,6 +207,8 @@ alias tf='less +F'
 # }}}
 
 # }}}
+
+fi
 
 # {{{ Specific to hosts
 
