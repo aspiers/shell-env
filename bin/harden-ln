@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+#
+# Reads symlinks from @ARGV and/or STDIN
+# and converts them to hard links.
+#
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+(my $me = $0) =~ s,.*/,,;
+
+my %opts;
+GetOptions(\%opts, 'help|h', 'test|t') or usage();
+
+sub usage {
+  die <<EOUSAGE;
+Usage: $me [-t|--test] [symlink1 [symlink 2 ...]] [ < symlink-file ]
+
+Takes a list of symlinks from arguments and/or STDIN (one per line)
+and converts them to hard links.  Use -t or --test to run in test mode.
+EOUSAGE
+}
+
+
+harden($_) foreach @ARGV;
+unless (@ARGV && -t 0) {
+  while (<STDIN>) {
+    chomp;
+    s/^\s+//;
+    s/\s+$//;
+    harden($_);
+  }
+}
+
+sub harden {
+  my ($link) = @_;
+  unless (-l $link) {
+    warn "$link not a symlink; skipping.\n";
+    return;
+  }
+  my $dest = readlink $link
+    or die "$me: readlink($link): $!\n";
+  if ($opts{test}) {
+    print "Would harden $link\n";
+  }
+  else {
+    unlink $link
+      or die "$me: unlink($link): $!\n";
+    unless (link($dest, $link)) {
+      warn "$me: link($dest, link): $!\n";
+      # restore previous symlink
+      symlink($dest, $link)
+        or warn "$me: WARNING!  Couldn't restore symlink $link -> $dest after hard link creation failed ($!)\n";
+    }
+  }
+}
