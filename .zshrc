@@ -316,7 +316,7 @@ fi
 
 # General completion technique
 #zstyle ':completion:*' completer _complete _correct _approximate _prefix
-zstyle ':completion:*' completer _complete _prefix
+zstyle ':completion:*' completer _complete _prefix _ignored
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
@@ -359,6 +359,17 @@ zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
 
 # }}}
+
+# When completing inside array or association subscripts, the array
+# elements are more useful than parameters so complete them first:
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters 
+
+# {{{ completion for 'kill'
+
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# }}}
 # {{{ Simulate my old dabbrev-expand 3.0.5 patch 
 
 zstyle ':completion:*:history-words' stop yes
@@ -382,6 +393,7 @@ zstyle ':completion:*:history-words' menu yes
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+# _ssh_known_hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 else
   # Older versions don't like the above cruft
   _etc_hosts=()
@@ -404,36 +416,17 @@ hosts=(
     {,riffraff.}plig.net adamspiers.org
 
     # New College
-    corelli.new.ox.ac.uk thelonious.new.ox.ac.uk
-    163.1.145.129 163.1.145.123
+    corelli.new.ox.ac.uk 163.1.145.123
 
     # RAM
     {bach,gw,jascha,purcell,lib}.ram.ac.uk
     general.ulcc.ac.uk
 
-    # OUCS
-    {ermine,sable}.ox.ac.uk
-
-    # Robots
-#   {beatrice,borachio,hamlet,don-jon,leonato,tybalt,iris,witch3,robin,armando,slender}.robots.ox.ac.uk
-
     # Chris Evans
     ferret.lmh.ox.ac.uk
-#   {enif,rage}.pcl.ox.ac.uk
 
     # Chris Cladingboel
     plato.wadham.ox.ac.uk
-
-    # reqng
-    scuttlebutt.explore.com
-
-    # Quake-related
-#    totally.dappy.com utterly.barmy.com
-#    richard.lse.ac.uk www.unu.nottingham.ac.uk
-#    quake.minos.co.uk
-
-    # Micromedia
-#    foundation.bsnet.co.uk www.mbn.co.uk lon-radius.intensive.net
 
     # Darren Nickerson
     hewes.icl.ox.ac.uk
