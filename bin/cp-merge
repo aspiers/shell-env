@@ -3,6 +3,9 @@
 # Copies the entire contents of one directory to another, even if some
 # subdirectories are common to both source and destination directories.
 #
+# Uhhh ... can't we use rsync for this, dude?  Mmmmm ... oh yeah.
+# Dumbass!
+#
 # Adam Spiers <me@adamspiers.org>
 #
 
