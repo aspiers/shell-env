@@ -1,0 +1,38 @@
+#!/bin/bash
+
+me="service-commands"
+mode=`basename $0`
+
+if [ "$mode" = "$me" ] && [ -z "$*" ]; then
+  echo -n "Setting up handy service shortcuts ... "
+  cd ~/bin/shortcuts
+  for op in s{re,rl,st,sp,sta}; do
+    if [ -e $op ]; then
+      echo "$op already exists; aborting." >&2
+      exit 1
+    fi
+    ln -s $me $op
+    echo -n " $op"
+  done
+  echo
+  exit 0
+fi
+
+case "$mode" in
+  sre)  op=restart ;;
+  srl)  op=reload  ;;
+  sst)  op=start   ;;
+  ssp)  op=stop    ;;
+  ssta) op=status  ;;
+  *)   echo "$0: BUG with mode '$mode'"; exit 1 ;;
+esac
+
+service="$1"
+shift
+
+if [ "`id -u`" = 0 ]; then
+  exec /sbin/service "$service" $op "$@"
+else
+  # 'ave a go son
+  exec sudo /sbin/service "$service" $op "$@"
+fi
