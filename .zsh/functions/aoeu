@@ -3,13 +3,13 @@
 if tty | grep -q tty; then
   local prefix=''
   (( $EUID == 0 )) && prefix=sudo
-  $prefix loadkeys /usr/lib/kbd/keymaps/i386/qwerty/uk.no-capslock.kmap.gz
+  $prefix loadkeys /usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
 else
-  xmodmap ~/.keymaps/qwerty
+  xmodmap ~/.keymaps/previous
 fi
 
 if (( $? == 0 )); then
-  echo qwerty layout selected
+  echo previous layout selected
 else
-  echo "There was an error; qwerty layout /not/ selected."
+  echo "There was an error; previous layout /not/ selected."
 fi
