@@ -107,7 +107,7 @@ typeset -U ld_library_path # No duplicates
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/{local/,}lib/[p]erl5(N)
+          ~/{local/,}lib/[p]erl5{,/site_perl}(N)
           $perl5lib
          )
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] && PERL5LIB="${(j/:/)perl5lib}"
