@@ -581,6 +581,12 @@ kill-big-word () {
 zle -N kill-big-word
 
 # }}}
+# {{{ transpose-big-words
+
+# autoloaded
+zle -N transpose-big-words
+
+# }}}
 
 zle -N incremental-complete-word
 
@@ -972,6 +978,7 @@ bindkey '^[P'  history-beginning-search-backward
 bindkey '^[N'  history-beginning-search-forward
 bindkey '^w'   kill-region-or-backward-word
 bindkey '^[^W' kill-region-or-backward-big-word
+bindkey '^[T'  transpose-big-words
 bindkey '^I'   complete-word
 bindkey '^Xi'  incremental-complete-word
 # bindkey '^[b' emacs-backward-word
