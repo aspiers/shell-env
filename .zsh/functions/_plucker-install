@@ -1,0 +1,5 @@
+#compdef plucker-install
+
+local expl
+_description files expl 'plucker-generated pdbs'
+_files "$@" "$expl[@]" -W ~/.plucker -g \*.pdb
