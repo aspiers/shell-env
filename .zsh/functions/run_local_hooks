@@ -31,6 +31,7 @@ run_local_hooks () {
           if [ -r "$dir/$file.$suffix" ]; then
             [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$suffix"
             . $dir/$file.$suffix
+            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$suffix done"
           fi
         done
       done
