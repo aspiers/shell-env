@@ -30,9 +30,12 @@ foreach my $path (@ARGV) {
 
 sub abs_path {
   my $path = shift;
+  
   -d $path and return Cwd::abs_path($path);
 
-  my ($dir, $file) = $path =~ m!(.+)/(.+)!;
+  my ($vol, $dir, $file) = File::Spec->splitpath($path);
+  # Don't know how to handle volumes.
+  die "$0: splitpath returned vol '$vol'\n" if $vol;
 
   $dir = Cwd::abs_path($dir);
 
