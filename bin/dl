@@ -2,4 +2,4 @@
 
 exec diff -u "$@" | \
   awk -f ~/bin/colour-diff-output.awk | \
-  diffless
+  diff-less
