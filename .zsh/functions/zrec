@@ -35,3 +35,6 @@ zrecompile "$@" -p -- \
   -M -U ~/.zsh/functions.zwc \
         ~/.zsh/functions/*(*) \
         "$_site_funcs[@]"
+
+# This should be safe now.
+restart
