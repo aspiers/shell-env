@@ -33,7 +33,7 @@ _CVSROOTS=(
            guideguide_remote  proxy.guideguide.com:/share/cvsroot
            guideguide_local   prophet5.london.guideguide.com:/share/cvsroot
            sourceforge_anon   :pserver:anonymous@cvs.\$1.sourceforge.net:/cvsroot/\$1
-           sourceforge        adamspiers@cvs.\$1.sourceforge.net:/cvsroot/\$1
+           sourceforge        :ext:adamspiers@cvs.\$1.sourceforge.net:/cvsroot/\$\{1:l\}
 
            zsh_sf_local_write adamspiers@cvs1:/cvsroot/zsh
            zsh_sf_local       :pserver:anonymous@cvs1:/cvsroot/zsh
