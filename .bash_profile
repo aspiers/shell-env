@@ -16,8 +16,7 @@ fi
 
 # {{{ Specific to hosts
 
-[ -r ~/.bash_profile.local ] && . ~/.bash_profile.local
-[ -r ~/.bash_profile.$ ] && . ~/.bash_profile.local
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .bash_profile
 
 # }}}
 

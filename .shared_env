@@ -10,6 +10,17 @@
 # Note that that means silly things like [ ! -e foo ] rather
 # than ! [ -e foo ] ...
 
+# {{{ Loading status
+
+sh_load_status () {
+  # \e[0K is clear to right
+  echo -e -n "\r${SHELL##*/} load: $* ... \e[0K"
+}
+
+# }}}
+
+sh_load_status .shared_env
+
 # {{{ HOME
 
 # Don't leave history files in /

@@ -14,9 +14,12 @@
 
 # }}}
 
+sh_load_status .bashrc
+
 # {{{ Source global definitions
 
 if [ -f /etc/bashrc ]; then
+  sh_load_status "/etc/bashrc"
   . /etc/bashrc
 fi
 
@@ -38,12 +41,14 @@ fi
 # {{{ ls colours
 
 if which dircolors >/dev/null 2>&1 && [ -e ~/.dircolors ]; then
-  # show directories in yellow
+  sh_load_status "dircolors"
   eval `dircolors -b ~/.dircolors`
 fi
 
 # }}}
 # {{{ Key bindings
+
+sh_load_status "key bindings"
 
 set -o emacs # vi sucks ;-)
 bind '"\ep":history-search-backward'
@@ -53,10 +58,13 @@ bind '"\e\C-i":dynamic-complete-history'
 # }}}
 # {{{ Prompt
 
+sh_load_status "prompt"
 PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \\$ "
 
 # }}}
 # {{{ Aliases and functions
+
+sh_load_status "aliases/functions"
 
 # {{{ ls aliases
 
@@ -180,8 +188,7 @@ alias tf='less +F'
 
 # {{{ Specific to hosts
 
-[ -r ~/.bashrc.local ]           && . ~/.bashrc.local
-[ -r ~/.bashrc.${HOSTNAME%%.*} ] && . ~/.bashrc.${HOSTNAME%%.*}
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .bashrc
 
 # }}}
 

@@ -41,18 +41,10 @@ fi
 [[ -n "$ZSH_PROFILE_RC" ]] && which zmodload >&/dev/null && zmodload zsh/zprof
 
 # }}}
-# {{{ Loading status
-
-zshrc_load_status () {
-  # \e[0K is clear to right
-  echo -n "\r.zshrc load: $* ... \e[0K"
-}
-
-# }}}
 
 # {{{ Options
 
-zshrc_load_status 'setting options'
+sh_load_status 'setting options'
 
 setopt                       \
      NO_all_export           \
@@ -162,7 +154,7 @@ fi
 # }}}
 # {{{ Environment
 
-zshrc_load_status 'setting environment'
+sh_load_status 'setting environment'
 
 # {{{ INFOPATH
 
@@ -253,7 +245,7 @@ TMOUT=1800
 local _find_promptinit
 _find_promptinit=( $^fpath/promptinit(N) )
 if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
-  zshrc_load_status 'prompt system'
+  sh_load_status 'prompt system'
 
   autoload -U promptinit
   promptinit
@@ -296,7 +288,7 @@ fi
 
 # {{{ Completions
 
-zshrc_load_status 'completion system'
+sh_load_status 'completion system'
 
 # {{{ Set up new advanced completion system
 
@@ -501,7 +493,7 @@ zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 # }}}
 # {{{ Aliases and functions
 
-zshrc_load_status 'aliases and functions'
+sh_load_status 'aliases and functions'
 
 # {{{ Motion/editing
 
@@ -967,7 +959,7 @@ alias -g X0G='| xargs -0 egrep'
 # }}}
 # {{{ Key bindings 
 
-zshrc_load_status 'key bindings'
+sh_load_status 'key bindings'
 
 bindkey -s '^X^Z' '%-^M'
 bindkey '^[e' expand-cmd-path
@@ -1005,7 +997,7 @@ alias no=ls  # for Dvorak
 # }}}
 # {{{ Miscellaneous
 
-zshrc_load_status 'miscellaneous'
+sh_load_status 'miscellaneous'
 
 # {{{ ls colours
 
@@ -1038,7 +1030,7 @@ fi
 
 # {{{ Specific to local setups
 
-zshrc_load_status 'local hooks'
+sh_load_status 'local hooks'
 run_local_hooks .zshrc
 
 # }}}

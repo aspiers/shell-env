@@ -15,3 +15,7 @@
 # instead).
 
 [ -r $HOME/.shared_env ] && . $HOME/.shared_env
+
+sh_load_status .bashenv
+
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .bashenv
