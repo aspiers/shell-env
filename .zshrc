@@ -489,6 +489,12 @@ zshrc_load_status 'aliases and functions'
 alias which >&/dev/null && unalias which
 
 # }}}
+# {{{ run-help
+
+unalias run-help
+autoload run-help
+
+# }}}
 # {{{ Restarting zsh or bash; reloading .zshrc or functions
 
 bash () {
