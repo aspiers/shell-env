@@ -1,8 +1,5 @@
 #!/usr/bin/perl
 
-# Take two or more sequences and 'zip' them together in the functional
-# programming sense.
-
 use strict;
 use warnings;
 
@@ -16,6 +13,9 @@ sub usage {
 Usage: $0 file1 file2 [...]
        $0 [ -p | --prefixes ] prefix1 file1 prefix2 file2 [...]
   -e, --eof   Abort as soon as EOF is reached on any file.
+
+Take twos or more sequences and 'zip' them together in the functional
+programming sense.
 EOF
 }
 
