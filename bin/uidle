@@ -102,7 +102,7 @@ sub parse_idle_time {
 
 close(FINGER);
 
-if (! $least_idle_secs) {
+if (! defined $least_idle_secs) {
   # Didn't get any idle time; not logged on.
   exit 1;
 }
