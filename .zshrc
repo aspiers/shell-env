@@ -454,6 +454,16 @@ zstyle ':completion:*:*:telnet:*' hosts-ports-users $telnet_hosts_ports_use
 
 zshrc_load_status 'aliases and functions'
 
+### BEGIN PRIVATE
+# {{{ Updating rc files
+
+rcup () {
+  CVS_RSH=ssh CVSROOT=adam@thelonious.new.ox.ac.uk:/usr/local/cvsroot \
+    cvs update "$@"
+}
+
+# }}}
+### END PRIVATE
 # {{{ Reloading .zshrc or functions
 
 reload () {
