@@ -5,6 +5,9 @@
 #    ls foo
 # then
 #    l foo
+#
+# See also magic-forward-char
+
 if [[ "$#BUFFER" == 0 ]]; then
   zle up-line-or-history
   zle beginning-of-line
