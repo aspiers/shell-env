@@ -396,14 +396,14 @@ zstyle ':completion:*' hosts $hosts
 
 ### BEGIN PRIVATE
 my_accounts=(
-  {localadams,root}:{pulse.{localdomain,mediaconsult.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
+  {localadams,root}:{pulse.{localdomain,guideguide.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
   {adam,yan,root}:{casals,tulip}.home
   {adam,root}:thelonious.new.ox.ac.uk
   adam:hewes.icl.ox.ac.uk
   {adams,root}:
   security:{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
   {adams,root}:server1.w3w.net
-  {adams,root}:{proxy.mediaconsult.com,195.217.36.66}
+  {adams,root}:{proxy.guideguide.com,195.217.36.66}
   adamspiers:zsh.sourceforge.net
 )
 ### END PRIVATE
