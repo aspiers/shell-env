@@ -1,0 +1,9 @@
+#!/usr/bin/perl -l
+
+use strict;
+use warnings;
+
+use List::Util 'shuffle';
+
+print shuffle <>;
+
