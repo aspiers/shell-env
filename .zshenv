@@ -40,7 +40,7 @@ unset INPUTRC
 typeset -U path
 
 path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
-path=( ~/{packbin,bin,bin/shortcuts}(N) $path )
+path=( ~/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
 # {{{ Perl libraries
