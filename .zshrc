@@ -529,12 +529,12 @@ pst () {
   pstree -p $* | less -S
 }
 alias gps='gitps -p afx; cx'
-alias ra='ps auxww | grep -vE "(^($USER|nobody|root|bin))|login"'
+alias ra='ps auxww | grep -vE "(^($USERNAME|nobody|root|bin))|login"'
 rj () {
   ps auxww | grep -E "($*|^USER)"
 }
 ru () {
-  ps auxww | grep -E "^($*|USER)" | grep -vE "^$USER|login"
+  ps auxww | grep -E "^($*|USER)" | grep -vE "^$USERNAME|login"
 }
 compdef _users ru
 
@@ -574,8 +574,11 @@ compdef _users lh
 
 alias f=finger
 
-# su to root and change window title
-alias root='echo -n "\e]0;root@${HOST}\a"; su -; cx'
+# su changes window title, even if we're not a login shell
+su () {
+  command su "$@"
+  cx
+}
 
 # }}}
 # {{{ No spelling correction
@@ -602,22 +605,27 @@ cx () {
   else
     longhost=${HOST}
   fi
-        
+
+  if [[ "$USER" != "$USERNAME" ]]; then
+    # We've probably su'ed to a different user but not as a login shell
+    unset TITLE ITITLE
+  fi   
+
   if [[ -z "$*" ]]; then
     # Revert window title to previous setting or default
-    : ${TITLE="$USER@${longhost}"}
+    : ${TITLE="$USERNAME@${longhost}"}
     echo -n "\e]2;$TITLE\a"
 
     # Revert window icon title to previous setting or default
-    : ${ITITLE="$USER@${longhost}"}
+    : ${ITITLE="$USERNAME@${longhost}"}
     echo -n "\e]1;$ITITLE\a"
   else
     # Change window title
-    TITLE="$* : $USER@${longhost}"
+    TITLE="$* : $USERNAME@${longhost}"
     echo -n "\e]2;$TITLE\a"
 
     # Change window icon title
-    ITITLE="$* @ $USER@${longhost}"
+    ITITLE="$* @ $USERNAME@${longhost}"
     echo -n "\e]1;$ITITLE\a"
   fi
 }
