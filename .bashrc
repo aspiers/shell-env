@@ -137,7 +137,6 @@ alias cd...='cd ../..'
 alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
 alias cd......='cd ../../../../..'
-alias 'cd/'='cd /'
 z () {
   cd ~/"$@"
 }
