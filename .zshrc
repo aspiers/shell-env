@@ -335,7 +335,7 @@ hosts=(
 
 ### BEGIN PRIVATE
     # Home
-    {casals,tulip}{,.home}
+    {casals,tulip}.home
 
     # New College
     thelonious.new.ox.ac.uk newjcr.new.ox.ac.uk
@@ -400,7 +400,7 @@ zstyle ':completion:*' hosts $hosts
 ### BEGIN PRIVATE
 my_accounts=(
   {localadams,root}:{pulse.{localdomain,mediaconsult.com,ram.ac.uk},a25.ram.ac.uk,localhost.localdomain}
-  {adam,yan,root}:{casals,tulip}{,.home}
+  {adam,yan,root}:{casals,tulip}.home
   {adam,root}:thelonious.new.ox.ac.uk
   adam:hewes.icl.ox.ac.uk
   {adams,root}:
