@@ -465,7 +465,11 @@ rcup () {
 
 # }}}
 ### END PRIVATE
-# {{{ Reloading .zshrc or functions
+# {{{ Restarting zsh, reloading .zshrc or functions
+
+restart () {
+  exec $0 "$@"
+}
 
 reload () {
   if [[ "$#*" -eq 0 ]]; then
