@@ -17,10 +17,18 @@ expect {
         send "/home/aspiers/bin/zsh\n"
         interact
     }
+    -re "root@loneqegen.cb. ~]# " {
+        send "adam\n"
+        interact
+    }
 
     # Match prompts here
     {\$} interact
-    -re "#" interact
+    -re "\n# ?$" {
+        # Solaris box :-(
+        send "bash\rset -o emacs\r"
+        interact
+    }
 
     timeout interact
     eof
