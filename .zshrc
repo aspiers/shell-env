@@ -838,6 +838,11 @@ fi
 
 # WARNING: global aliases are evil.  Use with caution.
 
+# {{{ For screwed up keyboards missing pipe
+
+alias -g PIPE='|'
+
+# }}}
 # {{{ Paging with less / head / tail
 
 alias -g L='| less'
