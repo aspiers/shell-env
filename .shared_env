@@ -25,6 +25,7 @@ sh_load_status () {
   # \e[0K is clear to right
   [ -n "$shell_interactive" ] && \
     echo -e -n "\r${shell:-${0##*/}} load: $* ... \e[0K"
+    #echo -e "\r${shell:-${0##*/}} load: $* ... \e[0K"
 }
 
 # }}}
@@ -46,7 +47,16 @@ fi
 # {{{ HOME
 
 # Don't leave history files in /
-: ${HOME:=/root}
+: ${HOME:=/}
+if [ "$HOME" = '/' ]; then
+  if [ -d /root ]; then
+    HOME=/root
+  elif [ -d /var/tmp ]; then
+    mkdir /var/tmp/root.tmphome && \
+     HOME=/var/tmp/root.tmphome
+  fi
+fi
+[ "$HOME" = '/' ] && echo "Warning: ~ is /"
 
 # }}}
 # {{{ PATH
@@ -177,11 +187,11 @@ export CVS_RSH=ssh
 # Have cdable_vars set in zsh, so don't need 'hash -d' in front of these
 # and can be reused from any shell
 RP=/usr/src/redhat/RPMS
-I3=/usr/src/redhat/RPMS/i386
-I4=/usr/src/redhat/RPMS/i486
-I5=/usr/src/redhat/RPMS/i586
-I6=/usr/src/redhat/RPMS/i686
-NA=/usr/src/redhat/RPMS/noarch
+I3=$RP/i386
+I4=$RP/i486
+I5=$RP/i586
+I6=$RP/i686
+NA=$RP/noarch
 SR=/usr/src/redhat/SRPMS
 SP=/usr/src/redhat/SPECS
 SO=/usr/src/redhat/SOURCES
