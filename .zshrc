@@ -161,6 +161,20 @@ if [[ $ZSH_VERSION == 3.0.<6->* || $ZSH_VERSION_TYPE == 'new' ]]; then
 fi
 
 # }}}
+
+# {{{ Search for history loosing bug
+
+_check_hist_size () {
+  fc_out=( $(fc -l -1) )
+  if (( "$fc_out[1]" < 500 )); then
+    print "\nWARNING: Small history ($fc_out[1]) detected\!"
+  fi
+}
+
+#_check_hist_size
+
+# }}}
+
 # {{{ Environment
 
 zshrc_load_status 'setting environment'
@@ -566,10 +580,12 @@ alias l='ls -l'
 alias la='ls -la'
 alias lsa='ls -a'
 alias lsh='ls -d .*'
+alias lsr='ls -R'
 alias ld='ls -ld'
 alias lt='ls -lt'
 alias lrt='ls -lrt'
 alias lart='ls -lart'
+alias lr='ls -lR'
 # damn, missed out lsd :-)
 alias sl=ls # often screw this up
 
@@ -898,5 +914,11 @@ if [[ -n "$ZSH_PROFILE_RC" ]]; then
   zprof >! ~/zshrc.zprof
   exit
 fi
+
+# }}}
+
+# {{{ Search for history loosing bug
+
+#_check_hist_size
 
 # }}}
