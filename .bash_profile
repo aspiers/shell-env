@@ -9,7 +9,8 @@
 . ~/.switch_shell
 
 # User specific environment and startup programs
-for newpath in ~/bin ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
+for newpath in ~/bin ~/bin/{shortcuts,palm,backgrounds} \
+               ~/local/bin /sbin /usr/sbin /usr/local/sbin; do
   [ -d $newpath ] && PATH=$newpath:$PATH
 done
 
