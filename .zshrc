@@ -796,7 +796,9 @@ alias tf='less +F'
 # {{{ Paging with less / head / tail
 
 alias -g L='| less'
+alias -g LS='| less -S'
 alias -g EL='|& less'
+alias -g ELS='|& less -S'
 alias -g H='| head -20'
 alias -g T='| tail -20'
 
