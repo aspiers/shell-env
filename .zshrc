@@ -391,7 +391,7 @@ hosts=(
 ### BEGIN PRIVATE
     # guideguide
     proxy.london.guideguide.com 194.203.206.225
-    aviator.guideguide.com
+    {aviator,vaeth}.guideguide.com
 
     # plig
     {,riffraff.}plig.net
