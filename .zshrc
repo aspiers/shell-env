@@ -273,8 +273,6 @@ zstyle ':completion:*' completer _complete _correct _approximate _prefix
 zstyle ':completion::prefix-1:*' completer _complete
 zstyle ':completion:incremental:*' completer _complete _correct
 zstyle ':completion:predict:*' completer _complete
-# Cache functions created by _regex_arguments
-zstyle ':completion:*' cache-path ~/.zsh/.cache-path
 
 # Expand partial paths
 zstyle ':completion:*' expand 'yes'
