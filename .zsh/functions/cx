@@ -25,9 +25,13 @@ cx () {
     title_host=$long_host
   fi
 
+  # Ensure the typeset -gT doesn't result in title=( '' )
+  [[ -z "$TITLE"  ]] && unset TITLE
+  [[ -z "$ITITLE" ]] && unset ITITLE
+
   if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
-    (( $+title )) || typeset -gT TITLE title
-    (( $+title )) || typeset -gT ITITLE ititle
+    (( $+title  )) || typeset -gT  TITLE  title
+    (( $+ititle )) || typeset -gT ITITLE ititle
   fi
 
   : ${TITLE_SHLVL:=$SHLVL}
@@ -35,10 +39,10 @@ cx () {
 
   if [[ "$SHLVL" != "$TITLE_SHLVL" ]]; then
     # We've changed shell; assume that the most recently pushed entry
-    # is the starting piont for the new shell.
+    # is the starting point for the new shell.
     TITLE_SHLVL=$SHLVL
-    [[  ${(t)title} == 'array' ]] &&  title=( "$title[1]" )
-    [[ ${(t)ititle} == 'array' ]] && ititle=( "$ititle[1]" )
+    [[  ${(t)title} == 'array' ]] && [[ -n "$TITLE"  ]] &&  title=( "$TITLE"  )
+    [[ ${(t)ititle} == 'array' ]] && [[ -n "$ITITLE" ]] && ititle=( "$ITITLE" )
   fi
 
   suffix="$USERNAME@${title_host}"
