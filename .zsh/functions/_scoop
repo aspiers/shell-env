@@ -1,0 +1,7 @@
+#compdef scoop
+
+local expl
+_description files expl 'Sitescooper site file'
+_files "$@" "$expl[@]" \
+  -W ~/.sitescooper/sites
+#  -W ~adams/palm/browsers/sitescooper-cvs/site_samples

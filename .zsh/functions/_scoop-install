@@ -1,0 +1,5 @@
+#compdef scoop-install
+
+local expl
+_description files expl 'Sitescooper-generated pdbs'
+_files "$@" "$expl[@]" -W ~/.sitescooper/pdb
