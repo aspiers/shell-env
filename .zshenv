@@ -36,7 +36,8 @@ export ZDOTDIR="$zdotdir"
 typeset -U path
 
 path=( $path /usr/local/bin /usr/local/sbin /usr/sbin /sbin )
-path=( $zdotdir/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
+# notice nasty hack for old zsh
+path=( $zdotdir/{[l]ocal/bin,[p]ackbin,[b]in,[b]in/{backgrounds,palm,shortcuts}}(N) $path )
 
 # }}}
 # {{{ Perl libraries
@@ -45,10 +46,11 @@ path=( $zdotdir/{packbin,bin,bin/{backgrounds,palm,shortcuts}}(N) $path )
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
-          ~/lib/perl5{/site_perl,}{/5.*,}{/i?86*,}(NOn)
-          ~/lib/perl5(N)
+          ~/lib/[p]erl5{/site_perl,}{/5.*,}{/i?86*,}(N)
+          ~/lib/[p]erl5(N)
           $perl5lib
          )
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] && PERL5LIB="${(j/:/)perl5lib}"
 
 # }}}
 # {{{ Ruby libraries
@@ -57,10 +59,11 @@ perl5lib=(
 typeset -U rubylib
 export RUBYLIB
 rubylib=( 
-          ~/lib/ruby{/site_ruby,}{/1.*,}{/i?86*,}(NOn)
-          ~/lib/ruby(N)
+          ~/lib/[r]uby{/site_ruby,}{/1.*,}{/i?86*,}(N)
+          ~/lib/[r]uby(N)
           $rubylib
          )
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] && RUBYLIB="${(j/:/)rubylib}"
 
 # }}}
 
