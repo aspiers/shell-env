@@ -190,8 +190,8 @@ WORDCHARS=''
 # {{{ Save a large history
 
 HISTFILE=~/.zshhistory
-HISTSIZE=5000
-SAVEHIST=5000
+HISTSIZE=3000
+SAVEHIST=3000
 
 # }}}
 # {{{ Maximum size of completion listing
@@ -286,7 +286,7 @@ compstyle '*:matches' group 'yes'
 
 # Describe each match group.
 # This one assumes that your terminal has a dark background.
-compstyle '*:descriptions' format "$fg_bold[white]%d$fg[white]"
+compstyle '*:descriptions' format "$fg_bold[white]%d$fg_no_bold[white]"
 
 # Describe options in full
 compstyle '*:options' description 'yes'
@@ -312,7 +312,11 @@ compstyle '*:history-words' remove_all_dups 'yep'
 # }}}
 # {{{ Common hostnames
 
+: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+
 hosts=(
+    "$_etc_hosts[@]"
+
     localhost
 
 ### BEGIN PRIVATE
@@ -627,6 +631,11 @@ alias sd='export DISPLAY=:0.0'
 # }}}
 # {{{ Other programs
 
+# {{{ less
+
+alias v=less
+
+# }}}
 # {{{ CVS
 
 if which cvs >/dev/null; then
