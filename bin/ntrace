@@ -1,0 +1,6 @@
+#!/bin/sh
+if which strace 2>&1 >/dev/null; then
+  strace -e trace=network "$@"
+else
+  echo strace not found
+fi
