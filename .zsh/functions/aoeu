@@ -5,7 +5,7 @@ if tty | grep -q tty; then
   (( $EUID == 0 )) && prefix=sudo
   $prefix loadkeys /usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
 else
-  xmodmap ~/.keymaps/previous
+  xmodmap ~/.keymaps/X11/previous
 fi
 
 if (( $? == 0 )); then
