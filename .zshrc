@@ -591,19 +591,20 @@ alias man='nocorrect man'
 # {{{ Changing terminal window/icon titles
 
 cx () {
-  local longhost shorthost short_from_opts
+  local long_host short_host title_host short_from_opts
 
-  shorthost=${HOST%%.*}
+  long_host=${HOST}
+  short_host=${HOST%%.*}
 
   if [[ "$1" == "-s" ]]; then
     short_from_opts=yes
     shift
   fi
 
-  if [[ ${+CX_SHORTHOSTNAMES} -eq 1 || "$short_from_opts" == "yes" ]]; then
-    longhost=$shorthost
+  if [[ ${+CX_SHORT_HOSTNAMES} -eq 1 || "$short_from_opts" == "yes" ]]; then
+    title_host=$short_host
   else
-    longhost=${HOST}
+    title_host=$long_host
   fi
 
   if [[ "$USER" != "$USERNAME" ]]; then
@@ -613,19 +614,19 @@ cx () {
 
   if [[ -z "$*" ]]; then
     # Revert window title to previous setting or default
-    : ${TITLE="$USERNAME@${longhost}"}
+    : ${TITLE="$USERNAME@${title_host}"}
     echo -n "\e]2;$TITLE\a"
 
     # Revert window icon title to previous setting or default
-    : ${ITITLE="$USERNAME@${longhost}"}
+    : ${ITITLE="$USERNAME@${short_host}"}
     echo -n "\e]1;$ITITLE\a"
   else
     # Change window title
-    TITLE="$* : $USERNAME@${longhost}"
+    TITLE="$* : $USERNAME@${title_host}"
     echo -n "\e]2;$TITLE\a"
 
     # Change window icon title
-    ITITLE="$* @ $USERNAME@${longhost}"
+    ITITLE="$* @ $USERNAME@${short_host}"
     echo -n "\e]1;$ITITLE\a"
   fi
 }
