@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 #
 # dbm -- simple DBM file reader/writer
 #
@@ -12,6 +12,7 @@
 #
 
 use strict;
+use warnings;
 
 use Fcntl qw(:DEFAULT);
 use Text::Abbrev;
