@@ -33,6 +33,7 @@ editor="${EDITOR:-${VISUAL:-vi}}"
 
 validate () {
   if [ -x "$dir/.vizrc" ]; then
+    echo "Testing validity of changes ... "
     "$dir/.vizrc" "$tmpfile" "$dir" "$file" "$viz_tmpdir"
     return $?
   fi
@@ -48,9 +49,13 @@ while [ 1 = 1 ]; do
   cmp -s "$dir/$file" "$tmpfile" || changed=y
   [ -z "$changed" ] && break
 
-  validates=
-  echo "Testing validity of changes ... "
-  validate "$tmpfile" && validates=y
+  if validate "$tmpfile"; then
+    echo "Changes validated OK."
+    validates=y
+  else
+    echo "Changes failed validation!"
+    validates=
+  fi
 
   replied=
   while [ -z "$replied" ]; do
