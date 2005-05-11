@@ -43,14 +43,15 @@ open($fh, $log) or usage("open($log) failed: $!\n");
 # Main program
 
 my $min = 0;
-my $max = -s $fh;
+my $size = -s $fh;
 
-my $pos = binary_search($min, $max, $date, \&log_read, $fh, SEQ_SEARCH_THRESHOLD);
+my $pos = binary_search($min, $size, $date, \&log_read, $fh, SEQ_SEARCH_THRESHOLD);
 my $before = $opts{before} || $opts{context};
 jump_back($fh, $before) if $before;
 
 if ($opts{position}) {
-  print tell($fh), "\n";
+  my $pos = tell $fh;
+  printf "%d %.1f%%\n", $pos, $pos / $size * 100;
 }
 else {
   if ($opts{context}) {
@@ -85,24 +86,57 @@ sub log_read {
     chomp $line;
     warn "* Read: $line\n" if $opts{verbose} > 1;
 
-    # Extract date from line
-    $line =~ /^\[?([\w\s:]{10}[\d\s:]*)/
-      or die "Couldn't parse line $. of $log: $line\n";
-    my $line_human_date = $1;
-    my $line_date = ParseDate($line_human_date);
-    if (! $line_date) {
-      die "Couldn't parse date $line_human_date on line $. of log\n"
-        if $opts{strict};
+    my $rpos = readable_pos($newpos, $size);
+    my ($line_human_date, $line_date) = parse_date_from_line($line, $rpos);
 
-      # If we're not being strict, keep chewing lines till we find a date.
-      warn "*  Ignoring line \n" if $opts{verbose} > 1;
-      retry READLINE;
+    unless ($line_date) {
+      # If we're not being strict, keep chewing lines till we find a
+      # date. 
+      warn "*  Ignoring line $rpos: $line\n" if $opts{verbose} > 1;
+      redo READLINE;
     }
-
+  
     # Now let Search::Binary do the hard work.
     warn "* Jumped to: $line_human_date ($newpos bytes)\n" if $opts{verbose};
     return (Date_Cmp($date, $line_date), $newpos);
   }
+}
+
+sub parse_date_from_line {
+  my ($line, $rpos) = @_;
+
+  my $line_human_date = extract_date_from_line($line, $rpos);
+  if (! $line_human_date) {
+    die "Couldn't extract date from line @ $pos bytes\n$line\n"
+      if $opts{strict};
+    return;
+  }
+
+  warn "* Extracted date '$line_human_date' from line $rpos\n"
+    if $opts{verbose} > 2;
+
+  my $line_date = ParseDate($line_human_date);
+  if (! $line_date) {
+    die "Couldn't parse date $line_human_date on line $rpos\n"
+      if $opts{strict};
+    return;
+  }
+
+  return ($line_human_date, $line_date);
+}
+  
+sub extract_date_from_line {
+  my ($line, $rpos) = @_;
+  # FIXME: make pattern "sticky"
+
+  # syslog, Apache error log
+  return $1 if $line =~ /^\[?([\w\s:]{10}[\d\s:]*)/;
+
+  # Apache access log
+  return $1 if $line =~ /^(?:\S+| ) \S+ \S+ \[(.+?)\]/;
+
+  # TODO: Add more patterns here.
+  return undef;
 }
 
 sub jump_back {
@@ -154,6 +188,11 @@ sub jump_back {
   }
 }
 
+sub readable_pos {
+  my ($pos, $size) = @_;
+  return sprintf "@ %d bytes (%.1f%%)", $pos, $pos / $size * 100;
+}
+
 sub usage {
   warn @_, "\n" if @_;
   die <<EOUSAGE;
@@ -180,3 +219,5 @@ Options:
   -v, --verbose      See binary search in action (repeat to increase verbosity)
 EOUSAGE
 }
+
+  
