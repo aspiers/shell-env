@@ -13,10 +13,17 @@ expect {
         }
         exp_continue
     }
-    "root]#" {
+
+    " root]#" {
         send "/home/aspiers/bin/zsh\n"
         interact
     }
+
+    " root#" {
+        send "/home/aspiers/bin/zsh\n"
+        interact
+    }
+
     -re "root@loneqegen.cb. ~]# " {
         send "adam\n"
         interact
@@ -24,7 +31,7 @@ expect {
 
     # Match prompts here
     {\$} interact
-    -re "\n# ?$" {
+    -re "\n(root@\[a-z\]+ )?# ?$" {
         # Solaris box :-(
         send "bash\rset -o emacs\r"
         interact
