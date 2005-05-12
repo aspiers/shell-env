@@ -24,12 +24,15 @@ foreach my $i (0 .. $#ARGV) {
   $ARGV[$i] =~ s/^-(\d+)$/-C$1/ and last;
 }
 
-GetOptions(\%opts, 'before|B=s', 'context|C=i', 'position|p', 'strict|s', 'verbose|v+')
-  or usage();
+GetOptions(
+  \%opts,
+  'before|B=s', 'context|C=i', 'position|p', 'strict|s', 'verbose|v+',
+) or usage();
 usage("Invalid NUM '$opts{before}' for -b/--before")
   unless ($opts{before} || '5') =~ /^\d+(b|k|m|G)?$/;
 usage("Can't have both --before and --context")
   if $opts{before} and $opts{context};
+usage() if $opts{help} or @ARGV != 2;
 
 my ($human_date, $log) = @ARGV;
 
@@ -199,9 +202,10 @@ sub usage {
 Usage: $0 [options] DATE_EXPR LOGFILE
 
 Using binary search to cope with huge files, outputs log file starting
-at first line with a datestamp matching DATE_EXPR.  A few common datestamp
-formats are supported.  DATE_EXPR can be things
-like:
+at first line with a datestamp matching DATE_EXPR.  Currently syslog and
+Apache datestamp formats are supported, but more could easily be added.
+
+DATE_EXPR can be things like:
       May 1
       yesterday 12am
       2 weeks ago
