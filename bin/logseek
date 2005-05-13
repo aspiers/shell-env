@@ -118,6 +118,14 @@ sub log_read {
     my $newpos = tell($fh);
 
     my $line = <$fh>;
+    unless (defined $line) {
+      # Search::Binary asks for the first arg to be positive iff the
+      # value we're looking for ($date) is strictly greater than the
+      # current record's.  We hit EOF, so this must be the case.
+      warn "* Hit EOF while searching for $human_date\n" if $opts{verbose};
+      return (0, $newpos);
+    }
+
     chomp $line;
     warn "* Read: $line\n" if $opts{verbose} > 1;
 
@@ -137,6 +145,9 @@ sub log_read {
     $unparsable_lines = 0;
   
     # Now let Search::Binary do the hard work.
+    # Search::Binary asks for the first arg to be positive iff the
+    # value we're looking for ($date) is strictly greater than the
+    # current record's, 0 if equal, -1 if strictly less.
     warn "* Jumped to: $line_human_date ($newpos bytes)\n" if $opts{verbose};
     return (Date_Cmp($date, $line_date), $newpos);
   }
