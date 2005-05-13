@@ -1,5 +1,34 @@
 #!/usr/bin/perl
 
+=head1 NAME
+
+logseek - jump to a date/time within a large log file
+
+=head1 SYNOPSIS
+
+    $ logseek --help
+    $ logseek -5 'yesterday 9am' /var/log/messages
+
+=head1 DESCRIPTION
+
+Uses a binary search to rapidly seek to a particular date/time within
+a large log file.
+
+=head1 BUGS
+
+Doesn't support multiple files.  Doesn't support many timestamp
+formats.
+
+=head1 SEE ALSO
+
+grep(1), tail(1)
+
+=head1 AUTHOR
+
+Adam Spiers <logseek@adamspiers.org>
+
+=cut
+
 use strict;
 use warnings;
 
