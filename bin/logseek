@@ -78,26 +78,17 @@ open($fh, $log) or usage("open($log) failed: $!\n");
 my $min = 0;
 my $size = -s $fh;
 
-my $pos = binary_search($min, $size, $date, \&log_read, $fh, SEQ_SEARCH_THRESHOLD);
+my $pos = binary_search(
+  $min,       # minimum search boundary
+  $size,      # maximum search boundary
+  $date,      # value we're looking for
+  \&log_read, # callback from Search::Binary to find it
+  $fh,        
+  SEQ_SEARCH_THRESHOLD, # switch to sequential searching if we're this close
+);
 my $before = $opts{before} || $opts{context};
 jump_back($fh, $before) if $before;
-
-if ($opts{position}) {
-  my $pos = tell $fh;
-  printf "%d %.1f%%\n", $pos, $pos / $size * 100;
-}
-else {
-  if ($opts{context}) {
-    my $c = 0;
-    while (<$fh>) {
-      print;
-      last if ++$c >= $opts{context} * 2;
-    }
-  }
-  else {
-    print while <$fh>;
-  }
-}
+output_result($fh);
 
 exit 0;
 
@@ -245,6 +236,26 @@ sub jump_back {
 sub readable_pos {
   my ($pos, $size) = @_;
   return sprintf "@ %d bytes (%.1f%%)", $pos, $pos / $size * 100;
+}
+
+sub output_result {
+  my ($fh) = @_;
+  if ($opts{position}) {
+    my $pos = tell $fh;
+    printf "%d %.1f%%\n", $pos, $pos / $size * 100;
+  }
+  else {
+    if ($opts{context}) {
+      my $c = 0;
+      while (<$fh>) {
+        print;
+        last if ++$c >= $opts{context} * 2;
+      }
+    }
+    else {
+      print while <$fh>;
+    }
+  }
 }
 
 sub usage {
