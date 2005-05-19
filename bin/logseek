@@ -40,12 +40,15 @@ use Getopt::Long;
 use Search::Binary;
 
 # If we jump less than 512 bytes, switch to sequential searching.
-use constant SEQ_SEARCH_THRESHOLD      => 512;
-use constant UNPARSABLE_LINE_THRESHOLD => 50;
+use constant SEQ_SEARCH_THRESHOLD => 512;
 
 ###############################################################################
 # Parse options
 my %opts = ( verbose => 0, strict => 0 );
+
+# We rely on there being a timestamp at least every 500 lines.
+my $unparsable_line_threshold = 500;
+
 Getopt::Long::Configure("bundling");
 
 # Convert -5 into -C5
@@ -57,7 +60,10 @@ foreach my $i (0 .. $#ARGV) {
 GetOptions(
   \%opts,
   'before|B=s', 'context|C=i', 'position|p', 'strict|s', 'verbose|v+',
+  'threshold|t=i',
 ) or usage();
+$unparsable_line_threshold = $opts{'threshold'} if $opts{'threshold'};
+
 usage("Invalid NUM '$opts{before}' for -b/--before")
   unless ($opts{before} || '5') =~ /^\d+(b|k|m|G)?$/;
 usage("Can't have both --before and --context")
@@ -127,9 +133,9 @@ sub log_read {
       # If we're not being strict, keep chewing lines till we find a
       # date.
       warn "*  Ignoring line $rpos: $line\n" if $opts{verbose} > 1;
-      die "Hit threshold of " . UNPARSABLE_LINE_THRESHOLD .
+      die "Hit threshold of " . $unparsable_line_threshold .
           " lines without parsable timestamp; aborting.\n"
-            if ++$unparsable_lines >= UNPARSABLE_LINE_THRESHOLD;
+            if ++$unparsable_lines >= $unparsable_line_threshold;
       redo READLINE;
     }
 
@@ -275,14 +281,15 @@ DATE_EXPR can be things like:
 Run 'perldoc Date::Manip' and read the ParseDate section for more information.
 
 Options:
-  -B, --before=NUM   Print NUM lines of leading context before target line,
-                     or NUM bytes/kB/MB/GB if NUM is suffixed with b/k/M/G
-    (N.B. there is no -A or --after, use head(1) instead.)
-  -C, --context=NUM  Print NUM lines of context
-  -NUM               Same as --context=NUM
-  -p, --position     Output start position in bytes instead of the file itself
-  -s, --strict       Abort if a non-date line is found
-  -v, --verbose      See binary search in action (repeat to increase verbosity)
+  -B, --before=NUM    Print NUM lines of leading context before target line,
+                      or NUM bytes/kB/MB/GB if NUM is suffixed with b/k/M/G
+     (N.B. there is no -A or --after, use head(1) instead.)
+  -C, --context=NUM   Print NUM lines of context
+  -NUM                Same as --context=NUM
+  -p, --position      Output start position in bytes instead of the file itself
+  -s, --strict        Abort if a non-date line is found
+  -t, --threshold=NUM Assume a timestamp at least every NUM lines
+  -v, --verbose       See binary search in action (repeat to increase verbosity)
 EOUSAGE
 }
 
