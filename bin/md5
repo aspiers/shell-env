@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$OSTYPE" in
+  
+  solaris*) # DON'T DO THIS - JUST INCLUDE md5sum BUILD IN ~/local/solaris
+            exec cksum "$@"
+            ;;
+
+         *) exec md5sum "$@"
+            ;; 
+esac
