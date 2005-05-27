@@ -4,22 +4,70 @@
 # .shared_env, and so has to work when source'd from
 # any sh-compatible shell.  Well, any sensible sh.
 
-# Example:
+# Example usage:
 #
 #   run_local_hooks .shared_env
 #
-# would check for files in this order:
+# would be the last thing executed by ${ZDOTDIR:-$HOME}/.shared_env,
+# and would check for files in this order:
 #
-# FIXME: work in progress
-#
-#   1. $ZDOTDIR/.shared_env.local
-#   2. $ZDOTDIR/.shared_env.h:HOSTNAME
-#   3. $ZDOTDIR/.shared_env.u:USERNAME
-#   4. $HOME/.shared_env.local
-#   5. $HOME/.shared_env.h:HOSTNAME
-#   6. $HOME/.shared_env.u:USERNAME
+#   * $ZDOTDIR/.shared_env.i:${ZDOTUSER:-$USERNAME}
+#   * $ZDOTDIR/.shared_env.h:HOSTNAME
+#   * $HOME/.shared_env.local
+#   * $HOME/.shared_env.i:${ZDOTDIR:-$USERNAME}
+#   * $HOME/.shared_env.h:HOSTNAME
 #
 # i.e. from least specific to most specific.
+#
+# Ditto for .zshrc, .bashrc etc.
+#
+# Requirements and rationale for search algorithm:
+#
+#  * Must allow me to share config with friends.  Accomplished by setting
+#    ZDOTDIR to point to my home directory when running as another uid.
+#    (We use the parameter name 'ZDOTDIR' because zsh supports it natively
+#    when looking for core start-up files, defaulting to $HOME if it's not
+#    set.  But we extend the usage of the ZDOTDIR concept via this file
+#    to include our own non-core start-up files such as .shared_env.)
+#
+#  * When others use my config, their environment must not be polluted with
+#    stuff specific to me.  Accomplished by keeping all personal stuff in
+#    the .${dotfile}.i:$INDIVIDUAL_UUID namespace, where $INDIVIDUAL_UUID
+#    is something globally unique like the individual's email address.
+#    (In my case, 'aspiers' is almost certainly "unique enough" for practical
+#    purposes, if that expression's not too much of an oxymoron.)
+#
+#  * Must allow me to switch uid and still use config.  Accomplished by
+#    setting ZDOTDIR=~aspiers and ZDOTUSER to my chosen $INDIVIDUAL_UUID
+#    value.
+#
+#  * Must allow per-uid config which would potentially span machines if home
+#    directories are shared (e.g. on NFS).  It makes obvious sense to put any
+#    uid-config in the uid's home directory.  We call it ".${dotfile}.local"
+#    to reflect that it's local to the current uid.
+# 
+#  * Inheritance should be used wherever possible, i.e. ensuring that more
+#    settings for specific contexts can override less specific contexts by
+#    being loaded later.
+#
+# Other considerations:
+#
+#  * Current search order doesn't allow specific contexts to override
+#    decisions made in less specific contexts without coupling more specific
+#    contexts to knowledge of the consequences of those decisions (i.e.
+#    you have to know what effects to manually reverse).
+#
+#  * Finer granularity (more, smaller files) allows easier overriding
+#    in specific contexts which solves above issue and makes other
+#    things better e.g. setting users/hosts to complete.  But could be
+#    prohibitively slow over NFS unless we do some kind of prior
+#    compilation into 1 big .zwc ?
+#
+#  * Would be nice to provide user with list of things which can be overridden.
+#  
+#  * ZDOTDIR=~aspiers reduces root privilege a lot since trust level
+#    for NFS write access to ~aspiers is only by anyone who can get a
+#    port < 1024.
 
 DEBUG_LOCAL_HOOKS=1
 
