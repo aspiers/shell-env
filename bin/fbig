@@ -2,4 +2,9 @@
 
 # Find big files
 
-exec ls -alFR "$@" | grep '^-' | sort -rn -k5 | less -r
+if [ -t 0 ]; then
+  exec ls -alFR "$@" | grep '^-' | sort -rn -k5 | less -r
+else
+  # assume we're filtering output from find -ls
+  sort -nr -k7 | less
+fi
