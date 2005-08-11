@@ -177,7 +177,13 @@ export REPLYTO='adam@spiers.net (Adam Spiers)'
 # {{{ Palm Pilot
 
 export PILOTRATE=115200
-export PILOTPORT=/dev/pilot
+
+# for old devices, assuming a symlink to /dev/ttyS0 or /dev/ttyUSB1 or similar
+#export PILOTPORT=/dev/pilot
+
+# for newer devices, requires newer pilot-link linked to libpisock
+# (build with --enable-libusb)
+export PILOTPORT=usb:
 
 # }}}
 # {{{ rsync uses ssh
