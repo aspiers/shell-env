@@ -30,6 +30,12 @@ foreach my $path (@ARGV) {
 
 sub abs_path {
   my $path = shift;
+
+  # The below was written during my "don't comment unobvious stuff"
+  # phase, so I can't remember what the hell it does on top of
+  # Cwd::abs_path().  Attempting to find out by just using
+  # Cwd::abs_path() and seeing what breaks.
+  return Cwd::abs_path($path);
   
   -d $path and return Cwd::abs_path($path);
 
@@ -43,7 +49,10 @@ sub abs_path {
   while (-l $path) {
     $path = File::Spec->rel2abs(readlink $path, $dir);
     $path = File::Spec->canonpath($path);
-    1 while $path =~ s!/[^/]+/\.\./!/!g; # can't believe canonpath doesn't do this
+
+    # canonpath deliberately doesn't do this; RTFM
+    1 while $path =~ s!/[^/]+/\.\./!/!g;
+
     ($dir, $file) = $path =~ m!(.+)/(.+)!;
     $dir = Cwd::abs_path($dir);
   }
