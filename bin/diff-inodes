@@ -22,7 +22,7 @@ Usage: dump-inodes SRCDIR | $me [options] DSTDIR
 
 General options:
       --patch    Apply the changes rather than just reporting differences
-  -v, --verbose
+  -v, --verbose  Increase verbosity (can be repeated)
   -h, --help
  
 Selecting which inode fields to check/apply:
@@ -56,32 +56,32 @@ while (<STDIN>) {
     next;
   }
 
-  if ($opts{verbose}) {
+  if ($opts{patch} ? $opts{verbose} >= 2 : $opts{verbose}) {
     print "# ", $data->{file}, "\n";
   }
 
   if ($opts{uids} and $st->uid != $data->{uid}) {
-    if ($opts{apply}) {
-      chown $data->{uid}, -1, $data->{file}
-        or warn "chown($data->{uid}, $data->{file}) failed: $!\n";
-    }
-    else {
+    if (! $opts{patch} || $opts{verbose}) {
       printf "chown %s %s # %s (%s) -> %s\n",
         $data->{uid}, $data->{file},
         $st->uid, uid2user($st->uid),
         $data->{user};
     }
+    if ($opts{patch}) {
+      chown $data->{uid}, -1, $data->{file}
+        or warn "chown($data->{uid}, $data->{file}) failed: $!\n";
+    }
   }
   if ($opts{gids} and $st->gid != $data->{gid}) {
-    if ($opts{apply}) {
-      chown -1, $data->{gid}, $data->{file}
-        or warn "chown($data->{gid}, $data->{file}) failed: $!\n";
-    }
-    else {
+    if (! $opts{patch} || $opts{verbose}) {
       printf "chgrp %s %s # %s (%s) -> %s\n",
         $data->{gid}, $data->{file},
         $st->gid, gid2group($st->gid),
         $data->{group};
+    }
+    if ($opts{patch}) {
+      chown -1, $data->{gid}, $data->{file}
+        or warn "chown($data->{gid}, $data->{file}) failed: $!\n";
     }
   }
 
@@ -90,12 +90,12 @@ while (<STDIN>) {
     my $mode = sprintf("%lo", $st->mode & 07777);
     # mode from text file in $data is a standard string e.g. '664'
     if ($mode ne $data->{mode}) {
-      if ($opts{apply}) {
+      if (! $opts{patch} || $opts{verbose}) {
+        printf "chmod %s %s # was %s\n", $data->{mode}, $data->{file}, $mode;
+      }
+      if ($opts{patch}) {
         chmod oct($data->{mode}), $data->{file}
           or warn "chmod($data->{mode}, $data->{file}) failed: $!\n";
-      }
-      else {
-        printf "chmod %s %s # was %s\n", $data->{mode}, $data->{file}, $mode;
       }
     }
   }
@@ -103,12 +103,12 @@ while (<STDIN>) {
   if ($opts{atimes}) {
     die "not yet";
     if ($data->{atime} != $st->atime) {
-      if ($opts{apply}) {
+      if (! $opts{patch} || $opts{verbose}) {
+        print "touch -ac -d FIXME $data->{file}";
+      }
+      if ($opts{patch}) {
         # leave mtime as it was
         utime $data->{atime}, $st->mtime, $data->{file};
-      }
-      else {
-        print "touch -ac -d FIXME $data->{file}";
       }
     }
   }
@@ -116,12 +116,12 @@ while (<STDIN>) {
   if ($opts{mtimes}) {
     die "not yet";
     if ($data->{mtime} != $st->mtime) {
-      if ($opts{apply}) {
+      if (! $opts{patch} || $opts{verbose}) {
+        print "touch -mc -d FIXME $data->{file}";
+      }
+      if ($opts{patch}) {
         # leave atime as it was
         utime $st->atime, $data->{mtime}, $data->{file};
-      }
-      else {
-        print "touch -mc -d FIXME $data->{file}";
       }
     }
   }
@@ -154,8 +154,8 @@ sub process_opts {
   Getopt::Long::Configure('bundling');
   GetOptions(
     \%opts,
-    'apply',
-    'verbose|v',
+    'patch',
+    'verbose|v+',
     'help|h',
     'uids|u', 'gids|g', 'modes|m',
     'atimes|A', 'mtimes|M',
