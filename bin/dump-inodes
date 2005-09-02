@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+if [ $# != 1 ]; then
+  echo "Usage: $0 DIR" >&2
+fi
+
+if ! cd "$1"; then
+  echo "Failed to cd to $1" >&2
+  exit 1
+fi
+
+# Try to avoid crappy broken pipe errors when piping through head etc.
+
+# Bah, this hangs it
+#trap '' PIPE
+
+nop () {
+  :
+  exit 0
+}
+# this doesn't work either
+trap nop PIPE
+
+# line-based output format
+echo '# file:user:uid:group:gid:mode:atime:ctime:mtime'
+find . -printf "%p:%u:%U:%g:%G:%m:%A@:%C@:%T@\n"
+
+# paragraph-based output format
+#find . -printf "file %p\nuser %u\nuid %U\ngroup %g\ngid %G\nmode %m\natime %A@\nctime %C@\nmtime %T@\n\n"
