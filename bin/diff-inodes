@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Compares output of dump-perms with inode details in another tree.
+# Compares output of dump-inodes with inode details in another tree.
 #
 # TODO:
 #   - Options for controlling which inode fields get checked
@@ -18,10 +18,10 @@ use Getopt::Long;
 sub usage {
   my $me = basename($0);
   die <<EOF;
-Usage: dump-perms SRCDIR | $me [options] DSTDIR
+Usage: dump-inodes SRCDIR | $me [options] DSTDIR
 
 General options:
-      --apply    Apply the changes rather than just reporting differences
+      --patch    Apply the changes rather than just reporting differences
   -v, --verbose
   -h, --help
  
