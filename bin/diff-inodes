@@ -40,8 +40,8 @@ EOF
 my %opts;
 process_opts();
 
-chdir($ARGV[0]) or die "chdir($ARGV[0]) failed: $!\n";
-
+my $dir = $ARGV[0];
+chdir($dir) or die "chdir($dir) failed: $!\n";
 
 my $FORMAT = 'line';
 $/ = "" if $FORMAT eq 'para'; # one paragraph corresponds to one file
@@ -52,7 +52,7 @@ while (<STDIN>) {
   
   my $st = stat($data->{file});
   unless ($st) {
-    warn "No such file $data->{file}\n";
+    warn "No such file $data->{file} in $dir\n";
     next;
   }
 
