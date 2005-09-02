@@ -1,0 +1,190 @@
+#!/usr/bin/perl
+#
+# Compares output of dump-perms with inode details in another tree.
+#
+# TODO:
+#   - Options for controlling which inode fields get checked
+#   - Option  for applying the differences rather than just reporting them
+#   - Option  to increase verbosity to see progress (defaults to no output
+#     if no changes required).
+
+use strict;
+use warnings;
+
+use File::stat;
+use File::Basename;
+use Getopt::Long;
+
+sub usage {
+  my $me = basename($0);
+  die <<EOF;
+Usage: dump-perms SRCDIR | $me [options] DSTDIR
+
+General options:
+      --apply    Apply the changes rather than just reporting differences
+  -v, --verbose
+  -h, --help
+ 
+Selecting which inode fields to check/apply:
+
+  -u, --uids     Check/apply uids
+  -g, --gids     Check/apply gids
+  -m, --modes    Check/apply modes
+  -A, --atimes   Check/apply access times
+  -M, --mtimes   Check/apply modify times
+
+Defaults to uids, gids, and modes.
+EOF
+}
+
+my %opts;
+process_opts();
+
+chdir($ARGV[0]) or die "chdir($ARGV[0]) failed: $!\n";
+
+
+my $FORMAT = 'line';
+$/ = "" if $FORMAT eq 'para'; # one paragraph corresponds to one file
+
+while (<STDIN>) {
+  my $data = parse_line($_);
+  next unless $data;
+  
+  my $st = stat($data->{file});
+  unless ($st) {
+    warn "No such file $data->{file}\n";
+    next;
+  }
+
+  if ($opts{verbose}) {
+    print "# ", $data->{file}, "\n";
+  }
+
+  if ($opts{uids} and $st->uid != $data->{uid}) {
+    if ($opts{apply}) {
+      chown $data->{uid}, -1, $data->{file}
+        or warn "chown($data->{uid}, $data->{file}) failed: $!\n";
+    }
+    else {
+      printf "chown %s %s # %s (%s) -> %s\n",
+        $data->{uid}, $data->{file},
+        $st->uid, uid2user($st->uid),
+        $data->{user};
+    }
+  }
+  if ($opts{gids} and $st->gid != $data->{gid}) {
+    if ($opts{apply}) {
+      chown -1, $data->{gid}, $data->{file}
+        or warn "chown($data->{gid}, $data->{file}) failed: $!\n";
+    }
+    else {
+      printf "chgrp %s %s # %s (%s) -> %s\n",
+        $data->{gid}, $data->{file},
+        $st->gid, gid2group($st->gid),
+        $data->{group};
+    }
+  }
+
+  if ($opts{modes}) {
+    # mode from File::stat is a genuine number:
+    my $mode = sprintf("%lo", $st->mode & 07777);
+    # mode from text file in $data is a standard string e.g. '664'
+    if ($mode ne $data->{mode}) {
+      if ($opts{apply}) {
+        chmod oct($data->{mode}), $data->{file}
+          or warn "chmod($data->{mode}, $data->{file}) failed: $!\n";
+      }
+      else {
+        printf "chmod %s %s # was %s\n", $data->{mode}, $data->{file}, $mode;
+      }
+    }
+  }
+
+  if ($opts{atimes}) {
+    die "not yet";
+    if ($data->{atime} != $st->atime) {
+      if ($opts{apply}) {
+        # leave mtime as it was
+        utime $data->{atime}, $st->mtime, $data->{file};
+      }
+      else {
+        print "touch -ac -d FIXME $data->{file}";
+      }
+    }
+  }
+
+  if ($opts{mtimes}) {
+    die "not yet";
+    if ($data->{mtime} != $st->mtime) {
+      if ($opts{apply}) {
+        # leave atime as it was
+        utime $st->atime, $data->{mtime}, $data->{file};
+      }
+      else {
+        print "touch -mc -d FIXME $data->{file}";
+      }
+    }
+  }
+}
+
+sub parse_line {
+  $_ = shift;
+  my %data;
+
+  if ($FORMAT eq 'line') {
+    # line-based output format
+    return undef if /^\s*#/;
+    @data{qw/file user uid group gid mode atime ctime mtime/}
+      = /^(.+):(\w+):(\d+):(\w+):(\d+):(\d+):(\d+):(\d+):(\d+)\s*$/
+      or die "Failed to parse line $.:\n$_";
+  }
+  elsif ($FORMAT eq 'para') {
+    # paragraph-based output format
+    %data = /^(\w+)\s+(.+?)\s*$/gm;
+    die "file not found in block:\n$_" unless $data{file};
+  }
+  else {
+    die "huh? unknown \$FORMAT $FORMAT";
+  }
+
+  return \%data;
+}
+  
+sub process_opts {
+  Getopt::Long::Configure('bundling');
+  GetOptions(
+    \%opts,
+    'apply',
+    'verbose|v',
+    'help|h',
+    'uids|u', 'gids|g', 'modes|m',
+    'atimes|A', 'mtimes|M',
+  ) or usage();
+
+  usage() if $opts{help};
+
+  die "--atimes/--mtimes not supported yet\n"
+    if $opts{atimes} || $opts{mtimes};
+  
+  usage() unless @ARGV == 1 and -d $ARGV[0];
+
+  my $any_opt = 0;
+  foreach my $opt (qw{uids gids modes atimes mtimes}) {
+    $any_opt++ if $opts{$opt};
+  }
+  if (! $any_opt) {
+    $opts{$_}++ foreach qw{uids gids modes};
+  }  
+}
+
+{
+  my %uid_cache;
+ sub uid2user {
+    return $uid_cache{$_[0]} ||= getpwuid($_[0]);
+  }
+
+  my %gid_cache;
+  sub gid2group {
+    return $gid_cache{$_[0]} ||= getgrgid($_[0]);
+  }
+}
