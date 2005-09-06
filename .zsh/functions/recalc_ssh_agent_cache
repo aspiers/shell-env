@@ -12,7 +12,7 @@ fi
 
 local pids
 pids=(
-  $( rj | awk "/^ *($USER|$UID) "'.*ssh-agent/ && ! /awk/ { print $2 }' ) 
+  $( rj | awk "/^ *($USER|$UID) "'.*ssh-agent/ && ! /awk/ { print $2 }' )
 )
 
 if (( $#pids > 1 )); then
@@ -51,34 +51,44 @@ fi
 #   return 1
 # fi
 
-sockets=( /tmp/ssh-*/*(=U) )
-if (( $#sockets == 0 )); then
+_sockets=( /tmp/ssh-*/*(=U) )
+
+if (( $#_sockets == 0 )); then
   echo "No sockets found; aborting."
   return 1
-elif (( $#sockets > 1 )); then
-  local -a _dead_sockets
-  echo "$#sockets sockets found:"
-  for s in "${sockets[@]}"; do
-    _lsof="`lsof $s`"
-    if [[ -z "$_lsof" ]]; then
-      echo "  $s appears dead."
-      _dead_sockets=( "${_dead_sockets[@]}" "$s" )
-    else
-      echo "  $s in use:"
-      echo "${(F@)${(f)_lsof}//(#s)/    }"
-      # does the same as:
-      #   echo "$lsof" | sed -e 's/^/    /'
-      # by splitting at \n into an array, substituting start
-      # of each element for '    ' and rejoining with \n.
-    fi
-  done
-  if (( $#_dead_sockets > 0 )); then
-    echo "Action:\n  rm $_dead_sockets"
-    rm "$_dead_sockets[@]"
+fi
+
+local -a _dead_sockets _live_sockets
+echo "$#_sockets _sockets found:"
+for s in "${_sockets[@]}"; do
+  _lsof="`lsof $s`"
+  if [[ -z "$_lsof" ]]; then
+    echo "  $s appears dead."
+    _dead_sockets=( "${_dead_sockets[@]}" "$s" )
+  elif [[ "$_lsof" == *sshd* ]]; then
+    echo "  $s used for agent forwarding:"
+    echo "${(F@)${(f)_lsof}//(#s)/    }" # see below
+  else
+    echo "  $s in use:"
+    echo "${(F@)${(f)_lsof}//(#s)/    }"
+    # does the same as:
+    #   echo "$lsof" | sed -e 's/^/    /'
+    # by splitting at \n into an array (f), substituting start
+    # of each element (#s) for '    ' and rejoining with \n (F).
+    _live_sockets=( "${_live_sockets[@]}" "$s" )
   fi
+done
+
+if (( $#_dead_sockets > 0 )); then
+  echo "Removing dead sockets:\n  rm $_dead_sockets"
+  rm "$_dead_sockets[@]"
+fi
+
+if (( $#_live_sockets != 1 )); then
+  echo "BUG?  Didn't find a unique live socket" >&2
   return 1
 fi
-: ${SSH_AUTH_SOCK:=$sockets[0]}
 
+: ${SSH_AUTH_SOCK:=$_live_sockets[0]}
 write_ssh_agent_cache
 return 0
