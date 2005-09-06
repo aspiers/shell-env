@@ -59,7 +59,7 @@ if (( $#_sockets == 0 )); then
 fi
 
 local -a _dead_sockets _live_sockets
-echo "$#_sockets _sockets found:"
+echo "$#_sockets sockets found:"
 for s in "${_sockets[@]}"; do
   _lsof="`lsof $s`"
   if [[ -z "$_lsof" ]]; then
