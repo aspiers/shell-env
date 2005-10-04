@@ -14,6 +14,8 @@ use File::Spec;
 use FindBin qw($RealScript);
 use Getopt::Long;
 
+use Sh qw(abs_path_by_chasing abs_path_by_chdir);
+
 my %opts = ();
 GetOptions(\%opts, 'help|h');
 
@@ -25,37 +27,6 @@ USAGE
 
 foreach my $path (@ARGV) {
   $path = "./$path" if $path !~ m!/!;
-  print abs_path($path), "\n";
+  print abs_path_by_chasing($path), "\n";
 }
 
-sub abs_path {
-  my $path = shift;
-
-  # The below was written during my "don't comment unobvious stuff"
-  # phase, so I can't remember what the hell it does on top of
-  # Cwd::abs_path().  Attempting to find out by just using
-  # Cwd::abs_path() and seeing what breaks.
-  return Cwd::abs_path($path);
-  
-  -d $path and return Cwd::abs_path($path);
-
-  my ($vol, $dir, $file) = File::Spec->splitpath($path);
-  # Don't know how to handle volumes.
-  die "$0: splitpath returned vol '$vol'\n" if $vol;
-
-  $dir = Cwd::abs_path($dir);
-
-  # keep chasing links until we arrive at a non-link
-  while (-l $path) {
-    $path = File::Spec->rel2abs(readlink $path, $dir);
-    $path = File::Spec->canonpath($path);
-
-    # canonpath deliberately doesn't do this; RTFM
-    1 while $path =~ s!/[^/]+/\.\./!/!g;
-
-    ($dir, $file) = $path =~ m!(.+)/(.+)!;
-    $dir = Cwd::abs_path($dir);
-  }
-
-  return "$dir/$file";
-}
