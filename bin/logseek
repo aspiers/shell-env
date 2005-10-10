@@ -186,6 +186,9 @@ sub extract_date_from_line {
   # twiki log*.txt
   return $1 if $line =~ /^\| (.\d \w\w\w \d{4} - .\d:\d\d)/;
 
+  # conserver log
+  return $1 if $line =~ /^\[(\w\w\w \w\w\w .\d \d\d:\d\d:\d\d \d\d\d\d)\]/;
+
   # TODO: Add more patterns here.
   return undef;
 }
@@ -270,8 +273,9 @@ sub usage {
 Usage: $0 [options] DATE_EXPR LOGFILE
 
 Using binary search to cope with huge files, outputs log file starting
-at first line with a linestamp matching DATE_EXPR.  Currently syslog and
-Apache linestamp formats are supported, but more could easily be added.
+at first line with a linestamp matching DATE_EXPR.  Currently syslog,
+Apache, twiki, and conserver linestamp formats are supported, but more
+could easily be added.
 
 DATE_EXPR can be things like:
       May 1
