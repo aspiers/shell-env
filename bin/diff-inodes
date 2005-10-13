@@ -22,6 +22,7 @@ Usage: dump-inodes SRCDIR | $me [options] DSTDIR
 
 General options:
       --patch    Apply the changes rather than just reporting differences
+  -e, --existing Ignore files which don't already exist in DSTDIR 
   -v, --verbose  Increase verbosity (can be repeated)
   -h, --help
  
@@ -37,7 +38,7 @@ Defaults to uids, gids, and modes.
 EOF
 }
 
-my %opts;
+my %opts = (verbose => 0);
 process_opts();
 
 my $dir = $ARGV[0];
@@ -50,9 +51,10 @@ while (<STDIN>) {
   my $data = parse_line($_);
   next unless $data;
   
-  my $st = stat($data->{file});
-  unless ($st) {
-    warn "No such file $data->{file} in $dir\n";
+  my $st = lstat($data->{file});
+  if (! $st) {
+    warn "# No such file $data->{file} in $dir\n"
+      unless $opts{existing};
     next;
   }
 
@@ -155,6 +157,7 @@ sub process_opts {
   GetOptions(
     \%opts,
     'patch',
+    'existing|e',
     'verbose|v+',
     'help|h',
     'uids|u', 'gids|g', 'modes|m',
