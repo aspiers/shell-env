@@ -209,6 +209,11 @@ export CVS_RSH=ssh
 
 # Have cdable_vars set in zsh, so don't need 'hash -d' in front of these
 # and can be reused from any shell
+
+# Notice that it's worth setting these even if they don't exist on the
+# machine they're being set on, as they could still come in handy when
+# constructing scp/rsync command-lines etc.
+
 RP=/usr/src/redhat/RPMS
 I3=$RP/i386
 I4=$RP/i486
