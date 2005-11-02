@@ -134,12 +134,6 @@ export SCREENRC=$ZDOTDIR/.screenrc
 export COLUMNS
 
 # }}}
-# {{{ LD_PRELOAD
-
-# Fix obscure gtk problem
-#LD_PRELOAD=/usr/lib/libgdk.so:/usr/lib/libgtk.so
-
-# }}}
 # {{{ OSTYPE
 
 export OSTYPE
