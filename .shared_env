@@ -47,6 +47,13 @@ fi
 
 # }}}
 
+# {{{ HOST / HOSTNAME
+
+: ${HOST:=${HOSTNAME:-`hostname`}}
+: ${HOSTNAME:=$HOST}
+export HOST HOSTNAME
+
+# }}}
 # {{{ HOME
 
 # Don't leave history files in /
@@ -224,10 +231,6 @@ NS=/etc/sysconfig/network-scripts
 # }}}
 
 # {{{ Specific to local setups
-
-: ${HOST:=${HOSTNAME:-`hostname`}}
-: ${HOSTNAME:=$HOST}
-export HOST HOSTNAME
 
 . $ZDOTDIR/.zsh/functions/run_local_hooks .shared_env
 
