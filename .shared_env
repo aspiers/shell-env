@@ -136,6 +136,7 @@ export COLUMNS
 # }}}
 # {{{ OSTYPE
 
+# Can come in handy too, if the shell sets it (bash and zsh do).
 export OSTYPE
 
 # }}}
