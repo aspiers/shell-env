@@ -85,17 +85,19 @@ PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 # ... or *do* trust system-wide PATH
 #PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
-# Note order gets reversed
-for newpath in                                        \
-               ~/local/bin                            \
-               ~/local/sbin                           \
-               ~/local/$OSTYPE/bin                    \
-               ~/bin/{shortcuts,awk,palm,backgrounds} \
-               ~/bin                                  \
-               ~/sbin                                 \
+newpaths=
+for newpath in                       \
+               ~/bin/{shortcuts,awk} \
+               ~/sbin                \
+               ~/bin                 \
+               ~/local/$OSTYPE/bin   \
+               ~/local/sbin          \
+               ~/local/bin           \
 ; do
-  [ -d $newpath ] && PATH=$newpath:$PATH
+  [ -d $newpath ] && newpaths=$newpath:$newpaths
 done
+
+PATH=$newpaths:$PATH
 
 # }}}
 # {{{ MANPATH
