@@ -107,6 +107,7 @@ PATH=$newpaths:$PATH
 # }}}
 # {{{ grep
 
+# Why would you ever want grep to treat dirs like normal files?
 export GREP_OPTIONS='--directories=skip'
 
 # }}}
