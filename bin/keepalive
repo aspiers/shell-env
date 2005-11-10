@@ -1,6 +1,9 @@
 #!/opt/perl-5.6.1/bin/perl
 #
-# Feed keystrokes to a command then interact with it as normal.
+# Keep an ssh session alive (for port forwarding).  Not sure whether
+# this is actually of use, since it's tocket's java app TCP connection
+# which needs to be kept alive and that's done via shiver-pointer on
+# the client WM.
 #
 # $Id$
 
