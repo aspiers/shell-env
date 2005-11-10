@@ -183,17 +183,19 @@ case "$OSTYPE" in
 
   *)
     # Don't trust system-wide MANPATH?  Remember what it was, for reference.
-    sysmanpath=$HOME/.sysmanpath
+    sysmanpath=$HOME/.sysmanpath.$HOST
     [ -e $sysmanpath ] || echo "$MANPATH" > $sysmanpath
     manpath=( )
+
+    # ... or *do* trust system-wide MANPATH
+    #MANPATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$MANPATH
+
     for dir in "$path[@]"; do
       [[ "$dir" == */bin ]] || continue
       mandir="${dir//\/bin//man}"
       [[ -d "$mandir" ]] && manpath=( "$mandir" "$manpath[@]" )
     done
 
-    # ... or *do* trust system-wide MANPATH
-    #MANPATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$MANPATH
     ;;
 esac
 
@@ -280,6 +282,7 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
     fi
   fi
 
+  # TopGun ssh for Palm
   if [[ $TERM == tgtelnet ]]; then
     prompt off
   fi
@@ -423,6 +426,7 @@ zstyle ':completion:*:history-words' menu yes
 # {{{ Common hostnames
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
+  # Extract hosts from /etc/hosts
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
 # _ssh_known_hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 else
@@ -430,23 +434,15 @@ else
   _etc_hosts=()
 fi
 
-hosts=(
+zsh_compl_hosts=(
     "$_etc_hosts[@]"
-
     localhost
-
-### BEGIN PRIVATE
-    adamspiers.dyndns.org
-    adamspiers.org
-    f5.mandolinarchive.com
-    coltrane.homelinux.org
-### END PRIVATE
 )
 
-zstyle ':completion:*' hosts $hosts
-
 # }}}
-# {{{ (user,host) pairs
+# {{{ (user, host) pairs
+
+run_local_hooks .zsh_user_host_pairs
 
 # All my accounts:
 #my_accounts=(
@@ -454,23 +450,11 @@ zstyle ':completion:*' hosts $hosts
 #  jbloggs@myothermachine.com
 #)
 
-### BEGIN PRIVATE
-my_accounts=(
-  adam@adamspiers.dyndns.org
-  adam@adamspiers.org
-#  security@{plato.wadham,thelonious.new,ferret.lmh}.ox.ac.uk
-  adamspiers@ssh.sourceforge.net
-)
-### END PRIVATE
-
-zstyle ':completion:*:my-accounts' users-hosts $my_accounts
-
 # Other people's accounts:
 #other_accounts=(
 #  {fred,root}@hismachine.com
 #  vera@hermachine.com
 #)
-#zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 
 # }}}
 # {{{ (host, port, user) triples for telnet
@@ -482,7 +466,6 @@ zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 #    @news-server:nntp
 #    @proxy-server:8000
 #  )
-#zstyle ':completion:*:*:telnet:*' users-hosts-ports $telnet_users_hosts_ports
 
 # }}}
 
@@ -766,7 +749,7 @@ alias dn=disown
 # {{{ History
 
 alias h='history -$LINES'
-alias hh='history 1'
+alias hh='history 1 | less'
 
 # }}}
 # {{{ Environment
@@ -989,12 +972,20 @@ alias -g A2="| awk '{print \$2}'"
 alias -g A3="| awk '{print \$3}'"
 alias -g A4="| awk '{print \$4}'"
 alias -g A5="| awk '{print \$5}'"
+alias -g A6="| awk '{print \$6}'"
+alias -g A7="| awk '{print \$7}'"
+alias -g A8="| awk '{print \$8}'"
+alias -g A9="| awk '{print \$9}'"
 alias -g EA='|& awk '
 alias -g EA1="|& awk '{print \$1}'"
 alias -g EA2="|& awk '{print \$2}'"
 alias -g EA3="|& awk '{print \$3}'"
 alias -g EA4="|& awk '{print \$4}'"
 alias -g EA5="|& awk '{print \$5}'"
+alias -g EA6="| awk '{print \$6}'"
+alias -g EA7="| awk '{print \$7}'"
+alias -g EA8="| awk '{print \$8}'"
+alias -g EA9="| awk '{print \$9}'"
 
 # }}}
 
@@ -1081,6 +1072,18 @@ fi
 
 sh_load_status 'local hooks'
 run_local_hooks .zshrc
+
+# }}}
+
+# {{{ Activate users/hosts/ports completions
+
+zstyle ':completion:*' users "$zsh_compl_users[@]"
+zstyle ':completion:*' hosts "$zsh_compl_hosts[@]"
+
+zstyle ':completion:*:my-accounts'    users-hosts "$my_accounts[@]"
+zstyle ':completion:*:other-accounts' users-hosts "$other_accounts[@]"
+
+zstyle ':completion:*:*:telnet:*' users-hosts-ports "$telnet_users_hosts_ports[@]"
 
 # }}}
 
