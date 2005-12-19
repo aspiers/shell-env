@@ -998,6 +998,7 @@ sh_load_status 'key bindings'
 
 bindkey -s '^X^Z' '%-^M'
 bindkey -s '^[H' ' --help'
+bindkey -s '^[V' ' --version'
 bindkey '^[e' expand-cmd-path
 #bindkey -s '^X?' '\eb=\ef\C-x*'
 bindkey '^[^I'   reverse-menu-complete
