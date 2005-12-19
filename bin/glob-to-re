@@ -1,12 +1,8 @@
-#!/bin/sh
+#!/usr/bin/perl -p
 
 # Filter to convert globs into regexps
 # e.g. glob-to-re ~/.cvsignore
 
-exec sed -e '
-        s/\([.{}^$]\)/\\\1/g;
-        s/\*/.*/g;
-        s/\?/./g;
-        s/^/^/;
-        s/$/$/;
-' "$@"
+use Sh 'glob_to_re';
+
+$_ = glob_to_re($_);
