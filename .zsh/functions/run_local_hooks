@@ -2,7 +2,8 @@
 
 # NOTE!  This file not only gets used by zsh, but by
 # .shared_env, and so has to work when source'd from
-# any sh-compatible shell.  Well, any sensible sh.
+# any sh-compatible shell.  Well, any standard sh;
+# we don't support csh etc. ;-)
 
 # Example usage:
 #
