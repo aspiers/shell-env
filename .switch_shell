@@ -12,55 +12,29 @@
 # . /path/to/.switch_shell [-d] [ /path/to/new_shell [ <new shell options> ]
 #    -d turns on debugging
 
+# FIXME: move shell chooser code into .ns
+
 # Give hook a .local suffix for consistency in case we need to exclude local stuff
-preferred_hook=$HOME/.preferred_shell.local
+PREFERRED_SH_HOOK_FILE=$HOME/.preferred_shell.local
 
-if [ "$1" = '-d' ]; then
-  debug=yes
-  shift
-fi
-
-myshell=
-myshell_args=
-
-if [ -n "$1" ]; then
-  myshell="$1"
-  shift
-  myshell_args="$@"
-else
-  if [ -e $preferred_hook ]; then
-    if grep '=' $preferred_hook >/dev/null 2>&1; then
-      . $preferred_hook
-#     # Sensible default shell to switch to.
-#     myshell=`which zsh` 2>/dev/null
-    else
-      echo "$preferred_hook doesn't look like a shell script; aborting shell switch" >&2
-      return 0
-    fi
-  fi
-fi
-
-if [ -n "$ZDOTDIR" ]; then
-  . "$ZDOTDIR/.shared_env"
-fi
-
-if sh_load_status "testing if we have sh_load_status" >/dev/null 2>&1; then
-  _have_sh_load_status=1
-else
-  echo "Warning: no sh_load_status" >&2
-fi
+# only switch if we're interactive
+case "$-" in
+  *i*)
+    : ;; # OK
+  *)
+    echo "Warning: tried to switch a non-interactive shell"
+    return 1
+    ;;
+esac
 
 switch_shell_debug () {
-  [ -n "$debug" ] && [ -n "$_have_sh_load_status" ] && sh_load_status "$*\n"
+  [ -n "$debug" ] || return 0
+  if [ -n "$_have_sh_load_status" ]; then
+    sh_load_status "$*\n"
+  else
+    echo "$*"
+  fi
 }
-
-if [ -z "$myshell" ]; then
-  switch_shell_debug "No shell preference found; not switching shell."
-  return 0
-fi
-
-# Very cute trick from Bart Schaefer which is a valid alternative approach
-#eval `$myshell -f -c "echo exec $myshell" || echo :` '$myshell_args'
 
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
@@ -71,6 +45,9 @@ switch_shell_safely () {
   else
     switch_shell_debug "$myshell had exit code $?, back to pid $$"
   fi
+
+  # Very cute trick from Bart Schaefer which is a valid alternative approach
+  #eval `$myshell -f -c "echo exec $myshell" || echo :` '$myshell_args'
 }
 
 switch_shell_dangerously () {
@@ -100,16 +77,56 @@ switch_shell () {
     1) # login shell, be careful
        switch_shell_safely $myshell_args
        ;;
-    *) # other shell, be risky and save memory
+    force_danger|*) # other shell, be risky and save memory
        switch_shell_dangerously $myshell_args
 #       switch_shell_safely $myshell_args
        ;;
   esac
 }
 
-# only switch if we're interactive
-case "$-" in
-  *i*) switch_shell $myshell_args ;;
-    *) echo "Warning: tried to switch a non-interactive shell" ;;
-esac
+debug=
+if [ "$1" = '-d' ]; then
+  debug=yes
+  shift
+fi
+
+# Sensible default shell to switch to.
+myshell=`which zsh` 2>/dev/null
+#myshell=
+myshell_args=
+
+if [ -n "$1" ]; then
+  # shell to switch to specified via ARGV
+  myshell="$1"
+  shift
+  myshell_args="$@"
+else
+  # get preferred shell 
+  if [ -e $PREFERRED_SH_HOOK_FILE ]; then
+    if grep '=' $PREFERRED_SH_HOOK_FILE >/dev/null 2>&1; then
+      . $PREFERRED_SH_HOOK_FILE
+    else
+      echo "$PREFERRED_SH_HOOK_FILE doesn't look like a shell script; aborting shell switch" >&2
+      return 0
+    fi
+  fi
+fi
+
+if [ -n "$ZDOTDIR" ]; then
+  . "$ZDOTDIR/.shared_env"
+fi
+
+if sh_load_status "testing if we have sh_load_status" >/dev/null 2>&1; then
+  _have_sh_load_status=1
+else
+  _have_sh_load_status=
+  #echo "Warning: no sh_load_status" >&2
+fi
+
+if [ -z "$myshell" ]; then
+  echo "No shell preference found; not switching shell." >&2
+  return 0
+fi
+
+switch_shell $myshell_args
 
