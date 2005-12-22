@@ -3,17 +3,21 @@
 # Copies the entire contents of one directory to another, even if some
 # subdirectories are common to both source and destination directories.
 #
-# Uhhh ... can't we use rsync for this, dude?  Mmmmm ... oh yeah.
-# Dumbass!
-#
 # Adam Spiers <me@adamspiers.org>
 #
+
+echo "Uhhh ... like, use rsync or unison, dumbass!" >&2
+# For true merging with overwrite, need to rewrite the below... unison is better.
+exit 1
 
 set -e
 me=`basename $0`
 
 if [ $# != 2 ]; then
-  echo "Usage: $me <src dir> <dest dir>" >&2
+  cat <<'EOF' >&2
+Usage: $me <src dir> <dest dir>
+N.B. Use rsync unless you want to avoid overwriting files in destination tree!
+EOF
   exit 1
 fi
 
@@ -44,7 +48,8 @@ fi
 
 cd "$oldpwd"
 cd "$dest"
-if ! tar xf "$temptar"; then
+# -k => keep existing files
+if ! tar -xkf "$temptar"; then
   echo "$me: failed to untar '$temptar'" >&2
   exit 1
 fi
