@@ -3,12 +3,12 @@
 # Copies the entire contents of one directory to another, even if some
 # subdirectories are common to both source and destination directories.
 #
+# This is preferred to rsync when you don't want to overwrite destination
+# files (accomplished via tar -k), and to unison when the destination
+# tree is substantially larger/different to the source tree.
+#
 # Adam Spiers <me@adamspiers.org>
 #
-
-echo "Uhhh ... like, use rsync or unison, dumbass!" >&2
-# For true merging with overwrite, need to rewrite the below... unison is better.
-exit 1
 
 set -e
 me=`basename $0`
@@ -54,5 +54,3 @@ if ! tar -xkf "$temptar"; then
   exit 1
 fi
 rm "$temptar"
-
-
