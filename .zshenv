@@ -135,8 +135,8 @@ fpath=(
 
 for dirname in $fpath; do
   case "$dirname" in
-    $zdotdir/.zsh*) fns=( $dirname/*~*~(N.x:t) ) ;;
-                 *) fns=( $dirname/*~*~(N.:t)  ) ;;
+    $zdotdir/.zsh*) fns=( $dirname/*~*~(-N.x:t) ) ;;
+                 *) fns=( $dirname/*~*~(-N.:t)  ) ;;
   esac
   (( $#fns )) && autoload "$fns[@]"
 done
