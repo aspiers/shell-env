@@ -831,7 +831,7 @@ alias vs='less -S'
 m () {
   setopt local_traps
   trap 'cxx' INT EXIT QUIT KILL
-  cx mutt
+  cx -l mutt
   mutt "$@"
 }
 
