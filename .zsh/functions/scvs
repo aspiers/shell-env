@@ -11,6 +11,7 @@ scvs () {
 Usage: scvs <tag> [ options ]
 CVSROOT=${CVSROOT-undefined}
 CVS_RSH=${CVS_RSH-undefined}
+export CVSROOT CVS_RSH
 EOF
     return
   fi
