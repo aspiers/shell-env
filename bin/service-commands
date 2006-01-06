@@ -32,8 +32,16 @@ service="$1"
 shift
 
 if [ "`id -u`" = 0 ]; then
-  exec /sbin/service "$service" $op "$@"
-else
   # 'ave a go son
-  exec sudo /sbin/service "$service" $op "$@"
+  sudo=sudo
+else
+  sudo=
+fi
+
+if [ -x /sbin/service ]; then
+  # Red Hat
+  exec $sudo /sbin/service "$service" $op "$@"
+else
+  # others, e.g. SUSE
+  exec $sudo /etc/init.d/"$service" $op "$@"
 fi
