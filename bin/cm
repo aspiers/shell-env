@@ -4,7 +4,8 @@ mode=`basename $0`
 
 if [ "$mode" = 'cm' ] && [ -z "$*" ]; then
   echo -n "Setting up handy shortcuts ..."
-  cd ~/bin
+  here=`dirname $0`
+  cd "$here"
   for mode in 400 440 444 500 550 555 \
               600 640 644 664 660 666 \
               {1,2,3,4,}{700,710,711,750,751,755,775,770,771,777}
