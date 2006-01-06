@@ -228,9 +228,11 @@ LI=/usr/src/linux
 L4=/usr/src/linux-2.4
 CV=/usr/local/cvsroot
 RC=/etc/rc.d/init.d
+ID=/etc/init.d # LSB
 VL=/var/log
 VLH=$VL/httpd
 SC=/etc/sysconfig
+SCN=/etc/sysconfig/network
 NS=/etc/sysconfig/network-scripts
 # in zsh:
 #hash -df
