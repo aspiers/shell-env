@@ -33,7 +33,7 @@ zrecompile "$@" -p -- \
   -R ~/.zcompdump  -- \
   "$_compinits[@]" \
   -M -U ~/.zsh/functions.zwc \
-        ~/.zsh/functions/*(*) \
+        ~/.zsh/functions/*(-*) \
         "$_site_funcs[@]"
 
 # This should be safe now.
