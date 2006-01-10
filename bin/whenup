@@ -1,8 +1,13 @@
 #!/bin/bash
 
 if [ $# -lt 1 ]; then
-  echo "Usage: $0 <host>"
+  echo "Usage: $0 [-a] <host>"
   exit 1
+fi
+
+if [ "$1" == '-a' ]; then
+  alertme=yes
+  shift
 fi
 
 host="$1"
@@ -16,3 +21,7 @@ case "$OSTYPE" in
          *) ping "$host" | tailfgrep -q 'bytes from'
             ;; 
 esac
+
+if [ -n "$alertme" ]; then
+  alertme "$host is pingable" &
+fi
