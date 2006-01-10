@@ -1,0 +1,15 @@
+#!/bin/bash
+
+beep
+
+if which zenity >/dev/null 2>&1; then
+  zenity --info --text "$*" && exit 0
+fi
+
+if which xmessage >/dev/null 2>&1; then
+  xmessage "$*" && exit 0
+fi
+
+# getting desperate
+echo "$*" | write `id -un`
+logger "$0: $*"
