@@ -2,12 +2,14 @@
 
 beep
 
-if which zenity >/dev/null 2>&1; then
-  zenity --info --text "$*" && exit 0
-fi
+if [ -n "$DISPLAY" ]; then
+    if which zenity >& /dev/null; then
+        zenity --info --text "$*" && exit 0
+    fi
 
-if which xmessage >/dev/null 2>&1; then
-  xmessage "$*" && exit 0
+    if which xmessage >/dev/null 2>&1; then
+        xmessage "$*" && exit 0
+    fi
 fi
 
 # getting desperate
