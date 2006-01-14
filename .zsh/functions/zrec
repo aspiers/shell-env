@@ -1,40 +1,49 @@
 #autoload
 
-_func_dir="${fpath[(r)*share/zsh*/functions*]/functions\/*/functions}"
-echo "Found site-wide functions at $_func_dir"
+_my_zrecompile () {
+    _func_dir="${fpath[(r)*share/zsh*/functions*]/functions\/*/functions}"
+    echo "Found site-wide functions at $_func_dir"
 
+    if [[ -d "$_func_dir/Completion" ]]; then
+        echo "This version was compiled with --enable-function-subdirs"
+        _compinit_dir=( $_func_dir/**/compinit )
+        _compinit_dir=${${_compinit_dir[1]}%/compinit}
+        _Completions_glob=( $_func_dir/Completion/**/_*(.N) )
+        _Prompts_glob=( $_func_dir/Prompts/prompt*(.) )
+        _site_funcs=( "$_Completions_glob[@]" "$_Prompts_glob[@]" )
+    else
+        echo "This version was not compiled with --enable-function-subdirs"
+        _compinit_dir="$_func_dir"
+        _site_funcs=( $_func_dir/*~*.zwc*(.) )
+    fi
 
-if [[ -d "$_func_dir/Completion" ]]; then
-  echo "This version was compiled with --enable-function-subdirs"
-  _compinit_dir=( $_func_dir/**/compinit )
-  _compinit_dir=${${_compinit_dir[1]}%/compinit}
-  _Completions_glob=( $_func_dir/Completion/**/_*(.N) )
-  _Prompts_glob=( $_func_dir/Prompts/prompt*(.) )
-  _site_funcs=( "$_Completions_glob[@]" "$_Prompts_glob[@]" )
-else
-  echo "This version was not compiled with --enable-function-subdirs"
-  _compinit_dir="$_func_dir"
-  _site_funcs=( $_func_dir/*~*.zwc*(.) )
-fi
+    if [[ -w $_compinit_dir ]]; then
+        _compinits=(
+            -R $_compinit_dir/compinit -- 
+            -R $_compinit_dir/compaudit --
+            -R $_compinit_dir/compdump -- 
+        )
+    else
+        _compinits=()
+    fi
 
-if [[ -w $_compinit_dir ]]; then
-  _compinits=(
-    -R $_compinit_dir/compinit -- 
-    -R $_compinit_dir/compaudit --
-    -R $_compinit_dir/compdump -- 
-  )
-else
-  _compinits=()
-fi
+    zrecompile "$@" -p -- \
+      -R ~/.zshenv -- \
+      -R ~/.zshrc  -- \
+      -R ~/.zcompdump  -- \
+      "$_compinits[@]" \
+      -M -U ~/.zsh/functions.zwc \
+            ~/.zsh/functions/*(-*) \
+            "$_site_funcs[@]"
+}
 
-zrecompile "$@" -p -- \
-  -R ~/.zshenv -- \
-  -R ~/.zshrc  -- \
-  -R ~/.zcompdump  -- \
-  "$_compinits[@]" \
-  -M -U ~/.zsh/functions.zwc \
-        ~/.zsh/functions/*(-*) \
-        "$_site_funcs[@]"
+zrec () {
+    rm -f ~/.zcompdump*
+    compinit -C # don't perform security check
+    _my_zrecompile
 
-# This should be safe now.
-restart
+    # This should be safe now.
+    restart
+}
+
+zrec "$@"
