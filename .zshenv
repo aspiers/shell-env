@@ -58,6 +58,8 @@ fi
 
 [[ -e $zdotdir/.shared_env ]] && . $zdotdir/.shared_env
 
+sh_load_status ".zshenv already started before .shared_env"
+
 setopt extended_glob
 
 sh_load_status "search paths"
