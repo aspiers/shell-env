@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 me="service-commands"
 mode=`basename $0`
 
 if [ "$mode" = "$me" ] && [ -z "$*" ]; then
-  echo -n "Setting up handy service shortcuts ... "
   here=`dirname $0`
+  echo -n "Setting up handy service shortcuts in $here ... "
   cd "$here"
   for op in s{re,rl,st,sp,sta}; do
     if [ -e $op ]; then

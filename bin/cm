@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -e
+
 mode=`basename $0`
 
 if [ "$mode" = 'cm' ] && [ -z "$*" ]; then
-  echo -n "Setting up handy shortcuts ..."
   here=`dirname $0`
+  echo -n "Setting up handy shortcuts in $here ..."
   cd "$here"
   for mode in 400 440 444 500 550 555 \
               600 640 644 664 660 666 \
