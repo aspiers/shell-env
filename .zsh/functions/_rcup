@@ -1,3 +1,0 @@
-#compdef rcup
-
-_path_files -W ~
