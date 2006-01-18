@@ -1,19 +1,14 @@
 #autoload
 
+# Returns 0 on success
+
 export SSH_AGENT_PID=
 export SSH_AUTH_SOCK=
 
 echo "Recalculating ssh-agent info ..."
 
-if ! which rj ps >&/dev/null; then
-  echo 'rj and ps must both be present on $PATH; aborting.'
-  return 1
-fi
-
 local pids
-pids=(
-  $( rj | awk "/^ *($USER|$UID) "'.*ssh-agent/ && ! /awk/ { print $2 }' )
-)
+pids=( `pgrep -u $USER ssh-agent` )
 
 if (( $#pids > 1 )); then
   echo "$#pids pids found ($pids); aborting."
@@ -22,11 +17,13 @@ if (( $#pids > 1 )); then
 fi
 
 SSH_AGENT_PID=$pids[0]
+echo "Found a single owned ssh-agent, pid $SSH_AGENT_PID"
 
 if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
   # If interactive, prompt whether to start a new one.
-  # UPDATE: don't prompt; I always answer yes.
-  if false && [[ -t 1 ]]; then
+#   # UPDATE: don't prompt; I always answer yes.
+#   if false && [[ -t 1 ]]; then
+  if [[ -t 1 ]]; then
     echo "ssh-agent process not found; start a new one [y/N] ?"
     if read -q; then
       eval `ssh-agent`
@@ -43,40 +40,87 @@ if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
   fi
 fi
 
-# : ${SSH_AUTH_SOCK:=`lsof -p $SSH_AGENT_PID |
-#      awk '/agent-socket|^ssh-agent.*unix/ {print $NF; exit}'`}
-
-# if [ -z "$SSH_AUTH_SOCK" ]; then
-#   echo "Huh? lsof didn't do the biz; aborting ..."
-#   return 1
-# fi
-
-_sockets=( /tmp/ssh-*/*(=U) )
+_sockets=( /tmp/ssh-*/*(=UN) )
 
 if (( $#_sockets == 0 )); then
   echo "No sockets found; aborting."
   return 1
 fi
 
-local -a _dead_sockets _live_sockets
-echo "$#_sockets sockets found:"
-for s in "${_sockets[@]}"; do
-  _lsof="`lsof $s`"
-  if [[ -z "$_lsof" ]]; then
-    echo "  $s appears dead."
-    _dead_sockets=( "${_dead_sockets[@]}" "$s" )
-  elif [[ "$_lsof" == *sshd* ]]; then
-    echo "  $s used for agent forwarding:"
-    echo "${(F@)${(f)_lsof}//(#s)/    }" # see below
+local -a _dead_sockets _live_sockets socket
+echo "$#_sockets socket(s) found:"
+for socket in "${_sockets[@]}"; do
+  
+  if ! agentbin="`which ssh-agent`"; then
+    echo "Error: couldn't find ssh-agent!  Aborting."
+    return 1
   else
-    echo "  $s in use:"
-    echo "${(F@)${(f)_lsof}//(#s)/    }"
-    # does the same as:
-    #   echo "$lsof" | sed -e 's/^/    /'
-    # by splitting at \n into an array (f), substituting start
-    # of each element (#s) for '    ' and rejoining with \n (F).
-    _live_sockets=( "${_live_sockets[@]}" "$s" )
+    : echo "Found agent $agentbin"
   fi
+  if ! [[ -g "$agentbin" ]]; then
+    cat <<'EOF' >&2
+*** WARNING! ***
+
+ssh-agent is not, but should be setgid to disallow ptrace attaches
+which could result in identity theft.
+
+See https://www.redhat.com/archives/fedora-devel-list/2004-December/msg00380.html
+EOF
+    return 1
+  fi
+
+  _lsof="`lsof $socket`"
+  if [[ -z "$_lsof" ]]; then
+    # Unfortunately setgid prevents lsof from working, so we have to guess ...
+    local guessed_parent_pid
+    guessed_parent_pid="${socket##*agent.}"
+    ssh_agent_parent_pid=$( awk '{print $4}' /proc/$SSH_AGENT_PID/stat )
+    if [[ "$ssh_agent_parent_pid" == "$guessed_parent_pid" ]]; then
+      # We just matched the only running ssh-agent's pid with its socket,
+      # since the parent pids match.  (OK, so the same parent could
+      # have started two agents with two sockets having the same
+      # prefix, and then one of them died leaving a socket, and the
+      # other is still running without a socket, but that's very unlikely!)
+      _socket_status=live
+      _lsof="\$SSH_AGENT_PID's parent is $ssh_agent_parent_pid, matches socket filename $socket"
+    else
+      _socket_status=dead
+      _lsof="\$SSH_AGENT_PID's parent is $ssh_agent_parent_pid, doesn't match socket filename $socket"
+    fi
+  else
+    echo "lsof on setgid ssh-agent's socket worked???" >&2
+    if [[ "$_lsof" == *sshd* ]]; then
+      # Can this ever happen, now that we changed the pid detection
+      # from using ps | grep technique to using pidof?
+      _socket_status=fwd
+    else
+      _socket_status=live
+    fi
+  fi
+
+  case "$_socket_status" in
+    fwd)
+          echo "  $socket used for agent forwarding"
+
+          # The following code indents "$_lsof", i.e. does the same as:
+          #   echo "$lsof" | sed -e 's/^/    /'
+          # by splitting at \n into an array (f), substituting start
+          # of each element (#s) for '    ' and rejoining with \n (F).
+          [[ -n "$_lsof" ]] && echo "${(F@)${(f)_lsof}//(#s)/    }"
+          ;;
+    live) 
+          echo "  $socket in use"
+          [[ -n "$_lsof" ]] && echo "${(F@)${(f)_lsof}//(#s)/    }" # same indentation as above
+          _live_sockets=( "${_live_sockets[@]}" "$socket" )
+          ;;
+    dead)
+          echo "  $socket appears dead"
+          _dead_sockets=( "${_dead_sockets[@]}" "$socket" )
+          ;;
+
+
+    *) echo BUG >&2 ; return 1 ;;
+  esac
 done
 
 if (( $#_dead_sockets > 0 )); then
