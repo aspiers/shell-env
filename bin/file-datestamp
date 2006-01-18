@@ -3,7 +3,7 @@
 # avoid using : in the filename as will break usage within
 # $PATH etc., also in NFS automounts according to the Hickster.
 
-format="%Y-%m-%d"
+format="%Y-%m-%d" # Equivalent to %F, the ISO 8601 date format.
 if [ "$1" = "-t" ]; then
   format="$format-%H%Mh%Ss"
   shift
