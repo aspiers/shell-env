@@ -21,9 +21,9 @@ if [ -z "$ZDOTDIR" ]; then
     return
   fi
 
-  # not sure why I bothered with this
-  here="`$here/bin/shortcuts/abs $0`"
-  here="`dirname $here`"
+  # Not sure why I bothered with this.
+#  here="`$here/bin/shortcuts/abs $0`"
+#  here="`dirname $here`"
 
   if ! [ -e $here/.zshrc ]; then
     echo "abs failed"
