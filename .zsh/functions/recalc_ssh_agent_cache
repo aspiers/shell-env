@@ -17,14 +17,13 @@ if (( $#pids > 1 )); then
 fi
 
 SSH_AGENT_PID=$pids[0]
-echo "Found a single owned ssh-agent, pid $SSH_AGENT_PID"
 
 if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
   # If interactive, prompt whether to start a new one.
 #   # UPDATE: don't prompt; I always answer yes.
 #   if false && [[ -t 1 ]]; then
   if [[ -t 1 ]]; then
-    echo "ssh-agent process not found; start a new one [y/N] ?"
+    echo -n "ssh-agent process not found; start a new one [y/N] ? "
     if read -q; then
       eval `ssh-agent`
       write_ssh_agent_cache
@@ -40,6 +39,8 @@ if [[ "$SSH_AGENT_PID" != *[0-9]* ]]; then
   fi
 fi
 
+echo "Found a single owned ssh-agent, pid $SSH_AGENT_PID"
+
 _sockets=( /tmp/ssh-*/*(=UN) )
 
 if (( $#_sockets == 0 )); then
@@ -47,92 +48,116 @@ if (( $#_sockets == 0 )); then
   return 1
 fi
 
-local -a _dead_sockets _live_sockets socket
-echo "$#_sockets socket(s) found:"
-for socket in "${_sockets[@]}"; do
+local -a _dead_sockets _matched_sockets _orphan_sockets guessed_parent_pid socket
+echo "$#_sockets socket(s) found: $_sockets[*]"
   
-  if ! agentbin="`which ssh-agent`"; then
-    echo "Error: couldn't find ssh-agent!  Aborting."
-    return 1
-  else
-    : echo "Found agent $agentbin"
-  fi
-  if ! [[ -g "$agentbin" ]]; then
+if ! agentbin="`which ssh-agent`"; then
+  echo "Error: couldn't find ssh-agent!  Aborting."
+  return 1
+else
+  : echo "Found agent $agentbin"
+fi
+
+agent_parent_pid=$( awk '{print $4}' /proc/$SSH_AGENT_PID/stat )
+if [[ "$agent_parent_pid" == 1 ]]; then
+  guessed_agent_parent_pid=$(( SSH_AGENT_PID - 1 ))
+  echo "Agent with pid $SSH_AGENT_PID has been adopted by init; guessing parent pid $agent_parent_pid"
+else
+  echo "Agent with pid $SSH_AGENT_PID has parent pid $agent_parent_pid"
+fi
+
+# Now we look for a socket corresponding to the ssh-agent we found running.
+for socket in "${_sockets[@]}"; do
+  echo "Examining $socket ..."
+
+  _lsof="`lsof $socket`"
+  if [[ -n "$_lsof" ]]; then
+    #if ! [[ -g "$agentbin" ]]; then
     cat <<'EOF' >&2
 *** WARNING! ***
 
-ssh-agent is not, but should be setgid to disallow ptrace attaches
-which could result in identity theft.
+It looks like ssh-agent is neither setgid nor explicitly does
+prctl(PR_SET_DUMPABLE, 0) to disallow ptrace attaching.  lsof
+of $socket returned information, which suggests there is an
+insecure ssh-agent running.  Please fix.  For more info, see:
 
-See https://www.redhat.com/archives/fedora-devel-list/2004-December/msg00380.html
+  https://www.redhat.com/archives/fedora-devel-list/2004-December/msg00380.html
+
 EOF
     return 1
-  fi
-
-  _lsof="`lsof $socket`"
-  if [[ -z "$_lsof" ]]; then
-    # Unfortunately setgid prevents lsof from working, so we have to guess ...
-    local guessed_parent_pid
-    guessed_parent_pid="${socket##*agent.}"
-    ssh_agent_parent_pid=$( awk '{print $4}' /proc/$SSH_AGENT_PID/stat )
-    if [[ "$ssh_agent_parent_pid" == "$guessed_parent_pid" ]]; then
-      # We just matched the only running ssh-agent's pid with its socket,
-      # since the parent pids match.  (OK, so the same parent could
-      # have started two agents with two sockets having the same
-      # prefix, and then one of them died leaving a socket, and the
-      # other is still running without a socket, but that's very unlikely!)
-      _socket_status=live
-      _lsof="\$SSH_AGENT_PID's parent is $ssh_agent_parent_pid, matches socket filename $socket"
-    else
-      _socket_status=dead
-      _lsof="\$SSH_AGENT_PID's parent is $ssh_agent_parent_pid, doesn't match socket filename $socket"
-    fi
-  else
-    echo "lsof on setgid ssh-agent's socket worked???" >&2
+ 
+   echo "lsof on setgid ssh-agent's socket worked???" >&2
     if [[ "$_lsof" == *sshd* ]]; then
       # Can this ever happen, now that we changed the pid detection
       # from using ps | grep technique to using pidof?
       _socket_status=fwd
     else
-      _socket_status=live
+      _socket_status=matched
+    fi
+    # The following code indents "$_lsof", i.e. does the same as:
+    #   echo "$lsof" | sed -e 's/^/    /'
+    # by splitting at \n into an array (f), substituting start
+    # of each element (#s) for '    ' and rejoining with \n (F).
+    echo "${(F@)${(f)_lsof}//(#s)/    }"
+  else
+    # ssh-agent is secure, so without useful info from lsof or fuser,
+    # we have to do it the hard way :-(
+    socket_parent_pid="${socket##*agent.}"
+    _socket_status=
+    if [[ "$agent_parent_pid" == "$socket_parent_pid" ]]; then
+      # We just matched the only running ssh-agent's pid with its socket,
+      # since the parent pids match.  (OK, so the same parent could
+      # have started two agents with two sockets having the same
+      # prefix, and then one of them died leaving a socket, and the
+      # other is still running without a socket, but that's very unlikely!)
+      _socket_status=matched
+      echo "  \$SSH_AGENT_PID's parent is $agent_parent_pid, matches socket filename $socket"
+    elif [[ "$guessed_agent_parent_pid" == "$socket_parent_pid" ]]; then
+      _socket_status=matched
+      echo "  ppid from socket $socket matches guessed agent parent pid $guessed_agent_parent_pid"
+    else
+      _socket_status=unknown
+      echo "  \$SSH_AGENT_PID's parent is $agent_parent_pid, doesn't match socket filename $socket"
     fi
   fi
 
   case "$_socket_status" in
     fwd)
           echo "  $socket used for agent forwarding"
-
-          # The following code indents "$_lsof", i.e. does the same as:
-          #   echo "$lsof" | sed -e 's/^/    /'
-          # by splitting at \n into an array (f), substituting start
-          # of each element (#s) for '    ' and rejoining with \n (F).
-          [[ -n "$_lsof" ]] && echo "${(F@)${(f)_lsof}//(#s)/    }"
           ;;
-    live) 
-          echo "  $socket in use"
-          [[ -n "$_lsof" ]] && echo "${(F@)${(f)_lsof}//(#s)/    }" # same indentation as above
-          _live_sockets=( "${_live_sockets[@]}" "$socket" )
+    unknown)
+          echo "  $socket of unknown origin"
+          _unknown_sockets=( "${_unknown_sockets[@]}" "$socket" )
+          ;;
+    matched) 
+          echo "  $socket matched agent pid $SSH_AGENT_PID"
+          _matched_sockets=( "${_matched_sockets[@]}" "$socket" )
           ;;
     dead)
           echo "  $socket appears dead"
           _dead_sockets=( "${_dead_sockets[@]}" "$socket" )
           ;;
 
-
     *) echo BUG >&2 ; return 1 ;;
   esac
 done
 
 if (( $#_dead_sockets > 0 )); then
-  echo "Removing dead sockets:\n  rm $_dead_sockets"
-  rm "$_dead_sockets[@]"
+  echo "Could remove dead sockets:\n  rm $_dead_sockets"
+  #rm "$_dead_sockets[@]"
 fi
 
-if (( $#_live_sockets != 1 )); then
-  echo "BUG?  Didn't find a unique live socket" >&2
-  return 1
+if (( $#_matched_sockets != 1 )); then
+  if (( $#_unknown_sockets == 1 && $#_dead_sockets == 0 )); then
+    echo "Only one unknowned socket $_unknown_sockets[0] and none dead; assuming it's matched."
+    : ${SSH_AUTH_SOCK:=$_unknown_sockets[0]}
+  else
+    echo "BUG?  Didn't find a unique matched socket" >&2
+    return 1
+  fi
+else
+  : ${SSH_AUTH_SOCK:=$_matched_sockets[0]}
 fi
 
-: ${SSH_AUTH_SOCK:=$_live_sockets[0]}
 write_ssh_agent_cache
 return 0
