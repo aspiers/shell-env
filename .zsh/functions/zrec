@@ -39,7 +39,7 @@ _my_zrecompile () {
 
 zrec () {
     rm -f ~/.zcompdump*
-    compinit -C # don't perform security check
+    compinit
     _my_zrecompile
 
     # This should be safe now.
