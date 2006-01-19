@@ -10,12 +10,10 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   echo -n "Setting up handy service shortcuts in $here ... "
   cd "$here"
   for op in s{re,rl,st,sp,sta}; do
-    if [ -e $op ]; then
-      echo "$op already exists; aborting." >&2
-      exit 1
+    if ! [ -e $op ]; then
+        ln -s $me $op
+        echo -n " $op"
     fi
-    ln -s $me $op
-    echo -n " $op"
   done
   echo
   exit 0
