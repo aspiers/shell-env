@@ -43,7 +43,9 @@ zrec () {
     _my_zrecompile
 
     # This should be safe now.
-    [[ "$-" == *i* ]] && restart
+    if [[ "$-" == *i* ]]; then
+        restart
+    fi
 }
 
 zrec "$@"

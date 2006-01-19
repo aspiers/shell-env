@@ -3,5 +3,7 @@
 ~/bin/service-commands
 ~/bin/cm
 
-which zsh >&/dev/null && zsh -c zrec
+if which zsh >&/dev/null; then
+  zsh -c zrec
+fi
 
