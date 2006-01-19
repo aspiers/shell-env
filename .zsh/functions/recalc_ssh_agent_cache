@@ -73,7 +73,8 @@ for socket in "${_sockets[@]}"; do
   _lsof="`lsof $socket`"
   if [[ -n "$_lsof" ]]; then
     #if ! [[ -g "$agentbin" ]]; then
-    cat <<'EOF' >&2
+    if [[ "$USERNAME" != root ]]; then
+        cat <<'EOF' >&2
 *** WARNING! ***
 
 It looks like ssh-agent is neither setgid nor explicitly does
@@ -84,9 +85,9 @@ insecure ssh-agent running.  Please fix.  For more info, see:
   https://www.redhat.com/archives/fedora-devel-list/2004-December/msg00380.html
 
 EOF
-    return 1
+        return 1
+    fi
  
-   echo "lsof on setgid ssh-agent's socket worked???" >&2
     if [[ "$_lsof" == *sshd* ]]; then
       # Can this ever happen, now that we changed the pid detection
       # from using ps | grep technique to using pidof?
