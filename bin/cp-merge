@@ -40,11 +40,13 @@ temptar="`mktemp $absdest/$me.$$.tar.XXXXXX`"
 
 cd "$oldpwd"
 cd "$src"
-# Could fail on huge directories.
-if ! tar cf "$temptar" `find . -maxdepth 1`; then
+#if ! find . -maxdepth 1 -print0 | tar -cf "$temptar" --null --files-from=-; then
+if ! tar -cf "$temptar" .; then
   echo "$me: failed to create '$temptar'" >&2
   exit 1
 fi
+
+#echo "Created $temptar" >&2
 
 cd "$oldpwd"
 cd "$dest"
@@ -53,4 +55,7 @@ if ! tar -xkf "$temptar"; then
   echo "$me: failed to untar '$temptar'" >&2
   exit 1
 fi
+
+#echo "Extracted $temptar in $dest" >&2
+
 rm "$temptar"
