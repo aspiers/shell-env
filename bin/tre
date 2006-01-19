@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# tree with colour
+exec tree -C "$@"
