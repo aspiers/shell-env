@@ -1,0 +1,3 @@
+#compdef pdf
+
+_files -g "*.(#i)pdf(-.)"
