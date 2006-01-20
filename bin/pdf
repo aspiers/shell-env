@@ -1,3 +1,17 @@
 #!/bin/sh
 
+found=
+for file in "$@"; do
+    if [ -r "$file" ]; then
+        found=y
+    else
+        echo "$file doesn't exist or unreadable!" >&2
+    fi
+done
+
+if [ -z "$found" ]; then
+  echo "No valid file found; aborting!" >&2
+  exit 1
+fi
+
 acroread "$@" || kpdf "$@" || xpdf "$@"
