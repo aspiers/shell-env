@@ -175,6 +175,7 @@ export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 
 export NAME='Adam Spiers'
 export EMAIL="Adam Spiers <darcs@adamspiers.org>" # for darcs
+export EMAIL_ADDR="$EMAIL" # for zftp
 export REPLYTO='adam@spiers.net (Adam Spiers)'
 
 # }}}
