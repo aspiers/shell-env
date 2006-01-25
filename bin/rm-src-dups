@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use File::Find;
+use FindBin qw($RealBin);
+use Getopt::Long;
+use List::Util;
+
+sub usage {
+  die <<EOUSAGE;
+Usage: $RealBin [options] SRC DST
+Options:
+  -n, --dry-run     Just show what would have been removed
+  -k, --keep-dirs   Don't prune empty directories
+  -v, --verbose
+  -h, --help
+EOUSAGE
+}
+
+my %opts = ();
+Getopt::Long::Configure('bundling');
+GetOptions(\%opts, 'dry-run|n', 'keep-dirs|k', 'verbose|v', 'help|h')
+  or usage();
+usage() if $opts{help} || @ARGV != 2;
+
+my ($src, $dst) = @ARGV;
+
+my %doomed = ();
+
+rm_src_dups($src, $dst);
+
+unless ($opts{'keep-dirs'}) {
+  #chdir "/" or die "chdir(/) failed: $!\n";
+  finddepth({ wanted => \&prune_empty_dirs, no_chdir => 1}, $src);
+}
+
+exit 0;
+
+sub rm_src_dups {
+  my ($src, $dst) = @_;
+  my $pid = open(DIFF, "-|");
+  defined $pid or die "fork failed: $!\n";
+  if (! $pid) {
+    # in child
+    my @args = ( "diff", '-r', '--report-identical-files', '--brief', $src, $dst );
+    exec @args or die "exec(@args) failed: $!\n";
+  }
+
+  while (<DIFF>) {
+    chomp;
+    
+    if (/^Files (.+) and (.+) are identical$/) {
+      do_unlink($1);
+      next;
+    }
+    elsif (/^Files (.+) and (.+) differ$/) {
+      warn "$1 and $2 differ\n" if $opts{verbose};
+      next;
+    }
+  }
+}
+
+sub do_unlink {
+  my ($doomed) = @_;
+  if ($opts{'dry-run'}) {
+    print "rm $doomed\n";
+    $doomed{$doomed}++;
+  }
+  else {
+    unlink($doomed) or warn "unlink($doomed) failed: $!\n";
+  }
+}  
+
+sub prune_empty_dirs {
+  return unless -d;
+
+  if (dir_is_empty($_)) {
+    if ($opts{'dry-run'}) {
+      warn "rmdir $_\n";
+      $doomed{$_}++;
+    }
+    else {
+      warn "rmdir $_\n" if $opts{verbose};
+      rmdir($_) or die "rmdir($_) failed: $!\n";
+    }
+  }
+  else {
+    warn "Leaving non-empty dir $_\n" if $opts{verbose};
+  }
+}
+
+sub dir_is_empty {
+  my ($dir) = @_;
+
+  opendir(DIR, $dir) or die "opendir($dir) failed: $!\n";
+  my $got_one = 0;
+  while (my $dirent = readdir(DIR)) {
+    next if $dirent eq '.' or $dirent eq '..' or $doomed{"$dir/$dirent"};
+    $got_one++;
+    last;
+  }
+  closedir(DIR);
+  return $got_one ? 0 : 1;
+}
+
