@@ -115,12 +115,14 @@ iterate_hooks () {
     return 1
   fi
 
+  source "$ZDOTDIR/.zsh/functions/enable_nullglob"
+
   for dir in $zdotdirpath; do
-    if ! [ -n "$dir" ]; then
+    if ! [ -d "$dir" ]; then
       if [ -n "$shell_interactive" ]; then
         echo "BUG: $dir in \$zdotdirpath did not exist" >&2
       fi
-      break
+      continue
     fi
 
     hook_d="$dir/$hook.d"
@@ -131,11 +133,7 @@ iterate_hooks () {
 #       return 1
 #     fi
 
-    . "$ZDOTDIR/.zsh/functions/enable_nullglob"
-    paths=`echo $dir/$hook.d/*`
-    restore_nullglob
-
-    for hook_path in $paths; do
+    for hook_path in $hook_d/*; do
       file="${hook_path##*/}"
 
       # Apply filter for special cases
@@ -176,6 +174,8 @@ iterate_hooks () {
       esac
     done
   done
+
+  restore_nullglob
 }
 
 run_hooks () {
