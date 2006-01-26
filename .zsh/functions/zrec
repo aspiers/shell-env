@@ -27,6 +27,9 @@ _my_zrecompile () {
         _compinits=()
     fi
 
+    # for some reason this always ends up 444
+    chmod u+w ~/.zsh/functions.zwc*
+
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
       -R ~/.zshrc  -- \
