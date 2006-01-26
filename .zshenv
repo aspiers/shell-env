@@ -144,6 +144,6 @@ done
 
 # {{{ Specific to hosts
 
-run_local_hooks .zshenv
+run_hooks .zshenv
 
 # }}}
