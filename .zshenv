@@ -48,11 +48,6 @@ fi
 
 zdotdir=${ZDOTDIR:-$HOME}
 export ZDOTDIR="$zdotdir"
-if [[ "$ZDOTDIR" == "$HOME" ]]; then
-  zdotdirpath=( $ZDOTDIR )
-else
-  zdotdirpath=( $ZDOTDIR $HOME )
-fi
 
 # }}}
 

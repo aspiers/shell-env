@@ -41,9 +41,15 @@ sh_load_status .shared_env
 
 zdotdir=${ZDOTDIR:-$HOME}
 export ZDOTDIR="$zdotdir"
-if [ "$ZDOTDIR" != "$HOME" ]; then
+
+# Define a search path to be used by run_hooks
+if [ "$ZDOTDIR" = "$HOME" ]; then
+  zdotdirpath=$ZDOTDIR
+else
   export OTHER_USER=1
+  zdotdirpath="$ZDOTDIR $HOME"
 fi
+export zdotdirpath
 
 # }}}
 
