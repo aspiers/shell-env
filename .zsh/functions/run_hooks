@@ -110,7 +110,12 @@ iterate_hooks () {
 
   hooks_found=
 
-  for dir in ${zdotdirpath:-$HOME}; do
+  if [ -z "$zdotdirpath" ]; then
+    echo "\$zdotdirpath not defined; don't know where to search for hooks." >&2
+    return 1
+  fi
+
+  for dir in $zdotdirpath; do
     if ! [ -n "$dir" ]; then
       if [ -n "$shell_interactive" ]; then
         echo "BUG: $dir in \$zdotdirpath did not exist" >&2
