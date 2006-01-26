@@ -84,7 +84,7 @@ cx () {
     full_stitle="$new_title$ssuffix"
   fi
 
-  functions cx_hook >/dev/null && cx_hook    
+  run_hooks .zsh/functions/cx
 
   set_title window "$full_wtitle"
   set_title icon "$full_ititle"
