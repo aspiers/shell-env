@@ -53,7 +53,8 @@ else
 fi
 export zdotdirpath
 
-: ${ZDOTUSER:=`cat ~/.zdotuser`}
+[ -z "$ZDOTUSER" ] && [ -e ~/.zdotuser ] && ZDOTUSER=`cat ~/.zdotuser`
+export ZDOTUSER
 
 # }}}
 
