@@ -9,7 +9,8 @@
 #   run_hooks .shared_env
 #
 # would be the last thing executed by ${ZDOTDIR:-$HOME}/.shared_env,
-# and would check for files (in this order):
+# and would check for files under .shared_env.d in the $zdotdirpath
+# search path, which would be this (in order):
 #
 #   * $ZDOTDIR/.shared_env.d/*
 #   * $HOME/.shared_env.d/*
@@ -97,20 +98,89 @@
 
 DEBUG_LOCAL_HOOKS=1
 
-run_hooks () {
+iterate_hooks () {
+  if [ $# != 2 ]; then
+    echo "BUG: find_hooks called with wrong # of args: $*" >&2
+    return 1
+  fi
+
+  action="$1"
+  hook="$2"
+#   origdir="`pwd`"
+
+  hooks_found=
+
   for dir in ${zdotdirpath:-$HOME}; do
-    if [ -n "$dir" ]; then
-      for file in "$@"; do
-        for hook_suffix in local ${HOST%%.*}; do
-          if [ -r "$dir/$file.$hook_suffix" ]; then
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$hook_suffix"
-            . $dir/$file.$hook_suffix
-            [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$dir/$file.$hook_suffix done"
-          fi
-        done
-      done
+    if ! [ -n "$dir" ]; then
+      if [ -n "$shell_interactive" ]; then
+        echo "BUG: $dir in \$zdotdirpath did not exist" >&2
+      fi
+      break
     fi
+
+    hook_d="$dir/$hook.d"
+    [ -d "$hook_d" ] || break
+
+#     if ! cd "$hook_d"; then
+#       echo "BUG?  Couldn't cd to $hook_d" >&2
+#       return 1
+#     fi
+
+    . "$ZDOTDIR/.zsh/functions/enable_nullglob"
+    paths=`echo $dir/$hook.d/*`
+    restore_nullglob
+
+    for hook_path in $paths; do
+      file="${hook_path##*/}"
+
+      # Apply filter for special cases
+      case "$file" in
+        person-*)
+          person="${file#person-}"
+          [ "$ZDOTUSER" = "$person" ] || continue
+          ;;
+        host-*)
+          host="${file#host-}"
+          [ "$HOSTNAME" = "$host" ] || continue
+          ;;
+        uid-*)
+          uid="${file#uid-}"
+          if [ "$uid" = 'OWNER' ]; then
+            uid=$( command ls -l "$hook_path" | awk '{print $3}' ) # hmmm
+          fi
+          [ "$USERNAME" = "$uid" ] || continue
+          ;;
+      esac
+
+      if [ -z "$hooks_found" ]; then
+        hooks_found="$hook_path"
+      else
+        hooks_found="$hooks_found $hook_path"
+      fi
+
+      case "$action" in
+        source)
+          [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$hook_path"
+          source "$hook_path"
+          ;;
+        find)
+          ;;
+        *)
+          echo "Unrecognised run_hooks action $action; aborting." >&2
+          return 1
+      esac
+    done
   done
+}
+
+run_hooks () {
+  if [ "$1" = 'DEFUN' ]; then
+    # We only want to define the functions above, not do anything.
+    # This is for the benefit of find_hooks.
+    return 0
+  fi
+  
+  iterate_hooks source "$@"
 }
 
 run_hooks "$@"

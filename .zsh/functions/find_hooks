@@ -1,0 +1,6 @@
+#autoload
+
+. $ZDOTDIR/.zsh/functions/run_hooks DEFUN # this will only load the functions we need
+
+iterate_hooks find "$@"
+[ -n "$hooks_found" ] && echo "$hooks_found"
