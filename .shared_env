@@ -13,6 +13,8 @@
 # Allow disabling of entire environment suite
 [ -n "$INHERIT_ENV" ] && return 0
 
+[ -n "$shared_env_loaded" ] && return 0
+
 # {{{ Are we interactive?
 
 case "$-" in
@@ -58,6 +60,13 @@ export zdotdirpath
 : ${HOST:=${HOSTNAME:-`hostname`}}
 : ${HOSTNAME:=$HOST}
 export HOST HOSTNAME
+
+# }}}
+# {{{ USER / USERNAME
+
+: ${USER:=${USERNAME:-`id -un`}}
+: ${USERNAME:=$USER}
+export USER USERNAME
 
 # }}}
 # {{{ HOME
@@ -146,27 +155,6 @@ export COLUMNS
 export OSTYPE
 
 # }}}
-# {{{ IRC
-
-export IRCNAME='Adam Spiers'
-export IRCNICK='roink'
-#export IRCNICK='Adam'
-
-# }}}
-# {{{ Editor
-
-# Not sure which of these is right.
-#export EDITOR=emacs
-export EDITOR=fe
-
-export VISUAL=fe
-
-# }}}
-# {{{ WWW home
-
-export WWW_HOME='http://adamspiers.org/'
-
-# }}}
 # {{{ Pager
 
 export METAMAIL_PAGER='less -r'
@@ -177,39 +165,9 @@ export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 #export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
 
 # }}}
-# {{{ Name and Reply_To
-
-export NAME='Adam Spiers'
-export EMAIL="Adam Spiers <darcs@adamspiers.org>" # for darcs
-export EMAIL_ADDR="$EMAIL" # for zftp
-export REPLYTO='adam@spiers.net (Adam Spiers)'
-
-# }}}
 # {{{ POSIXLY_CORRECT for patch
 
 #export POSIXLY_CORRECT=yes
-
-# }}}
-# {{{ Palm Pilot
-
-export PILOTRATE=115200
-
-# for old devices, assuming a symlink to /dev/ttyS0 or /dev/ttyUSB1 or similar
-#export PILOTPORT=/dev/pilot
-
-# for newer devices, requires newer pilot-link linked to libpisock
-# (build with --enable-libusb)
-export PILOTPORT=usb:
-
-# }}}
-# {{{ rsync uses ssh
-
-export RSYNC_RSH=ssh
-
-# }}}
-# {{{ cvs uses ssh
-
-export CVS_RSH=ssh
 
 # }}}
 # {{{ Commonly used directories
@@ -246,9 +204,6 @@ NS=/etc/sysconfig/network-scripts
 
 # }}}
 
-# {{{ Specific to local setups
+. $ZDOTDIR/.zsh/functions/run_hooks .shared_env
 
-. $ZDOTDIR/.zsh/functions/run_local_hooks .shared_env
-
-# }}}
-
+shared_env_loaded=y
