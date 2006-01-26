@@ -1,5 +1,0 @@
-#autoload
-
-dsa
-ssh-add "$@"
-
