@@ -3,8 +3,12 @@
 ~/bin/service-commands
 ~/bin/cm
 
-cp ~/.zsh/functions/cx_hook_local{.tmpl,}
-chmod +x ~/.zsh/functions/cx_hook_local
+local_hook=$HOME/.zsh/functions/cx_hook_local
+if ! [ -e "$local_hook" ]; then
+    cp "$local_hook.tmpl" "$local_hook"
+    chmod +x "$local_hook"
+    echo "Created $local_hook from template"
+fi
 
 if which zsh >&/dev/null; then
   zsh -c zrec
