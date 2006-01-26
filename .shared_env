@@ -37,7 +37,7 @@ sh_load_status () {
 
 sh_load_status .shared_env
 
-# {{{ zdotdir
+# {{{ ZDOTDIR, ZDOTUSER
 
 # See .zshenv
 
@@ -52,6 +52,8 @@ else
   zdotdirpath="$ZDOTDIR $HOME"
 fi
 export zdotdirpath
+
+: ${ZDOTUSER:=`cat ~/.zdotuser`}
 
 # }}}
 
