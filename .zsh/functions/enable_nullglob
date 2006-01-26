@@ -1,0 +1,43 @@
+#autoload
+
+# Portable way of temporarily enabling null globbing:
+#
+# . path/to/this/script
+# # do glob
+# restore_nullglob
+
+enable_nullglob () {
+  # Ugh!
+  if [ -n "$ZSH_VERSION" ]; then
+      if [[ -o nullglob ]]; then
+          restore_nullglob='setopt nullglob'
+      else
+          restore_nullglob='setopt nonullglob'
+      fi
+      setopt nullglob
+  elif [ -n "$BASH_VERSION" ]; then
+      case "$BASH_VERSION" in
+          1*)
+              restore_nullglob="allow_null_glob_expansion=$allow_null_glob_expansion"
+              allow_null_glob_expansion=0
+              ;;
+          2*|3*)
+              restore_nullglob=`shopt -p nullglob`
+              shopt -s nullglob
+              ;;
+          *)
+              echo "Unknown \$BASH_VERSION $BASH_VERSION !  Aborting." >&2;
+              return 1
+              ;;
+      esac
+  else
+      echo "Don't know how to enable null globbing in this shell (SHELL=$SHELL)" >&2
+      return 1
+  fi
+}
+
+restore_nullglob () {
+    eval "$restore_nullglob"
+}
+
+enable_nullglob "$@"

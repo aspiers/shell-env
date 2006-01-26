@@ -1,0 +1,12 @@
+#autoload
+
+THIS DOESN'T WORK - keeping for reference.
+
+See disable_nullglob
+
+# Nasty, more portable way of doing bash's shopt -s nullglob :-(
+glob="$dir/$hook.d/*"
+glob_cmd="echo $glob"
+
+result=`echo $glob 2>/dev/null`
+[ "$result" = "$glob_cmd" ] && result= 
