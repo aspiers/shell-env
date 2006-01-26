@@ -3,6 +3,9 @@
 ~/bin/service-commands
 ~/bin/cm
 
+cp ~/.zsh/functions/cx_hook_local{.tmpl,}
+chmod +x ~/.zsh/functions/cx_hook_local
+
 if which zsh >&/dev/null; then
   zsh -c zrec
 fi
