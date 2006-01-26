@@ -18,5 +18,9 @@ oldpwd=`pwd`
 cp-merge "$@"
 
 cd "$oldpwd"
-rm -rf "$1"
+cat <<EOF
+Now do:
+
+rm-src-dups $1 $2
+EOF
 
