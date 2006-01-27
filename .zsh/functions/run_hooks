@@ -151,17 +151,20 @@ iterate_hooks () {
       continue
     fi
 
+    hook_d="$dir/$hook"
+
     # Detect obsolete files from run_local_hooks
-    for hook_path in ${hook_d%.d}.*; do
+    for hook_path in ${hook_d%%.d}.*; do
       case "$hook_path" in
         *.d) continue ;;
+        *.zwc) continue ;;
+        *.zwc.*) continue ;;
         *)
           echo "WARNING: found obsolete hook $hook_path" >&2
           ;;
       esac
     done
 
-    hook_d="$dir/$hook"
     [ -d "$hook_d" ] || break
 
 #     if ! cd "$hook_d"; then
@@ -182,7 +185,12 @@ iterate_hooks () {
           ;;
         host-*)
           host="${dirent#host-}"
-          [ "$HOSTNAME" = "$host" ] || continue
+          # Be lenient with non-FQDN ambiguity
+          if [ "${HOSTNAME%.*}" != "${host}"    ] &&
+             [ "${HOSTNAME}"    != "${host%.*}" ]
+          then
+            continue
+          fi
           special=y
           ;;
         uid-*)
