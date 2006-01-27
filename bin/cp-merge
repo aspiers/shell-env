@@ -10,13 +10,30 @@
 # Adam Spiers <me@adamspiers.org>
 #
 
-set -e
-me=`basename $0`
+if [ "$1" == -f ]; then
+  # _F_orce overwriting of existing files in dest
+  tar_keep=
+  pax_keep=
+  shift
+elif [ "$1" == -u ]; then
+  # _F_orce overwriting of existing files in dest
+  tar_keep=--keep-newer-files
+  pax_keep=-u
+  shift
+else
+  tar_keep=--keep-old-files
+  pax_keep=-k
+fi
 
 if [ $# != 2 ]; then
   cat <<'EOF' >&2
-Usage: $me <src dir> <dest dir>
-N.B. Use rsync unless you want to avoid overwriting files in destination tree!
+Usage: $me [-f|-u] <src dir> <dest dir>
+Options:
+   -f  Force overwrites of existing files in dest tree
+       (does not overwrite by default)
+   -u  Update existing files in dest tree only if source is newer
+
+N.B. Consider rsync/unison as possible alternatives.
 EOF
   exit 1
 fi
@@ -36,26 +53,31 @@ oldpwd=`pwd`
 
 cd "$dest"
 absdest=`pwd`
-temptar="`mktemp $absdest/$me.$$.tar.XXXXXX`"
 
 cd "$oldpwd"
 cd "$src"
-#if ! find . -maxdepth 1 -print0 | tar -cf "$temptar" --null --files-from=-; then
-if ! tar -cf "$temptar" .; then
-  echo "$me: failed to create '$temptar'" >&2
+
+if true; then
+  cat <<EOF >&2
+# This is how you do it:
+cd $src
+# Then one of:
+cp -r --reply=no . "$absdest"
+cp -r -f . "$absdest"
+cp -r -u . "$absdest"
+pax -r -w $pax_keep . "$absdest"
+# etc.
+
+# N.B. Consider rsync/unison as possible alternatives.
+EOF
+
   exit 1
 fi
 
-#echo "Created $temptar" >&2
+set -e
+me=`basename $0`
 
-cd "$oldpwd"
-cd "$dest"
-# -k => keep existing files
-if ! tar -xkf "$temptar"; then
-  echo "$me: failed to untar '$temptar'" >&2
-  exit 1
-fi
+echo pax -r -w $pax_keep . "$absdest"
+pax -r -w $pax_keep . "$absdest"
 
-#echo "Extracted $temptar in $dest" >&2
-
-rm "$temptar"
+#tar -cf "$temptar" . | tar -C "$absdest" -x $tar_keep -f -
