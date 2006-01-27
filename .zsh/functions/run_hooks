@@ -9,7 +9,7 @@
 #   run_hooks .shared_env.d
 #
 # would be the last thing executed by ${ZDOTDIR:-$HOME}/.shared_env,
-# and would check for files under .shared_env.d in the $zdotdirpath
+# and would check for files under .shared_env.d in the $ZDOTDIRPATH
 # search path, which would be this (in order):
 #
 #   * $ZDOTDIR/.shared_env.d/*
@@ -110,8 +110,8 @@ iterate_hooks () {
 
   hooks_found=
 
-  if [ -z "$zdotdirpath" ]; then
-    echo "\$zdotdirpath not defined; don't know where to search for hooks." >&2
+  if [ -z "$ZDOTDIRPATH" ]; then
+    echo "\$ZDOTDIRPATH not defined; don't know where to search for hooks." >&2
     return 1
   fi
 
@@ -119,10 +119,10 @@ iterate_hooks () {
 
   [ -n "$ZSH_VERSION" ] && setopt local_options sh_word_split
 
-  for dir in $zdotdirpath; do
+  for dir in $ZDOTDIRPATH; do
     if ! [ -d "$dir" ]; then
       if [ -n "$shell_interactive" ]; then
-        echo "BUG: $dir in \$zdotdirpath did not exist" >&2
+        echo "BUG: $dir in \$ZDOTDIRPATH did not exist" >&2
       fi
       continue
     fi

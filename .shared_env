@@ -37,7 +37,7 @@ sh_load_status () {
 
 sh_load_status .shared_env
 
-# {{{ ZDOTDIR, ZDOTUSER
+# {{{ ZDOTDIR, ZDOTDIRPATH, ZDOTUSER
 
 # See .zshenv
 
@@ -46,12 +46,12 @@ export ZDOTDIR="$zdotdir"
 
 # Define a search path to be used by run_hooks
 if [ "$ZDOTDIR" = "$HOME" ]; then
-  zdotdirpath=$ZDOTDIR
+  ZDOTDIRPATH=$ZDOTDIR
 else
   export OTHER_USER=1
-  zdotdirpath="$ZDOTDIR $HOME"
+  ZDOTDIRPATH="$ZDOTDIR $HOME"
 fi
-export zdotdirpath
+export ZDOTDIRPATH
 
 [ -z "$ZDOTUSER" ] && [ -e ~/.zdotuser ] && ZDOTUSER=`cat ~/.zdotuser`
 export ZDOTUSER
