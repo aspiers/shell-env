@@ -140,7 +140,7 @@ for newpath in                       \
       if [ -z "$newpaths" ]; then
           newpaths=$newpath
       else
-          newpaths=$newpaths:$newpaths
+          newpaths=$newpaths:$newpath
       fi
   fi
 done
