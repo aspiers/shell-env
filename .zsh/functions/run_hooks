@@ -151,6 +151,16 @@ iterate_hooks () {
       continue
     fi
 
+    # Detect obsolete files from run_local_hooks
+    for hook_path in ${hook_d%.d}.*; do
+      case "$hook_path" in
+        *.d) continue ;;
+        *)
+          echo "WARNING: found obsolete hook $hook_path" >&2
+          ;;
+      esac
+    done
+
     hook_d="$dir/$hook"
     [ -d "$hook_d" ] || break
 
