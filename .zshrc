@@ -442,19 +442,7 @@ zsh_compl_hosts=(
 # }}}
 # {{{ (user, host) pairs
 
-run_local_hooks .zsh_user_host_pairs
-
-# All my accounts:
-#my_accounts=(
-#  {joe,root}@mymachine.com
-#  jbloggs@myothermachine.com
-#)
-
-# Other people's accounts:
-#other_accounts=(
-#  {fred,root}@hismachine.com
-#  vera@hermachine.com
-#)
+run_hooks .zsh/user-host.d
 
 # }}}
 # {{{ (host, port, user) triples for telnet
