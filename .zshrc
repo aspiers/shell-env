@@ -22,6 +22,8 @@
 
 # }}}
 
+sh_load_status .zshrc
+
 # {{{ What version are we running?
 
 if ! (( $+ZSH_VERSION_TYPE )); then
@@ -200,6 +202,14 @@ case "$OSTYPE" in
 esac
 
 # }}}
+# {{{ LANG
+
+# Eterm sucks
+if [[ "$LANG" == *UTF-8 ]] && grep Eterm /proc/$PPID/cmdline >&/dev/null; then
+    LANG="${LANG%.UTF-8}"
+fi
+
+# }}}
 
 # Variables used by zsh
 
@@ -300,7 +310,7 @@ sh_load_status 'completion system'
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   autoload -U compinit
-  compinit -C # don't perform security check
+  compinit
 else
   print "\nAdvanced completion system not found; ignoring zstyle settings."
   function zstyle { }
@@ -414,13 +424,8 @@ zstyle ':completion:*:history-words' menu yes
 # }}}
 # {{{ Common usernames
 
-# users=( tom dick harry )
-
-### BEGIN PRIVATE
-#users=( adam adams aspiers )
-### END PRIVATE
-
-#zstyle ':completion:*' users $users
+run_hooks .zsh/users.d
+zstyle ':completion:*' users $zsh_users
 
 # }}}
 # {{{ Common hostnames
@@ -434,26 +439,27 @@ else
   _etc_hosts=()
 fi
 
-zsh_compl_hosts=(
+zsh_hosts=(
     "$_etc_hosts[@]"
     localhost
 )
 
-# }}}
-# {{{ (user, host) pairs
-
-run_hooks .zsh/user-host.d
+run_hooks .zsh/hosts.d
+zstyle ':completion:*' hosts $zsh_hosts
 
 # }}}
-# {{{ (host, port, user) triples for telnet
+# {{{ (user, host) account pairs
 
-#  telnet_users_hosts_ports=(
-#    user1@host1:
-#    user2@host2:
-#    @mail-server:{smtp,pop3}
-#    @news-server:nntp
-#    @proxy-server:8000
-#  )
+run_hooks .zsh/accounts.d
+zstyle ':completion:*:my-accounts'    users-hosts "$my_accounts[@]"
+zstyle ':completion:*:other-accounts' users-hosts "$other_accounts[@]"
+
+# }}}
+
+# }}}
+# {{{ pdf
+
+compdef _pdf pdf
 
 # }}}
 
@@ -726,6 +732,11 @@ autoload zmv
 alias mmv='noglob zmv -W'
 
 # }}}
+# {{{ tree
+
+alias tre='tree -C'
+
+# }}}
 
 # }}}
 # {{{ Job/process control
@@ -944,7 +955,7 @@ alias -g G='| egrep'
 alias -g Gv='| egrep -v'
 alias -g EG='|& egrep'
 alias -g EGv='|& egrep -v'
-alias -g X='| xargs'
+alias -g XA='| xargs'
 alias -g X0='| xargs -0'
 alias -g XG='| xargs egrep'
 alias -g XGv='| xargs egrep -v'
@@ -1061,18 +1072,6 @@ fi
 
 sh_load_status 'local hooks'
 run_hooks .zshrc.d
-
-# }}}
-
-# {{{ Activate users/hosts/ports completions
-
-zstyle ':completion:*' users "$zsh_compl_users[@]"
-zstyle ':completion:*' hosts "$zsh_compl_hosts[@]"
-
-zstyle ':completion:*:my-accounts'    users-hosts "$my_accounts[@]"
-zstyle ':completion:*:other-accounts' users-hosts "$other_accounts[@]"
-
-zstyle ':completion:*:*:telnet:*' users-hosts-ports "$telnet_users_hosts_ports[@]"
 
 # }}}
 
