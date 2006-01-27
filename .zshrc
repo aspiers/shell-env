@@ -1072,7 +1072,7 @@ fi
 # {{{ Specific to local setups
 
 sh_load_status 'local hooks'
-run_local_hooks .zshrc
+run_hooks .zshrc.d
 
 # }}}
 

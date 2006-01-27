@@ -207,6 +207,6 @@ NS=/etc/sysconfig/network-scripts
 
 # }}}
 
-. $ZDOTDIR/.zsh/functions/run_hooks .shared_env
+. $ZDOTDIR/.zsh/functions/run_hooks .shared_env.d
 
 shared_env_loaded=y

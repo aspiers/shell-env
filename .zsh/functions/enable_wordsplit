@@ -1,0 +1,36 @@
+ #autoload
+
+# Portable way of temporarily enabling word splitting:
+#
+# . path/to/this/script
+# # do glob
+# restore_wordsplit
+#
+# Needed for handling word-separated pseudo-arrays portably.
+# See also enable_nullglob.
+
+enable_wordsplit () {
+  restore_wordsplit=
+  if [ -n "$ZSH_VERSION" ]; then
+      if [[ -o sh_word_split ]]; then
+          restore_wordsplit='setopt sh_word_split'
+      else
+          restore_wordsplit='setopt no_sh_word_split'
+      fi
+      setopt sh_word_split
+  elif [ -n "$BASH_VERSION" ]; then
+      : # nothing to do?
+  else
+      # Probably safe to assume word splitting will happen - should do in Bourne at least,
+      # and probably Korn.
+      return 0
+#       echo "Don't know how to enable word splitting in this shell (SHELL=$SHELL)" >&2
+#       return 1
+  fi
+}
+
+restore_wordsplit () {
+    eval "$restore_wordsplit"
+}
+
+enable_wordsplit "$@"

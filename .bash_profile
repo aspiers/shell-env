@@ -15,9 +15,5 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
-# {{{ Specific to hosts
-
-. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .bash_profile
-
-# }}}
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bash_profile.d
 

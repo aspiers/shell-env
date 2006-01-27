@@ -6,7 +6,7 @@
 
 # Example usage:
 #
-#   run_hooks .shared_env
+#   run_hooks .shared_env.d
 #
 # would be the last thing executed by ${ZDOTDIR:-$HOME}/.shared_env,
 # and would check for files under .shared_env.d in the $zdotdirpath
@@ -117,6 +117,8 @@ iterate_hooks () {
 
   source "$ZDOTDIR/.zsh/functions/enable_nullglob"
 
+  [ -n "$ZSH_VERSION" ] && setopt local_options sh_word_split
+
   for dir in $zdotdirpath; do
     if ! [ -d "$dir" ]; then
       if [ -n "$shell_interactive" ]; then
@@ -125,7 +127,7 @@ iterate_hooks () {
       continue
     fi
 
-    hook_d="$dir/$hook.d"
+    hook_d="$dir/$hook"
     [ -d "$hook_d" ] || break
 
 #     if ! cd "$hook_d"; then

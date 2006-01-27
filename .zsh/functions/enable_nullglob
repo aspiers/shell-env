@@ -5,9 +5,13 @@
 # . path/to/this/script
 # # do glob
 # restore_nullglob
+#
+# Needed for handling word-separated pseudo-arrays portably.
+# See also enable_nullglob.
 
 enable_nullglob () {
   # Ugh!
+  restore_nullglob=
   if [ -n "$ZSH_VERSION" ]; then
       if [[ -o nullglob ]]; then
           restore_nullglob='setopt nullglob'

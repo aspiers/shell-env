@@ -1,5 +1,0 @@
-#autoload
-
-full_stitle="${full_stitle/(adams|adam|aspiers)@/}"
-full_stitle="${full_stitle/mandolinarchive.com/mando}"
-functions cx_hook_local >/dev/null && cx_hook_local

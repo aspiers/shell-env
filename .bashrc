@@ -232,9 +232,4 @@ echo -e -n "\r\e[0K"
 
 fi
 
-# {{{ Specific to hosts
-
-. ${ZDOTDIR:-$HOME}/.zsh/functions/run_local_hooks .bashrc
-
-# }}}
-
+. ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bashrc.d
