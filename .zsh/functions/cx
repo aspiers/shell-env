@@ -85,7 +85,7 @@ cx () {
   fi
 
   tmp=$DEBUG_LOCAL_HOOKS
-  DEBUG_LOCAL_HOOKS= run_hooks .zsh/functions/cx.d
+  DEBUG_LOCAL_HOOKS= run_hooks .zsh/cx.d
   DEBUG_LOCAL_HOOKS=$tmp
 
   set_title window "$full_wtitle"
