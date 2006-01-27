@@ -19,29 +19,29 @@
 #
 # Ditto for .zshrc, .bashrc etc.
 #
-# Additionally, if a filename has one of the following formats,
+# Additionally, if a directory entry has one of the following formats,
 # it is treated specially:
 #
 #   * person-$individual_uuid
-#   
-#     Only run if $individual_uuid equals $ZDOTUSER.  This should
-#     be unique to a person (*not* a uid); e-mail addresses are
-#     recommended, similar in idea to GNU arch's global archive
-#     namespace.
+#     
+#     Run directory contents if $individual_uuid equals
+#     $ZDOTUSER.  This should be unique to a person (*not* a uid);
+#     e-mail addresses are recommended, similar in idea to GNU arch's
+#     global archive namespace.
 #     
 #   * host-$hostname
-#
-#     Only run if $hostname equals the current hostname.  If there
-#     is ambiguity with regards to FQDN or non-FQDN, the code gives
-#     the benefit of the doubt in favour of a match.
+#     
+#     Run directory contents if $hostname equals the current hostname.
+#     If there is ambiguity with regards to FQDN or non-FQDN, the code
+#     gives the benefit of the doubt in favour of a match.
 #
 #   * uid-$username
-#
-#     Only run if $username equals the current (non-numeric) uid.
-#     An additional special case: if $username equals 'OWNER', the
-#     hook is only run if the current user owns the hook file.
-#     This allows uid-specific hooks to be installed in multiple
-#     home directories independently of their filename.
+#     
+#     Run directory contents if $username equals the current
+#     (non-numeric) uid.  An additional special case: if $username
+#     equals 'OWNER', the hook is only run if the current user owns
+#     the hook file.  This allows uid-specific hooks to be installed
+#     in multiple home directories independently of their filename.
 
 # Requirements and rationale for search algorithm:
 #
@@ -98,6 +98,30 @@
 
 DEBUG_LOCAL_HOOKS=1
 
+process_hook () {
+  hook_path="$1"
+  
+  if [ -z "$hooks_found" ]; then
+    hooks_found="$hook_path"
+  else
+    hooks_found="$hooks_found $hook_path"
+  fi
+
+  case "$action" in
+    source)
+      [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$hook_path"
+      source "$hook_path"
+      ;;
+    find)
+      ;;
+    *)
+      echo "Unrecognised run_hooks action $action; aborting." >&2
+      return 1
+  esac
+
+  return 0
+}
+
 iterate_hooks () {
   if [ $# != 2 ]; then
     echo "BUG: find_hooks called with wrong # of args: $*" >&2
@@ -136,44 +160,46 @@ iterate_hooks () {
 #     fi
 
     for hook_path in $hook_d/*; do
-      file="${hook_path##*/}"
+      dirent="${hook_path##*/}"
 
       # Apply filter for special cases
-      case "$file" in
+      special=
+      case "$dirent" in
         person-*)
-          person="${file#person-}"
+          person="${dirent#person-}"
           [ "$ZDOTUSER" = "$person" ] || continue
+          special=y
           ;;
         host-*)
-          host="${file#host-}"
+          host="${dirent#host-}"
           [ "$HOSTNAME" = "$host" ] || continue
+          special=y
           ;;
         uid-*)
-          uid="${file#uid-}"
+          uid="${dirent#uid-}"
           if [ "$uid" = 'OWNER' ]; then
             uid=$( command ls -l "$hook_path" | awk '{print $3}' ) # hmmm
           fi
           [ "$USERNAME" = "$uid" ] || continue
+          special=y
           ;;
       esac
 
-      if [ -z "$hooks_found" ]; then
-        hooks_found="$hook_path"
+      if [ -n "$special" ]; then
+        if [ -d "$hook_path" ]; then
+          for subhook in $hook_path/*; do
+            case "$subhook" in
+              */CVS) continue ;;
+            esac
+            process_hook "$subhook"
+          done
+        else
+          echo "WARNING: $hook_path should be a directory not a file" >&2
+          process_hook "$hook_path"
+        fi
       else
-        hooks_found="$hooks_found $hook_path"
+        process_hook "$hook_path"
       fi
-
-      case "$action" in
-        source)
-          [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$hook_path"
-          source "$hook_path"
-          ;;
-        find)
-          ;;
-        *)
-          echo "Unrecognised run_hooks action $action; aborting." >&2
-          return 1
-      esac
     done
   done
 
