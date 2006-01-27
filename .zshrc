@@ -422,13 +422,13 @@ zstyle ':completion:*:history-words' list false
 zstyle ':completion:*:history-words' menu yes
 
 # }}}
-# {{{ Common usernames
+# {{{ Usernames
 
 run_hooks .zsh/users.d
 zstyle ':completion:*' users $zsh_users
 
 # }}}
-# {{{ Common hostnames
+# {{{ Hostnames
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   # Extract hosts from /etc/hosts
@@ -456,7 +456,6 @@ zstyle ':completion:*:other-accounts' users-hosts "$other_accounts[@]"
 
 # }}}
 
-# }}}
 # {{{ pdf
 
 compdef _pdf pdf
