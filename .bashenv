@@ -14,6 +14,8 @@
 # old ksh's don't even support ~ expansion, or 'source' (use '.' 
 # instead).
 
+: .bashenv starts # for debugging with -x
+
 # Allow disabling of all meddling with the environment
 [ -n "$INHERIT_ENV" ] && return 0
 
@@ -24,3 +26,5 @@ shell=bash
 sh_load_status .bashenv
 
 . ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bashenv.d
+
+: .bashenv ends # for debugging with -x

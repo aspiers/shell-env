@@ -8,6 +8,8 @@
 # interactive shells via a hook in my .bash_profile; also when bash is
 # invoked from rshd (or similar?)
 
+: .bashrc starts # for debugging with -x
+
 # Allow disabling of all meddling with the environment
 [ -n "$INHERIT_ENV" ] && return 0
 
@@ -233,3 +235,5 @@ echo -e -n "\r\e[0K"
 fi
 
 . ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bashrc.d
+
+: .bashrc ends # for debugging with -x
