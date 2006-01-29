@@ -71,11 +71,13 @@ export ZDOTDIR="$zdotdir"
 # Define a search path to be used by run_hooks
 if [ "$ZDOTDIR" = "$HOME" ]; then
   ZDOTDIRPATH=$ZDOTDIR
+  ZDOTDIRREVPATH=$ZDOTDIR
 else
   export OTHER_USER=1
   ZDOTDIRPATH="$ZDOTDIR $HOME"
+  ZDOTDIRREVPATH="$HOME $ZDOTDIR"
 fi
-export ZDOTDIRPATH
+export ZDOTDIRPATH ZDOTDIRREVPATH
 
 [ -z "$ZDOTUSER" ] && [ -e ~/.zdotuser ] && ZDOTUSER=`cat ~/.zdotuser`
 export ZDOTUSER
@@ -127,8 +129,9 @@ PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 # ... or *do* trust system-wide PATH
 #PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
+. $ZDOTDIR/.zsh/functions/enable_wordsplit
 newpaths=
-for dir in $ZDOTDIRPATH; do
+for dir in $ZDOTDIRREVPATH; do
   for newpath in                        \
                  $dir/sbin              \
                  $dir/bin               \
@@ -145,7 +148,7 @@ for dir in $ZDOTDIRPATH; do
     fi
   done
 done
-
+restore_wordsplit
 PATH=$newpaths:$PATH
 
 # }}}
