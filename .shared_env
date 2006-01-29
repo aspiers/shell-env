@@ -128,21 +128,23 @@ PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 #PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
 newpaths=
-for newpath in                       \
-               ~/bin                 \
-               ~/sbin                \
-               ~/bin                 \
-               ~/local/$OSTYPE/bin   \
-               ~/local/sbin          \
-               ~/local/bin           \
-; do
-  if [ -d $newpath ]; then
-      if [ -z "$newpaths" ]; then
-          newpaths=$newpath
-      else
-          newpaths=$newpaths:$newpath
-      fi
-  fi
+for dir in $ZDOTDIRPATH; do
+  for newpath in                       \
+                 $dir/bin                 \
+                 $dir/sbin                \
+                 $dir/bin                 \
+                 $dir/local/$OSTYPE/bin   \
+                 $dir/local/sbin          \
+                 $dir/local/bin           \
+  ; do
+    if [ -d $newpath ]; then
+        if [ -z "$newpaths" ]; then
+            newpaths=$newpath
+        else
+            newpaths=$newpaths:$newpath
+        fi
+    fi
+  done
 done
 
 PATH=$newpaths:$PATH
