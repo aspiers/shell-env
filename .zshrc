@@ -786,6 +786,12 @@ su () {
   cx
 }
 
+# So does sux in SUSE
+sux () {
+  command sux "$@"
+  cx
+}
+
 # }}}
 # {{{ No spelling correction
 
