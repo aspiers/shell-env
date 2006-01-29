@@ -207,6 +207,7 @@ iterate_hooks () {
         if [ -d "$hook_path" ]; then
           for subhook in $hook_path/*; do
             case "$subhook" in
+              CVS)   continue ;;
               */CVS) continue ;;
             esac
             process_hook "$subhook"
@@ -216,7 +217,9 @@ iterate_hooks () {
           process_hook "$hook_path"
         fi
       else
-        process_hook "$hook_path"
+        if ! [ -d "$hook_path" ]; then
+          process_hook "$hook_path"
+        fi
       fi
     done
   done
