@@ -216,16 +216,22 @@ export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 # machine they're being set on, as they could still come in handy when
 # constructing scp/rsync command-lines etc.
 
-RP=/usr/src/redhat/RPMS
+if [ -d /usr/src/packages ]; then
+  _topdir=/usr/src/packages
+else
+  _topdir=/usr/src/redhat
+fi
+
+RP=$_topdir/RPMS
 I3=$RP/i386
 I4=$RP/i486
 I5=$RP/i586
 I6=$RP/i686
 NA=$RP/noarch
-SR=/usr/src/redhat/SRPMS
-SP=/usr/src/redhat/SPECS
-SO=/usr/src/redhat/SOURCES
-BU=/usr/src/redhat/BUILD
+SR=$_topdir/SRPMS
+SP=$_topdir/SPECS
+SO=$_topdir/SOURCES
+BU=$_topdir/BUILD
 LI=/usr/src/linux
 L4=/usr/src/linux-2.4
 CV=/usr/local/cvsroot
