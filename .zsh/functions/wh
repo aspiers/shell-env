@@ -1,0 +1,12 @@
+#autoload
+
+for thing in "$@"; do
+    if [[ `where "$thing"` == *'builtin autoload'* ]]; then
+        autoload +X "$thing"
+        echo "# Note: $thing was autoloaded"
+    fi
+done
+
+where "$@"
+
+
