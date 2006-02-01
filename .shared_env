@@ -50,7 +50,7 @@ sh_load_status () {
   [ -n "$_this_script" ] && _this_script=": $_this_script"
 
   # Leave status printed?
-  if [ "$DEBUG_LOCAL_HOOKS" = 2 ]; then
+  if [ "$DEBUG_LOCAL_HOOKS" -ge 2 ]; then
     debug="\n"
   fi
   
