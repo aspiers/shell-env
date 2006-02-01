@@ -96,7 +96,7 @@
 #    reduces root privilege a lot since trust level for NFS write
 #    access to ~aspiers is only by anyone who can get a port < 1024.
 
-DEBUG_LOCAL_HOOKS=1
+: ${DEBUG_LOCAL_HOOKS:=1}
 
 process_hook () {
   hook_path="$1"
@@ -175,6 +175,10 @@ iterate_hooks () {
     for hook_path in $hook_d/*; do
       dirent="${hook_path##*/}"
 
+      if [ "$DEBUG_LOCAL_HOOKS" -ge 3 ]; then
+        echo "# Considering possible hook $hook_path"
+      fi
+
       # Apply filter for special cases
       special=
       case "$dirent" in
@@ -186,9 +190,11 @@ iterate_hooks () {
         host-*)
           host="${dirent#host-}"
           # Be lenient with non-FQDN ambiguity
-          if [ "${HOSTNAME%.*}" != "${host}"    ] &&
+          if [ "${HOSTNAME%.*}" != "${host}"    ] && \
              [ "${HOSTNAME}"    != "${host%.*}" ]
           then
+            [ "$DEBUG_LOCAL_HOOKS" -ge 4 ] && \
+              echo "#   $hook_path hostname $host does not match \$HOSTNAME $HOSTNAME"
             continue
           fi
           special=y
@@ -196,14 +202,21 @@ iterate_hooks () {
         uid-*)
           uid="${dirent#uid-}"
           if [ "$uid" = 'OWNER' ]; then
-            uid=$( command ls -l "$hook_path" | awk '{print $3}' ) # hmmm
+            uid=$( stat -c '%U' "$hook_path" ) # portable?
+#            uid=$( command ls -l "$hook_path" | awk '{print $3}' ) # sucks
           fi
-          [ "$USERNAME" = "$uid" ] || continue
+          if [ "$USERNAME" != "$uid" ]; then
+            [ "$DEBUG_LOCAL_HOOKS" -ge 4 ] && \
+              echo "#   $hook_path uid $uid does not match \$USERNAME $USERNAME"
+            continue
+          fi
           special=y
           ;;
       esac
 
       if [ -n "$special" ]; then
+        [ "$DEBUG_LOCAL_HOOKS" -ge 4 ] && \
+          echo "# $hook_path is a special case hook"
         if [ -d "$hook_path" ]; then
           for subhook in $hook_path/*; do
             case "$subhook" in
