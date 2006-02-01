@@ -14,11 +14,22 @@ if [ -z "$ZDOTDIR" ]; then
   # When this file is sourced:
   #   in sh/bash/ksh, $0 becomes the interpreter name (i.e. 'bash' etc.)
   #   in zsh,         $0 becomes the argument to source (i.e. this file)
-
-  here="`dirname $0`"
+  if [ -n "${BASH_SOURCE[0]}" ]; then
+    here="${BASH_SOURCE[0]}"
+  else
+    here="$0"
+  fi
+  case "$here" in
+    -*)
+      echo "Couldn't figure out where to look for .zshrc; please specify ZDOTDIR.  Aborting." >&2
+      return 1
+      ;;
+  esac
+  
+  here="`dirname $here`"
   if ! [ -e $here/.zshrc ]; then
-    echo "$here missing .zshrc, aborting."
-    return
+    echo "$here missing .zshrc, aborting." >&2
+    return 1
   fi
 
   # Not sure why I bothered with this.
@@ -36,22 +47,22 @@ fi
 export ZDOTDIR
 
 case "$SHELL" in
-   *zsh) ;;
-
-      *) [ -n "$ZSH_VERSION" ] && SHELL=zsh ;;
+  *zsh) ;;
+  *) [ -n "$ZSH_VERSION" ] && SHELL=zsh ;;
 esac
 
 case "$SHELL" in
-  *bash) source "$ZDOTDIR/.bashenv"
-         source "$ZDOTDIR/.bashrc"
-         # Are you feeling lucky, punk?
-         SHLVL=force_danger source "$ZDOTDIR/.switch_shell" "$@"
-         ;;
-
-   *zsh) source "$ZDOTDIR/.zshenv"
-         source "$ZDOTDIR/.zshrc"
-         ;;
-
-      *) source "$ZDOTDIR/.switch_shell" "$@"
-         ;;
+  *bash)
+    source "$ZDOTDIR/.bashenv"
+    source "$ZDOTDIR/.bashrc"
+    # Are you feeling lucky, punk?
+    SHLVL=force_danger source "$ZDOTDIR/.switch_shell" "$@"
+    ;;
+  *zsh)
+    source "$ZDOTDIR/.zshenv"
+    source "$ZDOTDIR/.zshrc"
+    ;;
+  *)
+    source "$ZDOTDIR/.switch_shell" "$@"
+    ;;
 esac
