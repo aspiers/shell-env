@@ -744,7 +744,7 @@ alias dn=disown
 # }}}
 # {{{ History
 
-alias h='history | less +G'
+alias h='history 1 | less +G'
 alias hh='history'
 
 # }}}
