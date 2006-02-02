@@ -744,8 +744,8 @@ alias dn=disown
 # }}}
 # {{{ History
 
-alias h='history -$LINES'
-alias hh='history 1 | less'
+alias h='history | less +G'
+alias hh='history'
 
 # }}}
 # {{{ Environment
