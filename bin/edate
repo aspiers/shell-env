@@ -1,5 +1,9 @@
-#!/usr/bin/perl -wl
+#!/bin/sh
 
 # epoch date
 
-print time;
+if [ -n "$1" ]; then
+  other_time='-d'
+fi
+
+date +"%s" $other_time "$@"
