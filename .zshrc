@@ -847,6 +847,7 @@ e () {
   if [[ -n "$OTHER_USER" ]]; then
     emacs -l $ZDOTDIR/.emacs "$@" &!
   else
+    dsa
     emacs "$@" &!
   fi
 }
@@ -866,6 +867,7 @@ fi
 ssh () {
   setopt local_traps
   trap 'cxx' INT EXIT QUIT KILL
+  dsa
   # Pick out user@host word from argv; if it's not found, default to $1.
   # Finally, strip off .* domain component, if any.
   cx "${${${(M@)argv:#*@*}:-$1}%%.*}" 
