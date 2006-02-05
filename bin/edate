@@ -6,4 +6,4 @@ if [ -n "$1" ]; then
   other_time='-d'
 fi
 
-date +"%s" $other_time "$@"
+date +"%s" $other_time "$*"
