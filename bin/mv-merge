@@ -3,8 +3,13 @@
 set -e
 me=`basename $0`
 
+if [ "$1" = '--dry-run' ] || [ "$1" = '-n' ]; then
+  dry_run=--dry-run
+  shift
+fi
+
 if [ $# != 2 ]; then
-  echo "Usage: $me <src dir> <dest dir>" >&2
+  echo "Usage: $me [--dry-run|-n] <src dir> <dest dir>" >&2
   exit 1
 fi
 
@@ -15,12 +20,18 @@ fi
 
 oldpwd=`pwd`
 
-cp-merge "$@"
+cp-merge $dry_run "$@"
 
 cd "$oldpwd"
-cat <<EOF
+
+if [ -n "$dry_run" ]; then
+    cat <<EOF
 Now do:
 
-rm-src-dups $1 $2
+rm-src-dups $*
 EOF
+else
+    echo rm-src-dups "$@"
+    rm-src-dups "$@"
+fi
 

@@ -1,0 +1,3 @@
+#compdef str
+
+_pids "$@"

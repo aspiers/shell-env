@@ -1,0 +1,24 @@
+#autoload
+
+case "$1" in
+    [0-9]*)
+        pid="$1"
+        ;;
+    *)
+        pids=( `pgrep "$1"` )
+        if (( $#pids == 0 )); then
+            echo "Didn't find any pids for $1" >&2
+            return 1
+        fi
+
+        if (( $#pids > 1 )); then
+            echo "Found $#pids pids for $1: $pids" >&2
+            ps -fp `pgrep -d, "$1"`
+            return 1
+        fi
+        
+        pid="$pid[0]"
+        ;;
+esac
+
+strace -f -p "$pid"
