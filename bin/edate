@@ -3,7 +3,8 @@
 # epoch date
 
 if [ -n "$1" ]; then
-  other_time='-d'
+  date +"%s" -d "$*"
+else
+  date +"%s"
 fi
 
-date +"%s" $other_time "$*"
