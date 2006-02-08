@@ -8,7 +8,7 @@
 # $Id$
 #
 
-if [ -z "$ZDOTDIR" ]; then
+find_zdotdir () {
   # We have to intelligently guess where this file is.
 
   # When this file is sourced:
@@ -45,20 +45,38 @@ if [ -z "$ZDOTDIR" ]; then
 fi
 
 export ZDOTDIR
+}
 
-case "$SHELL" in
-  *zsh) ;;
-  *) [ -n "$ZSH_VERSION" ] && SHELL=zsh ;;
-esac
+detect_current_shell () {
+  current_shell=
 
-case "$SHELL" in
-  *bash)
+  if [ -n "$ZSH_VERSION" ]; then
+    current_shell=zsh
+    if [ -n "$BASH_VERSION" ]; then
+      echo "BUG!  Both {BASH,ZSH}_VERSION set" >&2
+      return 1
+    fi
+  elif [ -n "$BASH_VERSION" ]; then
+    current_shell=bash
+  else
+    case "$SHELL" in
+        *bash) current_shell=bash ;;
+         *zsh) current_shell=zsh  ;;
+    esac
+  fi
+}
+
+[ -z "$ZDOTDIR" ] && find_zdotdir
+detect_current_shell
+
+case "$current_shell" in
+  bash)
     source "$ZDOTDIR/.bashenv"
     source "$ZDOTDIR/.bashrc"
     # Are you feeling lucky, punk?
     SHLVL=force_danger source "$ZDOTDIR/.switch_shell" "$@"
     ;;
-  *zsh)
+  zsh)
     source "$ZDOTDIR/.zshenv"
     source "$ZDOTDIR/.zshrc"
     ;;
