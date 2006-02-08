@@ -156,6 +156,7 @@ iterate_hooks () {
     # Detect obsolete files from run_local_hooks
     for hook_path in ${hook_d%%.d}.*; do
       case "$hook_path" in
+        *~) continue ;;
         *.d) continue ;;
         *.zwc) continue ;;
         *.zwc.*) continue ;;
