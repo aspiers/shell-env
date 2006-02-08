@@ -39,7 +39,7 @@ switch_shell_debug () {
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
   switch_shell_debug "Switching to $myshell safely ..."
-  if SHELL="$myshell" "$myshell" $myshell_args; then
+  if "$myshell" $myshell_args; then
     switch_shell_debug "$myshell exited OK; exiting parent shell."
     exit
   else
@@ -52,7 +52,7 @@ switch_shell_safely () {
 
 switch_shell_dangerously () {
   switch_shell_debug "Switching to $myshell dangerously ..."
-  SHELL="$myshell" exec "$myshell" $myshell_args
+  exec "$myshell" $myshell_args
 }
 
 switch_shell () {
