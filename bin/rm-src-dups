@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use File::Find;
+use File::Spec;
 use FindBin qw($RealBin);
 use Getopt::Long;
 use List::Util;
@@ -14,6 +15,7 @@ Usage: $RealBin [options] SRC DST
 Options:
   -n, --dry-run     Just show what would have been removed
   -k, --keep-dirs   Don't prune empty directories
+  -s SUBPATH        Only work in SUBPATH of SRC and DST
   -v, --verbose
   -h, --help
 EOUSAGE
@@ -21,11 +23,18 @@ EOUSAGE
 
 my %opts = ();
 Getopt::Long::Configure('bundling');
-GetOptions(\%opts, 'dry-run|n', 'keep-dirs|k', 'verbose|v', 'help|h')
-  or usage();
+GetOptions(
+  \%opts,
+  'dry-run|n', 'keep-dirs|k', 'subpath|s=s', 'verbose|v', 'help|h'
+) or usage();
 usage() if $opts{help} || @ARGV != 2;
 
 my ($src, $dst) = @ARGV;
+
+if ($opts{subpath}) {
+  $src = File::Spec->join($src, $opts{subpath});
+  $dst = File::Spec->join($dst, $opts{subpath});
+}
 
 my %doomed = ();
 
