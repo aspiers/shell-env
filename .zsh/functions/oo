@@ -1,4 +1,5 @@
 #autoload
 
+fix-ksm
 ooffice "$@" &!
 
