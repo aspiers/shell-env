@@ -8,30 +8,43 @@
 # a => absolute seconds
 
 use strict;
+use warnings;
+
+use Date::Calc 'Day_of_Week_Abbreviation';
+use Getopt::Long;
 use Time::HiRes;
 
 $| = 1; # turn output buffering off
 
-my $style = ($ARGV[0] =~ /^-[lga]$/) ? shift : "l";
-my $printformat = "%04d/%02d/%02d %02d:%02d:%02d.%06d: ";
+my %opts = ();
+Getopt::Long::Configure('bundling');
+GetOptions(
+  \%opts,
+  'gmtime|g', 'epoch|e', 'usec|u',
+) or die;
+
+my $printformat = "%04d/%02d/%02d %3s %02d:%02d:%02d";
+$printformat .= ".%06d" if $opts{usec};
+$printformat .= " ";
 
 open(CMD, "@ARGV |") or die $!;
 while(<CMD>) {
   my ($seconds, $usec) = Time::HiRes::gettimeofday();
-  if ($style =~ /^-?[sa]/io) {
-    print $seconds . "." . $usec . ": " . $_;
+  if ($opts{epoch}) {
+    print $seconds . "." . $usec . " " . $_;
   }
   else {
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)
-      = ($style =~ /^-?g/io) ? gmtime($seconds) : localtime($seconds);
+      = $opts{gmtime} ? gmtime($seconds) : localtime($seconds);
     printf $printformat,
            1900 + $year,
            $mon + 1,
            $mday,
+           Day_of_Week_Abbreviation($wday),
            $hour,
            $min,
            $sec,
-           $usec;
+           $opts{usec} ? $usec : ();
     print;
   }
 }
