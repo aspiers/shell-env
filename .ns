@@ -42,9 +42,8 @@ find_zdotdir () {
   fi
 
   ZDOTDIR="$here"
-fi
 
-export ZDOTDIR
+  export ZDOTDIR
 }
 
 detect_current_shell () {
