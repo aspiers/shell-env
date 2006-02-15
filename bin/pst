@@ -3,7 +3,7 @@
 case "$OSTYPE" in
   solaris*) exec ptree     "$@" | less -rS ;;
          *) if which pstree 2>&1 >/dev/null; then
-              pstree -p "$@" | less -rS
+              pstree -A -p "$@" | less -rS
             else
               echo "pstree not found."
               exit 1
