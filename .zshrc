@@ -103,7 +103,7 @@ setopt                       \
      NO_ignore_braces        \
      NO_ignore_eof           \
         interactive_comments \
-        ksh_glob             \
+     NO_ksh_glob             \
      NO_list_ambiguous       \
      NO_list_beep            \
         list_types           \
