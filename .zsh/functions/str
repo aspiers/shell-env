@@ -7,8 +7,12 @@ case "$1" in
     *)
         pids=( `pgrep "$1"` )
         if (( $#pids == 0 )); then
-            echo "Didn't find any pids for $1" >&2
-            return 1
+            echo "Didn't find any pids for $1, trying again with args..." >&2
+            pids=( `pgrep -f "$1"` )
+            if (( $#pids == 0 )); then
+                echo "Still didn't find any pids; giving up." >&2
+                return 1
+            fi
         fi
 
         if (( $#pids > 1 )); then
