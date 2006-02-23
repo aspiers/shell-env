@@ -68,6 +68,11 @@ detect_current_shell () {
 [ -z "$ZDOTDIR" ] && find_zdotdir
 detect_current_shell
 
+[ -z "$shared_env_loaded" ] && source "$ZDOTDIR/.shared_env"
+
+# Don't do anything with non-interactive shells.
+[ -z "$shell_interactive" ] && return 1
+
 case "$current_shell" in
   bash)
     source "$ZDOTDIR/.bashenv"
