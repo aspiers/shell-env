@@ -256,4 +256,7 @@ run_hooks () {
   iterate_hooks source "$@"
 }
 
+# Ensure we have sh_load_status
+[ -z "$shared_env_loaded" ] && . ${zdotdir:-$HOME}/.shared_env
+
 run_hooks "$@"
