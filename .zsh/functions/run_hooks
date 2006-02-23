@@ -242,6 +242,11 @@ iterate_hooks () {
 }
 
 run_hooks () {
+  if [ $# != 1 ]; then
+    echo "Usage: run_hooks <hookname>" >&2
+    return 1
+  fi
+
   if [ "$1" = 'DEFUN' ]; then
     # We only want to define the functions above, not do anything.
     # This is for the benefit of find_hooks.
