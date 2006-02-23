@@ -124,7 +124,7 @@ process_hook () {
 
 iterate_hooks () {
   if [ $# != 2 ]; then
-    echo "BUG: find_hooks called with wrong # of args: $*" >&2
+    echo "BUG: iterate_hooks called with wrong # of args: $*" >&2
     return 1
   fi
 
