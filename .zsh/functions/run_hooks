@@ -256,7 +256,18 @@ run_hooks () {
   iterate_hooks source "$@"
 }
 
-# Ensure we have sh_load_status
-[ -z "$shared_env_loaded" ] && . ${zdotdir:-$HOME}/.shared_env
+# Ensure we have sh_load_status.  It's missing when an X session starts up.
+if type sh_load_status >/dev/null 2>&1; then
+#if [ -z "$shared_env_loaded" ]; then
+  :
+else
+  # Catch 22, this would go into infinite recursion:
+  # . ${zdotdir:-$HOME}/.shared_env
+
+  sh_load_status () {
+    # This should only ever log to .xsession-my-errors anyway
+    echo "$*"
+  }
+fi
 
 run_hooks "$@"
