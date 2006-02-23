@@ -56,8 +56,14 @@ cx () {
   # Determine suffix.  Allow force appending of auto-suffix via -l
   # (either from $argv or from saved title)
   if [[ "$new_title" == -l* || -z "$new_title" ]]; then
-    setopt kshglob localoptions
+    if [[ -o kshglob ]]; then
+        restore_kshglob='setopt kshglob'
+      else
+        restore_kshglob='setopt nokshglob'
+      fi
+    setopt kshglob
     new_title="${new_title##-l?( )}"
+    eval $restore_nullglob
 
     if [[ "$USERNAME" == 'root' ]]; then
       suffix="${short_host}#"
