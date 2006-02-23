@@ -12,9 +12,18 @@ if [ -z "$DISPLAY" ]; then
   exit 1
 fi
 
-cookie="`xauth list $DISPLAY`"
+# Not sure what to do here.  Sometimes we get two results:
+# one for MIT-MAGIC-COOKIE-1 and one for XDM-AUTHORIZATION-1.
+# In that case, XDM-AUTHORIZATION-1 seems to be the right one
+# (presumably because xdm/gdm/kdm was used to login).
+cookie="`xauth list $DISPLAY | tail -n 1`"
+
+if [ -z "$cookie" ]; then
+  echo "xauth list $DISPLAY failed to return a cookie" >&2
+  exit 1
+fi
 
 for user in "$@"; do
   echo "Adding '$cookie' for user $user"
-  su -c "unset XAUTHORITY; xauth add $cookie" "$user"
+  su -c "set -x; unset XAUTHORITY; xauth add $cookie" "$user"
 done
