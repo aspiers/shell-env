@@ -852,7 +852,7 @@ e () {
   fi
 }
 
-alias ec=emacsclient
+alias ec='emacsclient --no-wait'
 
 # enable ^Z
 alias pico='/usr/bin/pico -z'
