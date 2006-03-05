@@ -167,10 +167,9 @@ sh_load_status 'setting environment'
 typeset -U infopath # no duplicates
 export INFOPATH
 infopath=( 
-          ~/local/$OSTYPE/info(N)
-          ~/local/info(N)
-          /usr/local/info(N)
-          /usr/info(N)
+          ~/local/$OSTYPE/{share/,}info(N)
+          ~/{local/,}{share/,}info(N)
+          /usr/{local/,}{share/,}info(N)
           $infopath
          )
 
