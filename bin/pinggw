@@ -1,0 +1,11 @@
+#!/bin/sh
+
+gateway=$( route -n | awk '/^0\.0\.0\.0[^0-9]/ {print $2; exit}' )
+
+if [ -z "$gateway" ]; then
+  echo "Could not find default route via route -n:" >&2
+  route -n >&2
+  exit 1
+fi
+
+ping "$@" "$gateway"
