@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+    num="$1"
+    shift
+else
+    num=1
+fi
+
+ns=$( perl -0777ne 'my @ns = /^ *nameserver +([0-9.]+)/mg; 
+                    print $ns['$num' - 1] || ""' \
+                    /etc/resolv.conf )
+
+if [ -z "$ns" ]; then
+  echo "Could not find nameserver $num in /etc/resolv.conf" >&2
+  exit 1
+fi
+
+ping "$@" "$ns"
