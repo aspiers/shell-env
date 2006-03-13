@@ -72,8 +72,8 @@ sh_load_status .shared_env
 zdotdir=${ZDOTDIR:-$HOME}
 ZDOTDIR="$zdotdir"
 ZDOT_RUN_HOOKS="$ZDOTDIR/.zsh/functions/run_hooks"
-ZDOT_LIST_HOOKS="$ZDOTDIR/.zsh/functions/list_hooks"
-export ZDOTDIR ZDOT_RUN_HOOKS ZDOT_LIST_HOOKS
+ZDOT_FIND_HOOKS="$ZDOTDIR/.zsh/functions/find_hooks"
+export ZDOTDIR ZDOT_RUN_HOOKS ZDOT_FIND_HOOKS
 
 # Define a search path to be used by run_hooks
 if [ "$ZDOTDIR" = "$HOME" ]; then
