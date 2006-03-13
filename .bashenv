@@ -25,6 +25,6 @@ shell=bash
 
 sh_load_status .bashenv
 
-. ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bashenv.d
+. $ZDOT_RUN_HOOKS .bashenv.d
 
 : .bashenv ends # for debugging with -x

@@ -234,6 +234,6 @@ echo -e -n "\r\e[0K"
 
 fi
 
-. ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bashrc.d
+. $ZDOT_RUN_HOOKS .bashrc.d
 
 : .bashrc ends # for debugging with -x

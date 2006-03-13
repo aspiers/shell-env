@@ -15,5 +15,5 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
-. ${ZDOTDIR:-$HOME}/.zsh/functions/run_hooks .bash_profile.d
+. $ZDOT_RUN_HOOKS .bash_profile.d
 
