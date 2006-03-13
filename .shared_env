@@ -70,14 +70,18 @@ sh_load_status .shared_env
 # See .zshenv
 
 zdotdir=${ZDOTDIR:-$HOME}
-export ZDOTDIR="$zdotdir"
+ZDOTDIR="$zdotdir"
+ZDOT_RUN_HOOKS="$ZDOTDIR/.zsh/functions/run_hooks"
+ZDOT_LIST_HOOKS="$ZDOTDIR/.zsh/functions/list_hooks"
+export ZDOTDIR ZDOT_RUN_HOOKS ZDOT_LIST_HOOKS
 
 # Define a search path to be used by run_hooks
 if [ "$ZDOTDIR" = "$HOME" ]; then
   ZDOTDIRPATH=$ZDOTDIR
   ZDOTDIRREVPATH=$ZDOTDIR
 else
-  export OTHER_USER=1
+  OTHER_USER=1
+  export OTHER_USER
   ZDOTDIRPATH="$ZDOTDIR $HOME"
   ZDOTDIRREVPATH="$HOME $ZDOTDIR"
 fi
@@ -233,6 +237,6 @@ NS=/etc/sysconfig/network-scripts
 
 # }}}
 
-. $ZDOTDIR/.zsh/functions/run_hooks .shared_env.d
+. $ZDOT_RUN_HOOKS .shared_env.d
 
 shared_env_loaded=y
