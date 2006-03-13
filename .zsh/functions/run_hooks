@@ -266,7 +266,7 @@ else
 
   sh_load_status () {
     # This should only ever log to .xsession-my-errors anyway
-    echo "$*"
+    echo "$0: $*"
   }
 fi
 
