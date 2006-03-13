@@ -20,6 +20,7 @@ TERM con80x43
 TERM con80x50
 TERM con80x60
 TERM xterm
+TERM xterm-color
 TERM xterm-debian
 TERM rxvt
 TERM screen
