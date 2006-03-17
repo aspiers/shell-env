@@ -180,6 +180,11 @@ iterate_hooks () {
         echo "# Considering possible hook $hook_path"
       fi
 
+      case "$dirent" in
+        *~)    continue ;;
+        \#*\#) continue ;;
+      esac
+
       # Apply filter for special cases
       special=
       case "$dirent" in
