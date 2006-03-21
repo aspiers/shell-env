@@ -18,6 +18,9 @@
 # Allow disabling of entire environment suite
 [ -n "$INHERIT_ENV" ] && return 0
 
+# Stop bad system-wide scripts interfering.
+setopt NO_global_rcs 
+
 # {{{ What version are we running?
 
 shell=zsh
