@@ -47,7 +47,7 @@ sh_load_status () {
     [ "$_this_script" = sh_load_status ] && _this_script=
     [ "$_this_script" = -zsh ] && _this_script=
   fi
-  [ -n "$_this_script" ] && _this_script=": $_this_script"
+  [ -n "$_this_script" ] && _this_script="[$_this_script]"
 
   # Leave status printed?
   
@@ -57,7 +57,9 @@ sh_load_status () {
   
   # \e[0K is clear to right
   if [ -n "$shell_interactive" ]; then
-    echo -e -n "\r$_this_shell$_this_script: $* ... \e[0K$debug"
+    _text="${_this_shell}${_this_script}: $*"
+    _text="${_text//\/home\//~}"
+    echo -e -n "\r\e[0K$_text$debug"
   fi
 }
 
