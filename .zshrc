@@ -309,7 +309,7 @@ sh_load_status 'completion system'
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   autoload -U compinit
-  compinit
+  compinit -u # use with care!!
 else
   print "\nAdvanced completion system not found; ignoring zstyle settings."
   function zstyle { }
