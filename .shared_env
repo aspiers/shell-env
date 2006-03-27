@@ -193,8 +193,8 @@ export SCREENRC=$ZDOTDIR/.screenrc
 # }}}
 # {{{ COLUMNS
 
-# Some programs might find this handy.  Shouldn't do any harm.
-
+# Some programs find this handy.  Unfortunately xterm gets confused
+# when launched with it set ...
 export COLUMNS
 
 # }}}
