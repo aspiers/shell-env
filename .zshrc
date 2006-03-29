@@ -869,7 +869,7 @@ ssh () {
   dsa
   # Pick out user@host word from argv; if it's not found, default to $1.
   # Finally, strip off .* domain component, if any.
-  cx "${${${(M@)argv:#*@*}:-$1}%%.*}" 
+  cx "${${${(M@)argv:#*@*}:-$1}%%.[a-z]*}" 
   command ssh "$@"
 }
 
