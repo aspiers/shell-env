@@ -5,7 +5,7 @@ case "$OSTYPE" in
          *) if which pstree 2>&1 >/dev/null; then
               ascii=
               pstree --help 2>&1 | grep -q -- '-A .*ASCII' && ascii=-A
-              pstree $ascii -p "$@" | less -rS
+              LANG=C pstree $ascii -p "$@" | less -rS
             else
               echo "pstree not found."
               exit 1
