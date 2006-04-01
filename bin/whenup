@@ -13,15 +13,21 @@ fi
 host="$1"
 shift
 
+up=
 case "$OSTYPE" in
-  solaris*) ping -s "$host" | tailfgrep -q 'bytes from'
+  solaris*) ping -s "$host" | tailfgrep -q 'bytes from' && up=yes
             ;;
 
   # FreeBSD and Linux
-         *) ping "$host" | tailfgrep -q 'bytes from'
+         *) ping "$host" | tailfgrep -q 'bytes from' && up=yes
             ;; 
 esac
 
-if [ -n "$alertme" ]; then
-  alertme "$host is pingable" &
+if [ -n "$up" ]; then
+  if [ -n "$alertme" ]; then
+    alertme "$host is pingable" >&/dev/null
+  fi
+  exit 0
+else
+  exit 1
 fi
