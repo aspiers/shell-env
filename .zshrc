@@ -847,6 +847,7 @@ e () {
     emacs -l $ZDOTDIR/.emacs "$@" &!
   else
     dsa
+    dga
     emacs "$@" &!
   fi
 }
