@@ -4,6 +4,8 @@ local expl
 _description files expl 'OpenOffice.org files'
 _files "$@" "$expl[@]" -g '*.(#i)(od[mtsgpfb]|ot[tsgph]|html|sx[gwcidm]|st[wcid])'
 
+_msoffice "$@"
+
 # See also ~/.mime.types
 #
 # From OO.o 2.0 help:
