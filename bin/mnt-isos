@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 mnt_iso () {
     iso="$1"
