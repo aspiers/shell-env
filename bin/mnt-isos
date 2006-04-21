@@ -1,0 +1,27 @@
+#!/bin/bash -e
+
+mnt_iso () {
+    iso="$1"
+    if ! [ -r "$iso" ]; then
+        echo "Can't read $iso" >&2
+        exit 1
+    fi
+
+    name="`basename $iso`"
+    name="${name%.iso}"
+    mnt="/mnt/isos/$name"
+    if ! mkdir -p "$mnt"; then
+        echo "Couldn't mkdir $mnt" >&2
+        exit 1
+    fi
+    mount -o loop "$iso" "$mnt"
+}
+
+if [ "$USER" != root ]; then
+    echo "Must be root" >&2
+    exit 1
+fi
+
+for iso in "$@"; do
+    mnt_iso "$iso"
+done
