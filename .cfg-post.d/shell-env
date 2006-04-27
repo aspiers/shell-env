@@ -7,3 +7,4 @@ if which zsh >&/dev/null; then
   zsh -c zrec
 fi
 
+lesskey
