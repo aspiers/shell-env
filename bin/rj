@@ -5,6 +5,6 @@ case "$OSTYPE" in
             ;;
 
   # FreeBSD and Linux
-         *) exec ps auxwwww | egrep "($*|^USER)"  | egrep -v "grep.+USER|$0|ps auxwwww\$"
+         *) exec ps auxwwww -L | egrep "($*|^USER)"  | egrep -v "grep.+USER|$0|ps auxwwww\$"
             ;; 
 esac
