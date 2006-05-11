@@ -1,0 +1,27 @@
+#!/bin/bash
+
+PING_COUNT=10
+
+host="$1"
+shift
+
+host_up=
+case "$OSTYPE" in
+    solaris*) 
+        echo "FIXME: ping count option?" >&2
+        exit 1
+            # redirect stderr to avoid "no route to host" type errors
+        ping -s "$host" 2>&1 | grep -q 'bytes from' && host_up=yes
+        ;;
+    
+    # FreeBSD and Linux
+    *)
+        ping -c "$PING_COUNT" "$host" 2>&1 | grep -q 'bytes from' && host_up=yes
+        ;; 
+esac
+
+if [ -n "$host_up" ]; then
+  exit 0
+else
+  exit 1
+fi
