@@ -819,6 +819,12 @@ export CVS_RSH=ssh
 # see scvs function
 
 # }}}
+# {{{ MIME handling
+
+autoload zsh-mime-setup
+zsh-mime-setup
+
+# }}}
 # {{{ Other programs
 
 # {{{ less
