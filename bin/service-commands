@@ -31,7 +31,7 @@ esac
 service="$1"
 shift
 
-if [ "`id -u`" = 0 ]; then
+if [ "`id -u`" != 0 ]; then
   # 'ave a go son
   sudo=sudo
 else
