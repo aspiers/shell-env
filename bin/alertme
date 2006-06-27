@@ -1,17 +1,29 @@
 #!/bin/bash
 
+if [ "$1" = '-d' ]; then
+  text="`date` "
+  gtext="`date`\n"
+  shift
+else
+  text=
+  gtext=
+fi
+
+text="$text$*"
+gtext="$gtext$*"
+
 beep
 
 if [ -n "$DISPLAY" ]; then
     if which zenity >& /dev/null; then
-        zenity --info --text "$*" && exit 0
+        zenity --info --text "$gtext" && exit 0
     fi
 
     if which xmessage >/dev/null 2>&1; then
-        xmessage "$*" && exit 0
+        xmessage "$text" && exit 0
     fi
 fi
 
 # getting desperate
-echo "$*" | write `id -un`
-logger "$0: $*"
+echo "$text" | write `id -un`
+logger "$0: $text"
