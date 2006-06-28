@@ -98,7 +98,9 @@ export ZDOTUSER
 
 : ${HOST:=${HOSTNAME:-`hostname`}}
 : ${HOSTNAME:=$HOST}
-export HOST HOSTNAME
+
+# Let's not make this *too* sticky because dhcp might change the host
+#export HOST HOSTNAME
 
 # }}}
 # {{{ USER / USERNAME
