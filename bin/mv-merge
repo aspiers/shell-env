@@ -42,6 +42,7 @@ fi
 if [ "$1" = '-s' ]; then
   subpath="$2"
   subpath_args="-s $2"
+  echo "Operating on subpath $subpath"
   shift; shift
 fi
 
