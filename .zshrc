@@ -963,9 +963,21 @@ alias -g VM=/var/log/messages
 # {{{ grep, xargs
 
 alias -g G='| egrep'
+alias -g Gi='| egrep -i'
+alias -g Gl='| egrep -l'
 alias -g Gv='| egrep -v'
 alias -g EG='|& egrep'
 alias -g EGv='|& egrep -v'
+
+alias g='egrep'
+alias gi='egrep -i'
+alias gr='egrep -r'
+alias gl='egrep -l'
+alias gir='egrep -ir'
+alias gil='egrep -il'
+alias glr='egrep -lr'
+alias gilr='egrep -ilr'
+
 alias -g XA='| xargs'
 alias -g X0='| xargs -0'
 alias -g XG='| xargs egrep'
