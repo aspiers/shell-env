@@ -215,6 +215,9 @@ export LESS='-h100 -i -j1 -M -q -y100'
 export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 #export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
 
+# Make sure synced with .cfg-post.d/shell-env
+export LESSKEY="$ZDOTDIR/.less"
+
 # }}}
 # {{{ POSIXLY_CORRECT for patch
 
