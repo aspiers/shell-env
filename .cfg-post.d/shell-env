@@ -7,4 +7,5 @@ if which zsh >&/dev/null; then
   zsh -c zrec
 fi
 
+# Make sure synced with $LESSKEY in .shared_env
 lesskey -o ~/.less
