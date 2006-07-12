@@ -170,6 +170,7 @@ iterate_hooks () {
 
     # Detect obsolete files from run_local_hooks
     for hook_path in ${hook_d%%.d}.*; do
+      [ "$hook_path" = "$hook_d" ] && continue
       if should_ignore "$hook_path"; then
         if [ "$DEBUG_LOCAL_HOOKS" -ge 5 ]; then
           echo "# Ignoring obsolete hook $hook_path"
