@@ -957,6 +957,7 @@ alias -g Snr='| sort -nr'
 # {{{ Common filenames
 
 alias -g DN=/dev/null
+alias -g DZ=/dev/zero
 alias -g VM=/var/log/messages
 
 # }}}
