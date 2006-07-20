@@ -1,10 +1,15 @@
 #!/bin/sh
 
+case "$0" in
+  *rjt) threads='-m' ;;
+  *)    threads=''   ;;
+esac
+
 case "$OSTYPE" in
-  solaris*) exec /usr/bin/ps -ef | egrep "($*|^ *UID)" | egrep -v "grep.+USER|$0|ps -ef\$"
+  solaris*) exec /usr/bin/ps -ef $threads | egrep "($*|^ *UID)" | egrep -v "grep.+USER|$0|ps -ef\$"
             ;;
 
   # FreeBSD and Linux
-         *) exec ps auxwwww -L | egrep "($*|^USER)"  | egrep -v "grep.+USER|$0|ps auxwwww\$"
+         *) exec ps auxwwww $threads | egrep "($*|^USER)"  | egrep -v "grep.+USER|$0|ps auxwwww\$"
             ;; 
 esac
