@@ -212,8 +212,8 @@ iterate_hooks () {
         host-*)
           host="${dirent#host-}"
           # Be lenient with non-FQDN ambiguity
-          if [ "${HOSTNAME%.*}" != "${host}"    ] && \
-             [ "${HOSTNAME}"    != "${host%.*}" ]
+          if [ "${HOSTNAME%%.*}" != "${host}"     ] && \
+             [ "${HOSTNAME}"     != "${host%%.*}" ]
           then
             [ "$DEBUG_LOCAL_HOOKS" -ge 4 ] && \
               echo "#   $hook_path hostname $host does not match \$HOSTNAME $HOSTNAME"
