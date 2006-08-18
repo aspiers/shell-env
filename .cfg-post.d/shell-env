@@ -2,7 +2,7 @@
 
 ~/bin/service-commands
 ~/bin/cm
-( cd ~/bin; ln -s rj rjt )
+( cd ~/bin; [ -e rjt ] || ln -s rj rjt )
 
 if which zsh >&/dev/null; then
   zsh -c zrec
