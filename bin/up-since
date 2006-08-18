@@ -1,0 +1,11 @@
+#!/usr/bin/perl -wl
+
+use strict;
+
+chomp(my $OS = `uname -s`);
+die "$0: OS is $OS not Linux\n" unless $OS eq 'Linux';
+
+# also awk '/btime/{print $2}' /proc/stat
+my ($a, $b) = split /\s+/, `cat /proc/uptime`;
+print scalar localtime(time - $a);
+
