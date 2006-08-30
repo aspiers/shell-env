@@ -14,4 +14,13 @@ if [ -z "$found" ]; then
   exit 1
 fi
 
-acroread "$@" || kpdf "$@" || xpdf "$@"
+# acroread -help gets truncated before echoing 'openInNewWindow'
+# when STDOUT is not a tty?!
+
+# if acroread -helpall | grep -q openInNewWindow; then
+  acro_opts=-openInNewWindow
+# else
+#   acro_opts=
+# fi
+
+acroread $acro_opts "$@" || kpdf "$@" || xpdf "$@"
