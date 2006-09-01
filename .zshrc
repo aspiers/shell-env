@@ -606,6 +606,7 @@ restart () {
     exec $SHELL $SHELL_ARGS "$@"
   fi
 }
+alias rstt=restart
 
 profile () {
   ZSH_PROFILE_RC=1 $SHELL "$@"
