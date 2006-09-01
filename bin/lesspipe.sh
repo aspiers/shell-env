@@ -23,7 +23,7 @@ lesspipe() {
   *.tar) tar tvvf "$1" ;;
   *.tgz|*.tar.gz|*.tar.[zZ]) tar ztvvf "$1" ;;
   *.tar.bz2|*.tbz2) tar jtvvf "$1" ;;
-  *.[zZ]|*.gz) gzip -dc -- "$1" ;;
+  *.[zZ]|*.gz|*.svgz) gzip -dc -- "$1" ;;
   *.bz2) bzip2 -dc -- "$1" ;;
   *.zip) zipinfo -- "$1" ;;
   *.rpm) rq "$1" ;;
