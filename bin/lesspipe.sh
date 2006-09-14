@@ -28,8 +28,9 @@ lesspipe() {
   *.zip) zipinfo -- "$1" ;;
   *.rpm) rq "$1" ;;
   *.cpi|*.cpio) cpio -itv < "$1" ;;
-# can't remember why I wanted to allow use as a filter but it breaks
-# hitting 'v' from less to edit
+  *.htm|*.html) exec w3m -T text/html "$1" ;;
+# Can't remember why I wanted to allow use as a filter but it breaks
+# hitting 'v' from less to edit.
 #  *) cat "$1" ;;
   esac
 }
