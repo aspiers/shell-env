@@ -113,7 +113,7 @@ setopt                       \
      NO_mark_dirs            \
      NO_menu_complete        \
         multios              \
-        nomatch              \
+     NO_nomatch              \
         notify               \
      NO_null_glob            \
         numeric_glob_sort    \
