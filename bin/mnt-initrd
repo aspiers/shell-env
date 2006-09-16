@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -e
+
+if [[ "$OSTYPE" != linux* ]]; then
+  echo "Not on a Linux box; aborting."
+  exit 1
+fi
+
+if [[ `id -u` != 0 ]]; then
+  echo "Not root; aborting."
+  exit 1
+fi
+
+if [[ $# != 1 ]]; then
+  echo "Usage: $0 <initrd image>"
+  echo "       $0 <floppy image>"
+  exit 1
+fi
+
+if ! [[ -f $1 ]]; then
+  echo "$1 isn't a valid file; aborting."
+  exit 1
+fi
+
+case "`file $1`" in
+  *SYSLINUX*)
+    # floppy image (e.g. bootnet.img)
+    floppy=$1
+    floppy_base=${1##*/}
+    mnt-image $floppy
+    img=mnt:$floppy_base/initrd.img
+    imgbase=initrd.img
+    ;;
+  *)
+    img=$1
+    imgbase=${img##*/}
+    ;;
+esac
+
+tmpimg=/tmp/$imgbase
+cp $img $tmpimg.gz
+gunzip $tmpimg.gz
+
+case "`file $tmpimg`" in
+  *cpio*)
+    mv $tmpimg $tmpimg.cpio
+    mkdir $tmpimg
+    cd $tmpimg
+    cpio -idv < $tmpimg.cpio
+    rm $tmpimg.cpio
+    echo "$img unpacked into $tmpimg"
+    exit 0
+    ;;
+esac
+
+mnt-image $tmpimg

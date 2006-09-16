@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+if [[ "$OSTYPE" != linux* ]]; then
+  echo "Not on a Linux box; aborting."
+  exit 1
+fi
+
+if [[ `id -u` != 0 ]]; then
+  echo "Not root; aborting."
+  exit 1
+fi
+
+if [[ $# > 1 ]]; then
+  echo "Usage: $0 [ <initrd image mountpoint> ]"
+  exit 1
+fi
+
+dir=${1:-mnt:initrd.img}
+dst=initrd.img.new
+
+if ! [[ -d $dir ]]; then
+  echo "$1 isn't a valid directory; aborting."
+  exit 1
+fi
+
+abs_dir=`/home/aspiers/bin/shortcuts/abs $dir`
+
+if ! mount | grep -q $abs_dir; then
+  echo "$abs_dir isn't mounted; aborting."
+  exit 1
+fi
+
+if [[ -e $dst ]]; then
+  echo "$dst already exists!  Aborting."
+  exit 1
+fi
+
+# hairy quoting alert!
+img=`mount | awk "/ on ${abs_dir//\//\\/} /"' { print $1 }'`
+#echo "Image is $img"
+
+umount $dir
+gzip -9 $img
+mv $img.gz $dst
+echo "New image is $dst"

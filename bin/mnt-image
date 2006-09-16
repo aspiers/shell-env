@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+if [[ "$OSTYPE" != linux* ]]; then
+  echo "Not on a Linux box; aborting."
+  exit 1
+fi
+
+if [[ `id -u` != 0 ]]; then
+  echo "Not root; aborting."
+  exit 1
+fi
+
+if [[ $# != 1 && $# != 2 ]]; then
+  echo "Usage: $0 <floppy image> [ <mount point> ]"
+  exit 1
+fi
+
+img=$1
+imgbase=${1##*/}
+mnt=${2:-/mnt/initrd/$imgbase}
+absmnt="`abs $mnt`"
+if mount | egrep -q "$absmnt"; then
+  echo "Something already mounted on $absmnt!  Aborting."
+  exit 1
+fi
+
+[[ -d $mnt ]] || mkdir -p $mnt
+fs="`file $img`"
+case "$fs" in
+  *FAT*)
+    fstype=msdos ;;
+  *ext2*)
+    fstype=ext2  ;;
+  *)
+    echo -e "Image $img had unknown filesystem!\n$fs"
+    exit 1 ;;
+esac
+
+echo "$img image type: $fstype"
+
+if mount -o loop -t $fstype $img $mnt; then
+  echo Mounted $img on $mnt
+else
+  echo -n "Retrying read-only ... "
+  if ! mount -o loop,ro -t $fstype $img $mnt; then
+    echo failed.
+  else
+    echo ok.
+  fi
+fi
