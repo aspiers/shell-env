@@ -224,25 +224,52 @@ export LESSKEY="$ZDOTDIR/.less"
 #export POSIXLY_CORRECT=yes
 
 # }}}
-# {{{ Commonly used directories
+# {{{ Commonly used files and directories
 
 # Have cdable_vars set in zsh, so don't need 'hash -d' in front of these
 # and can be reused from any shell
 
-LI=/usr/src/linux
-L4=/usr/src/linux-2.4
-CV=/usr/local/cvsroot
+if [ -n "$shell_interactive" ]; then
+
+SC=/etc/sysconfig
+SCN=/etc/sysconfig/network
+if [ -d /etc/sysconfig/network-scripts ]; then
+  NS=/etc/sysconfig/network-scripts
+elif [ -d "$SCN" ]; then
+  NS=$SCN
+fi
+
 RCD=/etc/rc.d
 ID=/etc/init.d # LSB
+RC0=$RCD/rc0.d
+RC1=$RCD/rc1.d
+RC2=$RCD/rc2.d
+RC3=$RCD/rc3.d
+RC4=$RCD/rc4.d
+RC5=$RCD/rc5.d
+RC6=$RCD/rc6.d
+
 VL=/var/log
 VLH=$VL/httpd
 VM=$VL/messages
-RC=/etc/resolv.conf
-SC=/etc/sysconfig
-SCN=/etc/sysconfig/network
-NS=/etc/sysconfig/network-scripts
+
+US=/usr/src
+KES=/usr/src/kernels
+KE=$(abs /lib/modules/`uname -r`/build)
+
 # in zsh:
 #hash -df
+
+RC=/etc/resolv.conf
+if [ -f /boot/grub/menu.lst ]; then
+  GC=/boot/grub/menu.lst
+else
+  GC=/etc/grub.conf
+fi
+
+FS=/etc/fstab
+
+fi
 
 # }}}
 
