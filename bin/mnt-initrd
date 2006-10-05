@@ -3,7 +3,7 @@
 set -e
 
 if [[ "$OSTYPE" != linux* ]]; then
-  echo "Not on a Linux box; aborting."
+  echo "Not on a Linux box; aborting." >&2
   exit 1
 fi
 
@@ -19,7 +19,7 @@ if [[ $# != 1 ]]; then
 fi
 
 if ! [[ -f $1 ]]; then
-  echo "$1 isn't a valid file; aborting."
+  echo "$1 isn't a valid file; aborting." >&2
   exit 1
 fi
 
