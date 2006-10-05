@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo -e "\e[0mno bold"
+for bg in `seq 40 47`; do
+  for fg in `seq 30 37`; do
+    code="$fg;$bg"
+    echo -en "\e[0;${code}m $code \e[0m "
+  done
+  echo
+done
+
+echo
+echo -e "\e[1mbold"
+for bg in `seq 40 47`; do
+  for fg in `seq 30 37`; do
+    code="$fg;$bg"
+    echo -en "\e[1;${code}m $code \e[0m "
+  done
+  echo
+done
