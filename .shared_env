@@ -255,7 +255,7 @@ VM=$VL/messages
 
 US=/usr/src
 KES=/usr/src/kernels
-KE=$(abs /lib/modules/`uname -r`/build)
+KE=/lib/modules/`uname -r`/build
 
 # in zsh:
 #hash -df
