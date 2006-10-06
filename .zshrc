@@ -602,6 +602,7 @@ bash () {
 restart () {
   if jobs | grep . >/dev/null; then
     echo "Jobs running; won't restart." >&2
+    jobs -l >&2
   else
     exec $SHELL $SHELL_ARGS "$@"
   fi
