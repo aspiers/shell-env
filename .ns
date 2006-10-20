@@ -8,6 +8,10 @@
 # $Id$
 #
 
+if [ -n "$DEBUG_NS" ]; then
+  set -x
+fi
+
 find_zdotdir () {
   # We have to intelligently guess where this file is.
 
@@ -42,8 +46,6 @@ find_zdotdir () {
   fi
 
   ZDOTDIR="$here"
-
-  export ZDOTDIR
 }
 
 detect_current_shell () {
@@ -66,12 +68,17 @@ detect_current_shell () {
 }
 
 [ -z "$ZDOTDIR" ] && find_zdotdir
+export ZDOTDIR # but see caveat at EOF
 detect_current_shell
 
 [ -z "$shared_env_loaded" ] && source "$ZDOTDIR/.shared_env"
 
 # Don't do anything with non-interactive shells.
 [ -z "$shell_interactive" ] && return 1
+
+if [ -n "$DEBUG_NS" ]; then
+  set +x
+fi
 
 case "$current_shell" in
   bash)
@@ -88,3 +95,10 @@ case "$current_shell" in
     source "$ZDOTDIR/.switch_shell" "$@"
     ;;
 esac
+
+# N.B. If this file was source'd via:
+#   ZDOTDIR=/home/aspiers source /home/aspiers/.ns
+# or similar, as soon as the "source-ing" finishes,
+# for some reason ZDOTDIR vanishes.  So better to
+# do an explicit export of ZDOTDIR at invocation time.
+# Dunno if this is a bug or feature.
