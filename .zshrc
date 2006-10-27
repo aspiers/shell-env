@@ -895,12 +895,6 @@ elif which ncftp >&/dev/null; then
 fi
 
 # }}}
-# {{{ watching log files
-
-alias tf='less +F'
-alias tfs='less -S +F'
-
-# }}}
 # {{{ arch
 
 if which larch >&/dev/null; then

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ $# = 1 ]; then
+  exec less +F "$1"
+else
+  exec tail -f "$@"
+fi

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ $# = 1 ]; then
+  exec less +F -S "$1"
+else
+  echo "FIXME: cut breaks tail -f" >&2
+  #exec tail -f "$@" | cut -c 1-$COLUMNS
+  exec tail -f "$@"
+fi
