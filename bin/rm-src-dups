@@ -60,11 +60,11 @@ sub rm_src_dups {
   while (<DIFF>) {
     chomp;
     
-    if (/^Files (.+) and (.+) are identical$/) {
+    if (/^Files (.+) and (\Q$dst\E.+) are identical$/) {
       do_unlink($1);
       next;
     }
-    elsif (/^Files (.+) and (.+) differ$/) {
+    elsif (/^Files (.+) and (\Q$dst\E.+) differ$/) {
       warn "$1 and $2 differ\n" if $opts{verbose};
       next;
     }
@@ -74,11 +74,16 @@ sub rm_src_dups {
 sub do_unlink {
   my ($doomed) = @_;
   if ($opts{'dry-run'}) {
-    print "rm $doomed\n";
+    print qq{rm "$doomed"\n} if $opts{verbose};
     $doomed{$doomed}++;
   }
   else {
-    unlink($doomed) or warn "unlink($doomed) failed: $!\n";
+    if (unlink($doomed)) {
+      warn qq{rm "$doomed"\n} if $opts{verbose};
+    }
+    else {
+      warn "unlink($doomed) failed: $!\n";
+    }
   }
 }  
 
@@ -87,16 +92,16 @@ sub prune_empty_dirs {
 
   if (dir_is_empty($_)) {
     if ($opts{'dry-run'}) {
-      warn "rmdir $_\n";
+      warn qq{rmdir "$_"\n};
       $doomed{$_}++;
     }
     else {
-      warn "rmdir $_\n" if $opts{verbose};
+      warn qq{rmdir "$_"\n} if $opts{verbose};
       rmdir($_) or die "rmdir($_) failed: $!\n";
     }
   }
   else {
-    warn "Leaving non-empty dir $_\n" if $opts{verbose};
+    warn qq{Leaving non-empty dir "$_"\n} if $opts{verbose};
   }
 }
 
