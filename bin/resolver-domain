@@ -1,0 +1,3 @@
+#!/bin/sh
+
+awk '/search/ { print $2; exit 0 }' /etc/resolv.conf
