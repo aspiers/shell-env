@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# Track the start and end times of a command, ensuring against
+# concurrent invocations.
+
+TTRACK_DIR="$HOME/.ttrack"
+
+me=`basename $0`
+
+usage () {
+  cat <<EOF >&2
+Usage: $me COMMAND [ARGS]
+EOF
+  exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ $# -eq 0 ]; then
+  usage
+fi
+
+cmd="$1"
+shift
+
+basecmd=`basename "$cmd"`
+cmddir="$TTRACK_DIR/$basecmd"
+mkdir -p "$cmddir"
+
+lock="$cmddir/lock"
+if ! mkdir "$lock" 2>/dev/null; then
+  echo "$lock already exists!"
+  echo "Looking for running processes ..."
+  # -f is needed since $cmd could be a shell script in which case
+  # $0 would be the interpreter not $cmd itself.
+  for pid in $( pgrep -f "$cmd" ); do
+    [ "$pid" != $$ ] && pids="$pid $pids"
+  done
+  if [ -z "$pids" ]; then
+    if ! [ -t 0 ]; then
+      echo -n "None found; rmdir $lock manually."
+      exit 1
+    fi
+    echo -n "None found; if lock is stale, remove it now? (y/n) "
+    read confirm
+    case "$confirm" in
+      y*|Y*)
+        if rmdir "$lock"; then
+          echo "Removed $lock, now re-run."
+        else
+          # rmdir will output an error
+          exit 1
+        fi
+        ;;
+      *)
+        echo "Not removing lock."
+    esac
+    exit 1
+  else
+    pids="${pids% }"
+    pids="${pids// /,}"
+    ps -fp "$pids"
+  fi
+  exit 1
+fi
+
+clean_up () {
+  date +"%s" > $cmddir/end
+  [ -d "$lock" ] && rmdir "$lock"
+}  
+
+trap clean_up EXIT 
+echo "$*" > $cmddir/args
+date +"%s" > $cmddir/start
+"$cmd" "$@"
+

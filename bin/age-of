@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Show the age in seconds of a running or completed command which
+# was run under the ttrack wrapper.
+
+TTRACK_DIR="$HOME/.ttrack"
+
+me=`basename $0`
+
+usage () {
+  cat <<EOF >&2
+Usage: $me COMMAND [ARGS]
+EOF
+  exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ $# -eq 0 ]; then
+  usage
+fi
+
+cmd="$1"
+shift
+
+basecmd=`basename "$cmd"`
+cmddir="$TTRACK_DIR/$basecmd"
+
+if ! [ -d "$cmddir" ]; then
+  echo "$cmddir does not exist; was the command run under ttrack?" >&2
+  exit 1
+fi
+
+start=$( cat "$cmddir/start" )
+end=$(   cat "$cmddir/end"   )
+
+if [ "$end" -lt "$start" ]; then
+  echo "Command still running." >&2
+  end=$( date +"%s" )
+fi
+
+echo $(( end - start ))
