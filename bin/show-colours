@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# display all console colours
 
 echo -e "\e[0mno bold"
 for bg in `seq 40 47`; do
