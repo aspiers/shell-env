@@ -8,6 +8,8 @@ TTRACK_DIR="$HOME/.ttrack"
 
 me=`basename $0`
 
+. $ZDOTDIR/lib/libproc.sh
+
 usage () {
   cat <<EOF >&2
 Usage: $me COMMAND [ARGS]
@@ -27,51 +29,16 @@ cmddir="$TTRACK_DIR/$basecmd"
 mkdir -p "$cmddir"
 lock="$cmddir/lock"
 
-obtain_lock () {
-  mkdir "$lock" 2>/dev/null && return 0
-
-  echo "$lock already exists!"
-  echo "Looking for running processes ..."
-  # -f is needed since $cmd could be a shell script in which case
-  # $0 would be the interpreter not $cmd itself.
-  for pid in $( pgrep -f "$cmd" ); do
-    [ "$pid" != $$ ] && pids="$pid $pids"
-  done
-  if [ -z "$pids" ]; then
-    if ! [ -t 0 ]; then
-      echo -n "None found; rmdir $lock manually."
-      exit 1
-    fi
-    echo -n "None found; if lock is stale, remove it now? (y/n) "
-    read confirm
-    case "$confirm" in
-      y*|Y*)
-        if rmdir "$lock"; then
-          echo "Removed $lock, now re-run."
-        else
-          # rmdir will output an error
-          exit 1
-        fi
-        ;;
-      *)
-        echo "Not removing lock."
-    esac
-    exit 1
-  else
-    pids="${pids% }"
-    pids="${pids// /,}"
-    ps -fp "$pids"
-  fi
-  exit 1
-}
-
 clean_up () {
   date +"%s" > "$cmddir/end"
   [ -d "$lock" ] && rmdir "$lock"
 }  
 
-trap clean_up EXIT 
-obtain_lock
+obtain_lock "$lock" "$cmd" || exit 1
+# Signal must be trapped *after* obtaining lock, otherwise
+# failure to obtain the lock would remove an active lock.
+trap clean_up EXIT
+
 echo "$*" > "$cmddir/args"
 date +"%s" > "$cmddir/start"
 [ -e "$cmddir/exit_code" ] && rm -f "$cmddir/exit_code"
