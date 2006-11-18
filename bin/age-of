@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Show the age in seconds of a running or completed command which
-# was run under the ttrack wrapper.
+# was run under the ttrack wrapper.  exit 1 if still running, 0 otherwise.
 
 TTRACK_DIR="$HOME/.ttrack"
 
@@ -35,6 +35,8 @@ end=$(   cat "$cmddir/end"   )
 if [ "$end" -lt "$start" ]; then
   echo "Command still running." >&2
   end=$( date +"%s" )
+  exit 1
 fi
 
 echo $(( end - start ))
+exit 0
