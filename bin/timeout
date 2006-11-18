@@ -11,7 +11,7 @@ use Config;
 use Getopt::Long qw(:config pass_through);
 
 sub debug {
-  warn @_, "\n";
+#  warn @_, "\n";
 }
 
 my %opts;
