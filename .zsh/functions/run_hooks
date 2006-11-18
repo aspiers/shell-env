@@ -126,14 +126,17 @@ should_ignore () {
   dirent="$1"
   ignore=
   case "$dirent" in
-    *~)      ignore=y ;;
-    *.d)     ignore=y ;;
-    *.orig)  ignore=y ;;
-    *.zwc)   ignore=y ;;
-    *.zwc.*) ignore=y ;;
-    \#*\#)   ignore=y ;;
-    CVS)     ignore=y ;;
-    */CVS)   ignore=y ;;
+    *.dis)      ignore=y ;;
+    *.disable)  ignore=y ;;
+    *.disabled) ignore=y ;;
+    *~)         ignore=y ;;
+    *.d)        ignore=y ;;
+    *.orig)     ignore=y ;;
+    *.zwc)      ignore=y ;;
+    *.zwc.*)    ignore=y ;;
+    \#*\#)      ignore=y ;;
+    CVS)        ignore=y ;;
+    */CVS)      ignore=y ;;
   esac
   [ -n "$ignore" ]
 }
