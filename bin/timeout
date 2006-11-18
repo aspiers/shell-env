@@ -9,6 +9,7 @@ use warnings;
 
 use Config;
 use Getopt::Long qw(:config pass_through);
+use POSIX qw(:sys_wait_h);
 
 sub debug {
 #  warn @_, "\n";
@@ -18,7 +19,7 @@ my %opts;
 GetOptions(
   \%opts,
   'help|h',
-  'signal|s=s', 'command|c=s'
+  'signal|s=s', 'command|c=s', 'kill|k',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
 
@@ -32,11 +33,13 @@ Usage: $ME [options] TIMEOUT COMMAND ARGS
 Timeout is in seconds.
 Options:
   -h, --help               Show this help
-  -s, --signal=SIG, -SIG   Send signal SIG (e.g. 9 or KILL) on timeout
-  -c, --command=CMD        Run command on timeout
+  -k, --kill               On timeout, send TERM signal then KILL if needed
+  -s, --signal=SIG, -SIG   On timeout, send signal SIG (e.g. 9 or KILL)
+  -c, --command=CMD        On timeout, run command 
 EOUSAGE
 }
 
+my $DOUBLE_KILL = 'double-kill';
 my $signal = get_signal();
 debug("May use signal $signal") if $signal;
 
@@ -58,6 +61,17 @@ $SIG{ALRM} = sub {
     debug("Sending signal $signal to pid $pid");
     kill $signal, $pid;
   }
+  if ($opts{kill}) {
+    waitpid($pid, WNOHANG); # reap zombie
+    if (getpgrp($pid) > 0) {
+      debug("pid $pid still exists; sleeping 3 ...");
+      sleep 3;
+      if (getpgrp($pid) > 0) {
+        debug("pid $pid STILL exists; sending KILL to pid $pid");
+        kill 'KILL', $pid;
+      }
+    }
+  }
   system($opts{command}) if defined $opts{command};
   exit 1;
 };
@@ -73,8 +87,15 @@ exit $? >> 8;
 sub get_signal {
   # Is -KILL or -9 syntax being used?
   my $short_signal = $ARGV[0] =~ /^-(.+)/ ? $1 : undef;
-  usage("Cannot specify both --signal and -SIG\n")
-    if $short_signal && $opts{signal};
+  my $count = 0;
+  foreach my $mode ($short_signal, $opts{signal}, $opts{kill}) {
+    $count++ if defined $mode;
+  }
+  usage("Cannot specify more than one of --signal, -SIG, and --kill\n")
+    if $count > 1;
+
+  return 15 if $opts{kill};
+
   shift @ARGV if $short_signal;
 
   return canonise_signal(defined($short_signal) ? $short_signal : $opts{signal});
