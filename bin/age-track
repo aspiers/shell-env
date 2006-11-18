@@ -1,7 +1,8 @@
 #!/bin/sh
 #
 # Track the start and end times of a command, ensuring against
-# concurrent invocations.
+# concurrent invocations.  Useful as a helper for asynchronous
+# process invocations.
 
 TTRACK_DIR="$HOME/.ttrack"
 
@@ -24,9 +25,11 @@ shift
 basecmd=`basename "$cmd"`
 cmddir="$TTRACK_DIR/$basecmd"
 mkdir -p "$cmddir"
-
 lock="$cmddir/lock"
-if ! mkdir "$lock" 2>/dev/null; then
+
+obtain_lock () {
+  mkdir "$lock" 2>/dev/null && return 0
+
   echo "$lock already exists!"
   echo "Looking for running processes ..."
   # -f is needed since $cmd could be a shell script in which case
@@ -60,15 +63,17 @@ if ! mkdir "$lock" 2>/dev/null; then
     ps -fp "$pids"
   fi
   exit 1
-fi
+}
 
 clean_up () {
-  date +"%s" > $cmddir/end
+  date +"%s" > "$cmddir/end"
   [ -d "$lock" ] && rmdir "$lock"
 }  
 
 trap clean_up EXIT 
-echo "$*" > $cmddir/args
-date +"%s" > $cmddir/start
+obtain_lock
+echo "$*" > "$cmddir/args"
+date +"%s" > "$cmddir/start"
+[ -e "$cmddir/exit_code" ] && rm -f "$cmddir/exit_code"
 "$cmd" "$@"
-
+echo $? > "$cmddir/exit_code"
