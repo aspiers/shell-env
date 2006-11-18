@@ -1,0 +1,104 @@
+#!/usr/bin/perl
+#
+# Run a command with a timeout.  Optionally send a signal and/or run a
+# command on timeout.
+#
+
+use strict;
+use warnings;
+
+use Config;
+use Getopt::Long qw(:config pass_through);
+
+sub debug {
+  warn @_, "\n";
+}
+
+my %opts;
+GetOptions(
+  \%opts,
+  'help|h',
+  'signal|s=s', 'command|c=s'
+) or usage();
+usage() if @ARGV == 0 or $opts{help};
+
+(my $ME = $0) =~ s,.*/,,;
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  die <<EOUSAGE;
+Usage: $ME [options] TIMEOUT COMMAND ARGS
+Timeout is in seconds.
+Options:
+  -h, --help               Show this help
+  -s, --signal=SIG, -SIG   Send signal SIG (e.g. 9 or KILL) on timeout
+  -c, --command=CMD        Run command on timeout
+EOUSAGE
+}
+
+my $signal = get_signal();
+debug("May use signal $signal") if $signal;
+
+usage() unless @ARGV >= 2;
+my ($timeout, $command, @args) = @ARGV;
+
+my $pid = fork();
+if (! $pid) {
+  # child
+  exec $command, @args;
+}
+
+# parent
+debug("child pid is $pid");
+
+$SIG{ALRM} = sub {
+  debug("Timed out after $timeout seconds");
+  if (defined $signal && defined $pid) {
+    debug("Sending signal $signal to pid $pid");
+    kill $signal, $pid;
+  }
+  system($opts{command}) if defined $opts{command};
+  exit 1;
+};
+alarm $timeout;
+debug("alarm set");
+
+wait;
+debug("wait finished, \$? == $?");
+
+exit $? >> 8;
+
+# Which signal to send on timeout?
+sub get_signal {
+  # Is -KILL or -9 syntax being used?
+  my $short_signal = $ARGV[0] =~ /^-(.+)/ ? $1 : undef;
+  usage("Cannot specify both --signal and -SIG\n")
+    if $short_signal && $opts{signal};
+  shift @ARGV if $short_signal;
+
+  return canonise_signal(defined($short_signal) ? $short_signal : $opts{signal});
+}
+
+sub canonise_signal {
+  my ($signal) = @_;
+
+  return undef unless defined $signal;
+
+  my @signals = split ' ', $Config{sig_name};
+  die "$ME: BUG reading signal names" unless $signals[9] eq 'KILL';
+  my %sig2num = map { $signals[$_] => $_ } 0 .. $#signals;
+  my %num2sig = map { $_ => $signals[$_] } 0 .. $#signals;
+
+  if ($signal =~ /^(\d\d?)$/ && $num2sig{$signal}) {
+    return $signal;
+  }
+  elsif ((uc $signal) =~ /^([A-Z][A-Z12]+)$/ && exists $sig2num{uc $signal}) {
+    return $sig2num{uc $signal};
+  }
+  else {
+    die $sig2num{ZERO};
+    usage("Didn't recognise weird signal '$signal'\n");
+  }
+}
+
