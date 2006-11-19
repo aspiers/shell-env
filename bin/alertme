@@ -26,4 +26,4 @@ fi
 
 # getting desperate
 echo "$text" | write `id -un`
-logger "$0: $text"
+logger -t "$0" "$text"
