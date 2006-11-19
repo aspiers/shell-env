@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 #
 # Run a command with a timeout.  Optionally send a signal and/or run a
-# command on timeout.
-#
+# command on timeout.  Exits with the exit status of the command, or 254
+# if timeout happened first.
 
 use strict;
 use warnings;
@@ -73,7 +73,7 @@ $SIG{ALRM} = sub {
     }
   }
   system($opts{command}) if defined $opts{command};
-  exit 1;
+  exit 254;
 };
 alarm $timeout;
 debug("alarm set");
