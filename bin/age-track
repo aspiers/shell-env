@@ -43,4 +43,6 @@ echo "$*" > "$cmd_dir/args"
 date +"%s" > "$cmd_dir/start"
 [ -e "$cmd_dir/exit_code" ] && rm -f "$cmd_dir/exit_code"
 "$cmd" "$@"
-echo $? > "$cmd_dir/exit_code"
+exit=$?
+echo $exit > "$cmd_dir/exit_code"
+exit $exit
