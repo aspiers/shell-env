@@ -4,7 +4,7 @@
 # concurrent invocations.  Useful as a helper for asynchronous
 # process invocations.
 
-TTRACK_DIR="$HOME/.ttrack"
+AGE_DIR="$HOME/.age"
 
 me=`basename $0`
 
@@ -24,13 +24,13 @@ fi
 cmd="$1"
 shift
 
-basecmd=`basename "$cmd"`
-cmddir="$TTRACK_DIR/$basecmd"
-mkdir -p "$cmddir"
-lock="$cmddir/lock"
+base_cmd=`basename "$cmd"`
+cmd_dir="$AGE_DIR/$base_cmd"
+mkdir -p "$cmd_dir"
+lock="$cmd_dir/lock"
 
 clean_up () {
-  date +"%s" > "$cmddir/end"
+  date +"%s" > "$cmd_dir/end"
   [ -d "$lock" ] && rmdir "$lock"
 }  
 
@@ -39,8 +39,8 @@ obtain_lock "$lock" "$cmd" || exit 1
 # failure to obtain the lock would remove an active lock.
 trap clean_up EXIT
 
-echo "$*" > "$cmddir/args"
-date +"%s" > "$cmddir/start"
-[ -e "$cmddir/exit_code" ] && rm -f "$cmddir/exit_code"
+echo "$*" > "$cmd_dir/args"
+date +"%s" > "$cmd_dir/start"
+[ -e "$cmd_dir/exit_code" ] && rm -f "$cmd_dir/exit_code"
 "$cmd" "$@"
-echo $? > "$cmddir/exit_code"
+echo $? > "$cmd_dir/exit_code"
