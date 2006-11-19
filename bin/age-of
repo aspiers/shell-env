@@ -1,15 +1,16 @@
 #!/bin/sh
 #
 # Show the age in seconds of a running or completed command which
-# was run under the ttrack wrapper.  exit 1 if still running, 0 otherwise.
+# was run under the ttrack wrapper.  exit 0 if still running, 1 otherwise.
 
-TTRACK_DIR="$HOME/.ttrack"
+AGE_DIR="$HOME/.age"
 
 me=`basename $0`
 
 usage () {
   cat <<EOF >&2
-Usage: $me COMMAND [ARGS]
+Usage: $me [-n] COMMAND [ARGS]
+  -n  Calculate age as if process was still running
 EOF
   exit 1
 }
@@ -18,26 +19,48 @@ if [ "$1" == -h ] || [ "$1" == --help ] || [ $# -eq 0 ]; then
   usage
 fi
 
+if [ "$1" = -n ]; then
+  now=y
+  shift
+fi
+
 cmd="$1"
 shift
 
-basecmd=`basename "$cmd"`
-cmddir="$TTRACK_DIR/$basecmd"
+base_cmd=`basename "$cmd"`
+cmd_dir="$AGE_DIR/$base_cmd"
+start_file="$cmd_dir/start"
+end_file="$cmd_dir/end"
 
-if ! [ -d "$cmddir" ]; then
-  echo "$cmddir does not exist; was the command run under ttrack?" >&2
+if ! [ -d "$cmd_dir" ]; then
+  echo "$cmd_dir does not exist; was the command run under ttrack?" >&2
   exit 1
 fi
 
-start=$( cat "$cmddir/start" )
-end=$(   cat "$cmddir/end"   )
+if ! [ -e "$start_file" ]; then
+  echo "$start_file does not exist; aborting." >&2
+  exit 1
+fi
+start=$( cat "$start_file" )
 
-if [ "$end" -lt "$start" ]; then
+if [ -e "$end_file" ]; then
+  end=$( cat "$end_file" )
+  exit=1 # command not running
+  if [ "$end" -lt "$start" ]; then
+    echo "Command still running." >&2
+    end=$( date +"%s" )
+    exit=0
+  fi
+else
+  # no end file, must still be running
   echo "Command still running." >&2
   end=$( date +"%s" )
-  echo $(( end - start ))
-  exit 1
+  exit=0
+fi
+
+if [ -n "$now" ]; then
+  end=$( date +"%s" )
 fi
 
 echo $(( end - start ))
-exit 0
+exit $exit
