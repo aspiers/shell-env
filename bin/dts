@@ -20,8 +20,25 @@ my %opts = ();
 Getopt::Long::Configure('bundling');
 GetOptions(
   \%opts,
+  'help|h',
   'gmtime|g', 'epoch|e', 'usec|u',
-) or die;
+) or usage();
+usage() if @ARGV == 0 or $opts{help};
+
+(my $ME = $0) =~ s,.*/,,;
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  die <<EOUSAGE;
+Usage: $ME [options] COMMAND [ARGS...]
+Options:
+  -h, --help         Show this help
+  -g, --gmtime       Use UTC not local time
+  -e, --epoch        Show seconds since UNIX epoch
+  -u, --usec         Show microseconds
+EOUSAGE
+}
 
 my $printformat = "%04d/%02d/%02d %3s %02d:%02d:%02d";
 $printformat .= ".%06d" if $opts{usec};
