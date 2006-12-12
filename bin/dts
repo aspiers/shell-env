@@ -25,13 +25,14 @@ GetOptions(
   'help|h',
   'gmtime|g', 'epoch|e', 'usec|u',
 ) or usage();
-usage() if @ARGV == 0 or $opts{help};
+usage() if $opts{help};
 
 sub usage {
   warn @_, "\n" if @_;
 
   die <<EOUSAGE;
 Usage: $ME [options] COMMAND [ARGS...]
+If COMMAND is omitted, acts as a STDIN filter instead.
 Options:
   -h, --help         Show this help
   -g, --gmtime       Use UTC not local time
@@ -44,7 +45,7 @@ my $printformat = "%04d/%02d/%02d %3s %02d:%02d:%02d";
 $printformat .= ".%06d" if $opts{usec};
 $printformat .= " ";
 
-open(CMD, "@ARGV |") or die $!;
+open(CMD, @ARGV ? "@ARGV |" : "<&STDIN") or die $!;
 while(<CMD>) {
   my ($seconds, $usec) = Time::HiRes::gettimeofday();
   if ($opts{epoch}) {
