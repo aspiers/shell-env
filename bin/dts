@@ -16,16 +16,16 @@ use Time::HiRes;
 
 $| = 1; # turn output buffering off
 
+(my $ME = $0) =~ s,.*/,,;
+
 my %opts = ();
-Getopt::Long::Configure('bundling');
+Getopt::Long::Configure('bundling', 'passthrough');
 GetOptions(
   \%opts,
   'help|h',
   'gmtime|g', 'epoch|e', 'usec|u',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
-
-(my $ME = $0) =~ s,.*/,,;
 
 sub usage {
   warn @_, "\n" if @_;
