@@ -74,7 +74,7 @@ sub rm_src_dups {
 sub do_unlink {
   my ($doomed) = @_;
   if ($opts{'dry-run'}) {
-    print qq{rm "$doomed"\n} if $opts{verbose};
+    warn qq{rm "$doomed"\n};
     $doomed{$doomed}++;
   }
   else {
