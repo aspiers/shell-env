@@ -90,7 +90,7 @@
 #    This can be achieved simply by grepping for run_hooks invocations.
 #
 #  * Need to support find_hooks for emacs and other non-shell-based
-#    environments which invoke the hooks in a different way.#    
+#    environments which invoke the hooks in a different way.
 #  
 #  * ZDOTDIR=~aspiers as root, where ~aspiers is shared via NFS,
 #    reduces root privilege a lot since trust level for NFS write
