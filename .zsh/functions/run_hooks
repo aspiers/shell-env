@@ -100,6 +100,13 @@
 
 process_hook () {
   hook_path="$1"
+
+  if ! [ -r "$hook_path" ]; then
+    if [ "$DEBUG_LOCAL_HOOKS" -ge 2 ]; then
+      echo "Couldn't read $hook_path; skipping." >&2
+    fi
+    return 0
+  fi
   
   if [ -z "$hooks_found" ]; then
     hooks_found="$hook_path"
