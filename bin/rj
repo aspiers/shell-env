@@ -1,9 +1,12 @@
 #!/bin/sh
 
 case "$0" in
-  *rjt) threads='-m' ;;
+  *rjt) threads='-L' ;;
   *)    threads=''   ;;
 esac
+
+# beginnings of a cleaner way then the grep -v grep nonsense
+# ps $opts | awk "(NR == 1) || /$1/"
 
 case "$OSTYPE" in
   solaris*) exec /usr/bin/ps -ef $threads | egrep "($*|^ *UID)" | egrep -v "grep.+USER|$0|ps -ef\$"
