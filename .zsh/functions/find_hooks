@@ -12,10 +12,12 @@ iterate_hooks find "$@"
 . $ZDOTDIR/.zsh/functions/enable_wordsplit
 
 if [ -n "$hooks_found" ]; then
-    #echo "$hooks_found"
-    for hook in $hooks_found; do
-        echo $hook
-    done
+  if [ -n "$ZSH_VERSION" ]; then
+    setopt local_options no_extended_glob
+  fi
+  for hook in $hooks_found; do
+      echo "$hook"
+  done
 fi
 
 restore_wordsplit
