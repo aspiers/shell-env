@@ -835,18 +835,6 @@ alias v=less
 alias vs='less -S'
 
 # }}}
-# {{{ mutt
-
-m () {
-  setopt local_traps
-  trap 'cxx' INT EXIT QUIT KILL
-  cx -l mutt
-  mutt "$@"
-}
-
-compdef _mutt m
-
-# }}}
 # {{{ editors
 
 # emacs, windowed
