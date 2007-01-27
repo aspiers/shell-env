@@ -4,13 +4,19 @@
 # is equivalent to piping it through cat (i.e. untouched), rather than
 # just losing the data.  E.g.:
 #    
-#    wget http://foo.bar/baz.html | \
+#    wget -o- http://foo.bar/baz.html | \
 #      safe-pipe riskily-munge-HTML | grep foo
 #
 # Its Achilles' heel is that it assumes the filter will always play nice
-# and return a non-zero exit code on failure.
+# and return a non-zero exit code on failure, i.e. iff no output was generated.
 
 tmp=`mktemp /tmp/safe-pipe.XXXXXXXXX`
 cat >> $tmp
+
+# FIXME: save output of risky filter somewhere and only do cat if
+# non-zero exit code *and* no output was generated.  Otherwise we
+# could get two lots of output.  Though maybe that's what we want
+# in some circumstances?
 "$@" < $tmp || cat $tmp
+
 rm $tmp
