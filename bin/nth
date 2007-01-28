@@ -1,0 +1,19 @@
+#!/bin/sh
+
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+    Usage: $me NTH FILE [ FILE ... ]
+EOF
+    exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
+    usage
+fi
+
+nth="$1"
+shift
+
+awk "{ if (FNR == $nth) { print; nextfile; } }" "$@"
