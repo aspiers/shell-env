@@ -187,8 +187,9 @@ iterate_hooks () {
           echo "# Ignoring obsolete hook $hook_path"
         fi
         continue
+      elif [ "$DEBUG_LOCAL_HOOKS" -ge 2 ]; then
+        echo "WARNING: found obsolete hook $hook_path" >&2
       fi
-      echo "WARNING: found obsolete hook $hook_path" >&2
     done
 
     [ -d "$hook_d" ] || break
