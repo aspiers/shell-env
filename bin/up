@@ -1,0 +1,65 @@
+#!/bin/sh
+
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+Usage: $me ARCHIVE
+EOF
+    exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
+    usage
+fi
+
+archive="$1"
+
+if ! tmpdir=`mktemp -d $me.tmp.XXXXXXXX`; then
+    echo "mktemp failed: $!"
+    exit 1
+fi
+
+case "$archive" in
+    *.tar)
+        tar -C "$tmpdir" -xvf "$archive"
+        ;;
+    *.tar.gz|*.tgz)
+        tar -C "$tmpdir" -zxvf "$archive"
+        ;;
+    *.tar.bz2)
+        tar -C "$tmpdir" -jxvf "$archive"
+        ;;
+    *.zip)
+        unzip -d "$tmpdir" $archive
+        ;;
+    *)
+        echo "ERROR: $archive is not a supported archive format" >&2
+        exit 1
+        ;;
+esac
+
+dirents=`ls -A "$tmpdir" | wc -l`
+
+# Naughty creator of archive!  Would cause a mess if unpacked to cwd.
+if [ "$dirents" -gt 1 ]; then
+    destdir="$archive.unpacked"
+    if mv "$tmpdir" "$destdir"; then
+        echo "$archive had more than one top-level entry; look inside $destdir"
+        exit 0
+    else
+        echo "ERROR: mv $tmpdir $destdir failed" >&2
+        exit 1
+    fi
+else
+    top_dirent="`ls -A $tmpdir`"
+    if mv "$tmpdir/$top_dirent" .; then
+        rmdir "$tmpdir"
+        echo "Clean $archive unpacked to $top_dirent"
+        exit 0
+    else
+        echo "ERROR: mv $tmpdir/$top_dirent . failed" >&2
+        exit 1
+    fi
+fi
+
