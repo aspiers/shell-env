@@ -55,7 +55,7 @@ else
     top_dirent="`ls -A $tmpdir`"
     if mv "$tmpdir/$top_dirent" .; then
         rmdir "$tmpdir"
-        echo "Clean $archive unpacked to $top_dirent"
+        echo "$archive clean -> unpacked to $top_dirent"
         exit 0
     else
         echo "ERROR: mv $tmpdir/$top_dirent . failed" >&2
