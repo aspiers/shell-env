@@ -15,6 +15,8 @@ sub debug {
 #  warn @_, "\n";
 }
 
+(my $ME = $0) =~ s,.*/,,;
+
 my %opts;
 GetOptions(
   \%opts,
@@ -22,8 +24,6 @@ GetOptions(
   'signal|s=s', 'command|c=s', 'kill|k',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
-
-(my $ME = $0) =~ s,.*/,,;
 
 sub usage {
   warn @_, "\n" if @_;
