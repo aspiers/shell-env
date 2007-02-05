@@ -34,15 +34,32 @@ clean_up () {
   [ -d "$lock" ] && rmdir "$lock"
 }  
 
+# Propagate TERM and KILL to child.  This is needed for when we get invoked via:
+#   timeout -k $timeout age-track myprog myargs ...
+sigterm () {
+  [ -n "$child_pid" ] && kill -TERM $child_pid
+}
+
+sigkill () {
+  [ -n "$child_pid" ] && kill -KILL $child_pid
+}
+
 obtain_lock "$lock" "$cmd" || exit 1
 # Signal must be trapped *after* obtaining lock, otherwise
 # failure to obtain the lock would remove an active lock.
 trap clean_up EXIT
+trap sigterm TERM
+trap sigkill KILL
 
 echo "$*" > "$cmd_dir/args"
 date +"%s" > "$cmd_dir/start"
 [ -e "$cmd_dir/exit_code" ] && rm -f "$cmd_dir/exit_code"
-"$cmd" "$@"
+
+"$cmd" "$@" &
+
+child_pid=$!
+wait
+
 exit=$?
 echo $exit > "$cmd_dir/exit_code"
 exit $exit
