@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Show the age in seconds of a running or completed command which
-# was run under the ttrack wrapper.  exit 0 if still running, 1 otherwise.
+# was run under the age-track wrapper.  exit 0 if still running, 1 otherwise.
 
 AGE_DIR="$HOME/.age"
 
@@ -33,7 +33,7 @@ start_file="$cmd_dir/start"
 end_file="$cmd_dir/end"
 
 if ! [ -d "$cmd_dir" ]; then
-  echo "$cmd_dir does not exist; was the command run under ttrack?" >&2
+  echo "$cmd_dir does not exist; was the command run under age-track?" >&2
   exit 1
 fi
 
