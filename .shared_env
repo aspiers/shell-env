@@ -180,8 +180,10 @@ export GREP_OPTIONS='--directories=skip'
 # {{{ GNU screen
 
 case "$TERM" in
-  screen*) IN_SCREEN=yes ; export IN_SCREEN ;;
+  screen*) IN_SCREEN=yes ;;
+  *)       IN_SCREEN=    ;;
 esac
+export IN_SCREEN
 
 export SCREENRC=$ZDOTDIR/.screenrc
 
