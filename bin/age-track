@@ -12,7 +12,7 @@ me=`basename $0`
 
 usage () {
   cat <<EOF >&2
-Usage: $me COMMAND [ARGS]
+Usage: $me COMMAND [-n NAME] [ARGS]
 EOF
   exit 1
 }
@@ -21,11 +21,16 @@ if [ "$1" == -h ] || [ "$1" == --help ] || [ $# -eq 0 ]; then
   usage
 fi
 
+if [ "$1" == -n ]; then
+  name="$2"
+  shift 2
+fi
+
 cmd="$1"
 shift
 
 base_cmd=`basename "$cmd"`
-cmd_dir="$AGE_DIR/$base_cmd"
+cmd_dir="$AGE_DIR/${name:-$base_cmd}"
 mkdir -p "$cmd_dir"
 lock="$cmd_dir/lock"
 
@@ -37,11 +42,17 @@ clean_up () {
 # Propagate TERM and KILL to child.  This is needed for when we get invoked via:
 #   timeout -k $timeout age-track myprog myargs ...
 sigterm () {
-  [ -n "$child_pid" ] && kill -TERM $child_pid
+  if [ -n "$child_pid" ]; then
+    echo "Propagating SIGTERM to $child_pid" >&2
+    kill -TERM $child_pid
+  fi
 }
 
 sigkill () {
-  [ -n "$child_pid" ] && kill -KILL $child_pid
+  if [ -n "$child_pid" ]; then
+    echo "Propagating SIGKILL to $child_pid" >&2
+    kill -KILL $child_pid
+  fi
 }
 
 obtain_lock "$lock" "$cmd" || exit 1
