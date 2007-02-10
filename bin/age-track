@@ -69,7 +69,7 @@ date +"%s" > "$cmd_dir/start"
 "$cmd" "$@" &
 
 child_pid=$!
-wait
+wait $child_pid
 
 exit=$?
 echo $exit > "$cmd_dir/exit_code"
