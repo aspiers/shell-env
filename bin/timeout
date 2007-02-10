@@ -9,18 +9,19 @@ use warnings;
 
 use Config;
 use Getopt::Long qw(:config pass_through);
-use POSIX qw(:sys_wait_h);
+use POSIX qw(:sys_wait_h setsid);
+
+my %opts;
 
 sub debug {
-#  warn @_, "\n";
+  warn @_, "\n" if $opts{verbose};
 }
 
 (my $ME = $0) =~ s,.*/,,;
 
-my %opts;
 GetOptions(
   \%opts,
-  'help|h',
+  'help|h', 'verbose|v',
   'signal|s=s', 'command|c=s', 'kill|k',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
@@ -36,12 +37,20 @@ Options:
   -k, --kill               On timeout, send TERM signal then KILL if needed
   -s, --signal=SIG, -SIG   On timeout, send signal SIG (e.g. 9 or KILL)
   -c, --command=CMD        On timeout, run command 
+  -v, --verbose            Show progress in more detail
+
+The signal gets sent to the child's process group, not just the child.
+That's to deal with the case where the child is a shell process.  So?
+Signal handlers in bash are ineffectual while bash is blocking on a
+waitpid(-1), and I can't see how to avoid this waitpid when the script
+needs to wake up and do other stuff once its child has completed.
 EOUSAGE
 }
 
-my $DOUBLE_KILL = 'double-kill';
-my $signal = get_signal();
-debug("May use signal $signal") if $signal;
+my $signum = get_signal();
+debug("$ME: may use signal $signum" .
+        ($opts{kill} ? " and signal 9" : ''))
+  if $signum;
 
 usage() unless @ARGV >= 2;
 my ($timeout, $command, @args) = @ARGV;
@@ -49,6 +58,7 @@ my ($timeout, $command, @args) = @ARGV;
 my $pid = fork();
 if (! $pid) {
   # child
+  setsid;
   exec $command, @args;
 }
 
@@ -56,19 +66,33 @@ if (! $pid) {
 debug("child pid is $pid");
 
 $SIG{ALRM} = sub {
-  debug("Timed out after $timeout seconds");
-  if (defined $signal && defined $pid) {
-    debug("Sending signal $signal to pid $pid");
-    kill $signal, $pid;
-  }
-  if ($opts{kill}) {
-    waitpid($pid, WNOHANG); # reap zombie
-    if (getpgrp($pid) > 0) {
-      debug("pid $pid still exists; sleeping 3 ...");
-      sleep 3;
-      if (getpgrp($pid) > 0) {
-        debug("pid $pid STILL exists; sending KILL to pid $pid");
-        kill 'KILL', $pid;
+  debug("pid $pid timed out after $timeout seconds");
+  if (defined $signum) {
+    if (my $pgrp = getpgrp($pid)) {
+      debug("Sending signal $signum to pgrp $pgrp ...");
+      kill -$signum, $pgrp;
+    }
+    elsif (defined $pid) {
+      warn "WTF? pid $pid exists but getpgrp($pid) failed"; 
+      debug("Sending signal $signum to pid $pid");
+      kill $signum, $pid;
+    }
+    
+    if ($opts{kill}) {
+      my $pgrp;
+      my $tries = 0;
+      do {
+        waitpid($pid, WNOHANG); # reap zombie
+        $pgrp = getpgrp($pid);
+        if (getpgrp($pid) > 0) {
+          debug("pid $pid still exists; sleeping a second ...");
+          sleep 1;
+          $tries++;
+        }
+      } while $pgrp > 0 and $tries < 3;
+      if ($pgrp > 0) {
+        debug("pid $pid STILL exists; sending KILL to pgrp $pgrp");
+        kill -9, $pid;
       }
     }
   }
@@ -101,6 +125,7 @@ sub get_signal {
   return canonise_signal(defined($short_signal) ? $short_signal : $opts{signal});
 }
 
+# Returns the signal number.
 sub canonise_signal {
   my ($signal) = @_;
 
@@ -118,7 +143,6 @@ sub canonise_signal {
     return $sig2num{uc $signal};
   }
   else {
-    die $sig2num{ZERO};
     usage("Didn't recognise weird signal '$signal'\n");
   }
 }
