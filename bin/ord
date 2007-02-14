@@ -1,5 +1,10 @@
 #!/usr/bin/perl
 
-my $ord = ord shift;
-printf "dec %d, oct %03o, hex 0x%2x\n", ($ord) x 3;
+use strict;
+use warnings;
+
+foreach my $ord (split //, shift) {
+  printf "%s: dec %d, oct %03o, hex 0x%2x\n", $ord, (ord $ord) x 3;
+}
+
 
