@@ -872,15 +872,6 @@ ssh () {
 #dsa >&DN || echo "ssh-agent setup failed; run dsa."
 
 # }}}
-# {{{ ftp
-
-if which lftp >&/dev/null; then
-  alias ftp=lftp
-elif which ncftp >&/dev/null; then
-  alias ftp=ncftp
-fi
-
-# }}}
 # {{{ arch
 
 if which larch >&/dev/null; then

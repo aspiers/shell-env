@@ -1,0 +1,7 @@
+#autoload
+
+if which lftp >&/dev/null; then
+  lftp "$@"
+elif which ncftp >&/dev/null; then
+  ncftp "$@"
+fi

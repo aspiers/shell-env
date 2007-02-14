@@ -1,0 +1,8 @@
+#autoload
+
+setopt local_traps
+trap 'cxx' INT EXIT QUIT KILL
+cx ncftp
+command ncftp "$@"
+
+
