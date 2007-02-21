@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+me="grep-shortcuts"
+mode=`basename $0`
+
+if [ "$mode" = "$me" ] && [ -z "$*" ]; then
+  here=`dirname $0`
+  echo -n "Setting up handy service shortcuts in $here ..."
+  cd "$here"
+  for op in g{,i}{,l,L}{,r}{,v}; do
+    if ! [ -e $op ]; then
+        ln -s $me $op
+        echo -n " $op"
+    fi
+  done
+  echo
+  exit 0
+fi
+
+switches="${mode#g}"
+exec egrep -$switches "$@"

@@ -2,6 +2,7 @@
 
 ~/bin/service-commands
 ~/bin/cm
+~/bin/grep-shortcuts
 ( cd ~/bin; [ -e rjt ] || ln -s rj rjt )
 
 if which zsh >&/dev/null; then

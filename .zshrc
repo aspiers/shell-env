@@ -943,14 +943,7 @@ alias -g Gv='| egrep -v'
 alias -g EG='|& egrep'
 alias -g EGv='|& egrep -v'
 
-alias g='egrep'
-alias gi='egrep -i'
-alias gr='egrep -r'
-alias gl='egrep -l'
-alias gir='egrep -ir'
-alias gil='egrep -il'
-alias glr='egrep -lr'
-alias gilr='egrep -ilr'
+# grep aliases now moved to grep-shortcuts script
 
 alias -g XA='| xargs'
 alias -g X0='| xargs -0'
