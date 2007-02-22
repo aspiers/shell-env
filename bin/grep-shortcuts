@@ -9,6 +9,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   here=`dirname $0`
   echo -n "Setting up handy service shortcuts in $here ..."
   cd "$here"
+  # see also global aliases in .zshrc
   for switches in {,i}{,l,L}{,r}{,v}; do
     cmd=g$switches
     if ! [ -e $cmd ]; then
