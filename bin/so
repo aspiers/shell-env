@@ -17,7 +17,7 @@ tmpfile=`mktemp /tmp/source-only.XXXXXXX`
   sed 's/$/\/\*/g' $ZDOTDIR/.cvsignore
   # Prune sub-directories
   sed 's/^/\*\//g; s/$/\/\*/g' $ZDOTDIR/.cvsignore
-) | $here/../glob-to-re > $tmpfile
+) | $here/glob-to-re > $tmpfile
 
 grep -vEf $tmpfile
 
