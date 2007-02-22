@@ -938,10 +938,10 @@ alias -g VM=/var/log/messages
 
 # see also grep-shortcuts script
 for switches in {,i}{,l,L}{,r}{,v}; do
-  eval "alias -g  G$switches='| egrep -$switches'"
-  eval "alias -g EG$switches='|& egrep -$switches'"
-  eval "alias -g XG$switches='| xargs egrep -$switches'"
-  eval "alias -g X0G$switches='| xargs -0 egrep -$switches'"
+  eval "alias -g  G$switches='| egrep ${switches:+-$switches}'"
+  eval "alias -g EG$switches='|& egrep ${switches:+-$switches}'"
+  eval "alias -g XG$switches='| xargs egrep ${switches:+-$switches}'"
+  eval "alias -g X0G$switches='| xargs -0 egrep ${switches:+-$switches}'"
 done
 
 # }}}
