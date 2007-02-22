@@ -17,9 +17,16 @@ if [[ $# != 1 && $# != 2 ]]; then
   exit 1
 fi
 
+MNTROOT=/mnt/initrd
+mkdir -p $MNTROOT
+if ! [ -d $MNTROOT ]; then
+  echo "Couldn't mkdir -p $MNTROOT" >&2
+  exit 1
+fi
+
 img=$1
 imgbase=${1##*/}
-mnt=${2:-/mnt/initrd/$imgbase}
+mnt=${2:-$MNTROOT/$imgbase}
 absmnt="`abs $mnt`"
 if mount | egrep -q "$absmnt"; then
   echo "Something already mounted on $absmnt!  Aborting."
