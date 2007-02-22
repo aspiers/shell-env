@@ -9,10 +9,11 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   here=`dirname $0`
   echo -n "Setting up handy service shortcuts in $here ..."
   cd "$here"
-  for op in g{,i}{,l,L}{,r}{,v}; do
-    if ! [ -e $op ]; then
-        ln -s $me $op
-        echo -n " $op"
+  for switches in {,i}{,l,L}{,r}{,v}; do
+    cmd=g$switches
+    if ! [ -e $cmd ]; then
+        ln -s $me $cmd
+        echo -n " $cmd"
     fi
   done
   echo
