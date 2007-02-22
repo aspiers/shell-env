@@ -25,7 +25,7 @@ fi
 
 case "`file $1`" in
   *SYSLINUX*)
-    # floppy image (e.g. bootnet.img)
+    echo "$1 is a floppy image" # e.g. bootnet.img
     floppy=$1
     floppy_base=${1##*/}
     mnt-image $floppy
@@ -44,6 +44,7 @@ gunzip $tmpimg.gz
 
 case "`file $tmpimg`" in
   *cpio*)
+    echo "$tmpimg is a cpio archive"
     mv $tmpimg $tmpimg.cpio
     mkdir $tmpimg
     cd $tmpimg
