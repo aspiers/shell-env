@@ -936,14 +936,11 @@ alias -g VM=/var/log/messages
 # }}}
 # {{{ grep, xargs
 
-alias -g G='| egrep'
-alias -g Gi='| egrep -i'
-alias -g Gl='| egrep -l'
-alias -g Gv='| egrep -v'
-alias -g EG='|& egrep'
-alias -g EGv='|& egrep -v'
-
-# grep aliases now moved to grep-shortcuts script
+# see also grep-shortcuts script
+for switches in {,i}{,l,L}{,r}{,v}; do
+  eval "alias -g  G$switches='|  egrep $switches'"
+  eval "alias -g EG$switches='|& egrep $switches'"
+done
 
 alias -g XA='| xargs'
 alias -g X0='| xargs -0'
