@@ -944,6 +944,8 @@ for switches in {,i}{,l,L}{,r}{,v}; do
   eval "alias -g X0G$switches='| xargs -0 egrep ${switches:+-$switches}'"
 done
 
+alias -g XA='| xargs'
+
 # }}}
 # {{{ awk
 
