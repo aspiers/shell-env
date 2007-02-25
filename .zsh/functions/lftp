@@ -1,8 +1,0 @@
-#autoload
-
-setopt local_traps
-trap 'cxx' INT EXIT QUIT KILL
-cx lftp
-command lftp "$@"
-
-
