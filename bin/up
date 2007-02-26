@@ -31,7 +31,7 @@ case "$archive" in
         tar -C "$tmpdir" -jxvf "$archive"
         ;;
     *.zip)
-        unzip -d "$tmpdir" $archive
+        unzip -d "$tmpdir" "$archive"
         ;;
     *)
         echo "ERROR: $archive is not a supported archive format" >&2
