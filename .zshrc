@@ -965,10 +965,10 @@ alias -g EA2="|& awk '{print \$2}'"
 alias -g EA3="|& awk '{print \$3}'"
 alias -g EA4="|& awk '{print \$4}'"
 alias -g EA5="|& awk '{print \$5}'"
-alias -g EA6="| awk '{print \$6}'"
-alias -g EA7="| awk '{print \$7}'"
-alias -g EA8="| awk '{print \$8}'"
-alias -g EA9="| awk '{print \$9}'"
+alias -g EA6="|& awk '{print \$6}'"
+alias -g EA7="|& awk '{print \$7}'"
+alias -g EA8="|& awk '{print \$8}'"
+alias -g EA9="|& awk '{print \$9}'"
 
 # }}}
 
