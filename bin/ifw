@@ -1,4 +1,9 @@
 #!/bin/sh
 
-ifconfig "$@"
-iwconfig "$@"
+ifconfig "$@" 2>&1 | \
+  perl -0777pe 's/^lo\s.*?\n\n//ms; s/.*(packets|collisions|Interrupt).*\n//g'
+
+iwconfig 2>&1 | \
+  perl -0777pe 's/.*\sno wireless extensions.*\n\n//g;
+                s/.*(RTS|[RT]x invalid|excessive retries).*\n//g;
+                s/\n+$/\n/;'
