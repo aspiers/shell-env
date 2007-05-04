@@ -945,6 +945,7 @@ for switches in {,i}{,l,L}{,r}{,v}; do
 done
 
 alias -g XA='| xargs'
+alias -g X0='| xargs -0'
 
 # }}}
 # {{{ awk
