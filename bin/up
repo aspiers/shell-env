@@ -30,7 +30,7 @@ case "$archive" in
     *.tar.bz2)
         tar -C "$tmpdir" -jxvf "$archive"
         ;;
-    *.zip)
+    *.zip|*.xpi)
         unzip -d "$tmpdir" "$archive"
         ;;
     *)
