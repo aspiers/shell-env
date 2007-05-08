@@ -21,15 +21,30 @@ lesspipe() {
 		$DECOMPRESSOR -- "$1"
 	fi ;;
   *.tar) tar tvvf "$1" ;;
-  *.tgz|*.tar.gz|*.tar.[zZ]) tar ztvvf "$1" ;;
+  *.tgz|*.tar.gz|*.tar.[zZ]) tar tzvvf "$1" ;;
   *.tar.bz2|*.tbz2) tar jtvvf "$1" ;;
   *initrd*.gz) gunzip -c "$1" | cpio -tv ;;
   *.[zZ]|*.gz|*.svgz) gzip -dc -- "$1" ;;
   *.bz2) bzip2 -dc -- "$1" ;;
-  *.zip|*.xpi) zipinfo -- "$1" ;;
+  *.zip|*.jar|*.xpi) zipinfo -- "$1" ;;
   *.rpm) rq "$1" ;;
   *.cpi|*.cpio) cpio -itv < "$1" ;;
   *.htm|*.html) exec w3m -T text/html "$1" ;;
+  *.gif|*.jpeg|*.jpg|*.pcd|*.png|*.tga|*.tiff|*.tif)
+   if [ -x "`which identify`" ]; then
+     identify "$1"
+   else
+     echo "No identify available"
+     echo "Install ImageMagick to browse images"
+   fi ;;
+  *)
+	case "$1" in
+		*.gz)	DECOMPRESSOR="gunzip -c" ;;
+		*.bz2)	DECOMPRESSOR="bunzip2 -c" ;;
+	esac
+	if [ ! -z $DECOMPRESSOR ] ; then
+		$DECOMPRESSOR -- "$1" ;
+	fi
 # Can't remember why I wanted to allow use as a filter but it breaks
 # hitting 'v' from less to edit.
 #  *) cat "$1" ;;
