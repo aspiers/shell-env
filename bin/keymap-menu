@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if [ "`basename $0`" = "keymap-menu" ] && [ -n "$*" ]; then
+    here=`dirname $0`
+    echo -n "Setting up symlinks for keymap-menu in $here ... "
+    cd "$here"
+    for op in asdf aoeu sdfg; do
+        if ! [ -e $op ]; then
+            ln -s $me $op
+            echo -n " $op"
+        fi
+    done
+    echo
+    exit 0
+fi
+
+cat <<EOF
+Choose from one of the following keymaps:
+
+  1) Dell D620 hacked to suit Adam
+  2) Dell D600 "untouched" - as labelled
+  3) Kinesis Essential
+  4) Microsoft Natural 105-key
+  5) Dvorak (applies incrementally over existing keymap)
+
+EOF
+
+echo -n "Enter your choice now > "
+read choice
+
+XMODMAP_DIR=$ZDOTDIR/.keymaps/X11
+KEYMAP_DIR=$ZDOTDIR/.keymaps/Linux-console
+
+case "$choice" in
+    1) xmodmap=$XMODMAP_DIR/Dell-D620-Adam
+       ;;
+    2) xmodmap=$XMODMAP_DIR/Dell-D600-untouched
+       ;;
+    3) xmodmap=$XMODMAP_DIR/Kinesis-QWERTY
+       keymap=$KEYMAP_DIR/uk-kinesis.map
+       ;;
+    4) xmodmap=$XMODMAP_DIR/MS-Natural-105
+       keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
+       ;;
+    5) xmodmap=$XMODMAP_DIR/dvorak
+       keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
+       ;;
+    *) echo "Invalid choice." ; exit 1 ;;
+esac
+
+# if tty | grep -q tty; then
+#   local sudo=''
+#   (( $EUID == 0 )) && sudo=sudo
+#   $sudo loadkeys $keymap
+# fi
+
+xmodmap "$xmodmap"
