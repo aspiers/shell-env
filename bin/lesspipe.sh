@@ -26,7 +26,7 @@ lesspipe() {
   *initrd*.gz) gunzip -c "$1" | cpio -tv ;;
   *.[zZ]|*.gz|*.svgz) gzip -dc -- "$1" ;;
   *.bz2) bzip2 -dc -- "$1" ;;
-  *.zip|*.jar|*.xpi) zipinfo -- "$1" ;;
+  *.zip|*.jar|*.xpi|*.job) zipinfo -- "$1" ;;
   *.rpm) rq "$1" ;;
   *.cpi|*.cpio) cpio -itv < "$1" ;;
   *.htm|*.html) exec w3m -T text/html "$1" ;;
