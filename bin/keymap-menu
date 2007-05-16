@@ -1,11 +1,14 @@
 #!/bin/bash
 
-if [ "`basename $0`" = "keymap-menu" ] && [ -n "$*" ]; then
+me="keymap-menu"
+if [ "`basename $0`" = "$me" ] && [ -n "$*" ]; then
     here=`dirname $0`
     echo -n "Setting up symlinks for keymap-menu in $here ... "
     cd "$here"
     for op in asdf aoeu sdfg; do
-        if ! [ -e $op ]; then
+        if [ -e $op ]; then
+            echo "WARNING: $op already exists in $here" >&2
+        else
             ln -s $me $op
             echo -n " $op"
         fi
@@ -55,3 +58,10 @@ esac
 # fi
 
 xmodmap "$xmodmap"
+
+. $ZDOTDIR/.zsh/functions/enable_nullglob
+
+for hook in $( . $ZDOT_FIND_HOOKS ".keymaps/post-change.d" ); do
+  echo "Running post-change hook $hook ..."
+  "$hook"
+done
