@@ -40,8 +40,9 @@
 #     Run directory contents if $username equals the current
 #     (non-numeric) uid.  An additional special case: if $username
 #     equals 'OWNER', the hook is only run if the current user owns
-#     the hook file.  This allows uid-specific hooks to be installed
-#     in multiple home directories independently of their filename.
+#     the hook file.  This allows a uid-specific hook to be installed
+#     in multiple home directories independently of its filename,
+#     effectively marking it as "for private use only".
 
 # Requirements and rationale for search algorithm:
 #
