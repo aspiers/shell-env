@@ -59,6 +59,7 @@ esac
 
 xmodmap "$xmodmap"
 
+. $ZDOTDIR/.shared_env
 . $ZDOTDIR/.zsh/functions/enable_nullglob
 
 for hook in $( . $ZDOT_FIND_HOOKS ".keymaps/post-change.d" ); do
