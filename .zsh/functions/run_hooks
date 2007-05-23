@@ -200,6 +200,9 @@ iterate_hooks () {
 #       return 1
 #     fi
 
+    hostnick=$(cat $ZDOTDIR/.localhost-nickname)
+    : ${hostnick:=unknown}
+
     for hook_path in $hook_d/*; do
       dirent="${hook_path##*/}"
 
@@ -226,7 +229,8 @@ iterate_hooks () {
           host="${dirent#host-}"
           # Be lenient with non-FQDN ambiguity
           if [ "${HOSTNAME%%.*}" != "${host}"     ] && \
-             [ "${HOSTNAME}"     != "${host%%.*}" ]
+             [ "${HOSTNAME}"     != "${host%%.*}" ] && \
+             [ "${hostnick}"     != "${host%%.*}" ]
           then
             [ "$DEBUG_LOCAL_HOOKS" -ge 4 ] && \
               echo "#   $hook_path hostname $host does not match \$HOSTNAME $HOSTNAME"
