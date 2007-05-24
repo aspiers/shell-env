@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cat /proc/acpi/ac_adapter/AC/state

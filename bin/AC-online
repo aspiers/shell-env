@@ -1,3 +1,3 @@
 #!/bin/sh
 
-grep -q on-line /proc/acpi/ac_adapter/AC/state
+AC-state | grep -q on-line 
