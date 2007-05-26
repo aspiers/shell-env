@@ -7,7 +7,11 @@ if [ "`basename $0`" = "$me" ] && [ -n "$*" ]; then
     cd "$here"
     for op in asdf aoeu sdfg; do
         if [ -e $op ]; then
-            echo "WARNING: $op already exists in $here" >&2
+            if [ -h $op ]; then
+                : # assume ok
+            else
+                echo "WARNING: $op already exists in $here" >&2
+            fi
         else
             ln -s $me $op
             echo -n " $op"
