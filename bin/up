@@ -1,4 +1,12 @@
 #!/bin/sh
+#
+# Unpacks one of several different types of archive to the current
+# directory.  If there is more than one entry in the top-level
+# directory, automatically creates a new subdirectory and unpacks to
+# that, in order to avoid filling the current directory with crap.
+# In every case, informs the user where the unpacked contents ended up.
+#
+# Adam Spiers <shell-hacks@adamspiers.org>
 
 me=`basename $0`
 
@@ -13,7 +21,8 @@ if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
     usage
 fi
 
-archive="$1"
+archive_path="$1"
+archive="`basename $1`"
 
 ideal_dest=
 case "$archive" in
@@ -33,16 +42,16 @@ fi
 
 case "$archive" in
     *.tar)
-        tar -C "$tmpdir" -xvf "$archive"
+        tar -C "$tmpdir" -xvf "$archive_path"
         ;;
     *.tar.gz|*.tgz)
-        tar -C "$tmpdir" -zxvf "$archive"
+        tar -C "$tmpdir" -zxvf "$archive_path"
         ;;
     *.tar.bz2)
-        tar -C "$tmpdir" -jxvf "$archive"
+        tar -C "$tmpdir" -jxvf "$archive_path"
         ;;
     *.zip|*.xpi|*.jar)
-        unzip -d "$tmpdir" "$archive"
+        unzip -d "$tmpdir" "$archive_path"
         ;;
     *)
         echo "ERROR: $archive is not a supported archive format" >&2
