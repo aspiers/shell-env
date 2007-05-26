@@ -15,7 +15,18 @@ fi
 
 archive="$1"
 
-if ! tmpdir=`mktemp -d $me.tmp.XXXXXXXX`; then
+ideal_dest=
+case "$archive" in
+    *.tar|*.tgz|*.zip|*.xpi|*.jar)
+        ideal_dest="${archive%.*}"
+        ;;
+    *.tar.gz|*.tar.bz2)
+        ideal_dest="${archive%.*}"
+        ideal_dest="${archive%.*}"
+        ;;
+esac
+
+if ! tmpdir=`mktemp -d $ideal_dest.tmp.XXXXXXXX`; then
     echo "mktemp failed: $!"
     exit 1
 fi
@@ -30,7 +41,7 @@ case "$archive" in
     *.tar.bz2)
         tar -C "$tmpdir" -jxvf "$archive"
         ;;
-    *.zip|*.xpi)
+    *.zip|*.xpi|*.jar)
         unzip -d "$tmpdir" "$archive"
         ;;
     *)
@@ -41,16 +52,31 @@ esac
 
 dirents=`ls -A "$tmpdir" | wc -l`
 
-# Naughty creator of archive!  Would cause a mess if unpacked to cwd.
 if [ "$dirents" -gt 1 ]; then
-    destdir="$archive.unpacked"
-    if mv "$tmpdir" "$destdir"; then
-        echo "$archive had more than one top-level entry; look inside $destdir"
-        exit 0
+    # Naughty creator of archive!  Would cause a mess if unpacked to cwd.
+    if ! [ -e "$ideal_dest" ]; then
+        # safe to use ideal choice of destination directory
+        dest="$ideal_dest"
     else
-        echo "ERROR: mv $tmpdir $destdir failed" >&2
-        exit 1
+        echo "Ideal destination $ideal_dest already exists." >&2
+        dest="$archive.unpacked"
+        if [ -e "$dest" ]; then
+            echo "$dest also already exists." >&2
+            # Couldn't find a better place to move unpacked directory to, so
+            # leave it where it already is.
+            dest="$tmpdir"
+        fi
     fi
+
+    if [ "$tmpdir" != "$dest" ]; then
+        if ! mv "$tmpdir" "$dest"; then
+            echo "ERROR: mv $tmpdir $dest failed" >&2
+            exit 1
+        fi
+    fi
+
+    echo "$archive had more than one top-level entry; look inside $dest"
+    exit 0
 else
     top_dirent="`ls -A $tmpdir`"
     if mv "$tmpdir/$top_dirent" .; then
