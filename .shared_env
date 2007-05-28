@@ -199,7 +199,7 @@ export SCREENRC=$ZDOTDIR/.screenrc
 
 # Some programs find this handy.  Unfortunately xterm gets confused
 # when launched with it set ...
-export COLUMNS
+[ "${COLUMNS:-0}" -gt 0 ] && export COLUMNS
 
 # }}}
 # {{{ OSTYPE
