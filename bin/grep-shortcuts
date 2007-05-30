@@ -12,6 +12,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   # see also global aliases in .zshrc
   for switches in {,i}{,l,L}{,r}{,v}; do
     cmd=g$switches
+    [ "$cmd" = 'gv' ] && continue
     if ! [ -e $cmd ]; then
         ln -s $me $cmd
         echo -n " $cmd"
