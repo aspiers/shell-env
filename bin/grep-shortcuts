@@ -13,6 +13,10 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   for switches in {,i}{,l,L}{,r}{,v}; do
     cmd=g$switches
     [ "$cmd" = 'gv' ] && continue
+    preexisting=$( which $cmd 2>/dev/null )
+    if [ $? = 0 ] && [ "$ZDOTDIR/bin/$cmd" != "$preexisting" ]; then
+        echo -e "\nWARNING! $cmd already found on path" >&2
+    fi
     if ! [ -e $cmd ]; then
         ln -s $me $cmd
         echo -n " $cmd"
