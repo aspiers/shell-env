@@ -7,7 +7,7 @@ mode=`basename $0`
 
 if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   here=`dirname $0`
-  echo -n "Setting up handy service shortcuts in $here ..."
+  echo -n "Setting up handy grep shortcuts in $here ..."
   cd "$here"
   # see also global aliases in .zshrc
   for switches in {,i}{,l,L}{,r}{,v}; do
