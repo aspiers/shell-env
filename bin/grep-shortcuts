@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 me="grep-shortcuts"
 mode=`basename $0`
 
