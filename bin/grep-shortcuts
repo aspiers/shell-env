@@ -25,4 +25,6 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
 fi
 
 switches="${mode#g}"
-exec egrep -$switches "$@"
+[ -n "$switches" ] && switches=-$switches
+
+exec egrep $switches "$@"
