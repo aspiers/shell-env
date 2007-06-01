@@ -8,7 +8,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   echo -n "Setting up handy grep shortcuts in $here ..."
   cd "$here"
   # see also global aliases in .zshrc
-  for switches in {,i}{,l,L}{,r}{,v}; do
+  for switches in '' {,i}{,l,L}{,r}{,v}; do
     cmd=g$switches
     [ "$cmd" = 'gv' ] && continue
     preexisting=$( which $cmd 2>/dev/null )
