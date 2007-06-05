@@ -72,6 +72,8 @@
 #!!   - Nice implementation of composite boolean filters only with b) ?
 #!!     If it was only chained AND ops, could nest subdirectories - ugly?
 #!!   - Nice implementation of arbitrary filters certainly only with b)
+#!!   - a) is virtually guaranteed to perform better, but premature
+#!!     optimization...
 
 # Requirements and rationale for search algorithm:
 #
