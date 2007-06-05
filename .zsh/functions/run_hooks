@@ -45,46 +45,96 @@
 #     effectively marking it as "for private use only".
 
 #!! FIXME: in rare cases, compound filtering (boolean composition of
-#!! the above "atoms") is required.  In this case, the filtering still
-#!! needs to be implemented fully out-of-band, so that you can list
-#!! which hooks would be run without running them (rather than
-#!! embedding boolean tests within the hook itself).  So the current
-#!! approach is too limited.  Case study: running
+#!! the above "atoms") is required.  Case study: running
 #!! .xsession-progs.d/person-me/ from a demo account to get a nice X11
 #!! environment, e.g. 'keyboard' and 'mouse' are person-specific,
 #!! 'wallpaper' is both person- and uid-specific, and 'RSI' is
 #!! person-, uid-, and host-specific.  (Conceivably there could even
 #!! be something person- and host-specific, e.g. if I wanted to run a
 #!! utility to set sound card output volumes in a particular way on a
-#!! particular laptop.)
-#!! 
-#!! From the axiom that the filters have to be described out-of-band,
-#!! they can only be implemented a) in the filename, b) in the
-#!! pathname (status quo), or c) stored separately as meta-data
-#!! somewhere.  With c), a single flat file (e.g. '.guards') in the
-#!! hook directory isn't going to work, because it doesn't support the
-#!! $foo.d methodology.  Therefore it would have to be a .guards.d
-#!! subdirectory, which is a bit of a PITA.
+#!! particular laptop.)  So the current approach is too limited.
 #!! 
 #!! Further consideration - is anything other than AND boolean ever
 #!! required?  For example, filters implemented as arbitrary shell
-#!! code, with the above atoms simply being special cases?
+#!! code, with the "atoms" simply being special cases?  I would say
+#!! yes, e.g. hardware-specific hooks, or hooks which need to be
+#!! controlled manually such as composition of yum/smart repo/channel
+#!! directories via a hostgroups-like approach (this refers to something
+#!! I implemented in my last job).
+#!! 
+#!! Immutable requirement: must be able to list which hooks would be
+#!! run without running them, rather than embedding boolean tests as
+#!! code within the hook itself.  The latter is also prohibitive
+#!! because not all hooks will be written in shell script (mutt config
+#!! is one of many examples).
+#!! 
+#!! From the axiom that the filters have to be described out-of-band,
+#!! they can only be described 
+#!! 
+#!!  a) in the filename, 
+#!! 
+#!!  b) in the pathname (status quo),
+#!! 
+#!!  c) stored separately as meta-data somewhere, with the hooks all
+#!!     in one directory, or
+#!! 
+#!!  d) as meta-data embedded within the hook via comments,
+#!!     retrievable in a well-defined, consistent manner (like emacs
+#!!     local variables).
+#!! 
+#!! With c), a single flat file (e.g. '.guards') in the hook directory
+#!! isn't going to work, because it doesn't support the $foo.d
+#!! methodology.  Therefore it would have to be a .guards.d
+#!! subdirectory, which is a bit of a PITA.
 #!! 
 #!! Pros/cons :-
 #!! 
-#!!   - a) is easiest when creating new hooks, followed by b)
+#!!  1. a) and d) are easiest when creating new hooks.  b) and c)
+#!!     probably require equal effort once the right tools are built.
 #!! 
-#!!   - Only a) and b) offer easy viewing via standard fileutils, grep etc.
+#!!  2. Only a) and b) offer easy viewing via standard fileutils, grep
+#!!     etc. but a list_hooks | xargs ... approach should deal with
+#!!     this, as long as list_hooks can be parametrized to fake a
+#!!     different environment (i.e. "list hooks which would have been
+#!!     run under $other_uid on $other_host"), and this should be easy
+#!!     to achieve.
 #!! 
-#!!   - Only c) allows a nice implementation of composite boolean
-#!!     filters.  If it was only chained AND ops, a) and b) could do
-#!!     it but would result in ugly long filenames/pathnames
+#!!  3. With c) and d), the file namespace is too flat and allows for
+#!!     collisions between the different $foo.d sources.  And if you
+#!!     expand the namespace to avoid these collisions, you're back
+#!!     with a) or b), which defeats the point.
+#!! 
+#!!  4. Only c) and d) allow a nice implementation of composite
+#!!     boolean filters.  If it was only chained AND ops, a) and b)
+#!!     could do it but would result in ugly long filenames/pathnames
 #!!     respectively.
 #!! 
-#!!   - Only c) allows arbitrarily complex filter logic
+#!!  5. Only c) and d) allow arbitrarily complex filter logic.
 #!! 
-#!!   - a) is virtually guaranteed to perform better, but premature
-#!!     optimization...
+#!!  6. a) and b) are virtually guaranteed to perform better, but
+#!!     premature optimization...
+#!!     
+#!!  7. 
+#!!  
+#!! Points for each scheme:
+#!!
+#!!         a  b  c  d
+#!!     1.  2  0  0  2
+#!!     2.  1  1  0  0
+#!!     3.  2  2  0  0
+#!!     4.  0  0  2  2
+#!!     5.  0  0  3  3
+#!!     6.  1  1  0  0
+#!!  total: 6  4  5  7  
+#!!     
+#!! Conclusion: in light of conflicting design goals, no single
+#!! solution is ideal.  Therefore a hybrid which allows multiple
+#!! approaches is required.
+#!!
+#!! Sanity check: is the current 90% solution worth sticking with?
+#!! And use different approach or hack for corner cases.  Can we
+#!! really justify substantial increases in complexity?
+
 
 # Requirements and rationale for search algorithm:
 #
