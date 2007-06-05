@@ -44,6 +44,35 @@
 #     in multiple home directories independently of its filename,
 #     effectively marking it as "for private use only".
 
+#!! FIXME: in rare cases, compound filtering (boolean composition of
+#!! the above "atoms") is required.  In this case, the filtering still
+#!! needs to be implemented fully out-of-band, so that you can list
+#!! which hooks would be run without running them (rather than
+#!! embedding boolean tests within the hook itself).  So the current
+#!! approach is too limited.  Case study: running
+#!! .xsession-progs.d/person-me/ from a demo account to get a nice X11
+#!! environment, e.g. 'keyboard' and 'mouse' are person-specific,
+#!! 'wallpaper' is both person- and uid-specific, and 'RSI' is
+#!! person-, uid-, and host-specific.  (Conceivably there could even
+#!! be something person- and host-specific, e.g. if I wanted to run a
+#!! utility to set sound card output volumes in a particular way on a
+#!! particular laptop.)
+#!! 
+#!! From the axiom that the filters have to be described out-of-band,
+#!! they can only be implemented a) in the filename (status quo), or
+#!! b) stored separately as meta-data somewhere (e.g. '.guards' in the
+#!! hook directory).
+#!! 
+#!! Further consideration - is anything other than AND boolean ever
+#!! required?  For example, filters implemented as arbitrary shell
+#!! code, with the above atoms simply being special cases?
+#!! 
+#!! Pros/cons :-
+#!!   - Easy viewing via standard fileutils, grep etc. only with a)
+#!!   - Nice implementation of composite boolean filters only with b) ?
+#!!     If it was only chained AND ops, could nest subdirectories - ugly?
+#!!   - Nice implementation of arbitrary filters certainly only with b)
+
 # Requirements and rationale for search algorithm:
 #
 #  * Must allow me to share config with friends.  Accomplished by setting
