@@ -43,7 +43,7 @@ lesspipe() {
       zipinfo -- "$1"
       ;;
     *.rar)
-      unrar l "$1"
+      unrar v "$1"
       ;;
     *.rpm)
       rq "$1"
