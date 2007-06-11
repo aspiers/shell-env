@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Unpacks one of several different types of archive to the current
 # directory.  If there is more than one entry in the top-level
@@ -8,7 +8,7 @@
 #
 # Adam Spiers <shell-hacks@adamspiers.org>
 
-me=`basename $0`
+me="`basename $0`"
 
 usage () {
     cat <<EOF >&2
@@ -22,7 +22,7 @@ if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
 fi
 
 archive_path="$1"
-archive="`basename $1`"
+archive="`basename \"$1\"`"
 
 ideal_dest=
 case "$archive" in
@@ -35,7 +35,7 @@ case "$archive" in
         ;;
 esac
 
-if ! tmpdir=`mktemp -d $ideal_dest.tmp.XXXXXXXX`; then
+if ! tmpdir=`mktemp -d "$ideal_dest.tmp.XXXXXXXX"`; then
     echo "mktemp failed: $!"
     exit 1
 fi
