@@ -105,6 +105,18 @@ rubylib=(
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] && RUBYLIB="${(j/:/)rubylib}"
 
 # }}}
+# {{{ Python libraries
+
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PYTHONPATH pythonpath
+typeset -U pythonpath
+export PYTHONPATH
+pythonpath=( 
+          ~/{local/,}lib/[p]ython*{/site-packages,}(N)
+          $pythonpath
+         )
+[[ "$ZSH_VERSION_TYPE" == 'old' ]] && PYTHONPATH="${(j/:/)pythonpath}"
+
+# }}}
 
 # {{{ fpath/autoloads
 
