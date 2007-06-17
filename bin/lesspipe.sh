@@ -45,7 +45,7 @@ lesspipe() {
     *.rar)
       unrar v "$1"
       ;;
-    *.rpm)
+    *.[rs]pm)
       rq "$1"
       ;;
     *.cpi|*.cpio)
