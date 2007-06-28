@@ -43,7 +43,7 @@ dest="$src"
 vared -p 'New name: ' dest
 
 if [[ "$src" == "$dest" ]]; then
-  print "$me: cannot move $src to itself"
+  print "$me: no change in name"
   return 1
 fi
 
