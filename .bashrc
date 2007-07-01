@@ -199,6 +199,10 @@ alias f=finger
 
 # {{{ less
 
+if ! which less >&/dev/null; then
+  alias less=more
+fi
+
 alias v=less
 
 # }}}

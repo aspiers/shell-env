@@ -831,6 +831,10 @@ zsh-mime-setup
 
 # {{{ less
 
+if ! which less >&/dev/null; then
+  alias less=more
+fi
+
 alias v=less
 alias vs='less -S'
 
