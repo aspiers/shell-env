@@ -11,4 +11,6 @@ if which zsh >&/dev/null; then
 fi
 
 # Make sure synced with $LESSKEY in .shared_env
-lesskey -o ~/.less
+if which lesskey >/dev/null 2>&1; then
+  lesskey -o ~/.less
+fi
