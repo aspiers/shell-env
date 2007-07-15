@@ -1,0 +1,2 @@
+#compdef mnx
+_files -g '*(*)'
