@@ -1,4 +1,9 @@
 #autoload
 
-e ~/roaming/TODO.org
+if [ -n "$DISPLAY" ]; then
+    emacs=e
+else
+    emacs=fe
+fi
 
+$emacs "$@" ~/roaming/TODO.org
