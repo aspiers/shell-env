@@ -214,10 +214,10 @@ export METAMAIL_PAGER='less -r'
 export PERLDOC_PAGER='less -r'
 export PAGER='less'
 
-# Could also include -J for making it more obvious where matches are.
-# Extra first column is often annoying e.g. cut'n'paste, so better to
-# have it off by default.
-export LESS='-a -h100 -i -j15 -M -q -W -y100'
+# Could also include -J for making it more obvious where matches are,
+# but extra first column is often annoying e.g. cut'n'paste, so better
+# to have it off by default.
+export LESS='-a -h100 -i -j15 -M -q -W -y100 -X'
 
 export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 #export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
