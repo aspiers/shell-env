@@ -4,13 +4,23 @@
 # $PATH etc., also in NFS automounts according to the Hickster.
 
 format="%Y-%m-%d" # Equivalent to %F, the ISO 8601 date format.
-if [ "$1" = "-t" ]; then
-  format="$format-%H%Mh%Ss"
-  shift
-fi
+while [ -n "$1" ]; do
+  if [ "$1" = "-p" ]; then
+    format="%Y/%m/%d"
+    shift
+  fi
+  if [ "$1" = "-t" ]; then
+    format="$format-%H%Mh%Ss"
+    shift
+  fi
+done
 
 if [ $# != 0 ]; then
-  echo "Usage: $0 [ -t ]" >&2
+  cat <<EOF >&2
+Usage: $0 [-p] [ -t]
+  -p  Path format: YYYY/MM/DD
+  -t  Append time: -HHMMhSS
+EOF
   exit 1
 fi
 
