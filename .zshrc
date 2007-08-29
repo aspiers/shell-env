@@ -741,6 +741,7 @@ alias tre='tree -C'
 
 alias j='jobs -l'
 alias dn=disown
+compdef _jobs_fg dn
 
 # }}}
 # {{{ History
