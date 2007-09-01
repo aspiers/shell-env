@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Sort list of newline-separated paths by filename, ignoring
+# path segments.  Should cope with funny characters in filename
+# except for tabs!
+
+sed '
+  s/^\([^/]\+\)$/\1\t\1/; 
+  s/\(.\+\/\)\(.\+\)/\2\t\1\2/
+  ' |
+  sort -n -k1 -t"	" |
+  awk -F"	" '{print $2}'
