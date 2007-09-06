@@ -24,6 +24,11 @@ fi
 archive_path="$1"
 archive="`basename \"$1\"`"
 
+if ! [ -e "$archive_path" ]; then
+    echo "$archive_path does not exist!" >&2
+    exit 1
+fi
+
 ideal_dest=
 case "$archive" in
     *.tar|*.tgz|*.zip|*.xpi|*.jar)
