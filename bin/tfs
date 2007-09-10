@@ -1,9 +1,22 @@
 #!/bin/sh
 
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+Usage: $me FILE1 [FILE2 ...]
+EOF
+    exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ $# = 0 ]; then
+    usage
+fi
+
 if [ $# = 1 ]; then
   exec less +F -S "$1"
 else
-  echo "FIXME: cut breaks tail -f" >&2
+  echo "$me: FIXME: cut breaks tail -f, can't emulate less -S" >&2
   #exec tail -f "$@" | cut -c 1-$COLUMNS
   exec tail -f "$@"
 fi
