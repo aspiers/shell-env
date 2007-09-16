@@ -3,15 +3,20 @@
 use strict;
 use warnings;
 
+my $total = 0;
+my $multi_mode = @ARGV > 1 ? 1 : 0;
 for my $dir (@ARGV) {
   if (! opendir(DIR, $dir)) {
     warn "Couldn't open $dir: $!; skipping.\n";
     next;
   }
 
-  print "$dir " if @ARGV > 1;
+  print "$dir " if $multi_mode;
   my @dirents = readdir(DIR);
   my $count = @dirents - 2; # ignore . and ..
+  $total += $count;
   print "$count\n";
   closedir(DIR);
 }
+
+print "Total $total\n" if $multi_mode;
