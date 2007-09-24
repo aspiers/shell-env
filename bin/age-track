@@ -36,7 +36,7 @@ lock="$cmd_dir/lock"
 
 clean_up () {
   date +"%s" > "$cmd_dir/end"
-  [ -d "$lock" ] && rmdir "$lock"
+  [ -d "$lock" ] && rm "$lock"
 }  
 
 obtain_lock "$lock" "$cmd" || exit 1
