@@ -85,7 +85,8 @@
 #!! With c), a single flat file (e.g. '.guards') in the hook directory
 #!! isn't going to work, because it doesn't support the $foo.d
 #!! methodology.  Therefore it would have to be a .guards.d
-#!! subdirectory, which is a bit of a PITA.
+#!! subdirectory, or a $foo.guard for each hook, either of which is a
+#!! bit of a PITA.
 #!! 
 #!! Pros/cons :-
 #!! 
@@ -118,15 +119,16 @@
 #!!     premature optimization...
 #!!     
 #!!  7. Avoiding subdirectories makes hook ordering easier to
-#!!     implement (we don't really care, since implementation is a
-#!!     one-off cost), and a bit more visible (but again we don't
-#!!     really care given a good list_hooks).
+#!!     implement (we don't actually care, since implementation is a
+#!!     one-off cost which has already been done!), and a bit more
+#!!     visible (but again we don't really care given a good
+#!!     list_hooks).
 #!!  
 #!! Points for each scheme:
 #!!
 #!!         a  b  c  d
 #!!      1. 1  1  0  1
-#!!      2. 1  1  0  0
+#!!      2. 1  1  0  0    
 #!!      3. 4  4  0  0
 #!!      4. 0  0  2  2
 #!!      5. 0  0  5  5
