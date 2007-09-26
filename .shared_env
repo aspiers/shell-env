@@ -112,28 +112,11 @@ USER=${USERNAME:-`id -un`}
 export USER USERNAME
 
 # }}}
-# {{{ HOME
-
-# Don't leave history files in /
-: ${HOME:=/}
-if [ "$HOME" = '/' ]; then
-  if [ -d /root ]; then
-    HOME=/root
-  elif [ -d /var/tmp ]; then
-    new_home=/var/tmp/root.tmphome
-    if [ -d "$new_home" ] || mkdir "$new_home"; then
-      HOME="$new_home"
-    fi
-  fi
-fi
-[ "$HOME" = '/' ] && echo "Warning: ~ is /"
-
-# }}}
 # {{{ PATH
 
 # Don't trust system-wide PATH?  Remember what it was, for reference.
 syspath=$HOME/.syspath.$HOST
-if ! [ -e $syspath ]; then
+if [ ! -e $syspath ]; then
     # Ignore failed write as home directory is sometimes locked down
     # cross-WAN.
     echo "$PATH" 2>/dev/null > "$syspath" 
@@ -177,109 +160,17 @@ PATH=$newpaths:$PATH
 export GREP_OPTIONS='--directories=skip'
 
 # }}}
-# {{{ GNU screen
-
-case "$TERM" in
-  screen*) IN_SCREEN=yes ;;
-  *)       IN_SCREEN=    ;;
-esac
-export IN_SCREEN
-
-export SCREENRC=$ZDOTDIR/.screenrc
-
-# }}}
-# {{{ INPUTRC
-
-# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
-# set convert-meta to off?
-[ -n "$INPUTRC" ] && unset INPUTRC
-
-# }}}
-# {{{ COLUMNS
-
-# Some programs find this handy.  Unfortunately xterm gets confused
-# when launched with it set ...
-[ "${COLUMNS:-0}" -gt 0 ] && export COLUMNS
-
-# }}}
 # {{{ OSTYPE
 
 # Can come in handy too, if the shell sets it (bash and zsh do).
 export OSTYPE
 
 # }}}
-# {{{ Pager
-
-export METAMAIL_PAGER='less -r'
-export PERLDOC_PAGER='less -r'
-export PAGER='less'
-
-# Could also include -J for making it more obvious where matches are,
-# but extra first column is often annoying e.g. cut'n'paste, so better
-# to have it off by default.
-export LESS='-a -h100 -i -j15 -M -q -W -y100 -X'
-
-export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
-#export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
-
-# Make sure synced with .cfg-post.d/shell-env
-export LESSKEY="$ZDOTDIR/.less"
-
-# }}}
-# {{{ POSIXLY_CORRECT for patch
-
-#export POSIXLY_CORRECT=yes
-
-# }}}
-# {{{ Commonly used files and directories
-
-# Have cdable_vars set in zsh, so don't need 'hash -d' in front of these
-# and can be reused from any shell
-
-if [ -n "$shell_interactive" ]; then
-
-SC=/etc/sysconfig
-SCN=/etc/sysconfig/network
-if [ -d /etc/sysconfig/network-scripts ]; then
-  NS=/etc/sysconfig/network-scripts
-elif [ -d "$SCN" ]; then
-  NS=$SCN
-fi
-
-RCD=/etc/rc.d
-ID=/etc/init.d # LSB
-RC0=$RCD/rc0.d
-RC1=$RCD/rc1.d
-RC2=$RCD/rc2.d
-RC3=$RCD/rc3.d
-RC4=$RCD/rc4.d
-RC5=$RCD/rc5.d
-RC6=$RCD/rc6.d
-
-VL=/var/log
-VLH=$VL/httpd
-VM=$VL/messages
-
-US=/usr/src
-KES=/usr/src/kernels
-KE=/lib/modules/`uname -r`/build
-
-# in zsh:
-#hash -df
-
-RC=/etc/resolv.conf
-if [ -f /boot/grub/menu.lst ]; then
-  GC=/boot/grub/menu.lst
-else
-  GC=/etc/grub.conf
-fi
-
-FS=/etc/fstab
-
-fi
-
-# }}}
 
 . $ZDOT_RUN_HOOKS .shared_env.d
+
+if [ -n "$shell_interactive" ]; then
+    . $ZDOTDIR/.shared_rc
+fi
 
 shared_env_loaded=y

@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# Adam's shared interactive environment startup file
+#
+# $Id$
+#
+# This should get run as part of setting up the interactive
+# environment of any sh-compatible shell; hence it should be kept as
+# fast and as portable as possible.  Note that that means silly things
+# like [ ! -e foo ] rather than ! [ -e foo ] ...
+
+[ -n "$shared_rc_loaded" ] && return 0
+
+# {{{ HOME
+
+# Don't leave history files in /
+: ${HOME:=/}
+if [ "$HOME" = '/' ]; then
+  if [ -d /root ]; then
+    HOME=/root
+  elif [ -d /var/tmp ]; then
+    new_home=/var/tmp/root.tmphome
+    if [ -d "$new_home" ] || mkdir "$new_home"; then
+      HOME="$new_home"
+    fi
+  fi
+fi
+[ "$HOME" = '/' ] && echo "Warning: ~ is /"
+
+# }}}
+
+# {{{ GNU screen
+
+case "$TERM" in
+  screen*) IN_SCREEN=yes ;;
+  *)       IN_SCREEN=    ;;
+esac
+export IN_SCREEN
+
+export SCREENRC=$ZDOTDIR/.screenrc
+
+# }}}
+# {{{ Pager
+
+export METAMAIL_PAGER='less -r'
+export PERLDOC_PAGER='less -r'
+export PAGER='less'
+
+# Could also include -J for making it more obvious where matches are,
+# but extra first column is often annoying e.g. cut'n'paste, so better
+# to have it off by default.
+export LESS='-a -h100 -i -j15 -M -q -W -y100 -X'
+
+export LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
+#export LESSCLOSE='/usr/local/bin/lessclose.sh %s %s'
+
+# Make sure synced with .cfg-post.d/shell-env
+export LESSKEY="$ZDOTDIR/.less"
+
+# }}}
+# {{{ POSIXLY_CORRECT for patch
+
+#export POSIXLY_CORRECT=yes
+
+# }}}
+# {{{ COLUMNS
+
+# Some programs find this handy.  Unfortunately xterm gets confused
+# when launched with it set ...
+[ "${COLUMNS:-0}" -gt 0 ] && export COLUMNS
+
+# }}}
+# {{{ INPUTRC
+
+# no crappy RedHat inputrcs, thankyouverymuch.  Which fucking *idiot*
+# set convert-meta to off?
+[ -n "$INPUTRC" ] && unset INPUTRC
+
+# }}}
+
+. $ZDOT_RUN_HOOKS .shared_rc.d
+
+shared_rc_loaded=y
