@@ -31,7 +31,7 @@ fi
 
 ideal_dest=
 case "$archive" in
-    *.tar|*.tgz|*.zip|*.xpi|*.jar)
+    *.tar|*.tgz|*.zip|*.Zip|*.ZIP|*.xpi|*.jar)
         ideal_dest="${archive%.*}"
         ;;
     *.tar.gz|*.tar.bz2)
@@ -55,7 +55,7 @@ case "$archive" in
     *.tar.bz2)
         tar -C "$tmpdir" -jxvf "$archive_path"
         ;;
-    *.zip|*.xpi|*.jar)
+    *.zip|*.ZIP|*.Zip|*.xpi|*.jar)
         unzip -d "$tmpdir" "$archive_path"
         ;;
     *)
