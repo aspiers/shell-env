@@ -34,9 +34,11 @@ case "$archive" in
     *.tar|*.tgz|*.zip|*.Zip|*.ZIP|*.xpi|*.jar)
         ideal_dest="${archive%.*}"
         ;;
-    *.tar.gz|*.tar.bz2)
-        ideal_dest="${archive%.*}"
-        ideal_dest="${archive%.*}"
+    *.tar.gz)
+        ideal_dest="${archive%.tar.gz}"
+        ;;
+    *.tar.bz2)
+        ideal_dest="${archive%.tar.bz2}"
         ;;
 esac
 
@@ -68,38 +70,48 @@ dirents=`ls -A "$tmpdir" | wc -l`
 
 if [ "$dirents" -gt 1 ]; then
     # Naughty creator of archive!  Would cause a mess if unpacked to cwd.
-    if ! [ -e "$ideal_dest" ]; then
-        # safe to use ideal choice of destination directory
-        dest="$ideal_dest"
-    else
-        echo "Ideal destination $ideal_dest already exists." >&2
-        dest="$archive.unpacked"
-        if [ -e "$dest" ]; then
-            echo "$dest also already exists." >&2
-            # Couldn't find a better place to move unpacked directory to, so
-            # leave it where it already is.
-            dest="$tmpdir"
-        fi
-    fi
-
-    if [ "$tmpdir" != "$dest" ]; then
-        if ! mv "$tmpdir" "$dest"; then
-            echo "ERROR: mv $tmpdir $dest failed" >&2
-            exit 1
-        fi
-    fi
-
-    echo "$archive had more than one top-level entry; look inside $dest"
-    exit 0
+    src="$tmpdir"
+    echo "$archive had more than one top-level entry"
 else
     top_dirent="`ls -A $tmpdir`"
-    if mv "$tmpdir/$top_dirent" .; then
-        rmdir "$tmpdir"
-        echo "$archive clean -> unpacked to $top_dirent"
-        exit 0
+    src="$tmpdir/$top_dirent"
+    echo "$archive is clean"
+    if ! [ -e "$top_dirent" ]; then
+        if mv "$src" .; then
+            echo "Look inside $top_dirent"
+            rmdir "$tmpdir"
+            exit 0
+        else
+            echo "ERROR: mv $src . failed" >&2
+            exit 1
+        fi
     else
-        echo "ERROR: mv $tmpdir/$top_dirent . failed" >&2
-        exit 1
+        echo "$top_dirent already exists." >&2
     fi
 fi
+
+if ! [ -e "$ideal_dest" ]; then
+    # safe to use ideal choice of destination directory
+    dest="$ideal_dest"
+else
+    echo "Ideal destination $ideal_dest already exists." >&2
+    dest="$archive.unpacked"
+    if [ -e "$dest" ]; then
+        echo "$dest also already exists." >&2
+        # Couldn't find a better place to move unpacked directory to, so
+        # leave it where it already is.
+        dest="$src"
+    fi
+fi
+
+if [ "$src" != "$dest" ]; then
+    if ! mv "$src" "$dest"; then
+        echo "ERROR: mv $src $dest failed" >&2
+        exit 1
+    fi
+    rmdir "$tmpdir"
+fi
+
+echo "Look inside $dest"
+exit 0
 
