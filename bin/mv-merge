@@ -60,6 +60,7 @@ oldpwd=`pwd`
 
 cp-merge -l $dry_run $overwrite $subpath_args "$@"
 
+echo "cd $oldpwd"
 cd "$oldpwd"
 
 echo rm-src-dups $dry_run $subpath_args "$@"
