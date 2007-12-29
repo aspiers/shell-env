@@ -7,3 +7,6 @@ iwconfig 2>&1 | \
   perl -0777pe 's/.*\sno wireless extensions.*\n\n//g;
                 s/.*(RTS|[RT]x invalid|excessive retries).*\n//g;
                 s/\n+$/\n/;'
+
+echo
+rj dhc
