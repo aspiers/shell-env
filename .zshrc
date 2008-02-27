@@ -375,8 +375,12 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~'
 # {{{ Don't complete uninteresting users
 
 zstyle ':completion:*:*:*:users' ignored-patterns \
-        adm apache bin daemon games gdm halt ident junkbust lp mail mailnull \
-        named news nfsnobody nobody nscd ntp operator pcap postgres radvd \
+        adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
+        dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
+        hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
+        mailman mailnull mldonkey mysql nagios \
+        named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
+        operator pcap postfix postgres privoxy pulse pvm quagga radvd \
         rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs
 
 # ... unless we really want to.
@@ -431,6 +435,12 @@ zstyle ':completion:*' users $zsh_users
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   # Extract hosts from /etc/hosts
+  # ~~ no glob_subst -> don't treat contents of /etc/hosts like pattern
+  # (f) shorthand for (ps:\n:) -> split on \n ((p) enables recognition of \n etc.)
+  # %%\#* -> remove comment lines and trailing comments
+  # (ps:\t:) -> split on tab
+  # ##[:blank:]#[^[:blank:]]# -> remove comment lines
+  
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
 # _ssh_known_hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 else
