@@ -857,8 +857,8 @@ e () {
   if [[ -n "$OTHER_USER" ]]; then
     emacs -l $ZDOTDIR/.emacs "$@" &!
   else
-    dsa
-    dga
+    detect_ssh_agent
+    detect_gpg_agent
     emacs "$@" &!
   fi
 }
