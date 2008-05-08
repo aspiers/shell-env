@@ -66,14 +66,14 @@ case "$archive" in
         ;;
 esac
 
-dirents=`ls -A "$tmpdir" | wc -l`
+dirents=$( ls -A "$tmpdir" | wc -l )
 
 if [ "$dirents" -gt 1 ]; then
     # Naughty creator of archive!  Would cause a mess if unpacked to cwd.
     src="$tmpdir"
     echo "$archive had more than one top-level entry"
 else
-    top_dirent="`ls -A $tmpdir`"
+    top_dirent=$( ls -A "$tmpdir" )
     src="$tmpdir/$top_dirent"
     echo "$archive is clean"
     if ! [ -e "$top_dirent" ]; then
