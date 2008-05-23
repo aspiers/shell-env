@@ -1,0 +1,23 @@
+#!/bin/sh
+
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+    Usage: $me [options] FILESYSTEM DELAY
+EOF
+    exit 1
+}
+
+if [ "$1" == -h ] || [ "$1" == --help ] || [ $# != 2 ]; then
+    usage
+fi
+
+fs="$1"
+delay="$2"
+
+while true; do
+  echo -n "`edate`"
+  df . | grep $fs
+  sleep $delay
+done
