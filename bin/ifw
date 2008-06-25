@@ -10,3 +10,5 @@ iwconfig 2>&1 | \
 
 echo
 rj dhc
+rj ipw3945
+lsof -i udp:bootpc
