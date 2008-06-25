@@ -1,7 +1,8 @@
 #!/bin/sh
 
 ifconfig "$@" 2>&1 | \
-  perl -0777pe 's/^lo\s.*?\n\n//ms; s/.*(packets|collisions|Interrupt).*\n//g'
+  perl -0777pe 's/^(lo|veth[1-9])\s.*?\n\n//ms;
+                s/.*(packets|collisions|Interrupt).*\n//g'
 
 iwconfig 2>&1 | \
   perl -0777pe 's/.*\sno wireless extensions.*\n\n//g;
