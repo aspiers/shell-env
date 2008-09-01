@@ -1,3 +1,4 @@
 #!/bin/sh
 
-AC-state | grep -q on-line 
+# Assume on-line if unknown
+AC-state | egrep -q 'on-line|unknown'
