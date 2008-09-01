@@ -1,3 +1,8 @@
 #!/bin/sh
 
-cat /proc/acpi/ac_adapter/AC/state
+state_file=/proc/acpi/ac_adapter/AC/state
+if [ -e "$state_file" ]; then
+    cat "$state_file"
+else
+    echo unknown
+fi
