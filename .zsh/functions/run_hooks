@@ -198,7 +198,9 @@
 #    reduces root privilege a lot since trust level for NFS write
 #    access to ~aspiers is only by anyone who can get a port < 1024.
 
-: ${DEBUG_LOCAL_HOOKS:=1}
+# Default to 1, and treat empty as 0.  This ensures we have an integer.
+: ${DEBUG_LOCAL_HOOKS=1}
+: ${DEBUG_LOCAL_HOOKS:=0}
 
 process_hook () {
   hook_path="$1"
@@ -218,7 +220,7 @@ process_hook () {
 
   case "$action" in
     source)
-      [ -n "$DEBUG_LOCAL_HOOKS" ] && sh_load_status "$hook_path"
+      [ "$DEBUG_LOCAL_HOOKS" -gt 0 ] && sh_load_status "$hook_path"
       source "$hook_path"
       ;;
     find)
