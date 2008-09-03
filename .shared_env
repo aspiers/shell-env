@@ -28,6 +28,10 @@ esac
 
 #[ "$shell" = -zsh ] && unsetopt function_argzero
 
+# Default to 1, and treat empty as 0.  This ensures we have an integer.
+: ${DEBUG_LOCAL_HOOKS=1}
+: ${DEBUG_LOCAL_HOOKS:=0}
+
 sh_load_status () {
   # Find the name of the running shell
   _this_shell=${shell:-${0##*/}}
@@ -51,7 +55,7 @@ sh_load_status () {
 
   # Leave status printed?
   
-  if [ "${DEBUG_LOCAL_HOOKS:-0}" -ge 2 ]; then
+  if [ "$DEBUG_LOCAL_HOOKS" -ge 2 ]; then
     debug="\n"
   fi
   
