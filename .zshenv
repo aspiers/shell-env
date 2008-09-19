@@ -82,6 +82,8 @@ typeset -U ld_library_path # No duplicates
 # }}}
 # {{{ Perl libraries
 
+# FIXME: move to .shared_env
+
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PERL5LIB perl5lib
 typeset -U perl5lib
 export PERL5LIB
