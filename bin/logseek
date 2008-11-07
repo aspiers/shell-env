@@ -189,6 +189,9 @@ sub extract_date_from_line {
   # conserver log
   return $1 if $line =~ /^\[(\w\w\w \w\w\w .\d \d\d:\d\d:\d\d \d\d\d\d)\]/;
 
+  # xend log
+  return $1 if $line =~ /^\[(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) \d\d\d\d\]/;
+
   # TODO: Add more patterns here.
   return undef;
 }
