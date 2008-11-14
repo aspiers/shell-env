@@ -811,6 +811,8 @@ alias mysqlshow='nocorrect mysqlshow'
 alias mkdir='nocorrect mkdir'
 alias mv='nocorrect mv'
 alias rj='nocorrect rj'
+alias yast='nocorrect yast'
+alias yast2='nocorrect yast2'
 
 # }}}
 # {{{ X windows related
