@@ -23,4 +23,7 @@ fi
 #   acro_opts=
 # fi
 
-acroread $acro_opts "$@" || kpdf "$@" || xpdf "$@"
+kpdf "$@" || \
+evince "$@" || \
+acroread $acro_opts "$@" || \
+xpdf "$@"
