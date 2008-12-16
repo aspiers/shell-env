@@ -2,6 +2,19 @@
 
 PING_COUNT=10
 
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+Usage: $me HOSTNAME
+EOF
+    exit 1
+}
+
+if [ "$1" == '-h' ] || [ "$1" == '--help' ] || [ $# != 1 ]; then
+    usage
+fi
+
 host="$1"
 shift
 
