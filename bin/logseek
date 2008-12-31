@@ -32,8 +32,6 @@ Adam Spiers <logseek@adamspiers.org>
 use strict;
 use warnings;
 
-use lib '/home/lonlxadm/lib/perl5';
-
 use Date::Manip qw(ParseDate Date_Cmp);
 use Fcntl ':seek';
 use Getopt::Long;
