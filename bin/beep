@@ -12,8 +12,32 @@ my ($count, $sleep) = @ARGV;
 $count ||= 1;
 $sleep ||= 1;
 
+my @sounds_path = qw(
+                      /usr/share/sounds
+                      /opt/gnome/share/sounds
+                      /opt/gnome2/share/sounds
+                      /opt/kde3/share/sounds
+                      /opt/kde4/share/sounds
+                  );
+my @sounds = qw(
+                 warning.wav
+                 KDE_Beep_Beep.wav
+             );
+my $sound = find_sound();
+
+sub find_sound {
+  for my $path (@sounds_path) {
+    for my $sound (@sounds) {
+      my $full = "$path/$sound";
+      return $full if -r $full;
+    }
+  }
+  return undef;
+}
+
 while ($count) {
   print "\a";
+  system("aplay \Q$sound\E >/dev/null 2>&1") if $sound;
   $count--;
   sleep $sleep if $count;
 }
