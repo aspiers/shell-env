@@ -20,8 +20,9 @@ my @sounds_path = qw(
                       /opt/kde4/share/sounds
                   );
 my @sounds = qw(
-                 warning.wav
+                 KDE_Beep_Ahem.wav
                  KDE_Beep_Beep.wav
+                 warning.wav
              );
 my $sound = find_sound();
 
