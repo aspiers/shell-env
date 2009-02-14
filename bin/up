@@ -31,7 +31,7 @@ fi
 
 ideal_dest=
 case "$archive" in
-    *.tar|*.tgz|*.zip|*.Zip|*.ZIP|*.xpi|*.jar)
+    *.tar|*.tgz|*.tbz|*.zip|*.Zip|*.ZIP|*.xpi|*.jar)
         ideal_dest="${archive%.*}"
         ;;
     *.tar.gz)
@@ -39,6 +39,10 @@ case "$archive" in
         ;;
     *.tar.bz2)
         ideal_dest="${archive%.tar.bz2}"
+        ;;
+    *)
+        echo "ERROR: $archive does not have a supported file extension" >&2
+        exit 1
         ;;
 esac
 
@@ -54,7 +58,7 @@ case "$archive" in
     *.tar.gz|*.tgz)
         tar -C "$tmpdir" -zxvf "$archive_path"
         ;;
-    *.tar.bz2)
+    *.tar.bz2|*.tbz)
         tar -C "$tmpdir" -jxvf "$archive_path"
         ;;
     *.zip|*.ZIP|*.Zip|*.xpi|*.jar)
