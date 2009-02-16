@@ -308,9 +308,8 @@ sh_load_status 'completion system'
 # {{{ Set up new advanced completion system
 
 if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
-  autoload -U compinit
+  autoload -Uz compinit
   zstyle :compinstall filename '/home/adam/.zshrc'
-#  autoload -Uz compinit
   compinit -u # use with care!!
 else
   print "\nAdvanced completion system not found; ignoring zstyle settings."
