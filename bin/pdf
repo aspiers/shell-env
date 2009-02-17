@@ -32,6 +32,7 @@ for exe_check in $viewers; do
 #        echo "Will use $exe ..."
         break
     else
+        :
 #        echo "$exe_check not found"
     fi
 done
