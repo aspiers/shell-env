@@ -1,5 +1,5 @@
 #autoload
 
 _description files expl 'MS Office files'
-_files "$@" "$expl[@]" -g '*.(#i)(doc|xls)'
+_files "$@" "$expl[@]" -g '*.(#i)(doc|docx|xls|xlsx|ppt|pptx)'
 
