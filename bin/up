@@ -72,8 +72,13 @@ esac
 
 dirents=$( ls -A "$tmpdir" | wc -l )
 
+if [ "$dirents" -eq 0 ]; then
+    echo "ERROR: $archive was empty?" >&2
+    exit 1
+fi
+
 if [ "$dirents" -gt 1 ]; then
-    # Naughty creator of archive!  Would cause a mess if unpacked to cwd.
+    # Naughty archive creator!  Would cause a mess if unpacked to cwd.
     src="$tmpdir"
     echo "$archive had more than one top-level entry"
 else
@@ -109,11 +114,12 @@ else
 fi
 
 if [ "$src" != "$dest" ]; then
+    #echo "mv $src $dest OK"
     if ! mv "$src" "$dest"; then
         echo "ERROR: mv $src $dest failed" >&2
         exit 1
     fi
-    rmdir "$tmpdir"
+    [ -d "$tmpdir" ] && rmdir "$tmpdir"
 fi
 
 echo "Look inside $dest"
