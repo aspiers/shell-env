@@ -1,0 +1,76 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+Getopt::Long::Configure('bundling');
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME FILE1 [FILE2 ...]
+Options:
+      --help            Show this help
+  -h, --human-readable  Show sizes in kB, MB, GB etc.
+  -o, --only            Only show sparse files
+EOUSAGE
+}
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help',
+  'human-readable|h',
+  'only|o',
+) or usage();
+usage() if @ARGV == 0 or $opts{help};
+
+if ($opts{'human-readable'}) {
+  eval { require Number::Bytes::Human; };
+  usage("Need Number::Bytes::Human CPAN module installed for --human-readable.\n")
+    if $@;
+  Number::Bytes::Human->import qw(format_bytes);
+}
+
+if ($opts{'human-readable'}) {
+  print " size alloc unused sparse file\n";
+}
+else {
+  print "       size       alloc      unused sparse file\n";
+}
+
+foreach my $file (@ARGV) {
+  check($file);
+}
+
+sub check {
+  my ($file) = @_;
+  my @stat = stat $file or die "stat($file) failed: $!\n";
+  my ($size, $blocks) = @stat[7, 12];
+  my $allocated = $blocks*512;
+  my $sparseness = $allocated / $size;
+  return if $opts{only} && $sparseness >= 1.0;
+
+  my $unallocated = $size - $allocated;
+  if ($opts{'human-readable'}) {
+    printf "%5s %5s %6s %6.2f %s\n",
+      format_bytes($size),
+      format_bytes($allocated),
+      format_bytes($unallocated),
+      $sparseness,
+      $file;
+  }
+  else {
+    printf "%11d %11d %11d %6.2f %s\n",
+      $size,
+      $allocated, 
+      $unallocated, 
+      $sparseness,
+      $file;
+  }
+}
