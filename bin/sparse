@@ -17,7 +17,9 @@ Usage: $ME FILE1 [FILE2 ...]
 Options:
       --help            Show this help
   -h, --human-readable  Show sizes in kB, MB, GB etc.
-  -o, --only            Only show sparse files
+  -s, --sparse-only     Only show sparse files
+  -n, --nonsparse-only  Only show non-sparse files
+  -p, --path            Only show filename path (with -s or -n)
 EOUSAGE
 }
 
@@ -26,9 +28,17 @@ GetOptions(
   \%opts,
   'help',
   'human-readable|h',
-  'only|o',
+  'sparse-only|s',
+  'nonsparse-only|n',
+  'path|p',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
+usage("--sparse-only and --nonsparse-only are mutually exclusive.\n")
+  if $opts{'sparse-only'} && $opts{'nonsparse-only'};
+usage("--path requires --sparse-only or --nonsparse-only.\n")
+  if $opts{path} && ! $opts{'sparse-only'} && ! $opts{'nonsparse-only'};
+usage("--human-readable and --path are mutually exclusive.\n")
+  if $opts{'human-readable'} && $opts{'path'};
 
 if ($opts{'human-readable'}) {
   eval { require Number::Bytes::Human; };
@@ -37,11 +47,13 @@ if ($opts{'human-readable'}) {
   Number::Bytes::Human->import qw(format_bytes);
 }
 
-if ($opts{'human-readable'}) {
-  print " size alloc unused sparse file\n";
-}
-else {
-  print "       size       alloc      unused sparse file\n";
+if (! $opts{path}) {
+  if ($opts{'human-readable'}) {
+    print " size alloc  unall sparse file\n";
+  }
+  else {
+    print "       size       alloc       unall sparse file\n";
+  }
 }
 
 foreach my $file (@ARGV) {
@@ -54,7 +66,10 @@ sub check {
   my ($size, $blocks) = @stat[7, 12];
   my $allocated = $blocks*512;
   my $sparseness = $allocated / $size;
-  return if $opts{only} && $sparseness >= 1.0;
+  # Note sparseness of exactly 1 happens when every byte of the
+  # allocated blocks have been used, i.e. with non-sparse files.
+  return if $opts{   'sparse-only'} && $sparseness >= 1.0;
+  return if $opts{'nonsparse-only'} && $sparseness <  1.0;
 
   my $unallocated = $size - $allocated;
   if ($opts{'human-readable'}) {
@@ -65,6 +80,9 @@ sub check {
       $sparseness,
       $file;
   }
+  elsif ($opts{path}) {
+    print "$file\n";
+  }    
   else {
     printf "%11d %11d %11d %6.2f %s\n",
       $size,
