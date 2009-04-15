@@ -49,10 +49,10 @@ if ($opts{'human-readable'}) {
 
 if (! $opts{path}) {
   if ($opts{'human-readable'}) {
-    print " size alloc  unall sparse file\n";
+    print " size alloc  saved sparse file\n";
   }
   else {
-    print "       size       alloc       unall sparse file\n";
+    print "       size       alloc       saved sparse file\n";
   }
 }
 
@@ -71,12 +71,12 @@ sub check {
   return if $opts{   'sparse-only'} && $sparseness >= 1.0;
   return if $opts{'nonsparse-only'} && $sparseness <  1.0;
 
-  my $unallocated = $size - $allocated;
+  my $saved = $size - $allocated;
   if ($opts{'human-readable'}) {
     printf "%5s %5s %6s %6.2f %s\n",
       format_bytes($size),
       format_bytes($allocated),
-      format_bytes($unallocated),
+      format_bytes($saved),
       $sparseness,
       $file;
   }
@@ -87,7 +87,7 @@ sub check {
     printf "%11d %11d %11d %6.2f %s\n",
       $size,
       $allocated, 
-      $unallocated, 
+      $saved, 
       $sparseness,
       $file;
   }
