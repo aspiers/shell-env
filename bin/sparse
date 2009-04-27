@@ -64,12 +64,17 @@ sub check {
   my ($file) = @_;
   my @stat = stat $file or die "stat($file) failed: $!\n";
   my ($size, $blocks) = @stat[7, 12];
+  # $size includes unallocated blocks which are nominally "in use"
+  # but actually full of zeros so not stored on disk.
   my $allocated = $blocks*512;
-  my $sparseness = $allocated / $size;
+  my $sparseness = $size ? $allocated / $size : 1;
   # Note sparseness of exactly 1 happens when every byte of the
   # allocated blocks have been used, i.e. with non-sparse files.
-  return if $opts{   'sparse-only'} && $sparseness >= 1.0;
-  return if $opts{'nonsparse-only'} && $sparseness <  1.0;
+  # Therefore non-sparse files will have a value >= 1, and sparse
+  # files will have a value < 1.
+  my $sparse = $allocated < $size;
+  return if $opts{   'sparse-only'} && ! $sparse;
+  return if $opts{'nonsparse-only'} &&   $sparse;
 
   my $saved = $size - $allocated;
   if ($opts{'human-readable'}) {
