@@ -1,6 +1,6 @@
 #!/bin/sh
 
-viewers='kpdf evince acroread xpdf'
+viewers='okular kpdf evince acroread xpdf'
 
 found=
 for file in "$@"; do
