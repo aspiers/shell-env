@@ -1,7 +1,7 @@
 #!/bin/sh
 
 viewers='okular kpdf evince acroread xpdf'
-cat <<EOTABLE
+cat <<EOTABLE >/dev/null
 Embedding notes in orgstruct-mode table:
 
 | name     | start | find  | zooms    | draw  | thumb | out  | full  | recall |
