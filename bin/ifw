@@ -4,13 +4,12 @@ ifconfig "$@" 2>&1 | \
   perl -0777pe 's/^(lo|veth[1-9])\s.*?\n\n//ms;
                 s/.*(packets|collisions|Interrupt).*\n//g'
 
-iwconfig 2>&1 | \
+iwconfig "$@" 2>&1 | \
   perl -0777pe 's/.*\sno wireless extensions.*\n\n//g;
                 s/.*(RTS|[RT]x invalid|excessive retries).*\n//g;
                 s/\n+$/\n/;'
 
 echo
-rj dhc
-rj ipw3945
+rj 'dhc|(ipw|iwl)3945|wpa_'
 echo
 lsof -i udp:bootpc
