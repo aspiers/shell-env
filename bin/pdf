@@ -1,29 +1,7 @@
 #!/bin/sh
 
+# See ~/roaming/notes/PDFviewers.org for justification on decision order
 viewers='okular kpdf evince acroread xpdf'
-cat <<EOTABLE >/dev/null
-Embedding notes in orgstruct-mode table:
-
-| name     | start | find  | zooms    | draw  | thumb | out  | full  | recall |
-|          |       |       |          |       |       | line | scrn  | pos    |
-|----------+-------+-------+----------+-------+-------+------+-------+--------|
-| okular   | ok    | fast  | FIT PAGE | fast  | yes   | yes  | vgood | yes    |
-|          |       |       | KEY NOOP |       |       |      |       |        |
-|----------+-------+-------+----------+-------+-------+------+-------+--------|
-| kpdf     | ok    | fast  | FIT TO   | fast  | yes   | yes  | vgood | yes    |
-|          |       |       | PAGE BUG |       |       |      |       |        |
-|----------+-------+-------+----------+-------+-------+------+-------+--------|
-| evince   | fast  | fast  | NO BEST  | vfast | yes   | yes  | vgood | yes    |
-|          |       |       | FIT KEY  |       |       |      |       |        |
-|----------+-------+-------+----------+-------+-------+------+-------+--------|
-| acroread | VSLOW | slow  | good     | SLOW  | yes   | yes  | yes   | NO     |
-|----------+-------+-------+----------+-------+-------+------+-------+--------|
-| xpdf     | vfast | vfast | no       | vfast | NO?   | yes  |       |        |
-|          |       |       | short-   |       |       |      |       |        |
-|          |       |       | cuts     |       |       |      |       |        |
-
-EOTABLE
-
 
 found=
 for file in "$@"; do
