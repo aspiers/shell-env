@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec wget -r -l1 -np -nd -A.rpm "$@"
+#-e robots=off
