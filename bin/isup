@@ -29,7 +29,8 @@ case "$OSTYPE" in
     
     # FreeBSD and Linux
     *)
-        ping -c "$PING_COUNT" "$host" 2>&1 | grep -q 'bytes from' && host_up=yes
+        ping -c "$PING_COUNT" -w "$PING_COUNT" "$host" 2>&1 | \
+            grep -q 'bytes from' && host_up=yes
         ;; 
 esac
 
