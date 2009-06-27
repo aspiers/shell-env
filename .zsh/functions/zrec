@@ -17,16 +17,21 @@ _my_zrecompile () {
         _site_funcs=( $_func_dir/*~*.zwc*(.) )
     fi
 
-    # for some reason this always ends up 444
-    chmod u+w ~/.zsh/functions.zwc*
+    # For some reason this always ends up 444.
+    # 2009-06-27 Sat 15:51:36 BST always? commenting to see what happens
+    #chmod u+w ~/.zsh/functions.zwc*
 
     # -p means sets of arguments in between -- get passed to
     # zcompile.  See comments at top of zrecompile for examples.
     # -R copies .zwc into shell process memory
     # -M mmaps the .zwc
     # -U suppresses alias expansion during reading of function
+
     # -z autoloads function as if KSH_AUTOLOAD unset.
-    #
+    # -k autoloads function as if KSH_AUTOLOAD set.
+    # Without -k or -z, takes value of KSH_AUTOLOAD when compiled
+    # file is read.
+
     # Use -R for scripts, -M for autoloads
     # Info says -U and -z to be used for system functions.
     if [[ -w $_compinit_dir ]]; then
@@ -43,13 +48,13 @@ _my_zrecompile () {
       -R ~/.zshrc  -- \
       -R ~/.zcompdump  -- \
       "$_compinits[@]" \
-      -M -U ~/.zsh/functions.zwc \
-            ~/.zsh/functions/*(-*) \
-            "$_site_funcs[@]"
+      -M -U ~/.zsh/my-functions.zwc ~/.zsh/functions/*(-*) -- \
+      -M -U ~/.zsh/site-functions.zwc "$_site_funcs[@]"
 }
 
 zrec () {
-    rm -f ~/.zcompdump*
+    #rm -f ~/.zcompdump*
+    rm -f ~/.zsh/functions.zwc # in case old versions are still around
     compinit
     _my_zrecompile
 
