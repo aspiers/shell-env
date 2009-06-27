@@ -1,0 +1,5 @@
+autoload_test2 () {
+    echo "In autoload_test2()"
+}
+
+echo "init"

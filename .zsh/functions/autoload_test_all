@@ -1,0 +1,30 @@
+# This tester itself 
+
+autoload_tester () {
+  fn=$1
+  echo
+  echo --------- $fn ----------------------------------------
+  echo unset KSH_AUTOLOAD
+  unsetopt kshautoload
+  unfunction $fn
+  autoload $fn
+  $fn
+  echo "-- calling function again --"
+  $fn
+
+  echo --------------------------
+
+  echo set KSH_AUTOLOAD
+  setopt kshautoload
+  unfunction $fn
+  autoload $fn
+  $fn
+  echo "-- calling function again --"
+  $fn
+}
+
+autoload_test_all () {
+  autoload_tester autoload_test1
+  autoload_tester autoload_test2
+  autoload_tester autoload_test3
+}

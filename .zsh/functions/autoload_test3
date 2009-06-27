@@ -1,0 +1,6 @@
+autoload_test3 () {
+    echo "In autoload_test3()"
+}
+
+echo "init"
+autoload_test3 "$@"
