@@ -17,6 +17,18 @@ _my_zrecompile () {
         _site_funcs=( $_func_dir/*~*.zwc*(.) )
     fi
 
+    # for some reason this always ends up 444
+    chmod u+w ~/.zsh/functions.zwc*
+
+    # -p means sets of arguments in between -- get passed to
+    # zcompile.  See comments at top of zrecompile for examples.
+    # -R copies .zwc into shell process memory
+    # -M mmaps the .zwc
+    # -U suppresses alias expansion during reading of function
+    # -z autoloads function as if KSH_AUTOLOAD unset.
+    #
+    # Use -R for scripts, -M for autoloads
+    # Info says -U and -z to be used for system functions.
     if [[ -w $_compinit_dir ]]; then
         _compinits=(
             -R $_compinit_dir/compinit -- 
@@ -26,10 +38,6 @@ _my_zrecompile () {
     else
         _compinits=()
     fi
-
-    # for some reason this always ends up 444
-    chmod u+w ~/.zsh/functions.zwc*
-
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
       -R ~/.zshrc  -- \
