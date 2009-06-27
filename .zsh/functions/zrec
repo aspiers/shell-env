@@ -46,16 +46,21 @@ _my_zrecompile () {
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
       -R ~/.zshrc  -- \
-      -R ~/.zcompdump  -- \
       "$_compinits[@]" \
       -M -U ~/.zsh/my-functions.zwc ~/.zsh/functions/*(-*) -- \
-      -M -U ~/.zsh/site-functions.zwc "$_site_funcs[@]"
+      -M -U ~/.zsh/site-functions.zwc "$_site_funcs[@]" -- \
+      -R ~/.zcompdump
 }
 
 zrec () {
-    #rm -f ~/.zcompdump*
     rm -f ~/.zsh/functions.zwc # in case old versions are still around
+
+    # Some really weird shit happens when you remove an entry from the
+    # _comps array - it persists unless you really try to get rid of
+    # it.  Haven't figured out exactly how it refuses to die yet.
+    rm -f ~/.zcompdump*
     compinit
+
     _my_zrecompile
 
     # This should be safe now.
