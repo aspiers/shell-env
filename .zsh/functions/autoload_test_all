@@ -1,5 +1,3 @@
-# This tester itself 
-
 autoload_tester () {
   fn=$1
   echo
@@ -28,3 +26,9 @@ autoload_test_all () {
   autoload_tester autoload_test2
   autoload_tester autoload_test3
 }
+
+# This tester itself assumes KSH_AUTOLOAD is *not* set, therefore
+# I need to invoke it here:
+autoload_test_all "$@"
+
+
