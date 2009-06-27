@@ -1,0 +1,6 @@
+- .cpan/build/
+- .cpan/Metadata
+- .cpan/sources/
+- .md5/
+- *.zwc
+- *.elc
