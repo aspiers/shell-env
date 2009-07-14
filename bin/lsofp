@@ -16,4 +16,6 @@ fi
 
 proc="$1"
 shift
-exec lsof -p `pgrep "$proc"` "$@"
+pgrep "$proc" | while read pid; do
+    lsof -p $pid "$@"
+done
