@@ -1,0 +1,5 @@
+#!/bin/sh
+
+proc="$1"
+shift
+exec lsof -p `pgrep "$proc"` "$@"
