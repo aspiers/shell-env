@@ -1,5 +1,19 @@
 #!/bin/sh
 
+me=`basename $0`
+
+usage () {
+    cat <<EOF >&2
+Usage: $me <proc> [<lsof_args>]
+proc is substring to pass to pgrep
+EOF
+    exit 1
+}
+
+if [ "$1" == '-h' ] || [ "$1" == '--help' ] || [ -z "$1" ]; then
+    usage
+fi
+
 proc="$1"
 shift
 exec lsof -p `pgrep "$proc"` "$@"
