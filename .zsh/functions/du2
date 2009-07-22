@@ -1,0 +1,6 @@
+#autoload
+
+# du2 (du with depth 2)
+# see also du1
+
+du --max-depth=2 "$@"
