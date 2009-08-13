@@ -1,8 +1,35 @@
-#!/usr/bin/perl -p
+#!/usr/bin/perl
 
 # Filter to convert globs into regexps
 # e.g. glob-to-re ~/.cvsignore
 
-use Sh 'glob_to_re';
+use Sh qw(glob_to_unanchored_re glob_to_anchored_re);
+use Getopt::Long;
 
-$_ = glob_to_re($_);
+Getopt::Long::Configure('bundling');
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help|h',
+  'unanchored|u',
+) or usage();
+usage() if @ARGV > 1 or $opts{help};
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME options
+Options:
+  -h, --help         Show this help
+  -u, --unanchored   Don't anchor the regexps
+options2
+EOUSAGE
+}
+
+while (<>) {
+  print $opts{unanchored} ? glob_to_unanchored_re($_): glob_to_anchored_re($_);
+}
