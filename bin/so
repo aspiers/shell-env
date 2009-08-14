@@ -15,17 +15,25 @@ cleanup () {
 
 trap cleanup EXIT
 
+if [ "$1" == '-d' ]; then
+  debug=y
+  shift
+fi
+
 tmpfile=`mktemp /tmp/source-only.XXXXXXX`
 (
-  cat $ZDOTDIR/.cvsignore
-  # Allow files in other directories
-  sed 's/^/\*\//g' $ZDOTDIR/.cvsignore
-  # Prune directories
-  sed 's/$/\/\*/g' $ZDOTDIR/.cvsignore
-  # Prune sub-directories
-  sed 's/^/\*\//g; s/$/\/\*/g' $ZDOTDIR/.cvsignore
-) | $here/glob-to-re > $tmpfile
+  # We ignore every element no matter where it is in the path chain.
+  # Probably the only way of improving performance further would be to
+  # ditch the find | ignore pipeline in favour of something such as
+  # Perl's File::Find which would integrate the find step with the
+  # ignore step in order to prune the search tree.  
+  cat $ZDOTDIR/.cvsignore | \
+    $here/glob-to-re -u | \
+    sed 's/^/(^|\/)/; s/$/(\/|$)/'
+) > $tmpfile
 
-grep -vEf $tmpfile
-
-rm "$tmpfile"
+if [ -n "$debug" ]; then
+  cat $tmpfile
+else
+  grep -vEf $tmpfile
+fi
