@@ -8,6 +8,13 @@ here=`dirname $0`
 here=${here:-.}
 
 set -e
+
+cleanup () {
+  [ -f "$tmpfile" ] && rm -f "$tmpfile"
+}
+
+trap cleanup EXIT
+
 tmpfile=`mktemp /tmp/source-only.XXXXXXX`
 (
   cat $ZDOTDIR/.cvsignore
