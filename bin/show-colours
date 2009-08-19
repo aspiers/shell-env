@@ -12,7 +12,7 @@ for bg in `seq 40 47`; do
 done
 
 echo
-echo -e "\e[1mbold"
+echo -e "\e[1mbold (foreground only)"
 for bg in `seq 40 47`; do
   for fg in `seq 30 37`; do
     code="$fg;$bg"
