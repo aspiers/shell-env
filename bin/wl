@@ -5,7 +5,8 @@ if [ $# = 0 ]; then
   which
 else
   if which "$@" >/dev/null; then
-    less `which "$@"`
+    # -F is --quit-if-one-screen
+    less -F `which "$@"`
   else
     which "$@"
   fi
