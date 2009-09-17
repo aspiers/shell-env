@@ -3,8 +3,8 @@
 # epoch date
 
 if [ -n "$1" ]; then
-  date +"%s" -d "$*"
+  date +%s -d "$*"
 else
-  date +"%s"
+  date +%s
 fi
 
