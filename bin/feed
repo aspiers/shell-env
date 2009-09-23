@@ -11,7 +11,7 @@ use Expect;
 use FindBin '$RealScript';
 use Getopt::Long;
 
-use ASpiers 'qqexpand';
+use Sh 'qqexpand';
 
 my %opts;
 Getopt::Long::Configure('require_order');
