@@ -90,7 +90,7 @@ setopt                       \
         glob_complete        \
      NO_glob_dots            \
         glob_subst           \
-        hash_cmds            \
+     NO_hash_cmds            \
         hash_dirs            \
         hash_list_all        \
         hist_allow_clobber   \
