@@ -3,25 +3,40 @@
 # avoid using : in the filename as will break usage within
 # $PATH etc., also in NFS automounts according to the Hickster.
 
-format="%Y-%m-%d" # Equivalent to %F, the ISO 8601 date format.
-while [ -n "$1" ]; do
-  if [ "$1" = "-p" ]; then
-    format="%Y/%m/%d"
-    shift
-  fi
-  if [ "$1" = "-t" ]; then
-    format="$format-%H%Mh%Ss"
-    shift
-  fi
-done
+usage () {
+    if [ -n "$1" ]; then
+        echo "$*" >&2
+        echo
+    fi
 
-if [ $# != 0 ]; then
-  cat <<EOF >&2
-Usage: $0 [-p] [ -t]
+    me=`basename $0`
+
+    cat <<EOF >&2
+Usage: $me [-p] [-t]
+Default format: YYYY-MM-DD
+Options:
   -p  Path format: YYYY/MM/DD
   -t  Append time: -HHMMhSS
 EOF
-  exit 1
-fi
+    exit 1
+}
+
+format="%Y-%m-%d"  # Equivalent to %F, the ISO 8601 date format.
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -p)
+            format="%Y/%m/%d"
+            shift
+            ;;
+        -t)
+            format="$format-%H%Mh%Ss"
+            shift
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
 
 date +"$format"
