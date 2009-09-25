@@ -16,7 +16,7 @@ Usage: $me [-p] [-t]
 Default format: YYYY-MM-DD
 Options:
   -p  Path format: YYYY/MM/DD
-  -t  Append time: -HHMMhSS
+  -t  Append time: -HHMMhSS (or /HHMMhSS if with -p)
 EOF
     exit 1
 }
@@ -27,10 +27,11 @@ while [ -n "$1" ]; do
     case "$1" in
         -p)
             format="%Y/%m/%d"
+            path=y
             shift
             ;;
         -t)
-            format="$format-%H%Mh%Ss"
+            timestamp=y
             shift
             ;;
         *)
@@ -38,5 +39,13 @@ while [ -n "$1" ]; do
             ;;
     esac
 done
+
+if [ -n "$timestamp" ]; then
+    if [ -n "$path" ]; then
+        format="$format/%H%Mh%Ss"
+    else
+        format="$format-%H%Mh%Ss"
+    fi
+fi
 
 date +"$format"
