@@ -1,3 +1,4 @@
 #!/bin/sh
 
-switch-to-emacsclient "$@" &
+# Don't background because we might fallback to tty emacs
+switch-to-emacsclient "$@"
