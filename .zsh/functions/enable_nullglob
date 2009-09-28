@@ -25,12 +25,12 @@ enable_nullglob () {
               restore_nullglob="allow_null_glob_expansion=$allow_null_glob_expansion"
               allow_null_glob_expansion=0
               ;;
-          2*|3*)
+          2*|3*|4*)
               restore_nullglob=`shopt -p nullglob`
               shopt -s nullglob
               ;;
           *)
-              echo "Unknown \$BASH_VERSION $BASH_VERSION !  Aborting." >&2;
+              echo "Unknown \$BASH_VERSION $BASH_VERSION !  Don't know how to enable_nullglob" >&2
               return 1
               ;;
       esac
