@@ -1,4 +1,5 @@
 #!/bin/sh
 
-# Don't background because we might fallback to tty emacs
+# Don't background here because we might fallback to tty emacs -
+# this should be nothing more than an aliasing script.
 switch-to-emacsclient "$@"
