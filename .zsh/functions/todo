@@ -1,9 +1,3 @@
 #autoload
 
-if [ -n "$DISPLAY" ]; then
-    emacs=e
-else
-    emacs=fe
-fi
-
-$emacs "$@" ~/roaming/TODO.org
+switch-to-emacsclient "$@" ~/roaming/TODO.org
