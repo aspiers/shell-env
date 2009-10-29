@@ -1,3 +1,3 @@
 #autoload
 
-switch-to-emacsclient "$@" ~/roaming/TODO.org
+quick-emacs "$@" ~/roaming/TODO.org
