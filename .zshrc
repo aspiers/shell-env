@@ -855,22 +855,11 @@ alias vs='less -S'
 # }}}
 # {{{ editors
 
-# emacs, windowed
-e () {
-  if [[ -n "$OTHER_USER" ]]; then
-    emacs -l $ZDOTDIR/.emacs "$@" &!
-  else
-    which detect_ssh_agent >&/dev/null && detect_ssh_agent
-    which detect_gpg_agent >&/dev/null && detect_gpg_agent
-    emacs "$@" &!
-  fi
-}
-
 # enable ^Z
 alias pico='/usr/bin/pico -z'
 
 if which vim >&/dev/null; then
-  alias vi=vim
+    alias vi=vim
 fi
 
 # }}}
