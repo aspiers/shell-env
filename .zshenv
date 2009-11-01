@@ -25,16 +25,7 @@ setopt NO_global_rcs
 
 shell=zsh
 
-if [[ $ZSH_VERSION == 3.0.<->* ]]; then ZSH_STABLE_VERSION=yes; fi
-if [[ $ZSH_VERSION == 3.1.<->* ]]; then ZSH_DEVEL_VERSION=yes;  fi
-
-ZSH_VERSION_TYPE=old
-if [[ $ZSH_VERSION == 3.1.<6->* ||
-      $ZSH_VERSION == 3.<2->.<->*  ||
-      $ZSH_VERSION == 4.<->* ]]
-then
-  ZSH_VERSION_TYPE=new
-fi
+ZSH_VERSION_TYPE=new
 
 # }}}
 
@@ -74,9 +65,6 @@ typeset -U manpath # No duplicates
 # }}}
 # {{{ LD_LIBRARY_PATH
 
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] ||
-  typeset -T LD_LIBRARY_PATH ld_library_path
-
 typeset -U ld_library_path # No duplicates
 
 # }}}
@@ -84,19 +72,16 @@ typeset -U ld_library_path # No duplicates
 
 # FIXME: move to .shared_env
 
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PERL5LIB perl5lib
 typeset -U perl5lib
 export PERL5LIB
 perl5lib=( 
           ~/{local/,}lib/[p]erl5{,/site_perl}(N)
           $perl5lib
          )
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] && PERL5LIB="${(j/:/)perl5lib}"
 
 # }}}
 # {{{ Ruby libraries
 
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T RUBYLIB rubylib
 typeset -U rubylib
 export RUBYLIB
 rubylib=( 
@@ -104,19 +89,16 @@ rubylib=(
           ~/lib/[r]uby(N)
           $rubylib
          )
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] && RUBYLIB="${(j/:/)rubylib}"
 
 # }}}
 # {{{ Python libraries
 
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T PYTHONPATH pythonpath
 typeset -U pythonpath
 export PYTHONPATH
 pythonpath=( 
           ~/{local/,}lib/[p]ython*{/site-packages,}(N)
           $pythonpath
          )
-[[ "$ZSH_VERSION_TYPE" == 'old' ]] && PYTHONPATH="${(j/:/)pythonpath}"
 
 # }}}
 
@@ -150,8 +132,6 @@ for dirname in $fpath; do
   esac
   (( $#fns )) && autoload "$fns[@]"
 done
-
-#[[ "$ZSH_VERSION_TYPE" == 'new' ]] || typeset -gU fpath
 
 # }}}
 
