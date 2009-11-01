@@ -53,36 +53,29 @@ setopt extended_glob
 
 sh_load_status "search paths"
 
-# {{{ path
+# {{{ prevent duplicates in path variables
 
-typeset -U path # No duplicates
+# path and manpath are special - "hardcoded" tie with $(MAN)PATH
+typeset -U path
+typeset -U manpath
 
-# }}}
-# {{{ manpath
-
-typeset -U manpath # No duplicates
-
-# }}}
-# {{{ LD_LIBRARY_PATH
-
-typeset -U ld_library_path # No duplicates
+typeset -TU LD_LIBRARY_PATH ld_library_path
+typeset -TU PERL5LIB perl5lib
 
 # }}}
 # {{{ Perl libraries
 
-# FIXME: move to .shared_env
+# FIXME: move to .shared_env?
 
-typeset -U perl5lib
 export PERL5LIB
-perl5lib=( 
-          ~/{local/,}lib/[p]erl5{,/site_perl}(N)
-          $perl5lib
-         )
+[[ -n "$OTHER_USER" ]] && \
+    perl5lib=( $ZDOTDIR/{local/,}lib/[p]erl5{,/site_perl}(N) $perl5lib )
+perl5lib=( ~/{local/,}lib/[p]erl5{,/site_perl}(N) $perl5lib )
 
 # }}}
 # {{{ Ruby libraries
 
-typeset -U rubylib
+typeset -TU RUBYLIB rubylib
 export RUBYLIB
 rubylib=( 
           ~/lib/[r]uby{/site_ruby,}{/1.*,}{/i?86*,}(N)
@@ -93,7 +86,7 @@ rubylib=(
 # }}}
 # {{{ Python libraries
 
-typeset -U pythonpath
+typeset -TU PYTHONPATH pythonpath
 export PYTHONPATH
 pythonpath=( 
           ~/{local/,}lib/[p]ython*{/site-packages,}(N)
