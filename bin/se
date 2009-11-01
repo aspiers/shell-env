@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ -n "$OTHER_USER" ]; then
-  exec emacs -nw -l $ZDOTDIR/.emacs "$@"
-else
-  exec emacs -nw "$@"
-fi
