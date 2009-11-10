@@ -5,6 +5,11 @@ mode=`basename $0`
 
 if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   here=`dirname $0`
+  if [ -z "$ZDOTDIR" ]; then
+    echo "\$ZDOTDIR not set; aborting." >&2
+    exit 1
+  fi
+
   echo -n "Setting up handy grep shortcuts in $here ..."
   cd "$here"
   # see also global aliases in .zshrc
@@ -13,7 +18,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
     [ "$cmd" = 'gv' ] && continue
     preexisting=$( which $cmd 2>/dev/null )
     if [ $? = 0 ] && [ "$ZDOTDIR/bin/$cmd" != "$preexisting" ]; then
-        echo -e "\nWARNING! $cmd already found on path" >&2
+        echo -ne "\nWARNING! $cmd already found on path" >&2
     fi
     if ! [ -e $cmd ]; then
         ln -s $me $cmd
