@@ -1,4 +1,4 @@
-#autoload
+#!/bin/sh
 
 # du2 (du with depth 2)
 # see also du1
