@@ -61,7 +61,7 @@ case "$archive" in
     *.tar.bz2|*.tbz)
         tar -C "$tmpdir" -jxvf "$archive_path"
         ;;
-    *.zip|*.ZIP|*.Zip|*.xpi|*.jar)
+    *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.job)
         unzip -d "$tmpdir" "$archive_path"
         ;;
     *)
