@@ -43,16 +43,27 @@ _my_zrecompile () {
     else
         _compinits=()
     fi
+
+    # deal with shared $HOME
+    zwcdir=~/.zsh/$ZSH_VERSION 
+    [ -d "$zwcdir" ] || mkdir -p "$zwcdir"
+    rm -f ~/.zsh/*.zwc # clean up old versions
+
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
       -R ~/.zshrc  -- \
       "$_compinits[@]" \
-      -M -U ~/.zsh/my-functions.zwc ~/.zsh/functions/*(-*) -- \
-      -M -U ~/.zsh/site-functions.zwc "$_site_funcs[@]" -- \
+      -M -U $zwcdir/my-functions.zwc ~/.zsh/functions/*(-*) -- \
+      -M -U $zwcdir/site-functions.zwc "$_site_funcs[@]" -- \
       -R ~/.zcompdump
 }
 
 zrec () {
+    if [ -n "$OTHER_USER" ]; then
+        echo "zrec invoked when OTHER_USER; skipping" >&2
+        return 1
+    fi
+
     rm -f ~/.zsh/functions.zwc # in case old versions are still around
 
     # Some really weird shit happens when you remove an entry from the
