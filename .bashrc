@@ -24,20 +24,10 @@ sh_load_status .bashrc
 # {{{ source /etc/bashrc
 
 if [ -f /etc/bashrc ]; then
-  sh_load_status "/etc/bashrc"
-
-  if ! [ -e /etc/redhat-release ]; then
+    sh_load_status "/etc/bashrc"
     . /etc/bashrc
-  else
-    # RedHat bashrc has imbecilic stty erase which we avoid by
-    # caching to ~/.sysbashrc and modifying.
-    if ! [ -e $ZDOTDIR/.sysbashrc ]; then
-        awk '/^    if \[ -x .*tput/,/^    fi/{next}{print}' \
-            /etc/bashrc > $ZDOTDIR/.sysbashrc
-    fi
-
+else
     . $ZDOTDIR/.sysbashrc
-  fi
 fi
 
 # }}}
@@ -91,11 +81,11 @@ sh_load_status "aliases/functions"
 # {{{ ls aliases
 
 if ls -F --color >&/dev/null; then
-  alias ls='command ls -F --color'
+    alias ls='command ls -F --color'
 elif ls -F >&/dev/null; then
-  alias ls='command ls -F'
+    alias ls='command ls -F'
 elif ls --color >&/dev/null; then
-  alias ls='command ls --color'
+    alias ls='command ls --color'
 fi
 
 # jeez I'm lazy ...
@@ -140,7 +130,7 @@ alias cd....='cd ../../..'
 alias cd.....='cd ../../../..'
 alias cd......='cd ../../../../..'
 z () {
-  cd ~/"$@"
+    cd ~/"$@"
 }
 
 alias md='mkdir -p'
@@ -160,10 +150,10 @@ alias po=popd
 # {{{ du1 (du with depth 1)
 
 du1 () {
-  du "$@" | egrep -v '/.*/'
-  # Another idea from Bart Schaefer, which I need to fix
-  # to take parameters
-  #du -s *(/)
+    du "$@" | egrep -v '/.*/'
+    # Another idea from Bart Schaefer, which I need to fix
+    # to take parameters
+    #du -s *(/)
 }
 
 # }}}
@@ -200,7 +190,7 @@ alias f=finger
 # {{{ less
 
 if ! which less >&/dev/null; then
-  alias less=more
+    alias less=more
 fi
 
 alias v=less
@@ -209,18 +199,18 @@ alias v=less
 # {{{ editors
 
 if which emacs >/dev/null 2>&1; then
-  e () {
-    emacs "$@" 2>&1 &
-  }
+    e () {
+        emacs "$@" 2>&1 &
+    }
 fi
 
 # }}}
 # {{{ ftp
 
 if which lftp >&/dev/null; then
-  alias ftp=lftp
+    alias ftp=lftp
 elif which ncftp >&/dev/null; then
-  alias ftp=ncftp
+    alias ftp=ncftp
 fi
 
 # }}}
