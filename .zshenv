@@ -100,7 +100,7 @@ pythonpath=(
 sh_load_status "fpath/autoloads"
 
 fpath=(
-       $zdotdir/{.[z]sh/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,.local,.$HOST},scripts}}(N)
+       $zdotdir/{.[z]sh/$ZSH_VERSION/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,.local,.$HOST},scripts}}(N)
 
        $fpath
 
