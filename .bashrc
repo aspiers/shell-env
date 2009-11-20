@@ -27,7 +27,7 @@ if [ -f /etc/bashrc ]; then
     sh_load_status "/etc/bashrc"
     . /etc/bashrc
 else
-    . $ZDOTDIR/.sysbashrc
+    [ -r $ZDOTDIR/.sysbashrc ] && . $ZDOTDIR/.sysbashrc
 fi
 
 # }}}
