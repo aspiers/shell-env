@@ -757,7 +757,7 @@ compdef _jobs_fg dn
 # }}}
 # {{{ History
 
-alias h='history 1 | less +G'
+alias h='history -f 1 | less +G'
 alias hh='history'
 
 # }}}
@@ -861,22 +861,6 @@ alias pico='/usr/bin/pico -z'
 if which vim >&/dev/null; then
     alias vi=vim
 fi
-
-# }}}
-# {{{ remote logins
-
-ssh () {
-  setopt local_traps
-  trap 'cxx' INT EXIT QUIT KILL
-  dsa
-  # Pick out user@host word from argv; if it's not found, default to $1.
-  # Finally, strip off .* domain component, if any.
-  cx "${${${(M@)argv:#*@*}:-$1}%%.[a-z]*}" 
-  command ssh "$@"
-}
-
-# Best to run this from .zshrc.local
-#dsa >&DN || echo "ssh-agent setup failed; run dsa."
 
 # }}}
 # {{{ arch
