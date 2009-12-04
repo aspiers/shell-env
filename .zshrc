@@ -95,7 +95,7 @@ setopt                       \
         hash_list_all        \
         hist_allow_clobber   \
         hist_beep            \
-        hist_ignore_dups     \
+     NO_hist_ignore_dups     \
         hist_ignore_space    \
      NO_hist_no_store        \
         hist_verify          \
@@ -142,8 +142,9 @@ setopt                       \
 
 if [[ $ZSH_VERSION_TYPE == 'new' ]]; then
   setopt                       \
-        hist_expire_dups_first \
-        hist_ignore_all_dups   \
+     NO_hist_expire_dups_first \
+        hist_find_no_dups      \
+     NO_hist_ignore_all_dups   \
      NO_hist_no_functions      \
      NO_hist_save_no_dups      \
         inc_append_history     \
