@@ -47,7 +47,7 @@ _my_zrecompile () {
     # deal with shared $HOME
     zwcdir=~/.zsh/$ZSH_VERSION 
     [ -d "$zwcdir" ] || mkdir -p "$zwcdir"
-    rm -f ~/.zsh/*.zwc # clean up old versions
+    rm -f ~/.zsh/*.zwc(N) # clean up old versions
 
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
