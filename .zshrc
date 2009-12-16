@@ -180,7 +180,7 @@ infopath=(
 case "$OSTYPE" in
   linux*)
     # Don't need to do anything through the cunningness
-    # of AUTOPATH in /etc/man.config!
+    # of AUTOPATH in /etc/manpath.config!
     ;;
 
   *)
@@ -200,6 +200,11 @@ case "$OSTYPE" in
 
     ;;
 esac
+
+manpath=(
+    $ZDOTDIR/local/share/[m]an(N)
+    "$manpath[@]"
+)
 
 # }}}
 # {{{ LANG
