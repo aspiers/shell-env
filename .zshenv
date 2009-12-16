@@ -58,6 +58,7 @@ sh_load_status "search paths"
 # path and manpath are special - "hardcoded" tie with $(MAN)PATH
 typeset -U path
 typeset -U manpath
+export MANPATH
 
 typeset -TU LD_LIBRARY_PATH ld_library_path
 typeset -TU PERL5LIB perl5lib
