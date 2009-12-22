@@ -895,6 +895,12 @@ alias buz=bunzip2
 alias -g PIPE='|'
 
 # }}}
+# {{{ Lists of pipelines
+
+alias -g AD='&& div &&'
+
+# }}}
+
 # {{{ Paging with less / head / tail
 
 alias -g L='| less'
