@@ -3,6 +3,10 @@
 # divider - useful in a pipeline to separate output
 
 width="${COLUMNS:-72}"
+if [ "$1" = '-n' ]; then
+    no_blank_lines=t
+    shift
+fi
 char="${1:->}"
 
 divider=
@@ -10,4 +14,6 @@ for (( i=1; i<=width; i++)); do
     divider="$divider$char"
 done
 
+[ -n "$no_blank_lines" ] || echo
 echo "$divider"
+[ -n "$no_blank_lines" ] || echo
