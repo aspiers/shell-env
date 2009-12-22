@@ -1,5 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 #
 # divider - useful in a pipeline to separate output
 
-echo "------------------------------------------------------------"
+width="${COLUMNS:-72}"
+char="${1:-=}"
+
+divider=
+for (( i=1; i<=width; i++)); do
+    divider="$divider$char"
+done
+
+echo "$divider"
