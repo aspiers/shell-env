@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# divider - useful in a pipeline to separate output
+
+echo "------------------------------------------------------------"
