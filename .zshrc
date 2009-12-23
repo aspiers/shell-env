@@ -928,6 +928,10 @@ alias -g S='| sort'
 alias -g Su='| sort -u'
 alias -g Sn='| sort -n'
 alias -g Snr='| sort -nr'
+alias -g SUc='| sort | uniq -c'
+alias -g SUd='| sort | uniq -d'
+alias -g Uc='| uniq -c'
+alias -g Ud='| uniq -d'
 
 # }}}
 # {{{ Common filenames
