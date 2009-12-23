@@ -201,6 +201,8 @@ case "$OSTYPE" in
     ;;
 esac
 
+# Add extra paths to path determined by /etc/man.config
+MANPATH="`MANPATH= manpath`"
 manpath=(
     $ZDOTDIR/local/share/[m]an(N)
     "$manpath[@]"
