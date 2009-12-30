@@ -28,13 +28,13 @@ sub usage {
 Usage: $me [options] [username[\@host]]
 
 Finds the session with the smallest idle time corresponding to the
-specified user and outputs the number of seconds idle.
+specified user and by default outputs the number of seconds idle.
 
 Options:
-  -l, --last     Also output time last active as seconds since epoch
-  -i, --idle     Use with -l to show both time idle and last active
+  -l, --last     Output time last active as seconds since epoch
+  -t, --tty      Output corresponding tty
+  -i, --idle     with -l/-t: show time idle in addition to other output
   -h, --human    Output idle/last active time(s) in human-readable format
-  -t, --tty      Also output corresponding tty
   -x, --x11idle  Use data from x11idle if available (spots mouse movement)
   -d, --debug
       --help
@@ -43,7 +43,7 @@ EOUSAGE
 
 my $who = shift || scalar(getpwuid $<);
 
-my $x11idle = `x11idle 2>&1`;
+my $x11idle = $ENV{DISPLAY} ? `x11idle 2>&1` : '';
 if (defined $x11idle) {
   chomp $x11idle;
 }
@@ -180,7 +180,7 @@ $out{'last'} = "last active at " . scalar localtime($out{'last'})
   if $opts{human};
 $out{'tty'}  = $opts{human} ? "on $least_idle_tty" : $least_idle_tty;
 
-$opts{'idle'} = 1 unless ! $opts{idle} && $opts{'last'};
+$opts{'idle'} = 1 unless ! $opts{idle} && ($opts{'last'} || $opts{'tty'});
 my @out;
 foreach (qw{idle tty last}) {
   push @out, $out{$_} if $opts{$_};
