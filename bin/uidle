@@ -13,7 +13,7 @@ Getopt::Long::Configure('bundling');
 GetOptions(
   \%opts,
   'last|l', 'idle|i', 'human|h',
-  'tty|t',
+  'tty|t', 'x11idle|x',
   'debug|d', 'help'
 ) or usage();
 usage() if $opts{help};
@@ -31,10 +31,11 @@ Finds the session with the smallest idle time corresponding to the
 specified user and outputs the number of seconds idle.
 
 Options:
-  -l, --last   Also output time last active as seconds since epoch
-  -i, --idle   Use with -l to show both time idle and last active
-  -h, --human  Output idle/last active time(s) in human-readable format
-  -t, --tty    Also output corresponding tty
+  -l, --last     Also output time last active as seconds since epoch
+  -i, --idle     Use with -l to show both time idle and last active
+  -h, --human    Output idle/last active time(s) in human-readable format
+  -t, --tty      Also output corresponding tty
+  -x, --x11idle  Use data from x11idle if available (spots mouse movement)
   -d, --debug
       --help
 EOUSAGE
@@ -114,7 +115,7 @@ if ($state == NEED_LOGIN) {
   die "Didn't get login line.\n";
 }
 
-if ($x11idle =~ /^\d+$/) {
+if ($opts{x11idle} and $x11idle =~ /^\d+$/) {
   $x11idle = int($x11idle / 1000);
   # Give a slight preference to tty-based idle times,
   # since they're more informative.
