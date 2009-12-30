@@ -32,9 +32,10 @@ fi
 
 if out=$( active-since "$soft" ); then
     echo "WARNING: activity after $hard will shutdown system!" \
-    | write "`id -un`" "`uidle --tty`"
+    | wall
+    #| write "`id -un`" "`uidle --tty`"
     exit 1
 fi
 
-echo "Threshold not crossed"
+echo "Thresholds not crossed"
 exit 0
