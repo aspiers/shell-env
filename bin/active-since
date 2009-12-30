@@ -1,0 +1,14 @@
+#!/bin/sh
+
+threshold_epoch=`date +%s -d "$*"`
+threshold_human=`date -d "$*"`
+last_active_epoch=`uidle -l`
+last_active_human=`uidle -lh`
+
+if [ "$last_active_epoch" -gt "$threshold_epoch" ]; then
+    echo "$last_active_human; after $threshold_human"
+    exit 0
+else
+    echo "$last_active_human; before $threshold_human"
+    exit 1
+fi
