@@ -6,8 +6,16 @@ use warnings;
 use Date::Manip 'Delta_Format';
 use File::Basename;
 use Getopt::Long;
+use POSIX 'strftime';
+
 my %opts;
-GetOptions(\%opts, 'human|h', 'help', 'tty|t', 'debug|d') or usage();
+Getopt::Long::Configure('bundling');
+GetOptions(
+  \%opts,
+  'last|l', 'idle|i', 'human|h',
+  'tty|t',
+  'debug|d', 'help'
+) or usage();
 usage() if $opts{help};
 
 use constant NEED_ON_SINCE => 1;
@@ -23,7 +31,9 @@ Finds the session with the smallest idle time corresponding to the
 specified user and outputs the number of seconds idle.
 
 Options:
-  -h, --human  Output idle time in human-readable format
+  -l, --last   Also output time last active as seconds since epoch
+  -i, --idle   Use with -l to show both time idle and last active
+  -h, --human  Output idle/last active time(s) in human-readable format
   -t, --tty    Also output corresponding tty
   -d, --debug
       --help
@@ -31,6 +41,14 @@ EOUSAGE
 }
 
 my $who = shift || scalar(getpwuid $<);
+
+my $x11idle = `x11idle 2>&1`;
+if (defined $x11idle) {
+  chomp $x11idle;
+}
+else {
+  $x11idle = '';
+}
 
 open(FINGER, "finger -l -m $who|")
   or die "open(finger -l -m $who|) failed: $!\n";
@@ -96,6 +114,16 @@ if ($state == NEED_LOGIN) {
   die "Didn't get login line.\n";
 }
 
+if ($x11idle =~ /^\d+$/) {
+  $x11idle = int($x11idle / 1000);
+  # Give a slight preference to tty-based idle times,
+  # since they're more informative.
+  if ($x11idle + 1 < $least_idle_secs) {
+    $least_idle_secs = $x11idle;
+    $least_idle_tty  = $ENV{DISPLAY} || 'x11';
+  }
+}
+
 sub parse_idle_time {
   my ($text) = @_;
   $_ = $text;
@@ -119,7 +147,9 @@ if (! defined $least_idle_secs) {
   exit 1;
 }
 
-if ($opts{human}) {
+sub get_time_idle {
+  return $least_idle_secs unless $opts{human};
+
   my @units = Delta_Format(
     $least_idle_secs . 'S',
     0,
@@ -139,11 +169,25 @@ if ($opts{human}) {
   }
   @out = ('0 seconds') if @out == 0;
     
-  print "@out", $opts{tty} ? " on $least_idle_tty" : '', "\n";
+  return "@out idle", 
 }
-else {
-  print $least_idle_secs, $opts{tty} ? " $least_idle_tty" : '', "\n";
+
+my %out;
+$out{'idle'} = get_time_idle();
+$out{'last'} = time() - $least_idle_secs;
+$out{'last'} = "last active at " . scalar localtime($out{'last'})
+  if $opts{human};
+$out{'tty'}  = $opts{human} ? "on $least_idle_tty" : $least_idle_tty;
+
+$opts{'idle'} = 1 unless ! $opts{idle} && $opts{'last'};
+my @out;
+foreach (qw{idle tty last}) {
+  push @out, $out{$_} if $opts{$_};
 }
+
+my $out = join(" ", @out);
+$out =~ s/ last active/,$&/;
+print "$out\n";
 
 sub debug {
   warn @_ if $opts{debug};
