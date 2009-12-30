@@ -2,6 +2,8 @@
 
 threshold_epoch=`date +%s -d "$*"`
 threshold_human=`date -d "$*"`
+# don't use uidle -x since we don't want mouse movement
+# to trigger a reboot!
 last_active_epoch=`uidle -l`
 last_active_human=`uidle -lh`
 
