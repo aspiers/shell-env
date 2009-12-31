@@ -1,0 +1,12 @@
+# Copy me to ~/.zshrc of another uid.
+# Delete ZDOTUSER setting if intended for use by another person.
+
+if [ -e /home/adam ]; then
+  export ZDOTDIR=/home/adam
+elif [ -e /home/aspiers ]; then
+  export ZDOTDIR=/home/aspiers
+fi
+
+export ZDOTUSER=adam.spiers
+
+[ -n "$ZDOTDIR" ] && . $ZDOTDIR/.ns
