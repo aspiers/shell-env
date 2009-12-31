@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ $( pgrep -c "$@" ) -eq 0 ]; then
+    echo "pgrep $@ didn't find any matching pids; aborting." >&2
+    exit 1
+elif [ $( pgrep -c "$@" ) -ne 1 ]; then
+    echo "pgrep $@ found more than one matching pid:" >&2
+    pgrep -l "$@" | sed 's/^/  /' >&2
+    echo "Aborting." >&2
+    exit 1
+fi
+
+# FIXME: race condition here
+waitpid `pgrep "$@"`
