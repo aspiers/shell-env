@@ -1,10 +1,19 @@
-# Copy me to ~/.zshrc of another uid.
-# Delete ZDOTUSER setting if intended for use by another person.
+# If I (Adam) want to have all my nice shell stuff from another
+# uid (e.g. root), just log in as that user and do
+#
+#  ln -s ~adam/.zshrc.other-user ~/.zshrc
+#
+# If someone else wants all my nice stuff from their uid on the
+# same machine, copy this file to ~/.zshrc of that uid and
+# delete the ZDOTUSER setting.
 
 if [ -e /home/adam ]; then
   export ZDOTDIR=/home/adam
 elif [ -e /home/aspiers ]; then
   export ZDOTDIR=/home/aspiers
+else
+  echo "Cannot find ZDOTDIR!  Edit ~/.zshrc"
+  return 1
 fi
 
 export ZDOTUSER=adam.spiers
