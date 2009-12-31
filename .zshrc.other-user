@@ -3,6 +3,8 @@
 #
 #  ln -s ~adam/.zshrc.other-user ~/.zshrc
 #
+# (or copy and edit if the code below can't find ZDOTDIR)
+#
 # If someone else wants all my nice stuff from their uid on the
 # same machine, copy this file to ~/.zshrc of that uid and
 # delete the ZDOTUSER setting.
