@@ -9,42 +9,80 @@ usage () {
     fi
 
     cat <<EOF >&2
-Usage: $me SOFT_THRESHOLD HARD_THRESHOLD
+Usage: $me [-n] SOFT_THRESHOLD HARD_THRESHOLD
 e.g. $me 12:30am 1am
      $me '11pm yesterday' 12am
 
 Warns if the user is active after SOFT_THRESHOLD.
 Shuts down if the user is active after HARD_THRESHOLD.
+
+-n means dry run - no shutdown performed.
 EOF
 }
 
-if [ "$1" == '-h' ] || [ "$1" == '--help' ] || [ -z "$2" ]; then
+hard_action () {
+    if out=$( active-since "$hard" ); then
+        # Loop this otherwise 'shutdown -c' is too easy
+        while true; do
+            if [ -z "$dryrun" ]; then
+                sudo shutdown -h +1 "Get to bed, asswipe!
+$out"
+            else
+                msg="Get to bed, asswipe!
+$me running in dry run mode so won't initiate system shutdown.
+$out"
+                wall "$msg"
+                logger "$msg"
+            fi
+            sleep 60
+        done
+        exit 1
+    fi
+}
+
+soft_warning () {
+    if out=$( active-since "$soft" ); then
+        echo "WARNING: activity after $hard will shutdown system!" \
+            | wall
+            #| write "`id -un`" "`uidle --tty`"
+        exit 1
+    fi
+}
+
+
+if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
     usage
+    exit 0
+fi
+
+if [ "$1" == '-n' ]; then
+    dryrun=true
+    shift
+fi
+
+if [ $# -ne 2 ]; then
+    usage
+    exit 1
 fi
 
 soft="$1"
 hard="$2"
 
-if out=$( active-since "$hard" ); then
-    # Loop this otherwise 'shutdown -c' is too easy
-    while true; do
-        if true; then
-            sudo shutdown -h +1 "Get to bed, asswipe! ($out)"
-        else
-            wall "would shutdown! ($out)"
-            logger "would shutdown! ($out)"
-        fi
-        sleep 60
-    done
+if ! now_epoch="`date +%s`" ||
+   ! soft_epoch="`date +%s -d $soft`" ||
+   ! hard_epoch="`date +%s -d $hard`"; then
+    echo
+    usage
     exit 1
 fi
-
-if out=$( active-since "$soft" ); then
-    echo "WARNING: activity after $hard will shutdown system!" \
-    | wall
-    #| write "`id -un`" "`uidle --tty`"
-    exit 1
+    
+if [ "$now_epoch" -ge "$hard_epoch" ]; then
+    hard_action
+    exit 0
+elif [ "$now_epoch" -ge "$soft_epoch" ]; then
+    soft_warning
+    exit 0
+else
+    echo "Not yet $soft; no action taken."
+    exit 0
 fi
-
-echo "Thresholds not crossed"
-exit 0
