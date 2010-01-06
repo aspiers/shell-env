@@ -26,7 +26,16 @@ soft="$1"
 hard="$2"
 
 if out=$( active-since "$hard" ); then
-    logger "would shutdown! $out"
+    # Loop this otherwise 'shutdown -c' is too easy
+    while true; do
+        if true; then
+            sudo shutdown -h +1 "Get to bed, asswipe! ($out)"
+        else
+            wall "would shutdown! ($out)"
+            logger "would shutdown! ($out)"
+        fi
+        sleep 60
+    done
     exit 1
 fi
 
