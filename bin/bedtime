@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CHECK_EVERY=30 # seconds
+#DEBUG=y
+
 me=`basename $0`
 
 usage () {
@@ -9,46 +12,57 @@ usage () {
     fi
 
     cat <<EOF >&2
-Usage: $me [-n] SOFT_THRESHOLD HARD_THRESHOLD
-e.g. $me 12:30am 1am
-     $me '11pm yesterday' 12am
+Usage: $me [-n] HARD_THRESHOLD END_TIME
+e.g. $me 12:30am 5am
+     $me '11pm yesterday' 5am
 
-Warns if the user is active after SOFT_THRESHOLD.
 Shuts down if the user is active after HARD_THRESHOLD.
+Warns if the user is active before HARD_THRESHOLD.
 
 -n means dry run - no shutdown performed.
 EOF
 }
 
-hard_action () {
-    if out=$( active-since "$hard" ); then
-        # Loop this otherwise 'shutdown -c' is too easy
-        while true; do
-            if [ -z "$dryrun" ]; then
-                sudo shutdown -h +1 "Get to bed, asswipe!
+hard_action_zone () {
+    out=$( active-since "$hard" ) || return
+
+    if [ -z "$dryrun" ]; then
+        sudo shutdown -h +1 "Get to bed, asswipe!
 $out"
-            else
-                msg="Get to bed, asswipe!
+    else
+        msg="Get to bed, asswipe!
 $me running in dry run mode so won't initiate system shutdown.
 $out"
-                wall "$msg"
-                logger "$msg"
-            fi
-            sleep 60
-        done
-        exit 1
+        wall "$msg"
+        logger "$msg"
     fi
 }
 
-soft_warning () {
+soft_warning_zone () {
     if out=$( active-since "$soft" ); then
-        echo "WARNING: activity after $hard will shutdown system!" \
-            | wall
-            #| write "`id -un`" "`uidle --tty`"
-        exit 1
+        if [ -n "$dryrun" ]; then
+            action="would shutdown system if not in dry run mode"
+        else
+            action="will shutdown system"
+        fi
+        msg="WARNING: activity after $hard $action!"
+        echo "$msg" | wall
+        #echo "$msg" | write "`id -un`" "`uidle --tty`"
+        logger "$msg"
     fi
 }
 
+# Allow this to be run from crontab every minute, to prevent
+# sneaky "pkill bedtime" behaviour, since I know my willpower
+# is weak...
+
+# Only recent SUSE distributions have pgrep -c :-(
+pids="$( pgrep -u `id -un` -f $0 )"
+num_pids=$( echo "$pids" | wc -l )
+if [ $num_pids -ge 2 ]; then
+    echo "$me already running; exiting."
+    exit 0
+fi
 
 if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
     usage
@@ -65,24 +79,36 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-soft="$1"
-hard="$2"
+hard="$1"
+end="$2"
 
-if ! now_epoch="`date +%s`" ||
-   ! soft_epoch="`date +%s -d $soft`" ||
+if ! end_epoch="`date +%s -d $end`" ||
    ! hard_epoch="`date +%s -d $hard`"; then
     echo
     usage
     exit 1
 fi
-    
-if [ "$now_epoch" -ge "$hard_epoch" ]; then
-    hard_action
-    exit 0
-elif [ "$now_epoch" -ge "$soft_epoch" ]; then
-    soft_warning
-    exit 0
-else
-    echo "Not yet $soft; no action taken."
-    exit 0
-fi
+
+while true; do
+    now_epoch="`date +%s`"
+    if [ -n "$DEBUG" ]; then
+        cat <<EOF
+now:  $now_epoch
+hard: $hard_epoch
+end:  $end_epoch
+EOF
+    fi
+
+    if [ "$now_epoch" -ge "$end_epoch" ]; then
+        echo "Could reasonably be awake now; stopping checks."
+        exit 0
+    fi
+
+    if [ "$now_epoch" -ge "$hard_epoch" ]; then
+        hard_action_zone
+    else
+        soft_warning_zone
+    fi
+
+    sleep $CHECK_EVERY
+done
