@@ -64,7 +64,8 @@ sub find_sound {
 
 while ($count) {
   print "\a";
-  my $cmd = "aplay \Q$sound\E";
+  my $exe = "paplay"; # FIXME: make more robust
+  my $cmd = "$exe \Q$sound\E";
   if ($opts{verbosity} == 0) {
     $cmd .= " >/dev/null 2>&1";
   }
