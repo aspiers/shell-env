@@ -1,10 +1,31 @@
 #!/usr/bin/perl
 
-if ($ARGV[0] =~ /^--?h(elp)?$/) {
-  die <<USAGE
-Usage: beep <count> <delay_secs>
-USAGE
+use Getopt::Long;
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME <count> <delay_secs>
+Options:
+  -h, --help           Show this help
+  -v, --verbose[=N]    Increase [specify] verbosity (defaults to 1)
+EOUSAGE
 }
+
+Getopt::Long::Configure('bundling');
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help|h',
+  'debug|d',
+  'verbosity|verbose|v:+',
+  'version|V',
+) or usage();
+usage() if @ARGV >= 2 or $opts{help};
 
 $| = 1;
 
@@ -28,9 +49,14 @@ my $sound = find_sound();
 
 sub find_sound {
   for my $path (@sounds_path) {
+    debug(3, "Searching $path");
     for my $sound (@sounds) {
       my $full = "$path/$sound";
-      return $full if -r $full;
+      if (-r $full) {
+        debug(2, "Found $full");
+        return $full;
+      }
+      debug(3, "  Skipping unreadable $full");
     }
   }
   return undef;
@@ -38,7 +64,22 @@ sub find_sound {
 
 while ($count) {
   print "\a";
-  system("aplay \Q$sound\E >/dev/null 2>&1") if $sound;
+  my $cmd = "aplay \Q$sound\E";
+  if ($opts{verbosity} == 0) {
+    $cmd .= " >/dev/null 2>&1";
+  }
+  elsif ($opts{verbosity} == 1) {
+    $cmd .= " >/dev/null";
+  }
+  if ($sound) {
+    debug(3, "cmd is $cmd");
+    system($cmd);
+  }
   $count--;
   sleep $sleep if $count;
+}
+
+sub debug {
+  my $level = shift;
+  warn @_, "\n" if $opts{verbosity} >= $level;
 }
