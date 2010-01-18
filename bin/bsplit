@@ -13,6 +13,8 @@ use warnings;
 
 use Getopt::Long;
 
+use constant ALREADY_EXISTS => -1;
+
 Getopt::Long::Configure('require_order');
 
 sub usage {
@@ -24,10 +26,12 @@ sub usage {
 Usage: $ME INPUTFILE PATTERN [...]
 Options:
   -h, --help           Show this help
+  -f, --overwrite      Overwrite existing bucket files
   -v, --verbose[=N]    Increase [specify] verbosity (defaults to 1)
   -V, --version        Show version
 
-Lines are placed in bucket files named according to the following rules:
+Lines from INPUTFILE ('-' for STDIN) are syphoned into bucket files
+named according to the following rules:
 
 1. If \$1 is defined when the line matches a pattern, use \$1 as the bucket.
 2. The line matches a pattern of the form /regexp/=BUCKET, use BUCKET.
@@ -54,9 +58,8 @@ my %opts = ( verbosity => 1 );
 GetOptions(
   \%opts,
   'help|h',
-  #'debug|d',
+  'overwrite|f',
   'verbosity|verbose|v:+',
-  #'version|V',
 ) or usage();
 usage() if @ARGV < 2 or $opts{help};
 
@@ -114,7 +117,7 @@ sub re2bucket {
 sub write_output {
   my ($bucket, $line) = @_;
   my $fh = get_fh($bucket);
-  print $fh $line;
+  print $fh $line unless $fh eq ALREADY_EXISTS;
   #print "$bucket: $line";
 }
 
@@ -125,6 +128,10 @@ sub write_output {
     my ($file) = @_;
     return $fhs{$file} if $fhs{$file};
     my $fh;
+    if (-e $file and ! $opts{overwrite}) {
+      warn "Not overwriting $file\n";
+      return $fhs{$file} = ALREADY_EXISTS;
+    }
     open($fh, ">$file")
       or die "Couldn't open(>$file): $!\n";
     print "Opened $file\n";
