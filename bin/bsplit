@@ -65,19 +65,20 @@ my ($regexps, $named_buckets) = parse_patterns(@patterns);
 
 open(INPUT, $input)
   or die "Couldn't open($input): $!\n";
-LINE:
 while (<INPUT>) {
+  my $bucket = 'other';
+ REGEXP:
   for my $i (0..$#$regexps) {
     my $regexp = $regexps->[$i];
     if ($_ =~ $regexp) {
-      my $bucket = defined $1 ? $1
-                 : defined $named_buckets->[$i] ? $named_buckets->[$i]
-                 : get_digits($i + 1);
-      write_output($bucket, $_);
-      next LINE;
+      $bucket = defined $1 ? $1
+            : defined $named_buckets->[$i] ? $named_buckets->[$i]
+            : get_digits($i + 1);
+      last REGEXP;
     }
   }
-  write_output('other', $_);
+  my $file = get_file($input, $bucket);
+  write_output($file, $_);
 }
 close(INPUT);
 
@@ -120,21 +121,20 @@ sub write_output {
   my %fhs;
 
   sub get_fh {
-    my ($bucket) = @_;
-    return $fhs{$bucket} if $fhs{$bucket};
-    my $file = get_file($bucket);
+    my ($file) = @_;
+    return $fhs{$file} if $fhs{$file};
     my $fh;
     open($fh, ">$file")
       or die "Couldn't open(>$file): $!\n";
     print "Opened $file\n";
-    return $fhs{$bucket} = $fh;
+    return $fhs{$file} = $fh;
   }
 }
 
 sub get_file {
-  my ($bucket) = @_;
+  my ($input, $bucket) = @_;
   $bucket =~ tr!/!_!;
-  my $file = $input;
+  my $file = $input eq '-' ? 'STDIN' : $input;
   $file =~ s/(.+)\.(.+)/$1-$bucket.$2/
     or $file .= "-$bucket";
   return $file;
