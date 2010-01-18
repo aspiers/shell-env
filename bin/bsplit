@@ -28,6 +28,7 @@ Options:
   -V, --version        Show version
 
 Lines are placed in bucket files named according to the following rules:
+
 1. If \$1 is defined when the line matches a pattern, use \$1 as the bucket.
 2. The line matches a pattern of the form /regexp/=BUCKET, use BUCKET.
 3. If the line matches a pattern containing a word with at least consecutive
