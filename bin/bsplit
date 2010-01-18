@@ -4,9 +4,12 @@
 #
 # A bit like csplit from coreutils, except:
 #
-#   - There is one output file per pattern
+#   - Lines matching regular expression patterns are syphoned
+#     into buckets.
 #   - Output is repeatedly appended to the output file
-#     corresponding to the 
+#     corresponding to the bucket.
+#
+# See usage for more information.
 
 use strict;
 use warnings;
