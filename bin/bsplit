@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+#
+# "Bucket" split
+#
+# A bit like csplit from coreutils, except:
+#
+#   - There is one output file per pattern
+#   - Output is repeatedly appended to the output file
+#     corresponding to the 
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+Getopt::Long::Configure('require_order');
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME INPUTFILE PATTERN [...]
+Options:
+  -h, --help           Show this help
+  -v, --verbose[=N]    Increase [specify] verbosity (defaults to 1)
+  -V, --version        Show version
+
+Lines are placed in bucket files named according to the following rules:
+1. If \$1 is defined when the line matches a pattern, use \$1 as the bucket.
+2. The line matches a pattern of the form /regexp/=BUCKET, use BUCKET.
+3. If the line matches a pattern containing a word with at least consecutive
+   alpha characters, use the first such word as the bucket.
+4. If the line matches the Nth pattern given, use 'N' as the bucket.
+5. If the line matches no pattern, it is placed in the 'other' bucket.
+
+Example (includes shell quoting):
+
+$ME - \@fooBar\@ /baz.+zzz/=sleepy /test/ tst '-(baz|qux)' <<EOF
+hello \@fooBar\@   # goes in 'fooBar' bucket (rule 3)
+-bazaarzzzz      # goes in 'sleepy' bucket (rule 2)
+-baz             # goes in 'baz' bucket (rule 1)
+test             # goes in 'test' bucket (rule 3)
+-qux             # goes in 'test' bucket (rule 1)
+tst              # goes in '04' bucket (rule 4)
+something else   # goes in 'other' bucket
+EOF
+EOUSAGE
+}
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help|h',
+  #'debug|d',
+  'verbosity|verbose|v:+',
+  #'version|V',
+) or usage();
+usage() if @ARGV < 2 or $opts{help};
+
+my ($input, @patterns) = @ARGV;
+
+my ($regexps, $named_buckets) = parse_patterns(@patterns);
+
+open(INPUT, $input)
+  or die "Couldn't open($input): $!\n";
+LINE:
+while (<INPUT>) {
+  for my $i (0..$#$regexps) {
+    my $regexp = $regexps->[$i];
+    if ($_ =~ $regexp) {
+      my $bucket = defined $1 ? $1
+                 : defined $named_buckets->[$i] ? $named_buckets->[$i]
+                 : get_digits($i + 1);
+      write_output($bucket, $_);
+      next LINE;
+    }
+  }
+  write_output('other', $_);
+}
+close(INPUT);
+
+sub parse_patterns {
+  my @patterns = @_;
+  my (@regexps, @named_buckets);
+  for my $i (0 .. $#patterns) {
+    my $pat = $patterns[$i];
+    if ($pat =~ m!^/(.+)/(=(.+))?$!) {
+      my ($re, $bucket) = ($1, $3);
+      push @regexps, qr/$re/;
+      $named_buckets[$i] = $bucket if defined $bucket;
+    }
+    else {
+      push @regexps, qr/$pat/;
+    }
+    if (! defined $named_buckets[$i] && $pat =~ /\w{4,}/) {
+      $named_buckets[$i] = re2bucket($pat);
+    }
+  }
+  return (\@regexps, \@named_buckets);
+}
+
+sub re2bucket {
+  my ($regexp) = @_;
+  $regexp =~ s/\W+/_/g;
+  $regexp =~ s/^_//g;
+  $regexp =~ s/_$//g;
+  return $regexp;
+}
+
+sub write_output {
+  my ($bucket, $line) = @_;
+  my $fh = get_fh($bucket);
+  print $fh $line;
+  #print "$bucket: $line";
+}
+
+{
+  my %fhs;
+
+  sub get_fh {
+    my ($bucket) = @_;
+    return $fhs{$bucket} if $fhs{$bucket};
+    my $file = get_file($bucket);
+    my $fh;
+    open($fh, ">$file")
+      or die "Couldn't open(>$file): $!\n";
+    print "Opened $file\n";
+    return $fhs{$bucket} = $fh;
+  }
+}
+
+sub get_file {
+  my ($bucket) = @_;
+  $bucket =~ tr!/!_!;
+  my $file = $input;
+  $file =~ s/(.+)\.(.+)/$1-$bucket.$2/
+    or $file .= "-$bucket";
+  return $file;
+}
+
+sub get_digits {
+  my ($index) = @_;
+  return sprintf "%02d", $index;
+}
