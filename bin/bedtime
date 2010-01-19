@@ -1,6 +1,7 @@
 #!/bin/sh
 
-CHECK_EVERY=30 # seconds
+SOFT_CHECK_EVERY=300 # seconds
+HARD_CHECK_EVERY=30  # seconds
 #DEBUG=y
 
 me=`basename $0`
@@ -106,9 +107,9 @@ EOF
 
     if [ "$now_epoch" -ge "$hard_epoch" ]; then
         hard_action_zone
+        sleep $HARD_CHECK_EVERY
     else
         soft_warning_zone
+        sleep $SOFT_CHECK_EVERY
     fi
-
-    sleep $CHECK_EVERY
 done
