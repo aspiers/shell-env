@@ -51,8 +51,10 @@ else {
   $x11idle = '';
 }
 
-open(FINGER, "finger -l -m $who|")
-  or die "open(finger -l -m $who|) failed: $!\n";
+my $cmd = "finger -l -m $who";
+debug("Command: $cmd\n");
+open(FINGER, "$cmd|")
+  or die "open($cmd|) failed: $!\n";
 
 my ($least_idle_secs, $least_idle_tty, $tty, $from);
 
@@ -71,16 +73,24 @@ while (<FINGER>) {
       undef $tty;
       undef $from;
     }
+    else {
+      debug("Got useless line [$_] whilst looking for login\n");
+    }
     next;
   }
 
   if ($state == NEED_ON_SINCE) {
-    $state = NEED_IDLE if s/\bon since.*? on (\S+)\s*?(?: from (\S+))?//i;
-    ($tty, $from) = ($1, $2);
-    $tty ||= '';
-    $from ||= '';
-    debug("tty [$tty] from [$from]\n");
-    debug("Merged line; redoing\n"), redo if /\bidle\b/;
+    if (s/\bon since.*? on (\S+)\s*?(?: from (\S+))?//i) {
+      $state = NEED_IDLE;
+      ($tty, $from) = ($1, $2);
+      $tty ||= '';
+      $from ||= '';
+      debug("tty [$tty] from [$from]\n");
+      debug("Merged line; redoing\n"), redo if /\bidle\b/;
+    }
+    else {
+      debug("Got useless line [$_] whilst looking for 'on since'\n");
+    }
     next;
   }
 
@@ -146,11 +156,22 @@ sub parse_idle_time {
   chomp;
   s/^\s+//;
   
-  my $secs;
+  my $secs = 0;
   $secs += $1 * 3600 * 24 if s/(\d+) days?\s+//i;
   $secs += $1 * 3600      if s/(\d+) hours?\s+//i;
   $secs += $1 *   60      if s/(\d+) min(ute)?s?\s+//i;
-  $secs += $1             if s/(\d+) sec(ond)?s?\s+//i;
+
+  if (/ (\d?\d):(\d\d)(,|$)/) {
+    # SUSE style, only gives to the minute, not to the second :-(
+    # On since Mon Jan 18 11:50 (GMT) on pts/12, idle 6 days 4:33
+    # On since Mon Jan 18 11:50 (GMT) on pts/13, idle 6:08
+    $secs += $1 * 3600 + $2 * 60;
+  }
+  elsif (s/(\d+) sec(ond)?s?\s+//i) {
+    # Fedora style:
+    #   15 minutes 49 seconds idle
+    $secs += $1;
+  }
 
   return $secs;
 }
