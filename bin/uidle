@@ -80,7 +80,7 @@ while (<FINGER>) {
   }
 
   if ($state == NEED_ON_SINCE) {
-    if (s!\bon since.*? on (tty\d+|pts/\d+),?\s*?(?: from (\S+))?!!i) {
+    if (s!\bon since.*? on (tty\d+|pts/\d+|:\d\d?),?\s*?(?: from (\S+))?!!i) {
       $state = NEED_IDLE;
       ($tty, $from) = ($1, $2);
       $tty ||= '';
@@ -99,12 +99,12 @@ while (<FINGER>) {
       my $secs = parse_idle_time($_);
 
       # Prefer pts terminals to tty7, since more useful.
-      if ($from =~ /^:\d+(\.\d)?$/) {
+      if ($tty =~ /^:\d+(\.\d)?$/) {
         $secs += 1;
-        debug("Upped idle time for $from to $secs\n");
+        debug("Upped idle time for $tty to $secs\n");
       }
       else {
-        debug("Idle time for $from is $secs\n");
+        debug("Idle time for $tty is $secs\n");
       }
 
       if (! defined $least_idle_secs) {
