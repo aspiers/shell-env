@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SOFT_CHECK_EVERY=300 # seconds
 HARD_CHECK_EVERY=30  # seconds
@@ -7,6 +7,11 @@ HARD_CHECK_EVERY=30  # seconds
 me=`basename $0`
 
 usage () {
+    exit_code=1
+    if [[ "$1" == [0-9] ]]; then
+        exit_code="$1"
+        shift
+    fi
     if [ -n "$1" ]; then
         echo "$*" >&2
         echo
@@ -22,6 +27,7 @@ Warns if the user is active before HARD_THRESHOLD.
 
 -n means dry run - no shutdown performed.
 EOF
+    exit "$exit_code"
 }
 
 hard_action_zone () {
@@ -58,16 +64,18 @@ soft_warning_zone () {
 # is weak...
 
 # Only recent SUSE distributions have pgrep -c :-(
-pids="$( pgrep -u `id -un` -f $0 )"
+pids="$( pgrep -u `id -un` -f 'bash $0' )"
 num_pids=$( echo "$pids" | wc -l )
 if [ $num_pids -ge 2 ]; then
     echo "$me already running; exiting."
     exit 0
+elif [ $num_pids -eq 0 ]; then
+    echo "BUG: didn't detect myself running"
+    exit 255
 fi
 
 if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
-    usage
-    exit 0
+    usage 0
 fi
 
 if [ "$1" == '-n' ]; then
@@ -77,17 +85,19 @@ fi
 
 if [ $# -ne 2 ]; then
     usage
-    exit 1
 fi
 
 hard="$1"
 end="$2"
 
-if ! end_epoch="`date +%s -d $end`" ||
-   ! hard_epoch="`date +%s -d $hard`"; then
+if ! end_epoch=`date +%s -d "$end"` ||
+   ! hard_epoch=`date +%s -d "$hard"`; then
     echo
     usage
-    exit 1
+fi
+
+if [ "$hard_epoch" -gt "$end_epoch" ]; then
+    usage "HARD_THRESHOLD must come before END_TIME"
 fi
 
 while true; do
