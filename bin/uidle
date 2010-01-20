@@ -8,13 +8,16 @@ use File::Basename;
 use Getopt::Long;
 use POSIX 'strftime';
 
-my %opts;
 Getopt::Long::Configure('bundling');
+
+my %opts = ( verbosity => 1 );
+
 GetOptions(
   \%opts,
   'last|l', 'idle|i', 'human|h',
   'tty|t', 'x11idle|x',
-  'debug|d', 'help|?'
+  'verbosity|verbose|v:+',
+  'help|?'
 ) or usage();
 usage() if $opts{help};
 
@@ -31,12 +34,12 @@ Finds the session with the smallest idle time corresponding to the
 specified user and by default outputs the number of seconds idle.
 
 Options:
-  -l, --last     Output time last active as seconds since epoch
-  -t, --tty      Output corresponding tty
-  -i, --idle     with -l/-t: show time idle in addition to other output
-  -h, --human    Output idle/last active time(s) in human-readable format
-  -x, --x11idle  Use data from x11idle if available (spots mouse movement)
-  -d, --debug
+  -l, --last        Output time last active as seconds since epoch
+  -t, --tty         Output corresponding tty
+  -i, --idle        with -l/-t: show time idle in addition to other output
+  -h, --human       Output idle/last active time(s) in human-readable format
+  -x, --x11idle     Use data from x11idle if available (spots mouse movement)
+  -v, --verbose[=N] Increase [specify] verbosity (defaults to 1)
   -?, --help
 EOUSAGE
 }
@@ -52,7 +55,7 @@ else {
 }
 
 my $cmd = "finger -l -m $who";
-debug("Command: $cmd\n");
+debug(2, "Command: $cmd");
 open(FINGER, "$cmd|")
   or die "open($cmd|) failed: $!\n";
 
@@ -66,71 +69,87 @@ my ($least_idle_secs, $least_idle_tty, $tty, $from);
 # We aim to find the session with the *least* idle time.
 my $state = NEED_LOGIN;
 while (<FINGER>) {
+  chomp;
+  debug(3, "Parsing line [$_]");
+
   if ($state == NEED_LOGIN) {
     if (/^Login( name)?:/i) {
-      debug("Got login line\n");
+      debug(3, "    Got login line");
       $state = NEED_ON_SINCE;
       undef $tty;
       undef $from;
     }
     else {
-      debug("Got useless line [$_] whilst looking for login\n");
+      debug(4, "  . Looking for login; skipping line");
     }
     next;
   }
 
   if ($state == NEED_ON_SINCE) {
+    debug(5, "  NEED_ON_SINCE");
     if (s!\bon since.*? on (tty\d+|pts/\d+|:\d\d?),?\s*?(?: from (\S+))?!!i) {
       $state = NEED_IDLE;
       ($tty, $from) = ($1, $2);
       $tty ||= '';
       $from ||= '';
-      debug("tty [$tty] from [$from]\n");
-      debug("Merged line; redoing\n"), redo if /\bidle\b/;
+      debug(3, "    tty [$tty] from [$from]");
+      if (/\bidle\b/) {
+        debug(3, "  < Merged line; redoing as [$_]");
+        redo;
+      }
     }
     else {
-      debug("Got useless line [$_] whilst looking for 'on since'\n");
+      debug(4, "  . Looking for 'on since'; skipping line");
     }
     next;
   }
 
   if ($state == NEED_IDLE) {
-    if (s/\bidle(\s+time)?\b//i) {
+    debug(5, "  NEED_IDLE");
+    if (! /On since/ && s/\bidle(\s+time)?\b//i) {
       my $secs = parse_idle_time($_);
 
       # Prefer pts terminals to tty7, since more useful.
       if ($tty =~ /^:\d+(\.\d)?$/) {
         $secs += 1;
-        debug("Upped idle time for $tty to $secs\n");
+        debug(2, "  - Upped idle time for $tty to $secs");
       }
       else {
-        debug("Idle time for $tty is $secs\n");
+        debug(2, "  - Idle time for $tty is $secs");
       }
 
       if (! defined $least_idle_secs) {
         $least_idle_secs = $secs;
         $least_idle_tty  = $tty;
-        debug("Least idle now $secs seconds\n");
+        debug(2, "  = Least idle now $secs seconds");
       }
       elsif ($secs < $least_idle_secs) {
-        debug("Found smaller idle time of $secs seconds\n");
+        debug(2, "  = Found smaller idle time of $secs seconds");
         $least_idle_secs = $secs;
         $least_idle_tty  = $tty;
       }
       $state = NEED_ON_SINCE;
       next;
     }
-    
-    debug("Got:\n$_\ninstead of idle line; assuming not idle at all.\n");
-    $least_idle_secs = 0;
-    $least_idle_tty  = $tty;
-    $state = NEED_ON_SINCE;
-    last;
+
+    # On SUSE, :0 style lines don't display idle time.
+    # FIXME: does this break Fedora?
+    if ($tty =~ /^:\d+(\.\d)?$/) {
+      debug(3, "    ignoring $tty line");
+      $state = NEED_ON_SINCE;
+    }
+    else {
+      debug(2, "  ! Didn't get idle time on continuation line; assuming not idle at all.");
+      $least_idle_secs = 0;
+      $least_idle_tty  = $tty;
+      $state = NEED_ON_SINCE;
+      last;
+    }
   }
 }
 
 if ($state == NEED_IDLE) {
-  debug("Finished expecting an idle line; assuming not idle at all.\n");
+  debug(2, "Finished expecting an idle line; assuming not idle at all.");
   $least_idle_secs = 0;
   $least_idle_tty  = $tty;
 }
@@ -153,7 +172,6 @@ sub parse_idle_time {
   my ($text) = @_;
   $_ = $text;
 
-  chomp;
   s/^\s+//;
   
   my $secs = 0;
@@ -161,16 +179,21 @@ sub parse_idle_time {
   $secs += $1 * 3600      if s/(\d+) hours?\s+//i;
   $secs += $1 *   60      if s/(\d+) min(ute)?s?\s+//i;
 
-  if (/ (\d?\d):(\d\d)(,|$)/) {
+  if (/(\d?\d):(\d\d)?/) {
     # SUSE style, only gives to the minute, not to the second :-(
     # On since Mon Jan 18 11:50 (GMT) on pts/12, idle 6 days 4:33
     # On since Mon Jan 18 11:50 (GMT) on pts/13, idle 6:08
+    debug(4, "    SUSE style: $1 hours $2 seconds");
     $secs += $1 * 3600 + $2 * 60;
   }
   elsif (s/(\d+) sec(ond)?s?\s+//i) {
     # Fedora style:
     #   15 minutes 49 seconds idle
+    debug(4, "    Fedora style: $1 seconds");
     $secs += $1;
+  }
+  else {
+    die "Failed to parse idle line [$_]\n";
   }
 
   return $secs;
@@ -198,7 +221,7 @@ sub get_time_idle {
     if (my $val = $units[$i]) {
       my $out = "$val $unit";
       $out   .= "s" if $val != 1;
-      debug("adding $out\n");
+      debug(3, "adding $out");
       push @out, $out;
     }
     $i++;
@@ -226,5 +249,6 @@ $out =~ s/ last active/,$&/;
 print "$out\n";
 
 sub debug {
-  warn @_ if $opts{debug};
+  my $level = shift;
+  warn @_, "\n" if $opts{verbosity} >= $level;
 }
