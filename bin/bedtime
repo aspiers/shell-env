@@ -87,6 +87,14 @@ if [ $# -ne 2 ]; then
     usage
 fi
 
+# We assume that running this script means the caller wants immediate
+# warnings about an approach hard threshold if there is an active session.
+# So the soft threshold starts at the time the script is run.
+#
+# @$secs_since_epoch can be parsed by date -d, and hence
+# accepted by active-since:
+soft="`date +@%s`" 
+
 hard="$1"
 end="$2"
 
