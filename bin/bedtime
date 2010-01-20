@@ -40,17 +40,17 @@ $out"
 }
 
 soft_warning_zone () {
-    if out=$( active-since "$soft" ); then
-        if [ -n "$dryrun" ]; then
-            action="would shutdown system if not in dry run mode"
-        else
-            action="will shutdown system"
-        fi
-        msg="WARNING: activity after $hard $action!"
-        echo "$msg" | wall
-        #echo "$msg" | write "`id -un`" "`uidle --tty`"
-        logger "$msg"
+    out=$( active-since "$soft" ) || return
+
+    if [ -n "$dryrun" ]; then
+        action="would shutdown system if not in dry run mode"
+    else
+        action="will shutdown system"
     fi
+    msg="WARNING: activity after $hard $action!"
+    echo "$msg" | wall
+    #echo "$msg" | write "`id -un`" "`uidle --tty`"
+    logger "$msg"
 }
 
 # Allow this to be run from crontab every minute, to prevent
