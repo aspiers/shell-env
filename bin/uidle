@@ -188,21 +188,22 @@ sub parse_idle_time {
     # Fedora style:
     #   1 hour 15 minutes 49 seconds idle
     my $parsed = 0;
-    debug(4, "    Fedora style: $1 seconds");
+    my ($h, $m, $s) = (0, 0, 0);
     if (s/(\d+) hours?\s+//i) {
-      $secs += $1 * 3600;
+      $secs += ($s=$1) * 3600;
       $parsed = 1;
     }
     if (s/(\d+) min(ute)?s?\s+//i) {
-      $secs += $1 *   60;
+      $secs += ($m=$1) * 60;
       $parsed = 1;
     }
     if (s/(\d+) sec(ond)?s?\s+//i) {
-      $secs += $1;
+      $secs += ($s=$1);
       $parsed = 1;
     }
     die "Failed to parse idle line [$text]\n"
       unless $parsed;
+    debug(4, sprintf "    Fedora style: %d:%02d:%02d", $h, $m, $s);
   }
 
   return $secs;
