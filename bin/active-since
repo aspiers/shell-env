@@ -1,5 +1,27 @@
 #!/bin/sh
 
+me=`basename $0`
+
+usage () {
+    if [ -n "$1" ]; then
+        echo "$*" >&2
+        echo
+    fi
+
+    cat <<EOF >&2
+Usage: $me THRESHOLD
+EOF
+    exit 1
+}
+
+if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+    usage
+fi
+
+if [ -z "$1" ]; then
+    usage
+fi
+
 threshold_epoch=`date +%s -d "$*"`
 threshold_human=`date -d "$*"`
 # don't use uidle -x since we don't want mouse movement
