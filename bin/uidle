@@ -41,6 +41,9 @@ Options:
   -x, --x11idle     Use data from x11idle if available (spots mouse movement)
   -v, --verbose[=N] Increase [specify] verbosity (defaults to 1)
   -?, --help
+
+Note: on SUSE systems, you need -x, or to ensure that your terminal
+program will update utmp; it may need to be setuid root to do this.
 EOUSAGE
 }
 
