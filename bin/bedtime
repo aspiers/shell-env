@@ -40,8 +40,8 @@ $out"
         msg="Get to bed, asswipe!
 $me running in dry run mode so won't initiate system shutdown.
 $out"
+        alertme "$msg" &
         wall "$msg"
-        logger "$msg"
     fi
 }
 
@@ -54,9 +54,9 @@ soft_warning_zone () {
         action="will shutdown system"
     fi
     msg="WARNING: activity after $hard $action!"
+    alertme "$msg" &
     echo "$msg" | wall
     #echo "$msg" | write "`id -un`" "`uidle --tty`"
-    logger "$msg"
 }
 
 # Allow this to be run from crontab every minute, to prevent
