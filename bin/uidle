@@ -176,24 +176,33 @@ sub parse_idle_time {
   
   my $secs = 0;
   $secs += $1 * 3600 * 24 if s/(\d+) days?\s+//i;
-  $secs += $1 * 3600      if s/(\d+) hours?\s+//i;
-  $secs += $1 *   60      if s/(\d+) min(ute)?s?\s+//i;
 
   if (/(\d?\d):(\d\d)?/) {
     # SUSE style, only gives to the minute, not to the second :-(
     # On since Mon Jan 18 11:50 (GMT) on pts/12, idle 6 days 4:33
     # On since Mon Jan 18 11:50 (GMT) on pts/13, idle 6:08
-    debug(4, "    SUSE style: $1 hours $2 seconds");
+    debug(4, "    SUSE style: $1 hours $2 minutes");
     $secs += $1 * 3600 + $2 * 60;
   }
-  elsif (s/(\d+) sec(ond)?s?\s+//i) {
-    # Fedora style:
-    #   15 minutes 49 seconds idle
-    debug(4, "    Fedora style: $1 seconds");
-    $secs += $1;
-  }
   else {
-    die "Failed to parse idle line [$_]\n";
+    # Fedora style:
+    #   1 hour 15 minutes 49 seconds idle
+    my $parsed = 0;
+    debug(4, "    Fedora style: $1 seconds");
+    if (s/(\d+) hours?\s+//i) {
+      $secs += $1 * 3600;
+      $parsed = 1;
+    }
+    if (s/(\d+) min(ute)?s?\s+//i) {
+      $secs += $1 *   60;
+      $parsed = 1;
+    }
+    if (s/(\d+) sec(ond)?s?\s+//i) {
+      $secs += $1;
+      $parsed = 1;
+    }
+    die "Failed to parse idle line [$text]\n"
+      unless $parsed;
   }
 
   return $secs;
