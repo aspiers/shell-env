@@ -1,4 +1,11 @@
 #!/usr/bin/env perl
+#
+# Finds the session with the smallest idle time corresponding to the
+# specified user and by default outputs the number of seconds idle.
+#
+# Run with --help for help.
+#
+# Adam Spiers <uidle@adamspiers.org>
 
 use strict;
 use warnings;
