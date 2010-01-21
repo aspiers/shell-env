@@ -30,21 +30,6 @@ EOF
     exit "$exit_code"
 }
 
-hard_action_zone () {
-    out=$( active-since "$hard" ) || return
-
-    if [ -z "$dryrun" ]; then
-        sudo shutdown -h +1 "Get to bed, asswipe!
-$out"
-    else
-        msg="Get to bed, asswipe!
-$me running in dry run mode so won't initiate system shutdown.
-$out"
-        alertme "$msg" &
-        wall "$msg"
-    fi
-}
-
 soft_warning_zone () {
     # Only remind if active in the last 5 minutes, or since
     # the program was launched, whichever is later.
@@ -65,6 +50,21 @@ soft_warning_zone () {
     alertme "$msg" &
     echo "$msg" | wall
     #echo "$msg" | write "`id -un`" "`uidle --tty`"
+}
+
+hard_action_zone () {
+    out=$( active-since "$hard" ) || return
+
+    if [ -z "$dryrun" ]; then
+        sudo shutdown -h +1 "Get to bed, asswipe!
+$out"
+    else
+        msg="Get to bed, asswipe!
+$me running in dry run mode so won't initiate system shutdown.
+$out"
+        alertme "$msg" &
+        wall "$msg"
+    fi
 }
 
 # Allow this to be run from crontab every minute, to prevent
