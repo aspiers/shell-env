@@ -46,7 +46,15 @@ $out"
 }
 
 soft_warning_zone () {
-    out=$( active-since "$soft" ) || return
+    # Only remind if active in the last 5 minutes, or since
+    # the program was launched, whichever is later.
+    recent=`date +%s -d "5 minutes ago"`
+    if [ "$recent" -lt "${soft#@}" ]; then
+        recent="$soft"
+    else
+        recent="@$recent"
+    fi
+    out=$( active-since "$recent" ) || return
 
     if [ -n "$dryrun" ]; then
         action="would shutdown system if not in dry run mode"
