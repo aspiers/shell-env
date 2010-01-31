@@ -46,7 +46,7 @@ soft_warning_zone () {
     else
         action="will shutdown system"
     fi
-    msg="WARNING: activity after $hard $action!"
+    msg="WARNING: activity after $hard ($hard_epoch) $action!"
     alertme "$msg" &
     echo "$msg" | wall
     #echo "$msg" | write "`id -un`" "`uidle --tty`"
