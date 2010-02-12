@@ -7,4 +7,9 @@ source "$ZDOTDIR/lib/libhooks.sh"
 
 rebuild_config "$config" "$confdir"
 
-( echo; cat "$config" ) | crontab -
+if ( echo; cat "$config" ) | crontab -; then
+    echo "Rebuilt user's crontab"
+else
+    echo "WARNING: Failed to rebuild user's crontab" >&2
+fi
+
