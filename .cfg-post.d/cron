@@ -7,4 +7,4 @@ source "$ZDOTDIR/lib/libhooks.sh"
 
 rebuild_config "$config" "$confdir"
 
-crontab "$config"
+( echo; cat "$config" ) | crontab -
