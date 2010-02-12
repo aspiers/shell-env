@@ -1055,7 +1055,7 @@ fi
 # }}}
 # {{{ Don't always autologout
 
-if [[ "${TERM}" == ([Ex]term*|dtterm|screen*) ]]; then
+if [[ "${TERM}" == ([Ex]term*|rxvt*|dtterm|screen*) ]]; then
   unset TMOUT
 fi
 
