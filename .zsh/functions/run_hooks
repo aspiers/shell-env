@@ -60,7 +60,7 @@
 #!! yes, e.g. hardware-specific hooks, or hooks which need to be
 #!! controlled manually such as composition of yum/smart repo/channel
 #!! directories via a hostgroups-like approach (this refers to something
-#!! I implemented in my last job).
+#!! I implemented in a previous job).
 #!! 
 #!! Immutable requirement: must be able to list which hooks would be
 #!! run without running them, rather than embedding boolean tests as
