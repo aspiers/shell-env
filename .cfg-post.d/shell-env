@@ -14,3 +14,5 @@ fi
 if which lesskey >/dev/null 2>&1; then
   lesskey -o ~/.less
 fi
+
+~/.cfg-post.d/cron

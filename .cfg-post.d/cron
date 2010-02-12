@@ -1,0 +1,10 @@
+#!/bin/bash
+
+confdir=.cron.d
+config=$HOME/.crontab
+
+source "$ZDOTDIR/lib/libhooks.sh"
+
+rebuild_config "$config" "$confdir"
+
+crontab "$config"
