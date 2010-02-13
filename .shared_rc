@@ -31,10 +31,12 @@ fi
 
 # {{{ GNU screen
 
-case "$TERM" in
-  screen*) IN_SCREEN=yes ;;
-  *)       IN_SCREEN=    ;;
-esac
+IN_SCREEN=
+# [ "$TERM" = "screen" ] is not a reliable indicator
+# since we override it in ~/.screen.d/colours
+if [ -n "$STY" ]; then
+    IN_SCREEN=yes
+fi
 export IN_SCREEN
 
 export SCREENRC=$ZDOTDIR/.screenrc
