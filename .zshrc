@@ -783,7 +783,7 @@ alias term='echo $TERM'
 
 which cx >&/dev/null || cx () { }
 
-if [[ "$TERM" == ([Ex]term*|screen*) ]]; then
+if [[ "$TERM" == ([Ex]term*|rxvt*|screen*) ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
