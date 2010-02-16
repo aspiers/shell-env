@@ -60,7 +60,7 @@ sh_load_status () {
   fi
   
   # \e[0K is clear to right
-  if [ -n "$shell_interactive" ]; then
+  if [ -n "$shell_interactive" ] && [ "$TERM" != 'dumb' ]; then
     _text="${_this_shell}${_this_script}: $*... "
     _text="${_text//\/home\//~}"
     echo -e -n "\r\e[0K$_text$debug"
