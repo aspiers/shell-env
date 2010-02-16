@@ -302,7 +302,11 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   # TopGun ssh for Palm
   case "$TERM" in
       tgtelnet) prompt off ;;
-      dumb)     prompt redhat ;;
+      dumb)
+          prompt off
+          PS1="[%n@%m %1~]\$ "
+          PS2="> "
+          ;;
   esac
 else
   PS1='%n@%m %B%3~%b %# '
