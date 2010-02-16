@@ -300,9 +300,10 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   fi
 
   # TopGun ssh for Palm
-  if [[ $TERM == tgtelnet ]]; then
-    prompt off
-  fi
+  case "$TERM" in
+      tgtelnet) prompt off ;;
+      dumb)     prompt redhat ;;
+  esac
 else
   PS1='%n@%m %B%3~%b %# '
 fi
