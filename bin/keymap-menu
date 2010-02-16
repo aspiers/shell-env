@@ -24,11 +24,12 @@ fi
 cat <<EOF
 Choose from one of the following keymaps:
 
-  1) Dell D620 hacked to suit Adam
-  2) Dell D600 "untouched" - as labelled
-  3) Kinesis Essential
-  4) Microsoft Natural 105-key
-  5) Dvorak (applies incrementally over existing keymap)
+  1) Dell D600 "untouched" - as labelled
+  2) Dell D620 hacked to suit Adam
+  3) Dell D630 hacked to suit Adam
+  4) Kinesis Essential
+  5) Microsoft Natural 105-key
+  6) Dvorak (applies incrementally over existing keymap)
 
 EOF
 
@@ -39,19 +40,27 @@ XMODMAP_DIR=$ZDOTDIR/.keymaps/X11
 KEYMAP_DIR=$ZDOTDIR/.keymaps/Linux-console
 
 case "$choice" in
-    1) xmodmap=$XMODMAP_DIR/Dell-D620-Adam
-       ;;
-    2) xmodmap=$XMODMAP_DIR/Dell-D600-untouched
-       ;;
-    3) xmodmap=$XMODMAP_DIR/Kinesis-QWERTY
-       keymap=$KEYMAP_DIR/uk-kinesis.map
-       ;;
-    4) xmodmap=$XMODMAP_DIR/MS-Natural-105
-       keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
-       ;;
-    5) xmodmap=$XMODMAP_DIR/dvorak
-       keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
-       ;;
+    1)
+        xmodmap=$XMODMAP_DIR/Dell-D600-untouched
+        ;;
+    2) 
+        xmodmap=$XMODMAP_DIR/Dell-D620-Adam
+        ;;
+    3)
+        xmodmap=$XMODMAP_DIR/Dell-D630-Adam
+        ;;
+    4)
+        xmodmap=$XMODMAP_DIR/Kinesis-QWERTY
+        keymap=$KEYMAP_DIR/uk-kinesis.map
+        ;;
+    5)
+        xmodmap=$XMODMAP_DIR/MS-Natural-105
+        keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
+        ;;
+    6)
+        xmodmap=$XMODMAP_DIR/dvorak
+        keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
+        ;;
     *) echo "Invalid choice." ; exit 1 ;;
 esac
 
