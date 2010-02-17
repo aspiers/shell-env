@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+Getopt::Long::Configure('bundling');
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help|h',
+  'leading|l', 'trailing|t',
+) or usage();
+usage() if $opts{help};
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME [options]
+Trims leading/trailing whitespace from each line.
+
+Options:
+  -l, --leading        Only trim leading whitespace
+  -t, --trailing       Only trim trailing whitespace
+  -h, --help           Show this help
+EOUSAGE
+}
+
+if (! $opts{leading} && ! $opts{trailing}) {
+  # Default to trimming both if no options specified.
+  $opts{leading} = $opts{trailing} = 1;
+}
+
+my $to_trim = qr/[ \t]+/;
+
+while (<>) {
+  s/^$to_trim// if $opts{leading};
+  s/$to_trim$// if $opts{trailing};
+  print;
+}
+
