@@ -11,7 +11,7 @@ use Config;
 use Getopt::Long qw(:config require_order);
 use POSIX qw(:sys_wait_h setsid);
 
-my %opts;
+my %opts = ( zero => 0 );
 
 sub debug {
   warn @_, "\n" if $opts{verbose};
@@ -29,6 +29,7 @@ GetOptions(
   \%opts,
   'help|h', 'verbose|v',
   @signal_opts, 'no-signals|n',
+  'zero|z',
   'command|c=s',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
@@ -46,6 +47,7 @@ Options:
   -c, --command=CMD      On timeout, run command 
   -n, --no-signals       Disable default graceful killing
   -v, --verbose          Show progress in more detail
+  -z, --zero             Zero exit code even on timeout 
 
 If no signal is specified, by default it will send a TERM signal, and
 then a KILL signal if needed.  --no-signals disables this default;
@@ -56,6 +58,9 @@ That's to deal with the case where the child is a shell process.  So?
 Signal handlers in bash are ineffectual while bash is blocking on a
 waitpid(-1), and I can't see how to avoid this waitpid, because the script
 needs to wake up and do other stuff once its child has completed.
+
+The exit code returned will be that of the child COMMAND, or if there
+was a timeout 254 (or 0 if -z or --zero are specified).
 EOUSAGE
 }
 
@@ -104,15 +109,16 @@ $SIG{ALRM} = sub {
     }
   }
   system($opts{command}) if defined $opts{command};
-  exit 254;
+  exit ($opts{zero} ? 0 : 254);
 };
 alarm $timeout;
 debug("alarm set");
 
 wait;
-debug("wait finished, \$? == $?");
+my $child_exit_code = $? >> 8;
+debug("wait finished, child exited with code $child_exit_code");
 
-exit $? >> 8;
+exit $child_exit_code;
 
 # Which signal to send on timeout?
 sub get_signal {
