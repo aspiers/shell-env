@@ -113,9 +113,13 @@ alarm $timeout;
 debug("alarm set");
 
 wait;
-my $child_exit_code = $? == -1 ? -1 : $? >> 8; # -1 means no children
-debug("wait finished with code $child_exit_code");
+if ($? == -1) {
+  # -1 means no children were found to wait for.
+  exit 0;
+}
 
+my $child_exit_code = $? >> 8;
+debug("wait finished with code $child_exit_code");
 exit $child_exit_code;
 
 # Which signal to send on timeout?
