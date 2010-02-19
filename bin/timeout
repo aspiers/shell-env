@@ -62,6 +62,9 @@ needs to wake up and do other stuff once its child has completed.
 
 The exit code returned will be that of the child COMMAND, or if there
 was a timeout 254 (or 0 if -z or --zero are specified).
+
+Termination signals received by this program will result in the child
+COMMAND being gracefully terminated.
 EOUSAGE
 }
 
@@ -82,43 +85,26 @@ if ($timeout !~ /^\d+$/) {
 my $pid = fork();
 if (! $pid) {
   # child
-  setsid;
+  setsid; # run as daemon
   exec $command, @args;
 }
 
 # parent
 debug("child pid is $pid");
 
+$SIG{INT} = $SIG{QUIT} = sub {
+  if ($pid) {
+    $opts{verbose}++;
+    send_signal(15, $pid);
+    murder_if_necessary($pid);
+  }
+};
+
 $SIG{ALRM} = sub {
   debug("pid $pid timed out after $timeout seconds");
   if (defined $signum) {
-    if (my $pgrp = getpgrp($pid)) {
-      debug("Sending signal $signum to pgrp $pgrp ...");
-      kill -$signum, $pgrp;
-    }
-    elsif (defined $pid) {
-      warn "WTF? pid $pid exists but getpgrp($pid) failed"; 
-      debug("Sending signal $signum to pid $pid");
-      kill $signum, $pid;
-    }
-    
-    if ($opts{graceful}) {
-      my $pgrp;
-      my $tries = 0;
-      do {
-        waitpid($pid, WNOHANG); # reap zombie
-        $pgrp = getpgrp($pid);
-        if (getpgrp($pid) > 0) {
-          debug("pid $pid still exists; sleeping a second ...");
-          sleep 1;
-          $tries++;
-        }
-      } while $pgrp > 0 and $tries < 3;
-      if ($pgrp > 0) {
-        debug("pid $pid STILL exists; sending KILL to pgrp $pgrp");
-        kill -9, $pid;
-      }
-    }
+    send_signal($signum, $pid);
+    murder_if_necessary($pid) if $opts{graceful};
   }
   system($opts{command}) if defined $opts{command};
   exit ($opts{zero} ? 0 : 254);
@@ -127,8 +113,8 @@ alarm $timeout;
 debug("alarm set");
 
 wait;
-my $child_exit_code = $? >> 8;
-debug("wait finished, child exited with code $child_exit_code");
+my $child_exit_code = $? == -1 ? -1 : $? >> 8; # -1 means no children
+debug("wait finished with code $child_exit_code");
 
 exit $child_exit_code;
 
@@ -155,4 +141,37 @@ sub get_signal {
   }
 
   return $signum;
+}
+
+sub send_signal {
+  my ($signum, $pid) = @_;
+
+  if (my $pgrp = getpgrp($pid)) {
+    debug("\nSending signal $signum to pgrp $pgrp ...");
+    kill -$signum, $pgrp;
+  }
+  elsif (defined $pid) {
+    warn "WTF? pid $pid exists but getpgrp($pid) failed"; 
+    debug("Sending signal $signum to pid $pid");
+    kill $signum, $pid;
+  }
+}
+
+sub murder_if_necessary {
+  my ($pid) = @_;
+  my $pgrp;
+  my $tries = 0;
+  do {
+    waitpid($pid, WNOHANG);     # reap zombie
+    $pgrp = getpgrp($pid);
+    if (getpgrp($pid) > 0) {
+      debug("pid $pid still exists; sleeping a second ...");
+      sleep 1;
+      $tries++;
+    }
+  } while $pgrp > 0 and $tries < 3;
+  if ($pgrp > 0) {
+    debug("pid $pid STILL exists; sending KILL to pgrp $pgrp");
+    kill -9, $pid;
+  }
 }
