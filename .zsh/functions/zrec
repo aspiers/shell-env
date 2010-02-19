@@ -22,7 +22,8 @@ _my_zrecompile () {
     #chmod u+w ~/.zsh/functions.zwc*
 
     # -p means sets of arguments in between -- get passed to
-    # zcompile.  See comments at top of zrecompile for examples.
+    # zcompile.  See comments at top of the zrecompile source file
+    # in /usr/share/zsh/$ZSH_VERSION/zrecompile for examples.
     # -R copies .zwc into shell process memory
     # -M mmaps the .zwc
     # -U suppresses alias expansion during reading of function
