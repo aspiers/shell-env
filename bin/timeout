@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use Config;
-use Getopt::Long qw(:config pass_through);
+use Getopt::Long qw(:config require_order);
 use POSIX qw(:sys_wait_h setsid);
 
 my %opts;
@@ -19,12 +19,20 @@ sub debug {
 
 (my $ME = $0) =~ s,.*/,,;
 
+my @signals = split ' ', $Config{sig_name};
+die "$ME: BUG reading signal names" unless $signals[9] eq 'KILL';
+my %num2sig = map { $_ => $signals[$_] } 0 .. $#signals;
+# Getopt::Long is case-insensitive by default.
+my @signal_opts = map "$_|$num2sig{$_}", 0..$#signals;
+
 GetOptions(
   \%opts,
   'help|h', 'verbose|v',
-  'signal|s=s', 'command|c=s', 'kill|k',
+  @signal_opts, 'no-signals|n',
+  'command|c=s',
 ) or usage();
 usage() if @ARGV == 0 or $opts{help};
+my $signum = get_signal();
 
 sub usage {
   warn @_, "\n" if @_;
@@ -33,24 +41,23 @@ sub usage {
 Usage: $ME [options] TIMEOUT COMMAND ARGS
 Timeout is in seconds.
 Options:
-  -h, --help               Show this help
-  -k, --kill               On timeout, send TERM signal then KILL if needed
-  -s, --signal=SIG, -SIG   On timeout, send signal SIG (e.g. 9 or KILL)
-  -c, --command=CMD        On timeout, run command 
-  -v, --verbose            Show progress in more detail
+  -h, --help             Show this help
+  -N, -SIG               On timeout, send signal SIG (e.g. 9 or KILL)
+  -c, --command=CMD      On timeout, run command 
+  -n, --no-signals       Disable default graceful killing
+  -v, --verbose          Show progress in more detail
+
+If no signal is specified, by default it will send a TERM signal, and
+then a KILL signal if needed.  --no-signals disables this default;
+this is useful with the --command option.
 
 The signal gets sent to the child's process group, not just the child.
 That's to deal with the case where the child is a shell process.  So?
 Signal handlers in bash are ineffectual while bash is blocking on a
-waitpid(-1), and I can't see how to avoid this waitpid because the script
+waitpid(-1), and I can't see how to avoid this waitpid, because the script
 needs to wake up and do other stuff once its child has completed.
 EOUSAGE
 }
-
-my $signum = get_signal();
-debug("$ME: may use signal $signum" .
-        ($opts{kill} ? " and signal 9" : ''))
-  if $signum;
 
 usage() unless @ARGV >= 2;
 my ($timeout, $command, @args) = @ARGV;
@@ -78,7 +85,7 @@ $SIG{ALRM} = sub {
       kill $signum, $pid;
     }
     
-    if ($opts{kill}) {
+    if ($opts{graceful}) {
       my $pgrp;
       my $tries = 0;
       do {
@@ -109,41 +116,25 @@ exit $? >> 8;
 
 # Which signal to send on timeout?
 sub get_signal {
-  # Is -KILL or -9 syntax being used?
-  my $short_signal = $ARGV[0] =~ /^-(.+)/ ? $1 : undef;
   my $count = 0;
-  foreach my $mode ($short_signal, $opts{signal}, $opts{kill}) {
-    $count++ if defined $mode;
+  my $signum;
+  foreach my $opt (keys %opts) {
+    debug("Got option: -$opt");
+    if ($opt =~ /^\d+$/) {
+      $count++;
+      $signum = $opt;
+    }
   }
-  usage("Cannot specify more than one of --signal, -SIG, and --kill\n")
+  usage("Cannot specify more than one signal via -N / -SIG\n")
     if $count > 1;
 
-  return 15 if $opts{kill};
+  usage("Cannot specify a signal and --no-signals\n")
+    if $count and $opts{'no-signals'};
 
-  shift @ARGV if $short_signal;
+  if ($count == 0 and ! $opts{'no-signals'}) {
+    $signum = 15;
+    $opts{graceful} = 1;
+  }
 
-  return canonise_signal(defined($short_signal) ? $short_signal : $opts{signal});
+  return $signum;
 }
-
-# Returns the signal number.
-sub canonise_signal {
-  my ($signal) = @_;
-
-  return undef unless defined $signal;
-
-  my @signals = split ' ', $Config{sig_name};
-  die "$ME: BUG reading signal names" unless $signals[9] eq 'KILL';
-  my %sig2num = map { $signals[$_] => $_ } 0 .. $#signals;
-  my %num2sig = map { $_ => $signals[$_] } 0 .. $#signals;
-
-  if ($signal =~ /^(\d\d?)$/ && $num2sig{$signal}) {
-    return $signal;
-  }
-  elsif ((uc $signal) =~ /^([A-Z][A-Z12]+)$/ && exists $sig2num{uc $signal}) {
-    return $sig2num{uc $signal};
-  }
-  else {
-    usage("Didn't recognise weird signal '$signal'\n");
-  }
-}
-
