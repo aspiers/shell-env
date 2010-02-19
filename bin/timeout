@@ -40,7 +40,8 @@ sub usage {
 
   die <<EOUSAGE;
 Usage: $ME [options] TIMEOUT COMMAND ARGS
-Timeout is in seconds.
+Timeout is in seconds, or can be a time parseable by the -d option of date(1).
+
 Options:
   -h, --help             Show this help
   -N, -SIG               On timeout, send signal SIG (e.g. 9 or KILL)
@@ -66,6 +67,17 @@ EOUSAGE
 
 usage() unless @ARGV >= 2;
 my ($timeout, $command, @args) = @ARGV;
+if ($timeout !~ /^\d+$/) {
+  my $date_cmd = qq{date -d "$timeout" +%s};
+  my $timeout_at = `$date_cmd`;
+  if ($? >> 8) {
+    usage("Failed to parse timeout time via: $date_cmd\n");
+  }
+  $timeout = $timeout_at - time();
+  usage("Timeout time was in the past!\n") if $timeout < 0;
+  
+  debug("Timeout at epoch $timeout_at ($timeout seconds from now)");
+}
 
 my $pid = fork();
 if (! $pid) {
