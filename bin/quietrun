@@ -41,6 +41,8 @@ Usage: quietrun [ -m | --merge ] <command> [ <args> ... ]
 If the merge option is specified, stdout and stderr are merged into
 stdout, but the output order is preserved.  Otherwise they kept
 separate, but output from stderr only appears after output from stdout.
+
+The exit code from the command is preserved.
 EOF
   exit 0
 fi
@@ -56,14 +58,20 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$merge" = 'yes' ]; then
-  if ! "$@" 2>&1 >$tmpdir/both; then
+  "$@" 2>&1 >$tmpdir/both
+  exit_code=$?
+  if [ $exit_code != 0 ]; then
     [ -e "$tmpdir/both" ] && cat $tmpdir/both
   fi
 else
-  if ! "$@" >$tmpdir/stdout 2>$tmpdir/stderr; then
+  "$@" >$tmpdir/stdout 2>$tmpdir/stderr
+  exit_code=$?
+  if [ $exit_code != 0 ]; then
     [ -e "$tmpdir/stdout" ] && cat $tmpdir/stdout
     [ -e "$tmpdir/stderr" ] && cat $tmpdir/stderr 1>&2 2>/dev/null
   fi
 fi
 
 rm -rf $tmpdir
+
+exit $exit_code
