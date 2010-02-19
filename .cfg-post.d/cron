@@ -5,11 +5,12 @@ config=$HOME/.crontab
 
 source "$ZDOTDIR/lib/libhooks.sh"
 
-rebuild_config "$config" "$confdir"
+crontab -l > "$config"
 
-if ( echo; cat "$config" ) | crontab -; then
-    echo "Reinstalled user's crontab"
-else
-    echo "WARNING: Failed to reinstall user's crontab" >&2
+if rebuild_config "$config" "$confdir"; then
+    if ( echo; cat "$config" ) | crontab -; then
+        echo "Reinstalled user's crontab"
+    else
+        echo "WARNING: Failed to reinstall user's crontab" >&2
+    fi
 fi
-
