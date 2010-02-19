@@ -303,9 +303,28 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   case "$TERM" in
       tgtelnet) prompt off ;;
       dumb)
-          prompt off
+          # Make sure emacs tramp.el doesn't hang.
+          # The default value of tramp-shell-prompt-regexp gets confused
+          # by CR carriage return characters unless you change the first
+          # ^ to \\(^|^M\\) (N.B. ^M would need to be the raw character
+          # in that).  But instead we can just stop zsh producing them.
+
+          # Note that zsh's 'off' prompt theme's prompt_opts causes
+          # prompt_cr to be enabled.
+          #prompt off
+          #setopt no_prompt_cr
+
+          # Or we can make our own "theme" right here:
+          unfunction precmd
+          unfunction preexec
+          setopt no_prompt_cr prompt_subst no_prompt_bang prompt_percent
           PS1="[%n@%m %1~]\$ "
           PS2="> "
+
+          # http://www.emacswiki.org/emacs/TrampMode#toc3 suggests these too
+          # but I don't seem to need them:
+          #unsetopt zle
+          #unsetopt prompt_subst
           ;;
   esac
 else
