@@ -42,7 +42,7 @@ Options:
 The signal gets sent to the child's process group, not just the child.
 That's to deal with the case where the child is a shell process.  So?
 Signal handlers in bash are ineffectual while bash is blocking on a
-waitpid(-1), and I can't see how to avoid this waitpid when the script
+waitpid(-1), and I can't see how to avoid this waitpid because the script
 needs to wake up and do other stuff once its child has completed.
 EOUSAGE
 }
