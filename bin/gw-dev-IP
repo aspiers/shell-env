@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Note ifplugstatus could also be useful on SUSE systems.
+
 if ! gwdev="`gw-dev`" || [ -z "$gwdev" ]; then
     echo "gw-dev failed to return gateway device; aborting." >&2
     exit 1
