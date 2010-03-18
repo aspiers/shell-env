@@ -50,7 +50,8 @@ case "$choice" in
         xmodmap=$XMODMAP_DIR/Dell-D630-Adam
         ;;
     4)
-        xmodmap=$XMODMAP_DIR/Kinesis-QWERTY
+        exe=$ZDOTDIR/.Xmodmap.d/lib/Kinesis
+        #xmodmap=$XMODMAP_DIR/Kinesis-QWERTY
         keymap=$KEYMAP_DIR/uk-kinesis.map
         ;;
     5)
@@ -70,7 +71,13 @@ esac
 #   $sudo loadkeys $keymap
 # fi
 
-xmodmap "$xmodmap"
+if [ -n "$xmodmap" ]; then
+    xmodmap "$xmodmap"
+fi
+
+if [ -n "$exe" ]; then
+    "$exe"
+fi
 
 . $ZDOTDIR/.shared_env
 . $ZDOTDIR/.zsh/functions/enable_nullglob
