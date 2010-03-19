@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+output_hex(@ARGV);
+@ARGV = ();
+if (! -t) {
+  while (<>) {
+    output_hex($_);
+  }
+}
+
+sub output_hex {
+  printf "%x\n", $_ foreach @_;
+}
+
