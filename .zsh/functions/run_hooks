@@ -178,9 +178,12 @@ iterate_hooks () {
             fi
             process_hook "$subhook"
           done
-        else
+        elif [ -f "$hook_path" ]; then
           echo "WARNING: $hook_path should be a directory not a file" >&2
           process_hook "$hook_path"
+        else
+          echo "WARNING: $hook_path was not a directory or even a file" >&2
+          file "$hook_path" >&2
         fi
       else
         if ! [ -d "$hook_path" ]; then
