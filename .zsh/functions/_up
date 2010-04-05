@@ -4,6 +4,6 @@ local expl
 
 _description files expl 'archive file'
 
-_files "$expl[@]" -g '(#i)*.((tar|TAR).(gz|GZ|Z)|tgz|zip|xpi|jar|class|job)(-.)'
+_files "$expl[@]" -g '(#i)*.((tar|TAR).(gz|GZ|Z)|tgz|zip|xpi|jar|7z|class|job)(-.)'
 
 
