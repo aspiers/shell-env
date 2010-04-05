@@ -40,6 +40,9 @@ case "$archive" in
     *.tar.bz2)
         ideal_dest="${archive%.tar.bz2}"
         ;;
+    *.7z)
+        ideal_dest="${archive%.7z}"
+        ;;
     *)
         echo "ERROR: $archive does not have a supported file extension" >&2
         exit 1
@@ -63,6 +66,9 @@ case "$archive" in
         ;;
     *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job)
         unzip -d "$tmpdir" "$archive_path"
+        ;;
+    *.7z)
+        7za x -o"$tmpdir" "$archive_path"
         ;;
     *)
         echo "ERROR: $archive is not a supported archive format" >&2
