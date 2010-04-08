@@ -14,7 +14,17 @@ use POSIX qw(:sys_wait_h setsid);
 my %opts = ( zero => 0 );
 
 sub debug {
-  warn @_, "\n" if $opts{verbose};
+  if ($opts{verbose}) {
+    warn @_, "\n" ;
+  }
+  if ($opts{log}) {
+    if (my $logfile = $opts{log}) {
+      open(LOG, ">>$logfile")
+        or die "Couldn't open(>$logfile): $!\n";
+      print LOG @_, "\n";
+      close(LOG);
+    }
+  }
 }
 
 (my $ME = $0) =~ s,.*/,,;
@@ -27,7 +37,7 @@ my @signal_opts = map "$_|$num2sig{$_}", 0..$#signals;
 
 GetOptions(
   \%opts,
-  'help|h', 'verbose|v',
+  'help|h', 'verbose|v', 'log|l=s',
   @signal_opts, 'no-signals|n',
   'zero|z',
   'command|c=s',
