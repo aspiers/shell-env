@@ -16,6 +16,27 @@ fi
 
 proc="$1"
 shift
-pgrep "$proc" | while read pid; do
+if [ -e "/proc/$proc" ]; then
+    pid=$proc
     lsof -p $pid "$@"
-done
+else
+    if pgrep "$proc" >/dev/null; then
+        pgrep_args=
+    else
+        echo "pgrep \"$proc\" didn't find process; trying pgrep -f ..."
+        pgrep_args=-f
+    fi
+
+    pgrep $pgrep_args "$proc" | while read pid; do
+        # Ugh.  This is the only way to get the pid of the subshell.
+        # $$ returns the parent pid.
+        sub_pid=`sh -c 'echo $PPID'`
+        if [ "$pid" == $$ ]; then
+            : #echo "  skipping top lsofp process"
+        elif [ "$pid" == $sub_pid ]; then
+            : #echo "  skipping lsofp subshell"
+        else
+            lsof -p $pid "$@"
+        fi
+    done
+fi
