@@ -26,8 +26,12 @@ threshold_epoch=`date +%s -d "$*"`
 threshold_human=`date -d "$*"`
 # don't use uidle -x since we don't want mouse movement
 # to trigger a reboot!
-last_active_epoch=`uidle -l`
-last_active_human=`uidle -lh`
+if ! last_active_epoch=`uidle -l`; then
+    uidle -l -v5 > ~/.uidle-l.broke
+fi
+if ! last_active_human=`uidle -lh`; then
+    uidle -lh -v5 > ~/.uidle-lh.broke
+fi
 
 if [ "$last_active_epoch" -gt "$threshold_epoch" ]; then
     echo "$last_active_human; after $threshold_human"
