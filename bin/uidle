@@ -180,12 +180,14 @@ if ($opts{x11idle} and $x11idle =~ /^\d+$/) {
 
 sub parse_idle_time {
   my ($text) = @_;
+  debug(4, "    parse_idle_time($text)");
   $_ = $text;
 
   s/^\s+//;
   
   my $secs = 0;
   $secs += $1 * 3600 * 24 if s/(\d+) days?\s+//i;
+  debug(4, "    \$text now [$_]; \$secs == $secs");
 
   if (/(\d?\d):(\d\d)?/) {
     # SUSE style, only gives to the minute, not to the second :-(
