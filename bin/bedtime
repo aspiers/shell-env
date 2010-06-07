@@ -47,8 +47,8 @@ soft_warning_zone () {
         action="will shutdown system"
     fi
     msg="WARNING: activity after $hard ($hard_epoch) $action!"
-    alertme "$msg" &
     echo "$msg" | wall
+    alertme "$msg"
     #echo "$msg" | write "`id -un`" "`uidle --tty`"
 }
 
@@ -90,6 +90,7 @@ if [ "$1" == '-n' ]; then
     dryrun=true
     shift
 fi
+dryrun=true
 
 if [ $# -ne 2 ]; then
     usage
