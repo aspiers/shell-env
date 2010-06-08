@@ -30,6 +30,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
 fi
 
 switches="${mode#g}"
+color=
 case "$switches" in
     *C*)
         switches="${switches//C/}"
