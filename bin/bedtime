@@ -72,8 +72,15 @@ $out"
 # is weak...
 
 # Only recent SUSE distributions have pgrep -c :-(
-pids="$( pgrep -u `id -un` -f 'bash $0' )"
-num_pids=$( echo "$pids" | wc -l )
+euid=`id -u`
+search="bash $0"
+#echo pgrep -u "$euid" -f \""$search"\"
+#pgrep -u "$euid" -f "$search"
+pids=$( pgrep -u "$euid" -f "$search" )
+#echo "pids [$pids]"
+#echo "$pids" | xargs -r -n1 ps -fp
+num_pids=$( echo "$pids" | xargs -r -n1 | wc -l )
+#echo $num_pids pids found
 if [ $num_pids -ge 2 ]; then
     echo "$me already running; exiting."
     exit 0
