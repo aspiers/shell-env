@@ -31,7 +31,7 @@ fi
 
 ideal_dest=
 case "$archive" in
-    *.tar|*.tgz|*.tbz|*.zip|*.Zip|*.ZIP|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib)
+    *.tar|*.tgz|*.tbz|*.zip|*.Zip|*.ZIP|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib)
         ideal_dest="${archive%.*}"
         ;;
     *.tar.gz)
@@ -69,6 +69,12 @@ case "$archive" in
         ;;
     *.7z)
         7za x -o"$tmpdir" "$archive_path"
+        ;;
+    *.rar)
+        archive_abspath=$( abs "$archive_path" )
+        pushd "$tmpdir"
+        unrar x "$archive_abspath"
+        popd
         ;;
     *)
         echo "ERROR: $archive is not a supported archive format" >&2
