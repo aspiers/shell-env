@@ -39,15 +39,18 @@ switch_shell_debug () {
 switch_shell_safely () {
   # we do this rather than exec() just in case $myshell fails to run.
   switch_shell_debug "Switching to $myshell safely ..."
-  if "$myshell" $myshell_args; then
-    switch_shell_debug "$myshell exited OK; exiting parent shell."
-    exit
-  else
-    switch_shell_debug "$myshell had exit code $?, back to pid $$"
-  fi
 
-  # Very cute trick from Bart Schaefer which is a valid alternative approach
-  #eval `$myshell -f -c "echo exec $myshell" || echo :` '$myshell_args'
+  # if "$myshell" $myshell_args; then
+  #   switch_shell_debug "$myshell exited OK; exiting parent shell."
+  #   exit
+  # else
+  #   switch_shell_debug "$myshell had exit code $?, back to pid $$"
+  # fi
+
+  # Very cute trick from Bart Schaefer which checks in advance whether
+  # we can switch shell.  This is better than the above because it
+  # is not dependent on the subshell exiting with 0 status.
+  eval `$myshell -f -c "echo exec $myshell" || echo :` '$myshell_args'
 }
 
 switch_shell_dangerously () {
