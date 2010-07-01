@@ -64,16 +64,6 @@ typeset -TU LD_LIBRARY_PATH ld_library_path
 typeset -TU PERL5LIB perl5lib
 
 # }}}
-# {{{ Perl libraries
-
-# FIXME: move to .shared_env?
-
-export PERL5LIB
-[[ -n "$OTHER_USER" ]] && \
-    perl5lib=( $ZDOTDIR/{local/,}lib/[p]erl5{,/site_perl}(N) $perl5lib )
-perl5lib=( ~/{local/,}lib/[p]erl5{,/site_perl}(N) $perl5lib )
-
-# }}}
 # {{{ Ruby libraries
 
 typeset -TU RUBYLIB rubylib

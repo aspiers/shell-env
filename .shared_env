@@ -158,6 +158,41 @@ PATH=$newpaths:$PATH
 # In order to avoid forks here, this is done in .zshrc
 
 # }}}
+# {{{ Perl libraries
+
+export PERL5LIB
+. $ZDOTDIR/.zsh/functions/enable_wordsplit
+newpaths=
+for dir in $ZDOTDIRREVPATH; do
+  for newpath in $dir/{local/,}lib/perl5{,/site_perl}; do
+    if [ -d $newpath ]; then
+        : #echo got $newpath
+        if [ -z "$newpaths" ]; then
+            newpaths=$newpath
+        else
+            newpaths=$newpaths:$newpath
+        fi
+    else
+        : #echo no $newpath
+    fi
+  done
+done
+restore_wordsplit
+
+case "$PERL5LIB" in
+    *"$newpaths"*)
+        : #echo "$newpaths already in \$PERL5LIB"
+        ;;
+    *)
+        if [ -z "$PERL5LIB" ]; then
+            PERL5LIB=$newpaths
+        else
+            PERL5LIB=$newpaths:$PERL5LIB
+        fi
+        ;;
+esac
+
+# }}}
 # {{{ grep
 
 # Why would you ever want grep to treat dirs like normal files?
