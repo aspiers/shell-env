@@ -93,11 +93,11 @@ if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
     usage 0
 fi
 
+dryrun=
 if [ "$1" == '-n' ]; then
     dryrun=true
     shift
 fi
-dryrun=true
 
 if [ $# -ne 2 ]; then
     usage
