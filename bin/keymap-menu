@@ -24,12 +24,13 @@ fi
 cat <<EOF
 Choose from one of the following keymaps:
 
-  1) Dell D600 "untouched" - as labelled
+  1) Dell D630 normal - mostly as labelled
   2) Dell D620 hacked to suit Adam
   3) Dell D630 hacked to suit Adam
   4) Kinesis Essential
-  5) Microsoft Natural 105-key
-  6) Dvorak (applies incrementally over existing keymap)
+  5) Dell D600 "untouched" - as labelled
+  6) Microsoft Natural 105-key
+  7) Dvorak (applies incrementally over existing keymap)
 
 EOF
 
@@ -41,7 +42,7 @@ KEYMAP_DIR=$ZDOTDIR/.keymaps/Linux-console
 
 case "$choice" in
     1)
-        xmodmap=$XMODMAP_DIR/Dell-D600-untouched
+        xmodmap=$XMODMAP_DIR/Dell-D630-normal
         ;;
     2) 
         xmodmap=$XMODMAP_DIR/Dell-D620-Adam
@@ -55,10 +56,13 @@ case "$choice" in
         keymap=$KEYMAP_DIR/uk-kinesis.map
         ;;
     5)
+        xmodmap=$XMODMAP_DIR/Dell-D600-untouched
+        ;;
+    6)
         xmodmap=$XMODMAP_DIR/MS-Natural-105
         keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
         ;;
-    6)
+    7)
         xmodmap=$XMODMAP_DIR/dvorak
         keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
         ;;
