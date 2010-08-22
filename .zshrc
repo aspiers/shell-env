@@ -315,8 +315,8 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
           #setopt no_prompt_cr
 
           # Or we can make our own "theme" right here:
-          unfunction precmd
-          unfunction preexec
+          functions precmd  >/dev/null && unfunction precmd
+          functions preexec >/dev/null && unfunction preexec
           setopt no_prompt_cr prompt_subst no_prompt_bang prompt_percent
           PS1="[%n@%m %1~]\$ "
           PS2="> "
