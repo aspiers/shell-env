@@ -81,6 +81,10 @@ case "$archive" in
         exit 1
         ;;
 esac
+if [ $? != 0 ]; then
+    echo "Unpack of $archive_path failed; aborting"
+    exit 1
+fi
 
 dirents=$( ls -A "$tmpdir" | wc -l )
 
