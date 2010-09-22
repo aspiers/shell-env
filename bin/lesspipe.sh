@@ -27,7 +27,7 @@ lesspipe() {
     *.tgz|*.tar.gz|*.tar.[zZ])
       tar tzvvf "$1"
       ;;
-    *.tar.bz2|*.tbz2)
+    *.tar.bz2|*.tbz|*.tbz2)
       tar jtvvf "$1"
       ;;
     *initrd*.gz)
