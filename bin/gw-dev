@@ -1,3 +1,27 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-route -n | awk '/^0\.0\.0\.0 / { print $8 }'
+use strict;
+use warnings;
+
+use List::Util qw(first);
+
+my @devs = ();
+open(ROUTE, "route -n |") or die "fork route -n failed: $!\n";
+while(<ROUTE>) {
+  next unless /^0\.0\.0\.0 /;
+  my @F = split /\s+/, $_;
+  push @devs, $F[7];
+  #warn "# $F[7]\n";
+}
+close(ROUTE) or die "route -n failed: $!\n";
+
+sub choose_if_valid {
+  my ($dev) = @_;
+  return unless $dev;
+  print "$dev\n";
+  exit 0;
+}
+
+choose_if_valid($devs[0]) if @devs == 1;
+choose_if_valid(first { /eth\d/ } @devs);
+choose_if_valid($devs[0]);
