@@ -1,0 +1,70 @@
+#!/usr/bin/perl
+#
+# watchdiff - like watch(1), but output in diff format
+#
+# Copyright (c) 2010 Adam Spiers <adam@spiers.net>.  All rights
+# reserved. This program is free software; you can redistribute it
+# and/or modify it under the same terms as Perl itself.
+#
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+use IPC::Open2;
+use Text::Diff;
+
+my $DEFAULT_INTERVAL = 2;
+
+my $columns = $ENV{COLUMNS} || (`stty -a -F /dev/stderr` =~ /columns (\d+)/)[0];
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME [OPTIONS] CMD [ARGS]
+Options:
+  -h, --help           Show this help
+  -n, --interval=N     Run command every N seconds (default $DEFAULT_INTERVAL)
+  -d, --clear          Clear screen before displaying each diff
+  -c, --cumulative     Show cumulative differences
+EOUSAGE
+}
+
+Getopt::Long::Configure('require_order');
+
+my %opts = ( interval => $DEFAULT_INTERVAL );
+GetOptions(
+  \%opts,
+  'help|h',
+  'interval|n=i',
+  'clear|d',
+) or usage();
+usage() if @ARGV == 0 or $opts{help};
+
+my $old;
+my $count = 0;
+while (1) {
+  my $in;
+  my $pid = open2(\*OUT, $in, @ARGV);
+  my $new = join '', <OUT>;
+  waitpid $pid, 0;
+  if (defined $old) {
+    if ($opts{clear}) {
+      system 'clear';
+    }
+    else {
+      print "=" x ($columns-1), "\n" if $count++;
+    }
+    print diff(\$old, \$new, { STYLE => 'Unified' });
+  }
+  if ($opts{cumulative}) {
+    $old = $new if ! defined $old;
+  }
+  else {
+    $old = $new;
+  }
+  sleep $opts{interval}
+}
