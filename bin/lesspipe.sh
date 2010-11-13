@@ -21,7 +21,7 @@ lesspipe() {
         $DECOMPRESSOR -- "$1"
       fi
       ;;
-    *.tar)
+    *.tar|*.gem)
       tar tvvf "$1"
       ;;
     *.tgz|*.tar.gz|*.tar.[zZ])
