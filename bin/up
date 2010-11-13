@@ -31,7 +31,7 @@ fi
 
 ideal_dest=
 case "$archive" in
-    *.tar|*.tgz|*.tbz|*.zip|*.Zip|*.ZIP|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib)
+    *.tar|*.tgz|*.tbz|*.zip|*.Zip|*.ZIP|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem)
         ideal_dest="${archive%.*}"
         ;;
     *.tar.gz)
@@ -55,7 +55,7 @@ if ! tmpdir=`mktemp -d "$ideal_dest.tmp.XXXXXXXX"`; then
 fi
 
 case "$archive" in
-    *.tar)
+    *.tar|*.gem)
         tar -C "$tmpdir" -xvf "$archive_path"
         ;;
     *.tar.gz|*.tgz)
