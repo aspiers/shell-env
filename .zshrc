@@ -222,7 +222,11 @@ fi
 
 # {{{ Choose word delimiter characters in line editor
 
-WORDCHARS=''
+# The manual defines WORDCHARS as "a list of non-alphanumeric
+# characters considered part of a word by the line editor."
+# Nevertheless the effect is not intuitive and best understood by
+# experimenting with the value.
+WORDCHARS='>~'
 
 # }}}
 # {{{ Save a large history
