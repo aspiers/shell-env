@@ -190,6 +190,9 @@ sub extract_date_from_line {
   # xend log
   return $1 if $line =~ /^\[(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) \d\d\d\d\]/;
 
+  # pk_backend_zypp (and probably others)
+  return $1 if $line =~ /^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) /;
+
   # TODO: Add more patterns here.
   return undef;
 }
