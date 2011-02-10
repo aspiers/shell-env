@@ -42,10 +42,11 @@ find_zdotdir () {
 
   if ! [ -e $here/.zshrc ]; then
     echo "abs failed"
-    return
+    return 1
   fi
 
   ZDOTDIR="$here"
+  return 0
 }
 
 detect_current_shell () {
@@ -67,7 +68,13 @@ detect_current_shell () {
   fi
 }
 
-[ -z "$ZDOTDIR" ] && find_zdotdir
+if [ -z "$ZDOTDIR" ]; then
+    find_zdotdir || return $?
+fi
+if [ -z "$ZDOTDIR" ]; then
+    echo "BUG: find_zdotdir failed?!" >&2
+    return 1
+fi
 export ZDOTDIR # but see caveat at EOF
 detect_current_shell
 
