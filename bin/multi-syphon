@@ -41,8 +41,11 @@ EOUSAGE
 usage() if @ARGV != 4 or $opts{help};
 
 my %formats = (
+  # Typical Apache error log
   # [Wed Jul 01 13:18:53 2009] ....
   'apache1' => '^\[%a %b %d %T %Y\]',
+
+  # Typical Apache access log
   # 178.154.163.29 - - [16/Apr/2011:13:40:44 +0000] "GET ...
   'apache2' => '^\d[\d.]+ - - \[%d/%b/%Y:%T ',
 );
