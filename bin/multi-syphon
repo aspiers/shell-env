@@ -101,6 +101,7 @@ sub syphon_period {
 
   my $out_file = $in_file . UnixDate($period_start, $suffix);
   my @cmd = (
+    'nice', '-n', '19',
     'syphon', '-i',
     $pattern,
     $in_file,
