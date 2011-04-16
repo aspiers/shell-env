@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+# Wrapper around syphon -i
+
+use strict;
+use warnings;
+
+use Date::Manip qw(ParseDate UnixDate DateCalc Date_Cmp);
+use Getopt::Long;
+
+Getopt::Long::Configure('bundling');
+
+my %opts = ( verbosity => 1 );
+GetOptions(
+  \%opts,
+  'help|h',
+  'dry-run|d',
+) or usage();
+
+sub usage {
+  warn @_, "\n" if @_;
+
+  (my $ME = $0) =~ s,.*/,,;
+
+  die <<EOUSAGE;
+Usage: $ME IN-FILE FORMAT-TYPE FIRST-PERIOD LAST-PERIOD
+Options:
+  -h, --help           Show this help
+  -d, --dry-run
+
+e.g. $ME error.log apache2 'July 2010' 'Oct 2010'
+
+First period should be the first period contained in the input file,
+otherwise the first bucket file generated will contain entries from
+multiple periods.  TODO: auto-detect this.
+
+Last period is included, so a file for it will be created.
+EOUSAGE
+}
+
+usage() if @ARGV != 4 or $opts{help};
+
+my %formats = (
+  # [Wed Jul 01 13:18:53 2009] ....
+  'apache1' => '^\[%a %b %d %T %Y\]',
+  # 178.154.163.29 - - [16/Apr/2011:13:40:44 +0000] "GET ...
+  'apache2' => '^\d[\d.]+ - - \[%d/%b/%Y:%T ',
+);
+
+my ($in_file, $format_type, $first_period_start, $end) = @ARGV;
+
+my $format = $formats{$format_type};
+$format or die "Unrecognised format '$format_type'\n";
+my $pattern_template = $format;
+$pattern_template =~ s/%T/[ \\d]\\d:\\d\\d:\\d\\d/g;
+$pattern_template =~ s/%d/[ \\d]\\d/g;
+$pattern_template =~ s/%a/\\w{3}/g;
+
+my $duration = '1 month';
+
+my $start_date = ParseDate($first_period_start);
+my $end_date = ParseDate($end);
+while (1) {
+  # print "  " . UnixDate($start_date, "%c") . "\n";
+  # print "  " . UnixDate($end_date,   "%c") . "\n";
+  last if Date_Cmp($start_date, $end_date) > 0;
+  syphon_period($in_file, $format, $start_date, $duration);
+  $start_date = DateCalc($start_date, "+$duration");
+}
+
+sub output_cmd {
+  my @cmd = ();
+  for my $a (@_) {
+    my $arg = $a; # no in-place modification evilness
+    if ($arg =~ /["' ]/) {
+      $arg =~ s/"/\\"/g;
+      $arg = qq!"$arg"!;
+    }
+    push @cmd, $arg;
+  }
+  print join(" ", @cmd), "\n";
+}
+
+sub syphon_period {
+  my ($in_file, $format, $period_start, $duration) = @_;
+
+  my $period_end = DateCalc($period_start, "+$duration");
+  # print "Syphoning period from:\n";
+  # print "  " . UnixDate($period_start, "%c") . "\n";
+  # print "to:\n";
+  # print "  " . UnixDate($period_end,   "%c") . "\n";
+
+  my $pattern = UnixDate($period_end, $pattern_template);
+
+  my $out_file = $in_file . UnixDate($period_start, "-%Y-%m");
+  my @cmd = (
+    'syphon', '-i',
+    $pattern,
+    $in_file,
+    $out_file,
+  );
+  output_cmd(@cmd);
+  unless ($opts{'dry-run'}) {
+    system(@cmd);
+    die "Command failed\n" if $? > 0;
+  }
+}
