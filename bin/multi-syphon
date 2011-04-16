@@ -23,12 +23,12 @@ sub usage {
   (my $ME = $0) =~ s,.*/,,;
 
   die <<EOUSAGE;
-Usage: $ME IN-FILE FORMAT-TYPE FIRST-PERIOD LAST-PERIOD
+Usage: $ME IN-FILE FORMAT-TYPE FIRST-PERIOD LAST-PERIOD PERIOD-DURATION
 Options:
   -h, --help           Show this help
   -d, --dry-run
 
-e.g. $ME error.log apache2 'July 2010' 'Oct 2010'
+e.g. $ME error.log apache2 'July 2010' 'Oct 2010' '1 month'
 
 First period should be the first period contained in the input file,
 otherwise the first bucket file generated will contain entries from
@@ -38,7 +38,7 @@ Last period is included, so a file for it will be created.
 EOUSAGE
 }
 
-usage() if @ARGV != 4 or $opts{help};
+usage() if @ARGV != 5 or $opts{help};
 
 my %formats = (
   # Typical Apache error log
@@ -48,18 +48,20 @@ my %formats = (
   # Typical Apache access log
   # 178.154.163.29 - - [16/Apr/2011:13:40:44 +0000] "GET ...
   'apache2' => '^\d[\d.]+ - - \[%d/%b/%Y:%T ',
+
+  # /var/www/wordpress/wp-content/debug.log
+  # [02-Feb-2011 09:53:13] ...
+  'wp-debug' => '^\[%d-%b-%Y %T\] ',
 );
 
-my ($in_file, $format_type, $first_period_start, $end) = @ARGV;
+my ($in_file, $format_type, $first_period_start, $end, $duration) = @ARGV;
 
 my $format = $formats{$format_type};
 $format or die "Unrecognised format '$format_type'\n";
 my $pattern_template = $format;
 $pattern_template =~ s/%T/[ \\d]\\d:\\d\\d:\\d\\d/g;
-$pattern_template =~ s/%d/[ \\d]\\d/g;
+$pattern_template =~ s/%d/[ \\d]\\d/g if $duration =~ /month/;
 $pattern_template =~ s/%a/\\w{3}/g;
-
-my $duration = '1 month';
 
 my $start_date = ParseDate($first_period_start);
 my $end_date = ParseDate($end);
@@ -95,7 +97,9 @@ sub syphon_period {
 
   my $pattern = UnixDate($period_end, $pattern_template);
 
-  my $out_file = $in_file . UnixDate($period_start, "-%Y-%m");
+  my $suffix = $duration =~ /month/ ? "-%Y-%m" : "-%Y-%m-%d";
+
+  my $out_file = $in_file . UnixDate($period_start, $suffix);
   my @cmd = (
     'syphon', '-i',
     $pattern,
