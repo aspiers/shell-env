@@ -22,6 +22,12 @@ the removed lines will be written to that file.
 
 C<-v> turns on verbose output.
 
+=head1 EXAMPLE USAGE
+
+syphon -i '^... Jul .. ........ ... 2010' get-fbcal.log get-fbcal.log-2010-06
+
+Use of multi-syphon wrapper highly recommended!
+
 =cut
 
 use strict;
