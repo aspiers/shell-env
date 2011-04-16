@@ -52,6 +52,10 @@ my %formats = (
   # /var/www/wordpress/wp-content/debug.log
   # [02-Feb-2011 09:53:13] ...
   'wp-debug' => '^\[%d-%b-%Y %T\] ',
+
+  # date output
+  # Fri Apr  1 00:59:01 UTC 2011
+  'date' => '^%a %b %e %T ... %Y',
 );
 
 my ($in_file, $format_type, $first_period_start, $end, $duration) = @ARGV;
@@ -60,7 +64,10 @@ my $format = $formats{$format_type};
 $format or die "Unrecognised format '$format_type'\n";
 my $pattern_template = $format;
 $pattern_template =~ s/%T/[ \\d]\\d:\\d\\d:\\d\\d/g;
-$pattern_template =~ s/%d/[ \\d]\\d/g if $duration =~ /month/;
+if ($duration =~ /month/) {
+  $pattern_template =~ s/%d/\\d\\d/g;
+  $pattern_template =~ s/%e/[ \\d]\\d/g;
+}
 $pattern_template =~ s/%a/\\w{3}/g;
 
 my $start_date = ParseDate($first_period_start);
