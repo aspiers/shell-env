@@ -31,6 +31,7 @@ Choose from one of the following keymaps:
   5) Dell D600 "untouched" - as labelled
   6) Microsoft Natural 105-key
   7) Dvorak (applies incrementally over existing keymap)
+  8) HHKL
 
 EOF
 
@@ -65,6 +66,10 @@ case "$choice" in
     7)
         xmodmap=$XMODMAP_DIR/dvorak
         keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
+        ;;
+    8)
+        setxkbmap -geometry 'hhk' -symbols 'pc+us+gb+adam(hhk)' -print | \
+            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY
         ;;
     *) echo "Invalid choice." ; exit 1 ;;
 esac
