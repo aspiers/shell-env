@@ -4,3 +4,5 @@
 - .md5/
 - *.zwc
 - *.elc
+- .emacs.backup/
+- *.orig
