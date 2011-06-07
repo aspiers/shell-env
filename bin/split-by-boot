@@ -31,8 +31,15 @@ while (<>) {
     flush_buffer();
     print OUT;
   }
+  elsif (m!^(\d\d)\.(\d\d) (\d\d):(\d\d):(\d\d): Kernel,NOTICE: Arguments: \[\w+/zos\.conf\]$!) {
+    my ($month, $day, $hour, $min, $sec) = ($1, $2, $3, $4, $5);
+    flush_buffer();
+    open_new(
+  }
   else {
+    # If buffer is full, dequeue and print one line.
     print OUT shift(@buffer) unless @buffer < $BUFFER_SIZE;
+    # By here, buffer cannot be full.
     push @buffer, $_;
   }
 }
