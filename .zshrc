@@ -204,7 +204,7 @@ esac
 # Add extra paths to path determined by /etc/man.config
 MANPATH="`MANPATH= manpath`"
 manpath=(
-    $ZDOTDIR/local/share/[m]an(N)
+    $ZDOTDIR/{local/,}share/[m]an(N)
     "$manpath[@]"
 )
 
@@ -974,21 +974,24 @@ alias -g VM=/var/log/messages
 # {{{ grep, xargs
 
 # see also grep-shortcuts script
-for switches in {,i}{,l,L}{,r}{,v}{,C}; do
-  case "$switches" in
-    *C)
-      switches_no_C="${switches//C/}"
-      color=' --color=always'
-      ;;
-    *)
-      switches_no_C="$switches"
-      color=
-      ;;
-  esac
-  eval "alias -g  G$switches='| egrep ${switches_no_C:+-$switches_no_C}$color'"
-  eval "alias -g EG$switches='|& egrep ${switches_no_C:+-$switches_no_C}$color'"
-  eval "alias -g XG$switches='| xargs egrep ${switches_no_C:+-$switches_no_C}$color'"
-  eval "alias -g X0G$switches='| xargs -0 egrep ${switches_no_C:+-$switches_no_C}$color'"
+for global_alias_switches in {,i}{,l,L}{,r}{,v}{,C}; do
+    case "$global_alias_switches" in
+        *C*)
+            rhs_switches="${global_alias_switches//C/}"
+            color=--color=always
+            ;;
+        *)
+            rhs_switches="$global_alias_switches"
+            color=
+            ;;
+    esac
+
+    [ -n "$rhs_switches" ] && rhs_switches="-$rhs_switches"
+
+    eval "alias -g  G$global_alias_switches='| egrep $rhs_switches $color'"
+    eval "alias -g EG$global_alias_switches='|& egrep $rhs_switches $color'"
+    eval "alias -g XG$global_alias_switches='| xargs egrep $rhs_switches $color'"
+    eval "alias -g X0G$global_alias_switches='| xargs -0 egrep $rhs_switches $color'"
 done
 
 alias -g XA='| xargs'
