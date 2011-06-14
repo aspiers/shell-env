@@ -29,9 +29,10 @@ Choose from one of the following keymaps:
   3) Dell D630 hacked to suit Adam
   4) Kinesis Essential
   5) Dell D600 "untouched" - as labelled
-  6) Microsoft Natural 105-key
-  7) Dvorak (applies incrementally over existing keymap)
-  8) HHKL
+  6) Samsung N150+ hacked to suit Adam
+  7) Microsoft Natural 105-key
+  8) Dvorak (applies incrementally over existing keymap)
+  9) HHKL
 
 EOF
 
@@ -60,14 +61,18 @@ case "$choice" in
         xmodmap=$XMODMAP_DIR/Dell-D600-untouched
         ;;
     6)
+	setxkbmap -symbols 'pc+us+gb+adam' -print | \
+            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY
+	;;
+    7)
         xmodmap=$XMODMAP_DIR/MS-Natural-105
         keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
         ;;
-    7)
+    8)
         xmodmap=$XMODMAP_DIR/dvorak
         keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
         ;;
-    8)
+    9)
         setxkbmap -geometry 'hhk' -symbols 'pc+us+gb+adam(hhk)' -print | \
             xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY
         ;;
