@@ -62,7 +62,8 @@ case "$choice" in
         ;;
     6)
 	setxkbmap -symbols 'pc+us+gb+adam' -print | \
-            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY
+            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY 2>&1 | \
+            egrep -v 'Warning: +No symbols defined for'
 	;;
     7)
         xmodmap=$XMODMAP_DIR/MS-Natural-105
