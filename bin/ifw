@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 ifconfig "$@" 2>&1 | \
   perl -0777pe 's/^(lo|veth[1-9])\s.*?\n\n//ms;
                 s/.*(packets|collisions|Interrupt).*\n//g'
 
+which iwconfig >& /dev/null && \
 iwconfig "$@" 2>&1 | \
   perl -0777pe 's/.*\sno wireless extensions.*\n\n//g;
                 s/.*(RTS|[RT]x invalid|excessive retries).*\n//g;
