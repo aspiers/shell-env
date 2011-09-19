@@ -24,15 +24,16 @@ fi
 cat <<EOF
 Choose from one of the following keymaps:
 
-  1) Dell D630 normal - mostly as labelled
+  1) Standard GB layout
   2) Dell D620 hacked to suit Adam
   3) Dell D630 hacked to suit Adam
   4) Kinesis Essential
   5) Dell D600 "untouched" - as labelled
   6) Samsung N150+ hacked to suit Adam
   7) Microsoft Natural 105-key
-  8) Dvorak (applies incrementally over existing keymap)
+  8) Gyration wireless keyboard
   9) HHKL
+ 10) Dvorak (applies incrementally over existing keymap)
 
 EOF
 
@@ -42,9 +43,12 @@ read choice
 XMODMAP_DIR=$ZDOTDIR/.keymaps/X11
 KEYMAP_DIR=$ZDOTDIR/.keymaps/Linux-console
 
+unset xmodmap exe keymap xkb
+
 case "$choice" in
     1)
-        xmodmap=$XMODMAP_DIR/Dell-D630-normal
+        xkb='-symbols pc+us+gb'
+        #xmodmap=$XMODMAP_DIR/Dell-D630-normal
         ;;
     2) 
         xmodmap=$XMODMAP_DIR/Dell-D620-Adam
@@ -61,21 +65,21 @@ case "$choice" in
         xmodmap=$XMODMAP_DIR/Dell-D600-untouched
         ;;
     6)
-	setxkbmap -symbols 'pc+us+gb+adam' -print | \
-            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY 2>&1 | \
-            egrep -v 'Warning: +No symbols defined for'
+	xkb='-symbols pc+us+gb+adam'
 	;;
     7)
         xmodmap=$XMODMAP_DIR/MS-Natural-105
         keymap=/usr/lib/kbd/keymaps/i386/previous/uk.no-capslock.kmap.gz
         ;;
     8)
-        xmodmap=$XMODMAP_DIR/dvorak
-        keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
+	xkb='-symbols pc(pc105)+us+gb+adam(gyration)'
         ;;
     9)
-        setxkbmap -geometry 'hhk' -symbols 'pc+us+gb+adam(hhk)' -print | \
-            xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY
+	xkb='-geometry hhk -symbols pc+us+gb+adam(hhk)'
+        ;;
+   10)
+        xmodmap=$XMODMAP_DIR/dvorak
+        keymap=/usr/lib/kbd/keymaps/i386/dvorak/dvorak.kmap.gz
         ;;
     *) echo "Invalid choice." ; exit 1 ;;
 esac
@@ -88,6 +92,12 @@ esac
 
 if [ -n "$xmodmap" ]; then
     xmodmap "$xmodmap"
+fi
+
+if [ -n "$xkb" ]; then
+    setxkbmap $xkb -print | \
+        xkbcomp -I$ZDOTDIR/.xkb - $DISPLAY 2>&1 | \
+        egrep -v 'Warning: +No symbols defined for'
 fi
 
 if [ -n "$exe" ]; then
