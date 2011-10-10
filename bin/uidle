@@ -83,6 +83,7 @@ while (<FINGER>) {
   debug(3, "Parsing line [$_]");
 
   if ($state == NEED_LOGIN) {
+    debug(5, "  state is currently NEED_LOGIN");
     if (/^Login( name)?:/i) {
       debug(3, "    Got login line");
       $state = NEED_ON_SINCE;
@@ -96,7 +97,7 @@ while (<FINGER>) {
   }
 
   if ($state == NEED_ON_SINCE) {
-    debug(5, "  NEED_ON_SINCE");
+    debug(5, "  state is currently NEED_ON_SINCE");
     if (s!\bon since.*? on (tty\d+|pts/\d+|:\d\d?),?\s*?(?: from (\S+))?!!i) {
       $state = NEED_IDLE;
       ($tty, $from) = ($1, $2);
@@ -115,7 +116,7 @@ while (<FINGER>) {
   }
 
   if ($state == NEED_IDLE) {
-    debug(5, "  NEED_IDLE");
+    debug(5, "  state is currently NEED_IDLE");
     if (! /On since/ && s/\bidle(\s+time)?\b//i) {
       my $secs = parse_idle_time($_);
 
