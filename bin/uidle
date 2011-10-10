@@ -65,6 +65,7 @@ else {
 }
 
 my $cmd = "finger -l -m $who";
+#my $cmd = "cat";
 debug(2, "Command: $cmd");
 open(FINGER, "$cmd|")
   or die "open($cmd|) failed: $!\n";
@@ -186,8 +187,12 @@ sub parse_idle_time {
 
   s/^\s+//;
   
+  my $parsed = 0;
   my $secs = 0;
-  $secs += $1 * 3600 * 24 if s/(\d+) days?\s+//i;
+  if (s/(\d+) days?\s+//i) {
+    $secs += $1 * 3600 * 24;
+    $parsed = 1;
+  }
   debug(4, "    \$text now [$_]; \$secs == $secs");
 
   if (/(\d?\d):(\d\d)?/) {
@@ -200,7 +205,6 @@ sub parse_idle_time {
   else {
     # Fedora style:
     #   1 hour 15 minutes 49 seconds idle
-    my $parsed = 0;
     my ($h, $m, $s) = (0, 0, 0);
     if (s/(\d+) hours?\s+//i) {
       $secs += ($s=$1) * 3600;
