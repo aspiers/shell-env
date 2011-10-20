@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Copy symLink In Place
+
+me=`basename $0`
+
+usage () {
+    # Call as: usage [EXITCODE] [USAGE MESSAGE]
+    exit_code=1
+    if [[ "$1" == [0-9] ]]; then
+        exit_code="$1"
+        shift
+    fi
+    if [ -n "$1" ]; then
+        echo "$*" >&2
+        echo
+    fi
+
+    cat <<EOF >&2
+Usage: $me SYMLINK [SYMLINK ...]
+EOF
+    exit "$exit_code"
+}
+
+if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+    usage 0
+fi
+
+main () {
+    for symlink in "$@"; do
+        if ! [ -L "$symlink" ]; then
+            echo "$symlink not a symlink; skipping." >&2
+            continue
+        fi
+        
+        copy_symlink_in_place "$symlink"
+    done
+}
+
+copy_symlink_in_place () {
+    symlink="$1"
+    if ! temp=`mktemp "$symlink.$me.XXXXXXXXX"`; then
+        echo "ERROR: Failed to make temporary file; aborting." >&2
+        exit 1
+    fi
+    if ! cp -p "$symlink" "$temp"; then
+        echo "ERROR: Failed to copy $symlink to $temp; aborting." >&2
+        exit 1
+    fi
+    mv "$temp" "$symlink"
+}
+
+main "$@"
