@@ -17,17 +17,30 @@ usage () {
     fi
 
     cat <<EOF >&2
-Usage: $me SYMLINK [SYMLINK ...]
+Usage: $me [OPTIONS] SYMLINK [SYMLINK ...]
+Options:
+  -v, --verbose   Display successfully converted symlink(s)
+  -h, --help      Show this help
 EOF
     exit "$exit_code"
 }
 
-if [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+if [ "$1" == '-h' ] || [ "$1" == '--help' ] || [ $# == 0 ]; then
     usage 0
+fi
+
+verbose=
+if [ "$1" == '-v' ] || [ "$1" == '--verbose' ]; then
+    verbose=y
+    shift
 fi
 
 main () {
     for symlink in "$@"; do
+        if ! [ -e "$symlink" ]; then
+            echo "$symlink doesn't exist; skipping." >&2
+            continue
+        fi
         if ! [ -L "$symlink" ]; then
             echo "$symlink not a symlink; skipping." >&2
             continue
@@ -47,7 +60,14 @@ copy_symlink_in_place () {
         echo "ERROR: Failed to copy $symlink to $temp; aborting." >&2
         exit 1
     fi
-    mv "$temp" "$symlink"
+    if mv "$temp" "$symlink"; then
+        if [ -n "$verbose" ]; then
+            echo "$symlink is now a copy of the original symlink target"
+        fi
+    else
+        echo "ERROR: Failed to rename $temp to $symlink; aborting." >&2
+        exit 1
+    fi
 }
 
 main "$@"
