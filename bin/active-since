@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 me=`basename $0`
 
@@ -27,10 +27,14 @@ threshold_human=`date -d "$*"`
 # don't use uidle -x since we don't want mouse movement
 # to trigger a reboot!
 if ! last_active_epoch=`uidle -l`; then
-    uidle -l -v5 > ~/.uidle-l.broke
+    uidle -l -v5 > ~/.uidle-l.broke 2>&1
+    echo "uidle -l failed; aborting." >&2
+    exit 1
 fi
 if ! last_active_human=`uidle -lh`; then
-    uidle -lh -v5 > ~/.uidle-lh.broke
+    uidle -lh -v5 > ~/.uidle-lh.broke 2>&1
+    echo "uidle -lh failed; aborting." >&2
+    exit 1
 fi
 
 if [ "$last_active_epoch" -gt "$threshold_epoch" ]; then
