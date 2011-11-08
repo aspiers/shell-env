@@ -7,6 +7,7 @@ source "$ZDOTDIR/lib/libhooks.sh"
 
 crontab -l > "$config"
 
+# FIXME: doesn't work if no crontab exists
 if rebuild_config "$config" "$confdir"; then
     if ( echo; cat "$config" ) | crontab -; then
         echo "Reinstalled user's crontab"
