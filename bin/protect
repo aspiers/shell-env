@@ -1,0 +1,12 @@
+#!/bin/bash
+
+handler () {
+    echo got a signal
+}
+
+trap handler EXIT HUP INT QUIT TRAP ABRT BUS FPE KILL USR1 SEGV USR2 PIPE ALRM TERM STKFLT CHLD CONT STOP TSTP TTIN TTOU URG XCPU XFSZ VTALRM PROF WINCH PWR SYS
+
+while true; do
+    echo $$ still here
+    sleep 1
+done
