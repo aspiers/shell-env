@@ -31,5 +31,6 @@ EOUSAGE
 }
 
 while (<>) {
+  print, next if /^\s*(#|$)/;
   print $opts{unanchored} ? glob_to_unanchored_re($_): glob_to_anchored_re($_);
 }
