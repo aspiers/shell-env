@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $trim_to = ($ENV{COLUMNS} || 72) - 2;
+
+my $DEBUG = 0;
+
+sub debug {
+    warn @_, "\n" if $DEBUG;
+}
+
+sub output {
+    my $out = shift;
+    if ($DEBUG) {
+        $out =~ s/\e/\\e/g;
+        print "Outputting [$out]\n";
+    }
+    else {
+        print $out;
+    }
+}
+
+debug("Trimming to $trim_to columns");
+
+while (<>) {
+    chomp;
+    my @segments = split /(\e[[\d;]*m)/, $_;
+
+    my $offset = 0;
+    foreach my $segment (@segments) {
+        if (substr($segment, 0, 1) eq "\e") {
+            output($segment, 1);
+            next;
+        }
+        debug("Considering [$segment]");
+        my $len = length $segment;
+        my $up_to = $offset + $len;
+        my $excess = $up_to - $trim_to;
+        if ($excess > 0) {
+            debug("$offset + $len == $up_to > $trim_to by $excess");
+            output(substr($segment, 0, length($segment) - $excess));
+            last;
+        }
+        $offset += length $segment;
+        output($segment);
+        debug("offset now $offset");
+    }
+    debug("=" x $trim_to);
+    print "\n" unless $DEBUG;
+}

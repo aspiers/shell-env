@@ -937,7 +937,7 @@ alias -g L='| less'
 alias -g LS='| less -S'
 alias -g EL='|& less'
 alias -g ELS='|& less -S'
-alias -g TRIM='| cut -c 1-$COLUMNS'
+alias -g TRIM='| trim-lines'
 
 alias -g H='| head'
 alias -g HL='| head -n $(( +LINES ? LINES - 4 : 20 ))'
