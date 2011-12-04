@@ -7,7 +7,6 @@ source "$ZDOTDIR/lib/libhooks.sh"
 
 crontab -l > "$config"
 
-# FIXME: doesn't work if no crontab exists
 if ! rebuild_config "$config" "$confdir"; then
     echo "ERROR: failed to rebuild $config from $confdir" >&2
     exit 1
