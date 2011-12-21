@@ -24,11 +24,6 @@ expect {
         interact
     }
 
-    -re "root@loneqegen.cb. ~]# " {
-        send "adam\n"
-        interact
-    }
-
     # Match prompts here
     {\$} interact
     -re "\n(root@\[a-z0-9-\]+ )?# ?$" {
