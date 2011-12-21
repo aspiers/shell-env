@@ -677,37 +677,21 @@ compdef _functions reload
 # {{{ ls aliases
 
 if ls -F --color / >&/dev/null; then
-  alias ls='command ls -F --color'
+    LS_OPTS='-F --color'
 elif ls -F / >&/dev/null; then
-  alias ls='command ls -F'
+    LS_OPTS='-F'
 elif ls --color / >&/dev/null; then
-  alias ls='command ls --color'
+    LS_OPTS='--color'
 fi
 
 # jeez I'm lazy ...
-alias l='ls -lh'
-alias ll='ls -l'
-alias la='ls -lha'
-alias lla='ls -la'
-alias lsa='ls -ah'
-alias lsd='ls -d'
-alias lsh='ls -dh .*'
-alias lsr='ls -Rh'
+for opts in {,a}{,r}{,t}{,L}{,S}; do
+    eval "alias l$opts='ls -lh$opts $LS_OPTS'"
+    eval "alias ll$opts='ls -l$opts $LS_OPTS'"
+    eval "alias ls$opts='ls $opts $LS_OPTS'"
+done
+
 alias ld='ls -ldh'
-alias lt='ls -lth'
-alias llt='ls -lt'
-alias lrt='ls -lrth'
-alias llrt='ls -lrt'
-alias lart='ls -larth'
-alias llart='ls -lart'
-alias lr='ls -lRh'
-alias llr='ls -lR'
-alias lsL='ls -L'
-alias lL='ls -Ll'
-alias lS='ls -lSh'
-alias lrS='ls -lrSh'
-alias llS='ls -lS'
-alias llrS='ls -lrS'
 alias sl=ls # often screw this up
 
 # }}}
