@@ -2,10 +2,11 @@
 
 # Make Public
 
-if [[ $#* -lt 3 ]]; then
+if [ -z "$2" ]; then
   echo "Usage: mp <group> <files/dirs> ..."
   return 1
 fi
 
-chgrp $1 $*[2,-1]
-exec chmod go+rX $*[2,-1]
+chgrp "$@"
+shift
+exec chmod go+rX "$@"
