@@ -15,7 +15,7 @@ Usage: $0 file1 file2 [...]
        $0 [ -f | --format=STR ] file1 file2 [...]
   -e, --eof   Abort as soon as EOF is reached on any file.
 
-Take twos or more sequences and 'zip' them together in the functional
+Take two or more sequences and 'zip' them together in the functional
 programming sense.  Defaults to one item per line.  -p prefixes each
 item with a specified prefix.  -f allows an arbitrary output format,
 with each '%s' substituted for an item in the zipped sequence, e.g.
