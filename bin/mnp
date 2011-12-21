@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Make non-public
+
+if [ -z "$1" ]; then
+  echo "Usage: mnp <files/dirs> ..."
+  return 1
+fi
+
+exec chmod go-rwx "$@"

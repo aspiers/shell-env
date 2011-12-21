@@ -126,6 +126,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * `mnt-initrd` - Mount a Linux initial ram disk image via loopback.
     * `mnt-isos` - Mount ISOs in `/mnt` via loopback.
     * `mnx` - Make file(s) non-executable.
+    * `mnp` - Make file(s) non-public.
     * `mp` - Make file(s) public.
     * `multi-syphon` - Wrapper around `syphon -i` (see below).
     * `mv-merge` - Moves the entire contents of one directory to another, even
