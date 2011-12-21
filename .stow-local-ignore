@@ -20,4 +20,6 @@ Attic
 .*\.zwc
 
 README.*
+LICENSE.*
+COPYING
 /doc
