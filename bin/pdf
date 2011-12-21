@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# See ~/roaming/notes/PDFviewers.org for justification on decision order
+# See ~/org/notes/PDFviewers.org for justification on decision order
 viewers='okular kpdf evince acroread xpdf'
 
 found=
