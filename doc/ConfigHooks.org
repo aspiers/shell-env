@@ -1,55 +1,57 @@
 * Example usage:
 
-  run_hooks .shared_env.d
+    : run_hooks .shared_env.d
 
-would be the last thing executed by ${ZDOTDIR:-$HOME}/.shared_env,
-and would check for files under .shared_env.d in the $ZDOTDIRPATH
-search path, which would be this (in order):
+  would be the last thing executed by =${ZDOTDIR:-$HOME}/.shared_env=,
+  and would check for files under =.shared_env.d= in the
+  =$ZDOTDIRPATH= search path, which would be this (in order):
 
-  - $ZDOTDIR/.shared_env.d/*
-  - $HOME/.shared_env.d/*
+  - =$ZDOTDIR/.shared_env.d/*=
+  - =$HOME/.shared_env.d/*=
 
-i.e. from least specific to most specific.
+  i.e. from least specific to most specific.
 
-Ditto for .zshrc, .bashrc etc.
+  Ditto for =.zshrc=, =.bashrc= etc.
 
 *** Hook sub-directories
 
    Additionally, if a directory entry has one of the following formats,
    it is treated specially:
 
-    - person-$individual_uuid
+    - =person-$individual_uuid=
       
-      Run directory contents if $individual_uuid equals
-      $ZDOTUSER.  This should be unique to a person (*not* a uid);
+      Run directory contents if =$individual_uuid= equals
+      =$ZDOTUSER=.  This should be unique to a person (*not* a uid);
       e-mail addresses are recommended, similar in idea to GNU arch's
       global archive namespace.
       
-    - host-$hostname
+    - =host-$hostname=
       
       Run directory contents if $hostname equals the current hostname.
       If there is ambiguity with regards to FQDN or non-FQDN, the code
       gives the benefit of the doubt in favour of a match.
 
-    - uid-$username
+    - =uid-$username=
       
       Run directory contents if $username equals the current
-      (non-numeric) uid.  An additional special case: if $username
+      (non-numeric) uid.  An additional special case: if =$username=
       equals 'OWNER', the hook is only run if the current user owns
       the hook file.  This allows a uid-specific hook to be installed
       in multiple home directories independently of its filename,
       effectively marking it as "for private use only".
 
 * Compound filtering
+
   FIXME: in rare cases, compound filtering (boolean composition of
   the above "atoms") is required.  Case study: running
-  .xsession-progs.d/person-me/ from a demo account to get a nice X11
+  =.xsession-progs.d/person-me/= from a demo account to get a nice X11
   environment, e.g. 'keyboard' and 'mouse' are person-specific,
   'wallpaper' is both person- and uid-specific, and 'RSI' is
   person-, uid-, and host-specific.  (Conceivably there could even
   be something person- and host-specific, e.g. if I wanted to run a
   utility to set sound card output volumes in a particular way on a
   particular laptop.)  So the current approach is too limited.  
+
 * Is anything other than AND boolean ever required?
 
   For example, filters implemented as arbitrary shell
@@ -70,6 +72,7 @@ Ditto for .zshrc, .bashrc etc.
 * Axiom: filters have to be described out-of-band
 
 * Where are filters described?
+
   Possibilities:
   
    a) in the filename, 
@@ -83,10 +86,10 @@ Ditto for .zshrc, .bashrc etc.
       retrievable in a well-defined, consistent manner (like emacs
       local variables).
   
-  With c), a single flat file (e.g. '.guards') in the hook directory
-  isn't going to work, because it doesn't support the $foo.d
-  methodology.  Therefore it would have to be a .guards.d
-  subdirectory, or a $foo.guard for each hook, either of which is a
+  With c), a single flat file (e.g. =.guards=) in the hook directory
+  isn't going to work, because it doesn't support the =$foo.d=
+  methodology.  Therefore it would have to be a =.guards.d=
+  subdirectory, or a =$foo.guard= for each hook, either of which is a
   bit of a PITA.
   
 * Pros/cons of each
@@ -98,14 +101,14 @@ Ditto for .zshrc, .bashrc etc.
     emacs buffer if changing both the hook and its filter :-)
 
  2. Only a) and b) offer easy viewing via standard fileutils, grep
-    etc. but a list_hooks | xargs ... approach should deal with
-    this, as long as list_hooks can be parametrized to fake a
+    etc. but a =list_hooks | xargs ...= approach should deal with
+    this, as long as =list_hooks= can be parametrized to fake a
     different environment (i.e. "list hooks which would have been
-    run under $other_uid on $other_host"), and this should be easy
+    run under =$other_uid= on =$other_host="), and this should be easy
     to achieve.
 
  3. With c) and d), the file namespace is too flat and allows for
-    collisions between the different $foo.d sources.  And if you
+    collisions between the different =$foo.d= sources.  And if you
     expand the namespace to avoid these collisions, you're back
     with a) or b), which defeats the point.
 
@@ -138,11 +141,13 @@ Ditto for .zshrc, .bashrc etc.
  total: 7  7  7  8  
     
 * Conclusion
+
   In light of conflicting design goals, no single solution is
   ideal.  Therefore a hybrid which allows multiple approaches is
   required.
 
 * Sanity check
+
   Is the current 90% solution worth sticking with?  And use
   different approach or hack for corner cases.  Can we really
   justify substantial increases in complexity?
@@ -150,28 +155,28 @@ Ditto for .zshrc, .bashrc etc.
 * Requirements and rationale for search algorithm:
 
   - Must allow me to share config with friends.  Accomplished by setting
-    ZDOTDIR to point to my home directory when running as another uid.
-    (We use the parameter name 'ZDOTDIR' because zsh supports it natively
-    when looking for core start-up files, defaulting to $HOME if it's not
-    set.  But we extend the usage of the ZDOTDIR concept via this file
-    to include our own non-core start-up files such as .shared_env.)
+    =ZDOTDIR= to point to my home directory when running as another uid.
+    (We use the parameter name =ZDOTDIR= because zsh supports it natively
+    when looking for core start-up files, defaulting to =$HOME= if it's not
+    set.  But we extend the usage of the =ZDOTDIR= concept via this file
+    to include our own non-core start-up files such as =.shared_env=.)
 
   - When others use my config, their environment must not be polluted
     with stuff specific to me.  Accomplished by keeping all personal
-    stuff in the .${dotfile}.d/person-$ZDOTUSER namespace, where
-    $ZDOTUSER is something globally unique like the individual's
-    email address.  (Although in my case, 'aspiers' is almost
+    stuff in the =.${dotfile}.d/person-$ZDOTUSER= namespace, where
+    =$ZDOTUSER= is something globally unique like the individual's
+    email address.  (Although in my case, =aspiers= is almost
     certainly "unique enough" for practical purposes, if that
     expression's not too much of an oxymoron.)
 
   - Must allow me to switch uid and still use config.  Accomplished by
-    setting ZDOTDIR=~aspiers and ZDOTUSER to my chosen individual UUID
+    setting =ZDOTDIR=~aspiers= and =ZDOTUSER= to my chosen individual UUID
     value.
 
   - Must allow per-uid config which would potentially span machines if home
     directories are shared (e.g. on NFS).  It makes obvious sense to put any
     per-uid config in the uid's home directory.  This is what the
-    ".${dotfile}.d/uid-OWNER" syntax is for.
+    =.${dotfile}.d/uid-OWNER= syntax is for.
 
   - Inheritance should be used wherever possible, i.e. ensuring that more
     settings for specific contexts can override less specific contexts by
@@ -188,15 +193,15 @@ Ditto for .zshrc, .bashrc etc.
    in specific contexts which solves above issue and makes other
    things better e.g. setting users/hosts to complete.  This could be
    prohibitively slow over NFS, but we'll cross that bridge when we come
-   to it, e.g. via some kind of prior compilation into one big .zwc ?
+   to it, e.g. via some kind of prior compilation into one big =.zwc= ?
 
  - Would be nice to provide user with list of things which can be overridden.
-   This can be achieved simply by grepping for run_hooks invocations.
+   This can be achieved simply by grepping for =run_hooks= invocations.
 
- - Supports find_hooks for emacs, mutt, ssh, cron, and other
+ - Supports =find_hooks= for =emacs=, =mutt=, =ssh=, =cron=, and other
    non-shell-based environments which invoke the hooks in a different
-   way - see rebuild_config function in ~/lib/libhooks.sh
+   way - see =rebuild_config= function in =~/lib/libhooks.sh=
  
- - ZDOTDIR=~aspiers as root, where ~aspiers is shared via NFS,
+ - =ZDOTDIR=~aspiers= as root, where =~aspiers= is shared via NFS,
    reduces security of root a lot since trust level for NFS write
-   access to ~aspiers is only by anyone who can get a port < 1024.
+   access to =~aspiers= is only by anyone who can get a port < 1024.
