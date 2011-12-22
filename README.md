@@ -213,6 +213,14 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`zipseqs`](https://github.com/aspiers/shell-env/blob/master/bin/zipseqs) - Take two or more sequences and 'zip' them together
       (in the functional programming sense).
 
+## INSTALLATION
+
+This repository is designed to be [stowed](http://www.gnu.org/software/stow/)
+directly into your home directory.  However if you only want to cherry-pick
+bits and pieces then you can easily just copy or symlink them in manually.
+Just be aware that some of the files depend on other files, especially
+the shell configuration files.
+
 ## LICENSE
 
 The software in this repository is free software: you can redistribute
