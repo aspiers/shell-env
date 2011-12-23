@@ -688,7 +688,7 @@ fi
 for opts in {,a}{,r}{,t}{,L}{,S}; do
     eval "alias l$opts='ls -lh$opts $LS_OPTS'"
     eval "alias ll$opts='ls -l$opts $LS_OPTS'"
-    eval "alias ls$opts='ls $opts $LS_OPTS'"
+    eval "alias ls$opts='ls ${opts:+-$opts} $LS_OPTS'"
 done
 
 alias ld='ls -ldh'
