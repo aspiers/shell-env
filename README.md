@@ -198,6 +198,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`un`](https://github.com/aspiers/shell-env/blob/master/bin/un) - `uname -a` shortcut.
     * [`up`](https://github.com/aspiers/shell-env/blob/master/bin/up) - Safely unpack an archive file.  Supports multiple formats.
     * [`up-since`](https://github.com/aspiers/shell-env/blob/master/bin/up-since) - Show when the system was last booted.
+    * [`url-handler`](https://github.com/aspiers/shell-env/blob/master/bin/url-handler) - Handler for opening various types of URLs
     * [`viz`](https://github.com/aspiers/shell-env/blob/master/bin/viz) - Customisable change-control wrapper around an editor - a bit like
       `vipw`, `vigr`, `visudo` etc. but with validation mechanism implemented
       by the user.
@@ -223,10 +224,11 @@ the shell configuration files.
 
 ## LICENSE
 
-The software in this repository is free software: you can redistribute
-it and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+The software in this repository is free software: except where noted
+otherwise, you can redistribute it and/or modify it under the terms of
+the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any
+later version.
 
 This software is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
