@@ -26,6 +26,7 @@ our @EXPORT_OK = qw(
   glob_to_unanchored_re glob_to_anchored_re glob_to_re
   safe_sys sys_or_warn sys_or_die
   ensure_correct_symlink qqexpand
+  hostname
 );
 
 sub get_absolute_path {
@@ -371,6 +372,23 @@ sub qqexpand {
   my ($text_with_escapes) = @_;
   $text_with_escapes =~ s!\\([efnrt]|x\d\d?|0\d{2,3})!qq["$&"]!gee;
   return $text_with_escapes;
+}
+
+=head2 hostname
+
+Uses C<Net::Hostname> or C<Sys::Hostname> or C<hostname(1)> to get the
+hostname.
+
+=cut
+
+sub hostname {
+  eval { require Net::Hostname; };
+  return Net::Hostname::hostname() if ! $@;
+
+  eval { require Sys::Hostname; };
+  return Sys::Hostname::hostname() if ! $@;
+
+  return `hostname`;
 }
 
 =head1 BUGS
