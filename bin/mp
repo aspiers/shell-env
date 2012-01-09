@@ -4,7 +4,7 @@
 
 if [ -z "$2" ]; then
   echo "Usage: mp <group> <files/dirs> ..."
-  return 1
+  exit 1
 fi
 
 chgrp "$@"
