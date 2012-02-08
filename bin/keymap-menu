@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# FIXME: allow non-interactive calling for 50-keyboard
+
 me="keymap-menu"
 if [ "`basename $0`" = "$me" ] && [ -n "$*" ]; then
     here=`dirname $0`
