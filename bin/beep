@@ -2,10 +2,10 @@
 
 use Getopt::Long;
 
+(my $ME = $0) =~ s,.*/,,;
+
 sub usage {
   warn @_, "\n" if @_;
-
-  (my $ME = $0) =~ s,.*/,,;
 
   die <<EOUSAGE;
 Usage: $ME <count> <delay_secs>
@@ -35,17 +35,22 @@ $sleep ||= 1;
 
 my @sounds_path = qw(
                       /usr/share/sounds
+                      /usr/share/sounds/gnome/default/alerts
                       /opt/gnome/share/sounds
                       /opt/gnome2/share/sounds
                       /opt/kde3/share/sounds
                       /opt/kde4/share/sounds
                   );
 my @sounds = qw(
+                 KDE-Sys-App-Message.ogg
+                 bark.ogg
+                 sonar.ogg
                  KDE_Beep_Ahem.wav
                  KDE_Beep_Beep.wav
                  warning.wav
              );
 my $sound = find_sound();
+$sound or die "$ME: couldn't find sound!\n";
 
 sub find_sound {
   for my $path (@sounds_path) {
