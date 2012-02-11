@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 use Getopt::Long;
 
 (my $ME = $0) =~ s,.*/,,;
@@ -49,8 +52,18 @@ my @sounds = qw(
                  KDE_Beep_Beep.wav
                  warning.wav
              );
-my $sound = find_sound();
-$sound or die "$ME: couldn't find sound!\n";
+
+sub get_sound_command {
+  my $sound = find_sound();
+  if ($sound) {
+    my $exe = "paplay"; # FIXME: make more robust
+    return "$exe \Q$sound\E";
+  }
+
+  return 'play -n synth 0.5 sine 440 vol 0.5' if `which play 2>&1`;
+
+  die "$ME: couldn't find a way to make a sound!\n";
+}
 
 sub find_sound {
   for my $path (@sounds_path) {
@@ -69,18 +82,15 @@ sub find_sound {
 
 while ($count) {
   print "\a";
-  my $exe = "paplay"; # FIXME: make more robust
-  my $cmd = "$exe \Q$sound\E";
+  my $cmd = get_sound_command();
   if ($opts{verbosity} == 0) {
     $cmd .= " >/dev/null 2>&1";
   }
   elsif ($opts{verbosity} == 1) {
     $cmd .= " >/dev/null";
   }
-  if ($sound) {
-    debug(3, "cmd is $cmd");
-    system($cmd);
-  }
+  debug(3, "cmd is $cmd");
+  system($cmd);
   $count--;
   sleep $sleep if $count;
 }
