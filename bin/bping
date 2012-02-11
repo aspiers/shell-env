@@ -14,9 +14,10 @@ DEFAULT_DURATION = 0.1
 def parse_args():
     parser = argparse.ArgumentParser(
         description = "\n".join(wrap(dedent('''\
-            Wrapper around ping to make it audible.  Pitch of beeps
-            represents latency: concert A (440Hz) for 10ms, going one
-            octave up or down for every order of magnitude.
+            Wrapper around ping to make it do a lot of beeping ;-)
+            Pitch of beeps represents latency: concert A (440Hz) for
+            10ms, going one octave up or down for every order of
+            magnitude.
             '''))),
         epilog=epilog(),
         formatter_class=argparse.RawDescriptionHelpFormatter,
