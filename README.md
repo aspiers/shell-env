@@ -216,7 +216,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`zipseqs`](https://github.com/aspiers/shell-env/blob/master/bin/zipseqs) - Take two or more sequences and 'zip' them together
       (in the functional programming sense).
 
-## INSTALLATION
+## <a name="install">INSTALLATION</a>
 
 This repository is designed to be [stowed](http://www.gnu.org/software/stow/)
 directly into your home directory:
