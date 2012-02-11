@@ -65,6 +65,7 @@ for the most part they should work on any POSIX-oriented UNIX.
       process invocations.
     * [`alertme`](https://github.com/aspiers/shell-env/blob/master/bin/alertme) - Poor man's attention grabber.
     * [`beep`](https://github.com/aspiers/shell-env/blob/master/bin/beep) - Make some kind of noise reliably.
+    * [`bip`](https://github.com/aspiers/shell-env/blob/master/bin/bip) - Wrapper around [`play`](http://sox.sourceforge.net/sox.html) to generate a sine wave of a given frequency / duration / volume.
     * [`bsplit`](https://github.com/aspiers/shell-env/blob/master/bin/bsplit) - Split a file or STDIN into buckets.
     * [`c3`](https://github.com/aspiers/shell-env/blob/master/bin/c3) - Show 3 months of the calendar.
     * [`cg`](https://github.com/aspiers/shell-env/blob/master/bin/cg) - Shortcut for `chgrp`.
