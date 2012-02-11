@@ -3,6 +3,7 @@
 confdir=.cron.d
 config=$HOME/.crontab
 
+source "$HOME/.shared_env"
 source "$HOME/lib/libhooks.sh"
 
 crontab -l > "$config"

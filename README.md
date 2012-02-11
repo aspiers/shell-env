@@ -65,6 +65,7 @@ for the most part they should work on any POSIX-oriented UNIX.
       process invocations.
     * [`alertme`](https://github.com/aspiers/shell-env/blob/master/bin/alertme) - Poor man's attention grabber.
     * [`beep`](https://github.com/aspiers/shell-env/blob/master/bin/beep) - Make some kind of noise reliably.
+    * [`bip`](https://github.com/aspiers/shell-env/blob/master/bin/bip) - Wrapper around [`play`](http://sox.sourceforge.net/sox.html) to generate a sine wave of a given frequency / duration / volume.
     * [`bsplit`](https://github.com/aspiers/shell-env/blob/master/bin/bsplit) - Split a file or STDIN into buckets.
     * [`c3`](https://github.com/aspiers/shell-env/blob/master/bin/c3) - Show 3 months of the calendar.
     * [`cg`](https://github.com/aspiers/shell-env/blob/master/bin/cg) - Shortcut for `chgrp`.
@@ -142,6 +143,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`ox`](https://github.com/aspiers/shell-env/blob/master/bin/ox) - `objdump -x` shortcut.
     * [`pdf`](https://github.com/aspiers/shell-env/blob/master/bin/pdf) - Find a preferred PDF viewer and run it.
     * [`phup`](https://github.com/aspiers/shell-env/blob/master/bin/phup) - `pkill -HUP` shortcut.
+    * [`bping`](https://github.com/aspiers/shell-env/blob/master/bin/bping) - Wrapper around ping to make it audible.  Pitch of beeps represents latency: concert A (440Hz) for 10ms, going one octave up or down for every order of magnitude.
     * [`pinggw`](https://github.com/aspiers/shell-env/blob/master/bin/pinggw) - Ping the gateway.
     * [`pingns`](https://github.com/aspiers/shell-env/blob/master/bin/pingns) - Ping a nameserver.
     * [`pingwan`](https://github.com/aspiers/shell-env/blob/master/bin/pingwan) - Ping the WAN gateway found by [`find-wan-gateway`](https://github.com/aspiers/shell-env/blob/master/bin/find-wan-gateway).
@@ -217,10 +219,15 @@ for the most part they should work on any POSIX-oriented UNIX.
 ## INSTALLATION
 
 This repository is designed to be [stowed](http://www.gnu.org/software/stow/)
-directly into your home directory.  However if you only want to cherry-pick
-bits and pieces then you can easily just copy or symlink them in manually.
-Just be aware that some of the files depend on other files, especially
-the shell configuration files.
+directly into your home directory:
+
+    git clone git://github.com/aspiers/shell-env.git
+    stow -d . -t ~ shell-env
+
+However if you only want to cherry-pick bits and pieces then you can
+easily just copy or symlink them in manually.  Just be aware that some
+of the files depend on other files, especially the shell configuration
+files.
 
 ## LICENSE
 

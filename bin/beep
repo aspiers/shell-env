@@ -1,11 +1,14 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 use Getopt::Long;
+
+(my $ME = $0) =~ s,.*/,,;
 
 sub usage {
   warn @_, "\n" if @_;
-
-  (my $ME = $0) =~ s,.*/,,;
 
   die <<EOUSAGE;
 Usage: $ME <count> <delay_secs>
@@ -35,17 +38,32 @@ $sleep ||= 1;
 
 my @sounds_path = qw(
                       /usr/share/sounds
+                      /usr/share/sounds/gnome/default/alerts
                       /opt/gnome/share/sounds
                       /opt/gnome2/share/sounds
                       /opt/kde3/share/sounds
                       /opt/kde4/share/sounds
                   );
 my @sounds = qw(
+                 KDE-Sys-App-Message.ogg
+                 bark.ogg
+                 sonar.ogg
                  KDE_Beep_Ahem.wav
                  KDE_Beep_Beep.wav
                  warning.wav
              );
-my $sound = find_sound();
+
+sub get_sound_command {
+  my $sound = find_sound();
+  if ($sound) {
+    my $exe = "paplay"; # FIXME: make more robust
+    return "$exe \Q$sound\E";
+  }
+
+  return 'bip' if `which play 2>&1`;
+
+  die "$ME: couldn't find a way to make a sound!\n";
+}
 
 sub find_sound {
   for my $path (@sounds_path) {
@@ -64,18 +82,15 @@ sub find_sound {
 
 while ($count) {
   print "\a";
-  my $exe = "paplay"; # FIXME: make more robust
-  my $cmd = "$exe \Q$sound\E";
+  my $cmd = get_sound_command();
   if ($opts{verbosity} == 0) {
     $cmd .= " >/dev/null 2>&1";
   }
   elsif ($opts{verbosity} == 1) {
     $cmd .= " >/dev/null";
   }
-  if ($sound) {
-    debug(3, "cmd is $cmd");
-    system($cmd);
-  }
+  debug(3, "cmd is $cmd");
+  system($cmd);
   $count--;
   sleep $sleep if $count;
 }

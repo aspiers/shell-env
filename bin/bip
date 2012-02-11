@@ -1,0 +1,58 @@
+#!/bin/bash
+
+me=`basename $0`
+
+frequency=440
+duration=0.5
+volume=0.5
+
+usage () {
+    # Call as: usage [EXITCODE] [USAGE MESSAGE]
+    exit_code=1
+    if [[ "$1" == [0-9] ]]; then
+        exit_code="$1"
+        shift
+    fi
+    if [ -n "$1" ]; then
+        echo "$*" >&2
+        echo
+    fi
+
+    cat <<EOF >&2
+Usage: $me [options]
+Options:
+    -f, --frequency=FREQUENCY   in Hz [$frequency]
+    -d, --duration=DURATION     in seconds [$duration]
+    -v, --volume=VOLUME         as a fraction of 1 [$volume]
+EOF
+    exit "$exit_code"
+}
+
+getopts () {
+    while [ -n "$1" ]; do
+        case "$1" in
+            -h|--help)
+                usage 0
+                ;;
+            -f|--frequency)
+                frequency="$2"
+                shift 2
+                ;;
+            -d|--duration)
+                duration="$2"
+                shift 2
+                ;;
+            -v|--volume)
+                volume="$2"
+                shift 2
+                ;;
+            *)
+                usage "Unrecognised option: $1"
+                ;;
+        esac        
+    done
+}
+
+getopts "$@"
+
+play -n synth $duration sine $frequency vol $volume >/dev/null 2>&1
