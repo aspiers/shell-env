@@ -56,7 +56,7 @@ def epilog():
     return text
 
 def frequency(latency):
-    return 440 * 2 ** (math.log10(latency) - 1)
+    return 440 * 2 ** (math.log10(latency) - 2)
 
 def bip(frequency, duration, volume):
     subprocess.call(
