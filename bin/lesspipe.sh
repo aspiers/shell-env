@@ -39,6 +39,9 @@ lesspipe() {
     *.bz2)
       bzip2 -dc -- "$1"
       ;;
+    *.xz)
+      xz -dc -- "$1"
+      ;;
     *.zip|*.Zip|*.ZIP|*.jar|*.war|*.sar|*.xpi|*.job|*.pylib)
       zipinfo -- "$1"
       ;;
