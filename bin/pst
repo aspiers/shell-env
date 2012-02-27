@@ -10,16 +10,29 @@ linux_pstree () {
 }
 
 linux_iterate () {
+    opts=( )
+    while [ -n "$1" ]; do
+        case "$1" in
+            -*)
+                opts=( "${opts[@]}" "$1" )
+                shift
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+
     if [ $# = 0 ]; then
-        linux_pstree
+        linux_pstree "${opts[@]}"
     elif [ -d "/proc/$1" ]; then
-        linux_pstree "$@"
+        linux_pstree "${opts[@]}" "$@"
     else
         for proc in "$@"; do
             echo "Searching for processes containing '$proc' ..."
             for pid in `pgrep -f "$proc"`; do
                 #echo "Tree for pid $pid:"
-                linux_pstree "$pid"
+                linux_pstree "${opts[@]}" "$pid"
             done
         done
     fi
