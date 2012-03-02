@@ -95,7 +95,7 @@ setopt                       \
         hash_list_all        \
         hist_allow_clobber   \
         hist_beep            \
-     NO_hist_ignore_dups     \
+        hist_ignore_dups     \
         hist_ignore_space    \
      NO_hist_no_store        \
         hist_verify          \
