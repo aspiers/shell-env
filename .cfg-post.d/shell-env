@@ -3,7 +3,6 @@
 ~/bin/service-commands
 ~/bin/cm
 ~/bin/grep-shortcuts
-~/bin/keymap-menu --install-symlinks
 ( cd ~/bin; [ -e rjt ] || ln -sf rj rjt )
 
 if which zsh >&/dev/null; then
