@@ -97,7 +97,7 @@ cx () {
 
   set_title window "$full_wtitle"
   set_title icon "$full_ititle"
-  [[ -n "$IN_SCREEN" ]] && 
+  [[ -n "$IN_SCREEN" || -n "$TMUX" ]] && 
     set_title screen "$full_stitle"
   return 0
 }
