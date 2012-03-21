@@ -31,7 +31,7 @@ fi
 
 ideal_dest=
 case "$archive" in
-    *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem)
+    *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem)
         ideal_dest="${archive%.*}"
         ;;
     *.tar.gz)
@@ -70,7 +70,7 @@ case "$archive" in
     *.tar.xz|*.txz)
         tar -C "$tmpdir" -Jxvf "$archive_path"
         ;;
-    *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib)
+    *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk)
         unzip -d "$tmpdir" "$archive_path"
         ;;
     *.7z)
