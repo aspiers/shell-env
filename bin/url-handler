@@ -94,7 +94,7 @@ firefox_handler () {
 }
 
 chrome_handler () {
-    if [ -z "$SSH_CLIENT" ]; then
+    if [ -z "$SSH_CONNECTION" ]; then
         if which wmctrl >&/dev/null; then
             wmctrl -a chrome
         else
