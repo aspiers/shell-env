@@ -1,0 +1,12 @@
+#!/bin/bash
+
+confdir=$HOME/.netrc.d
+config=$HOME/.netrc
+
+[ -d $confsubdir ] || mkdir -p $confsubdir
+
+source "$ZDOTDIR/lib/libhooks.sh"
+
+rebuild_config "$config" "${confdir#$HOME/}"
+
+chmod go-rwx -R $config $confdir
