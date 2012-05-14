@@ -32,9 +32,9 @@ fi
 # {{{ GNU screen
 
 IN_SCREEN=
-# [ "$TERM" = "screen" ] is not a reliable indicator
+# [ "$TERM" = "screen" ] is not a sufficient indicator
 # since we override it in ~/.screen.d/colours
-if [ -n "$STY" ]; then
+if [ -n "$STY" ] || [ "$TERM" = "screen" ]; then
     IN_SCREEN=yes
 fi
 export IN_SCREEN
