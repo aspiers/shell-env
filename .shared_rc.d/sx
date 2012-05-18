@@ -10,7 +10,7 @@ if [ -n "$BASHVERSION" ] || [ -n "$ZSH_VERSION" ]; then
     alias sx='[[ -o xtrace ]] && set +x || set -x'
 else
     sx () {
-        echo "Sorry, toggle_set_minus_x doesn't yet support this shell." >&2
+        echo "Sorry, sx isn't yet implemented for this shell." >&2
         return 1
     }
 fi
