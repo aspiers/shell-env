@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Thanks to mikachu on #zsh for helping with this :-)
+# In zsh, setopt xtrace is immune to setopt no_localoptions, i.e.
+#   foo () { set -x; }
+# is a noop, so it has to be done with aliases.
+
+#if [ "$BASHPID" = $$ ]; then
+if [ -n "$BASHVERSION" ] || [ -n "$ZSH_VERSION" ]; then
+    alias sx='[[ -o xtrace ]] && set +x || set -x'
+else
+    sx () {
+        echo "Sorry, toggle_set_minus_x doesn't yet support this shell." >&2
+        return 1
+    }
+fi
