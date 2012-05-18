@@ -3,7 +3,7 @@
 confdir=$HOME/.netrc.d
 config=$HOME/.netrc
 
-[ -d $confsubdir ] || mkdir -p $confsubdir
+[ -d $confdir ] || mkdir -p $confdir
 
 source "$ZDOTDIR/lib/libhooks.sh"
 
