@@ -232,8 +232,8 @@ WORDCHARS='>~'
 # {{{ Save a large history
 
 HISTFILE=~/.zshhistory
-HISTSIZE=3000
-SAVEHIST=3000
+HISTSIZE=10000
+SAVEHIST=10000
 
 # }}}
 # {{{ Maximum size of completion listing
