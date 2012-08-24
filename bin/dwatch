@@ -20,6 +20,11 @@ The last output from the command is cached, and so unlike C<watch(1)>,
 comparisons can span multiple invocations.  This is useful for
 watching for changes across long periods of time.
 
+=head1 SEE ALSO
+
+L<watchdiff(1)> by the same author - a very similar utility
+which doesn't do any caching.
+
 =head1 LICENSE
 
 Copyright (c) 2004 Adam Spiers <adam@spiers.net>
