@@ -20,11 +20,23 @@
 use strict;
 use warnings;
 
+use File::Copy;
+use File::Spec;
+use File::Temp qw(tempfile);
 use Getopt::Long;
 use IPC::Open2;
-use Text::Diff;
+
+$| = 1;
 
 my $DEFAULT_INTERVAL = 2;
+my $tmpdir = File::Spec->tmpdir;
+my ($old_fh, $old_fn) = tempfile("watchdiff-$$-old-XXXXXXXXXXXXXXX", DIR => $tmpdir);
+my ($new_fh, $new_fn) = tempfile("watchdiff-$$-new-XXXXXXXXXXXXXXX", DIR => $tmpdir);
+END {
+  close $old_fh;
+  close $new_fh;
+  unlink $old_fn, $new_fn;
+}
 
 my $columns = $ENV{COLUMNS} || (`stty -a -F /dev/stderr` =~ /columns (\d+)/)[0];
 
@@ -43,38 +55,57 @@ Options:
 EOUSAGE
 }
 
-Getopt::Long::Configure('require_order');
+sub parse_opts {
+  Getopt::Long::Configure('require_order');
 
-my %opts = ( interval => $DEFAULT_INTERVAL );
-GetOptions(
-  \%opts,
-  'help|h',
-  'interval|n=i',
-  'clear|d',
-) or usage();
-usage() if @ARGV == 0 or $opts{help};
+  my %opts = ( interval => $DEFAULT_INTERVAL );
+  GetOptions(
+    \%opts,
+    'help|h',
+    'interval|n=i',
+    'clear|d',
+  ) or usage();
+  usage() if @ARGV == 0 or $opts{help};
 
-my $old;
-my $count = 0;
-while (1) {
-  my $in;
-  my $pid = open2(\*OUT, $in, @ARGV);
-  my $new = join '', <OUT>;
+  return %opts;
+}
+
+sub run_command {
+  my @args = @_;
+
+  my ($stdin, $stdout);
+  my $pid = open2($stdout, $stdin, @args);
+  seek $new_fh, 0, 0;
+  truncate $new_fh, 0;
+  print $new_fh $_ while <$stdout>;
   waitpid $pid, 0;
-  if (defined $old) {
-    if ($opts{clear}) {
-      system 'clear';
-    }
-    else {
-      print "=" x ($columns-1), "\n" if $count++;
-    }
-    print diff(\$old, \$new, { STYLE => 'Unified' });
-  }
-  if ($opts{cumulative}) {
-    $old = $new if ! defined $old;
+}
+
+sub do_comparison {
+  my ($opts) = @_;
+
+  if ($opts->{clear}) {
+    system 'clear';
   }
   else {
-    $old = $new;
+    system 'diff', '-u', $old_fn, $new_fn;
+    print "=" x ($columns-1), "\n" if $? > 0;
   }
-  sleep $opts{interval}
 }
+
+sub main {
+  my %opts = parse_opts();
+  my $count = 0;
+
+  while (1) {
+    run_command(@ARGV);
+
+    do_comparison(\%opts);
+
+    copy($new_fn, $old_fn) if ! $opts{cumulative} or $count++ == 0;
+
+    sleep $opts{interval};
+  }
+}
+
+main();
