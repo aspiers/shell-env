@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# See also dwatch, also by me, which does a very similar thing but
+# caches in order to allow diffs to span invocations.
+
 use strict;
 use warnings;
 
