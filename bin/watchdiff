@@ -32,11 +32,7 @@ my $DEFAULT_INTERVAL = 2;
 my $tmpdir = File::Spec->tmpdir;
 my ($old_fh, $old_fn) = tempfile("watchdiff-$$-old-XXXXXXXXXXXXXXX", DIR => $tmpdir);
 my ($new_fh, $new_fn) = tempfile("watchdiff-$$-new-XXXXXXXXXXXXXXX", DIR => $tmpdir);
-END {
-  close $old_fh;
-  close $new_fh;
-  unlink $old_fn, $new_fn;
-}
+$SIG{INT} = \&clean_up;
 
 my $columns = $ENV{COLUMNS} || (`stty -a -F /dev/stderr` =~ /columns (\d+)/)[0];
 
@@ -119,6 +115,13 @@ sub main {
 
     sleep $opts{interval};
   }
+}
+
+sub clean_up {
+  close $old_fh;
+  close $new_fh;
+  unlink $old_fn, $new_fn;
+  exit;
 }
 
 main();
