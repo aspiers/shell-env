@@ -81,15 +81,28 @@ sub run_command {
   waitpid $pid, 0;
 }
 
-sub do_comparison {
-  my ($opts) = @_;
+{
+  my $diff_count = 0;
 
-  if ($opts->{clear}) {
-    system 'clear';
-  }
-  else {
-    system 'diff', '-u', $old_fn, $new_fn;
-    print "=" x ($columns-1), "\n" if $? > 0;
+  sub do_comparison {
+    my ($opts) = @_;
+
+    my $cmd = "diff -u $old_fn $new_fn";
+    my $diff = `$cmd`;
+    my $status = $? >> 8;
+    die "$cmd failed; aborting.\n" if $status == 2;
+    my $changed = $status == 1;
+
+    return unless $changed;
+
+    if ($opts->{clear}) {
+      system 'clear';
+    }
+    else {
+      print "=" x ($columns-1), "\n" if $diff_count++;
+    }
+
+    print $diff;
   }
 }
 
