@@ -13,22 +13,19 @@ $ uidle --help
 Finds the session with the smallest idle time corresponding to the
 specified user and by default outputs the number of seconds idle.
 
-=head1 BUGS
-
-uidle primarily relies on being able to parse idle time from the
-output of C<finger>.  C<finger> iterates over the active login records
-in F<utmp>, and for each determines idle time by looking at the
+uidle primarily relies on being able to extra idle time from the
 C<atime> of the tty referred to in the C<ut_line> field of the C<utmp>
-struct.
+struct for active login sessions.
 
-Some distros such as Fedora 16 seems to create an entry for the Xorg
-display:
+Some distros such as Fedora 16 seem to set a C<ut_line> field value
+for the Xorg display which relates to one of the Linux virtual
+consoles:
 
     $ who
     adam     tty1         2010-01-20 11:03 (:0)
 
 However, distros such as openSUSE 12.2 instead write C<:0> to
-the C<ut_line> field in the C<utmp> struct:
+the C<ut_line> field:
 
     $ who
     adam     :0           Oct  9 09:05 (console)
@@ -66,6 +63,11 @@ if C<routine> is running.
 
 =back
 
+=head1 RETURN CODE
+
+Returns success (zero) if an idle time was found, or failure (1)
+otherwise.
+
 =head1 AUTHOR
 
 Adam Spiers <uidle@adamspiers.org>
@@ -83,30 +85,16 @@ use warnings;
 
 use Date::Manip 'Delta_Format';
 use File::Basename;
+use File::stat;
 use Getopt::Long;
 use POSIX 'strftime';
 
-Getopt::Long::Configure('bundling');
-
 my %opts = ( verbosity => 1 );
-
-GetOptions(
-    \%opts,
-    'last|l', 'idle|i', 'human|h',
-    'tty|t', 'x11idle|x',
-    'verbosity|verbose|v:+',
-    'help|?'
-) or usage();
-usage() if $opts{help};
-
-use constant NEED_ON_SINCE => 1;
-use constant NEED_IDLE     => 2;
-use constant NEED_LOGIN    => 3;
 
 sub usage {
     my $me = basename $0;
     die <<EOUSAGE;
-Usage: $me [options] [username[\@host]]
+Usage: $me [options]
 
 Finds the session with the smallest idle time corresponding to the
 specified user and by default outputs the number of seconds idle.
@@ -124,216 +112,67 @@ If the output is not what you expect, read the man page / inline POD.
 EOUSAGE
 }
 
-my $who = shift || scalar(getpwuid $<);
-
-my $x11idle = $ENV{DISPLAY} ? `x11idle 2>&1` : '';
-if (defined $x11idle) {
-    chomp $x11idle;
-}
-else {
-    $x11idle = '';
+sub debug {
+    my $level = shift;
+    warn @_, "\n" if $opts{verbosity} >= $level;
 }
 
-my $cmd = "finger -l -m $who";
-#my $cmd = "cat";
-debug(2, "Command: $cmd");
-open(FINGER, "$cmd|") or die "open($cmd|) failed: $!\n";
+sub run_x11idle {
+    return '' unless $ENV{DISPLAY};
+    chomp (my $out = `x11idle 2>&1` || '');
+    return $out;
+}
 
-my ($least_idle_secs, $least_idle_tty, $tty, $from);
-
-# finger(1) should tell us idle times for the various login sessions.
-# If the expected idle time line is absent, it indicates that the
-# corresponding session is not idle at all.  We aim to find the
-# session with the *least* idle time.
-#
-# The format of finger(1)'s output varies by distro.  Sometimes the
-# idle time is on a line following an 'On since' line, e.g.
-#
-# Typical output from finger -l -m adam on Fedora 16:
-#
-#   Login: adam                             Name: Adam Spiers
-#   Directory: /home/adam                   Shell: /bin/zsh
-#   On since Mon Oct 29 17:09 (GMT) on tty1 from :0
-#       38 days 5 hours idle
-#   On since Mon Oct 29 17:10 (GMT) on pts/2 from pacific-wired.linksys.moosehall
-#      1 second idle
-#   New mail received Mon Oct  1 04:00 2012 (BST)
-#        Unread since Thu Sep  6 19:16 2012 (BST)
-#   No Plan.
-#
-# But sometimes it appears on the 'On since' line, e.g.
-#
-# Typical output from finger -l -m adam on openSUSE 12.2:
-#
-#   Login: adam           			Name: Adam Spiers
-#   Directory: /home/adam               	Shell: /bin/zsh
-#   On since Wed Oct 24 14:34 (BST) on :0 (messages off) from console
-#   On since Wed Oct 24 14:34 (BST) on console, idle 5 days 3:23, (messages off)
-#       from :0
-#   On since Mon Oct 29 15:56 (GMT) on pts/7,   idle 0:58, from :0.0
-#   Last login Sat Oct 27 23:57 (BST) on pts/6 from 10.70.61.108
-#   No Mail.
-#   No Plan.
-#
-
-my $state = NEED_LOGIN;
-while (<FINGER>) {
-    chomp;
-    debug(3, "Parsing line [$_]");
-
-    if ($state == NEED_LOGIN) {
-        debug(5, "  state is currently NEED_LOGIN");
-        if (/^Login( name)?:/i) {
-            debug(3, "    Got login line");
-            $state = NEED_ON_SINCE;
-            undef $tty;
-            undef $from;
-        }
-        else {
-            debug(4, "  . Looking for login; skipping line");
-        }
-        next;
+sub tty_idle {
+    my ($tty) = @_;
+    my $dev = "/dev/$tty";
+    my $sb = stat($dev);
+    if (! $sb) {
+        # unknown idle time for this tty (could be :0 on SUSE)
+        debug(3, "  couldn't stat $dev");
+        return undef;
     }
+    return time() - $sb->atime;
+}
 
-    if ($state == NEED_ON_SINCE) {
-        debug(5, "  state is currently NEED_ON_SINCE");
-        if (s!\bon since.*? on (tty\d+|pts/\d+|:\d\d?),?\s*?(?: from (\S+))?!!i) {
-            $state = NEED_IDLE;
-            ($tty, $from) = ($1, $2);
-            $tty ||= '';
-            $from ||= '';
-            debug(3, "    tty [$tty] from [$from]");
-            if (/\bidle\b/) {
-                debug(3, "  < Merged line; redoing as [$_]");
-                redo;
-            }
-        }
-        else {
-            debug(4, "  . Looking for 'on since'; skipping line");
-        }
-        next;
-    }
+sub run_who {
+    my $me = shift || scalar(getpwuid $<);
 
-    if ($state == NEED_IDLE) {
-        debug(5, "  state is currently NEED_IDLE");
-        if (! /On since/ && s/\bidle(\s+time)?\b//i) {
-            my $secs = parse_idle_time($_);
+    my $cmd = "who";
+    #my $cmd = "cat";
+    open(WHO, "$cmd|") or die "open($cmd|) failed: $!\n";
 
-            # Prefer pts terminals to tty7, since more useful.
-            if ($tty =~ /^:\d+(\.\d)?$/) {
-                $secs += 1;
-                debug(2, "  - Upped idle time for $tty to $secs");
-            }
-            else {
-                debug(2, "  - Idle time for $tty is $secs");
-            }
+    my ($least_idle_secs, $least_idle_tty);
 
-            if (! defined $least_idle_secs) {
-                $least_idle_secs = $secs;
-                $least_idle_tty  = $tty;
-                debug(2, "  = Least idle now $secs seconds");
-            }
-            elsif ($secs < $least_idle_secs) {
-                debug(2, "  = Found smaller idle time of $secs seconds");
-                $least_idle_secs = $secs;
-                $least_idle_tty  = $tty;
-            }
-            $state = NEED_ON_SINCE;
+    while (<WHO>) {
+        chomp;
+        my ($user, $tty) = split /\s+/;
+        debug(2, "who: user $user, tty $tty");
+        if ($user ne $me) {
+            debug(2, "  skipping user $user, not $me");
             next;
         }
-
-        # On SUSE, :0 style lines don't display idle time.
-        # FIXME: does this break Fedora?
-        if ($tty =~ /^:\d+(\.\d)?$/) {
-            debug(3, "    ignoring $tty line");
-            $state = NEED_ON_SINCE;
+        my $idle_secs = tty_idle($tty);
+        if (defined $idle_secs) {
+            debug(2, "  idle for ${idle_secs}s on tty $tty");
         }
         else {
-            debug(2, "  ! Didn't get idle time on continuation line; assuming not idle at all.");
-            $least_idle_secs = 0;
-            $least_idle_tty  = $tty;
-            $state = NEED_ON_SINCE;
-            last;
+            debug(2, "  unknown idle time for tty $tty");
+            next;
+        }
+        if (! defined $least_idle_secs or $idle_secs < $least_idle_secs) {
+            $least_idle_secs = $idle_secs;
+            $least_idle_tty = $tty;
         }
     }
-}
 
-if ($state == NEED_IDLE) {
-    debug(2, "Finished expecting an idle line; assuming not idle at all.");
-    $least_idle_secs = 0;
-    $least_idle_tty  = $tty;
-}
+    close(WHO);
 
-if ($state == NEED_LOGIN) {
-    die "Didn't get login line.\n";
-}
-
-if ($opts{x11idle} and $x11idle =~ /^\d+$/) {
-    $x11idle = int($x11idle / 1000);
-    # Give a slight preference to tty-based idle times,
-    # since they're more informative.
-    if ($x11idle + 1 < $least_idle_secs) {
-        $least_idle_secs = $x11idle;
-        $least_idle_tty  = $ENV{DISPLAY} || 'x11';
-    }
-}
-
-sub parse_idle_time {
-    my ($text) = @_;
-    debug(4, "    parse_idle_time($text)");
-    $_ = $text;
-
-    s/^\s+//;
-  
-    my $parsed = 0;
-    my $secs = 0;
-    if (s/(\d+) days?\s+//i) {
-        $secs += $1 * 3600 * 24;
-        $parsed = 1;
-    }
-    debug(4, "    \$text now [$_]; \$secs == $secs");
-
-    if (/(\d?\d):(\d\d)?/) {
-        # SUSE style, only gives to the minute, not to the second :-(
-        # On since Mon Jan 18 11:50 (GMT) on pts/12, idle 6 days 4:33
-        # On since Mon Jan 18 11:50 (GMT) on pts/13, idle 6:08
-        debug(4, "    SUSE style: $1 hours $2 minutes");
-        $secs += $1 * 3600 + $2 * 60;
-    }
-    else {
-        # Fedora style:
-        #   1 hour 15 minutes 49 seconds idle
-        my ($h, $m, $s) = (0, 0, 0);
-        if (s/(\d+) hours?\s+//i) {
-            $secs += ($s=$1) * 3600;
-            $parsed = 1;
-        }
-        if (s/(\d+) min(ute)?s?\s+//i) {
-            $secs += ($m=$1) * 60;
-            $parsed = 1;
-        }
-        if (s/(\d+) sec(ond)?s?\s+//i) {
-            $secs += ($s=$1);
-            $parsed = 1;
-        }
-        die "Failed to parse idle line [$text]\n"
-        unless $parsed;
-        debug(4, sprintf "    Fedora style: %d:%02d:%02d", $h, $m, $s);
-    }
-
-    return $secs;
-}
-
-close(FINGER);
-
-if (! defined $least_idle_secs) {
-    # Didn't get any idle time; not logged on.
-    exit 1;
+    return ($least_idle_secs, $least_idle_tty);
 }
 
 sub get_time_idle {
-    return $least_idle_secs unless $opts{human};
-
+    my ($least_idle_secs) = @_;
     my @units = Delta_Format(
         $least_idle_secs . 'S',
         0,
@@ -346,7 +185,6 @@ sub get_time_idle {
         if (my $val = $units[$i]) {
             my $out = "$val $unit";
             $out   .= "s" if $val != 1;
-            debug(3, "adding $out");
             push @out, $out;
         }
         $i++;
@@ -356,24 +194,60 @@ sub get_time_idle {
     return "@out idle", 
 }
 
-my %out;
-$out{'idle'} = get_time_idle();
-$out{'last'} = time() - $least_idle_secs;
-$out{'last'} = "last active at " . scalar localtime($out{'last'})
-    if $opts{human};
-$out{'tty'}  = $opts{human} ? "on $least_idle_tty" : $least_idle_tty;
+sub output {
+    my ($least_idle_secs, $least_idle_tty) = @_;
 
-$opts{'idle'} = 1 unless ! $opts{idle} && ($opts{'last'} || $opts{'tty'});
-my @out;
-foreach (qw{idle tty last}) {
-    push @out, $out{$_} if $opts{$_};
+    my %out;
+    $out{'idle'} = $opts{human} ? get_time_idle($least_idle_secs) : $least_idle_secs;
+    $out{'last'} = time() - $least_idle_secs;
+    $out{'last'} = "last active at " . scalar localtime($out{'last'})
+        if $opts{human};
+    $out{'tty'}  = $opts{human} ? "on $least_idle_tty" : $least_idle_tty;
+
+    $opts{'idle'} = 1 unless ! $opts{idle} && ($opts{'last'} || $opts{'tty'});
+    my @out;
+    foreach (qw{idle tty last}) {
+        push @out, $out{$_} if $opts{$_};
+    }
+
+    my $out = join(" ", @out);
+    $out =~ s/ last active/,$&/;
+    print "$out\n";
 }
 
-my $out = join(" ", @out);
-$out =~ s/ last active/,$&/;
-print "$out\n";
+sub main {
+    Getopt::Long::Configure('bundling');
 
-sub debug {
-    my $level = shift;
-    warn @_, "\n" if $opts{verbosity} >= $level;
+    GetOptions(
+        \%opts,
+        'last|l', 'idle|i', 'human|h',
+        'tty|t', 'x11idle|x',
+        'verbosity|verbose|v:+',
+        'help|?'
+    ) or usage();
+    usage() if $opts{help} or @ARGV;
+
+    my ($least_idle_secs, $least_idle_tty) = run_who();
+
+    if ($opts{x11idle}) {
+        my $x11idle = run_x11idle();
+        if ($x11idle =~ /^\d+$/) {
+            $x11idle = int($x11idle / 1000);
+            # Give a slight preference to tty-based idle times,
+            # since they're more informative.
+            if ($x11idle + 1 < $least_idle_secs) {
+                $least_idle_secs = $x11idle;
+                $least_idle_tty  = $ENV{DISPLAY} || 'x11';
+            }
+        }
+    }
+
+    if (! defined $least_idle_secs) {
+        debug(1, "Didn't get any idle time; assuming not logged on.");
+        exit 1;
+    }
+
+    output($least_idle_secs, $least_idle_tty);
 }
+
+main();
