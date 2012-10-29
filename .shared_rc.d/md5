@@ -1,10 +1,11 @@
 md5 () {
     case "$OSTYPE" in
-          solaris*)
+        solaris*)
             # DON'T DO THIS - JUST INCLUDE md5sum BUILD IN ~/local/solaris
-            exec cksum "$@"
+            cksum "$@"
             ;;
-         *) exec md5sum "$@"
+         *)
+            md5sum "$@"
             ;;
     esac
 }
