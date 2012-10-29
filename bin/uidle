@@ -1,11 +1,82 @@
 #!/usr/bin/env perl
-#
-# Finds the session with the smallest idle time corresponding to the
-# specified user and by default outputs the number of seconds idle.
-#
-# Run with --help for help.
-#
-# Adam Spiers <uidle@adamspiers.org>
+
+=head1 NAME
+
+uidle - output idle time for specified user
+
+=head1 SYNOPSIS
+
+$ uidle --help
+
+=head1 DESCRIPTION
+
+Finds the session with the smallest idle time corresponding to the
+specified user and by default outputs the number of seconds idle.
+
+=head1 BUGS
+
+uidle primarily relies on being able to parse idle time from the
+output of C<finger>.  C<finger> iterates over the active login records
+in F<utmp>, and for each determines idle time by looking at the
+C<atime> of the tty referred to in the C<ut_line> field of the C<utmp>
+struct.
+
+Some distros such as Fedora 16 seems to create an entry for the Xorg
+display:
+
+    $ who
+    adam     tty1         2010-01-20 11:03 (:0)
+
+However, distros such as openSUSE 12.2 instead write C<:0> to
+the C<ut_line> field in the C<utmp> struct:
+
+    $ who
+    adam     :0           Oct  9 09:05 (console)
+
+On older Fedora, the C<atime> of F</dev/tty1> would also be updated
+even by a mere press of a Shift key on the :0 display (although not by
+a mouse pointer movement).  This provided a helpful way of detecting
+keyboard activity on the X console.
+
+Unfortunately, on Fedora 16 and openSUSE 12.2, it seems that X
+keyboard activity no longer updates the C<atime> of any
+F</dev/tty[0-9]> device.  This leaves two avenues for obtaining
+accurate idle time:
+
+=over 4
+
+=item * from idle times for individual ptys
+
+This first can only work if urxvt/xterm etc. are setuid or setgid, so
+they can update utmp.  By default, openSUSE does not ship them in this
+way, so you need to make them so, e.g.
+
+    chgrp utmp `which urxvt`
+    chmod g+s  `which urxvt`
+
+=item * x11idle
+
+Alternatively, or in addition, ensure x11idle.c from org-mode's
+contrib/scripts/ directory is compiled and installed on the C<$PATH>,
+and then run C<uidle> with the C<-x> option.  This uses the F<Xss1>
+library to give very accurate idle time; however, it counts mouse
+pointer movement as activity, which with a twitchy mouse could
+accidentally cause a machine shutdown in the middle of the night
+if C<routine> is running.
+
+=back
+
+=head1 AUTHOR
+
+Adam Spiers <uidle@adamspiers.org>
+
+=head1 SEE ALSO
+
+L<routine>, L<active-since>, L<finger(1)>, L<utmp(5)>
+
+=cut
+
+1;
 
 use strict;
 use warnings;
@@ -49,8 +120,7 @@ Options:
   -v, --verbose[=N] Increase [specify] verbosity (defaults to 1)
   -?, --help
 
-Note: on SUSE systems, you need -x, or to ensure that your terminal
-program will update utmp; it may need to be setuid root to do this.
+If the output is not what you expect, read the man page / inline POD.
 EOUSAGE
 }
 
@@ -72,12 +142,41 @@ open(FINGER, "$cmd|")
 
 my ($least_idle_secs, $least_idle_tty, $tty, $from);
 
-# The format of finger(1)'s output is such that an idle time line
-# always follows an 'On since' line.  If the expected idle time line
-# is absent, it indicates that the corresponding session is not idle
-# at all.
+# finger(1) should tell us idle times for the various login sessions.
+# If the expected idle time line is absent, it indicates that the
+# corresponding session is not idle at all.  We aim to find the
+# session with the *least* idle time.
 #
-# We aim to find the session with the *least* idle time.
+# The format of finger(1)'s output varies by distro.  Sometimes the
+# idle time is on a line following an 'On since' line, e.g.
+#
+# Typical output from finger -l -m adam on Fedora 16:
+#
+#   Login: adam                             Name: Adam Spiers
+#   Directory: /home/adam                   Shell: /bin/zsh
+#   On since Mon Oct 29 17:09 (GMT) on tty1 from :0
+#       38 days 5 hours idle
+#   On since Mon Oct 29 17:10 (GMT) on pts/2 from pacific-wired.linksys.moosehall
+#      1 second idle
+#   New mail received Mon Oct  1 04:00 2012 (BST)
+#        Unread since Thu Sep  6 19:16 2012 (BST)
+#   No Plan.
+#
+# But sometimes it appears on the 'On since' line, e.g.
+#
+# Typical output from finger -l -m adam on openSUSE 12.2:
+#
+#   Login: adam           			Name: Adam Spiers
+#   Directory: /home/adam               	Shell: /bin/zsh
+#   On since Wed Oct 24 14:34 (BST) on :0 (messages off) from console
+#   On since Wed Oct 24 14:34 (BST) on console, idle 5 days 3:23, (messages off)
+#       from :0
+#   On since Mon Oct 29 15:56 (GMT) on pts/7,   idle 0:58, from :0.0
+#   Last login Sat Oct 27 23:57 (BST) on pts/6 from 10.70.61.108
+#   No Mail.
+#   No Plan.
+#
+
 my $state = NEED_LOGIN;
 while (<FINGER>) {
   chomp;
