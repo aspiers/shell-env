@@ -94,5 +94,5 @@ for src in "${srcs[@]}"; do
 
     echo
     echo rm-src-dups $dry_run -s "$src" . "$dst"
-    rm-src-dups -vv $dry_run -s "$src" . "$dst"
+    [ -d "$dst/$src" ] && rm-src-dups -vv $dry_run -s "$src" . "$dst"
 done
