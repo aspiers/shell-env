@@ -49,6 +49,9 @@ exit 0;
 
 sub rm_src_dups {
   my ($src, $dst) = @_;
+  -d $src or die "$src isn't a directory\n";
+  -d $dst or die "$dst isn't a directory\n";
+
   my $pid = open(DIFF, "-|");
   defined $pid or die "fork failed: $!\n";
   if (! $pid) {
