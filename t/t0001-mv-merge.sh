@@ -78,8 +78,6 @@ check_inode () {
 	fi
 }
 
-# TODO dry run
-
 test_expect_success 'mv-merge without overwrite' '
 	init &&
 	run_mv_merge &&
@@ -140,5 +138,31 @@ test_expect_success 'mv-merge -f - overwriting all files' '
 	check_inode "$dst/a/b/only-src" "$i1" &&
 	check_inode "$dst/c/only-src"	"$i2"
 '
+
+test_expect_success 'mv-merge without overwrite' '
+	init &&
+	run_mv_merge &&
+	check_differences "$VANILLA/src" "$src" <<-EOF &&
+		Only in $VANILLA/src/a/b: only-src
+		Only in $VANILLA/src/a/b: same
+		Only in $VANILLA/src/c: only-src
+		Only in $VANILLA/src/c: same
+	EOF
+	check_differences "$VANILLA/dst" "$dst" <<-EOF
+		Only in $dst/a/b: only-src
+		Only in $dst/c: only-src
+	EOF
+'
+
+for opts in '' '-u' '-f'; do
+	test_expect_success "mv-merge --dry-run $opt" '
+		init &&
+		run_mv_merge --dry-run '"$opt"' &&
+		check_differences "$VANILLA/src" "$src" <<-EOF &&
+		EOF
+		check_differences "$VANILLA/dst" "$dst" <<-EOF
+		EOF
+	'
+done
 
 test_done
