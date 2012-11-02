@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/ .
 
+SHELL_PATH='/bin/sh'
+PERL_PATH='/usr/bin/perl'
+DIFF='diff'
+PYTHON_PATH='/usr/bin/python'
+TAR='tar'
+NO_CURL=''
+USE_LIBPCRE=''
+NO_PERL=''
+NO_PYTHON=''
+NO_UNIX_SOCKETS=''
+NO_GETTEXT=''
+GETTEXT_POISON=''
+
 # if --tee was passed, write the output not only to the terminal, but
 # additionally to the file test-results/$BASENAME.out, too.
 case "$GIT_TEST_TEE_STARTED, $* " in
@@ -49,9 +62,7 @@ then
 	# elsewhere
 	TEST_OUTPUT_DIRECTORY=$TEST_DIRECTORY
 fi
-GIT_BUILD_DIR="$TEST_DIRECTORY"/..
 
-. "$GIT_BUILD_DIR"/GIT-BUILD-OPTIONS
 export PERL_PATH SHELL_PATH
 
 # For repeatability, reset the environment to known value.
