@@ -89,9 +89,9 @@ parse_opts "$@"
 
 abs_cwd=`pwd`
 for src in "${srcs[@]}"; do
-    echo rsync -Rav --link-dest=$abs_cwd $dry_run $overwrite "$src" "$dst"
-    rsync -Rav --link-dest=$abs_cwd $dry_run $overwrite "$src" "$dst"
+    echo rsync -Rav --link-dest="$abs_cwd" $dry_run $overwrite "$src" "$dst"
+    rsync -Rav --link-dest="$abs_cwd" $dry_run $overwrite "$src" "$dst"
 
-    echo rm-src-dups $dry_run "$src" "$dst"
-    rm-src-dups $dry_run "$src" "$dst"
+    echo rm-src-dups $dry_run -s "$src" . "$dst"
+    rm-src-dups $dry_run -s "$src" . "$dst"
 done
