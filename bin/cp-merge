@@ -1,120 +1,18 @@
 #!/bin/sh
-# 
-# Copies the entire contents of one directory to another, even if some
-# subdirectories are common to both source and destination directories.
-#
-# This is preferred to rsync when you don't want to overwrite destination
-# files (accomplished via tar -k), and to unison when the destination
-# tree is substantially larger/different to the source tree.
-#
-# Adam Spiers <me@adamspiers.org>
-#
 
-set -e
-me=`basename $0`
+cat <<'EOF' >&2
+Error: cp-merge has been removed.  Consider using rsync with 
+the following options instead:
 
-usage () {
-  cat <<EOF >&2
-Usage: $me [-l] [--dry-run|-n] [-f|-u] [-s SUBPATH] SRCDIR DESTDIR
-Options (must be in order specified above!)
-   -f              Force overwrites of existing files in dest tree
-                   (does not overwrite by default)
-   -u              Update existing files in dest tree only if source is newer
-   -n, --dry-run   Don't actually do anything.
-   -s SUBPATH      Only act on subpath of SRCDIR/DESTDIR
-   -l              Copy with hard links (used with mv-merge for speed)
+ -R, --relative              use relative path names
+ -u, --update                skip files that are newer on the receiver
+     --existing              skip creating new files on receiver
+     --ignore-existing       skip updating files that already exist on receiver
+     --link-dest=DIR         hardlink to files in DIR when unchanged
 
-N.B. Consider rsync/unison as possible alternatives.
-EOF
-  exit 1
-}
-
-if [ "$1" == -h ] || [ "$1" == --help ]; then
-  usage
-fi
-
-if [ "$1" == -l ]; then
-  pax_link='-l '
-  shift
-fi
-
-if [ "$1" = '--dry-run' ] || [ "$1" = '-n' ]; then
-  dry_run=y
-  shift
-fi
-
-if [ "$1" == -f ]; then
-  # _F_orce overwriting of existing files in dest
-  tar_keep=
-  pax_keep=
-  shift
-elif [ "$1" == -u ]; then
-  # _F_orce overwriting of existing files in dest
-  tar_keep=--keep-newer-files
-  pax_keep='-u '
-  shift
-else
-  # Default to keeping existing files
-  tar_keep=--keep-old-files
-  pax_keep='-k '
-fi
-
-if [ "$1" = '-s' ]; then
-  subpath="$2"
-  shift; shift
-fi
-
-if [ $# != 2 ]; then
-  echo "ARGV after options: $*"
-  usage
-fi
-
-if [ -z "$subpath" ]; then
-  src="$1"
-  dest="$2"
-else
-  src="$1/$subpath"
-  dest="$2/$subpath"
-  mkdir -p "$dest"
-fi
-
-if ! [ -d "$src"  ]; then
-  echo "No such directory '$src'" >&2
-  exit 1
-fi
-if ! [ -d "$dest"  ]; then
-  echo "No such directory '$dest'" >&2
-  exit 1
-fi
-
-oldpwd=`pwd`
-
-cd "$dest"
-absdest=`pwd`
-
-cd "$oldpwd"
-cd "$src"
-
-if [ -n "$dry_run" ]; then
-  cat <<EOF >&2
-# This is how you do it:
-cd $src
-# Then one of:
-cp -r --reply=no . "$absdest"
-cp -r -f . "$absdest"
-cp -r -u . "$absdest"
-pax -r -w $pax_link${pax_keep}. "$absdest"
-# etc.
-
-# N.B. Consider rsync/unison as possible alternatives.
+If hard-linking is required between sources and destination, set
+DIR to `pwd` (rsync treats as relative to rsync destination path).
 EOF
 
-  exit 0
-fi
+exit 1
 
-# -l means use hard links - speeds things up dramatically
-echo "cd `pwd`"
-echo "pax -r -w $pax_link${pax_keep}. $absdest"
-pax -r -w $pax_link $pax_keep . "$absdest"
-
-#tar -cf "$temptar" . | tar -C "$absdest" -x $tar_keep -f -
