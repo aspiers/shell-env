@@ -15,7 +15,7 @@ PROVE ?= prove
 DEFAULT_TEST_TARGET ?= test
 
 # Shell quote;
-SHELL_PATH_SQ = $(subst ','\'',$(SHELL_PATH))
+SHELL_PATH_SQ = $(subst ','\'',$(SHELL_PATH)) #'
 
 T = $(sort $(wildcard t[0-9][0-9][0-9][0-9]-*.sh))
 TSVN = $(sort $(wildcard t91[0-9][0-9]-*.sh))
