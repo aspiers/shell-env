@@ -25,3 +25,4 @@ COPYING
 /doc
 
 lib/perl5/Sh\.t
+t
