@@ -429,6 +429,16 @@ test_done () {
 	esac
 }
 
+if test -z "$GIT_TEST_CMP"
+then
+	if test -n "$GIT_TEST_CMP_USE_COPIED_CONTEXT"
+	then
+		GIT_TEST_CMP="$DIFF -c"
+	else
+		GIT_TEST_CMP="$DIFF -u"
+	fi
+fi
+
 # Test repository
 test="trash directory.$(basename "$0" .sh)"
 test -n "$root" && test="$root/$test"
