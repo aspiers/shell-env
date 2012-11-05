@@ -58,7 +58,7 @@ if ! tmpdir=`mktemp -d "$ideal_dest.tmp.XXXXXXXX"`; then
 fi
 
 case "$archive" in
-    *.tar|*.gem)
+    *.tar)
         tar -C "$tmpdir" -xvf "$archive_path"
         ;;
     *.tar.gz|*.tgz)
@@ -75,6 +75,9 @@ case "$archive" in
         ;;
     *.7z)
         7za x -o"$tmpdir" "$archive_path"
+        ;;
+    *.gem)
+        gem unpack --target="$tmpdir" "$archive_path"
         ;;
     *.rar)
         archive_abspath=$( abs "$archive_path" )
