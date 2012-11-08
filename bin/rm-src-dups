@@ -12,6 +12,9 @@ use List::Util;
 sub usage {
   die <<EOUSAGE;
 Usage: $RealBin [options] SRC DST
+
+Removes files from SRC which were already identically in DST.
+
 Options:
   -n, --dry-run     Just show what would have been removed
   -k, --keep-dirs   Don't prune empty directories
