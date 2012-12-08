@@ -207,7 +207,6 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`waitpid`](https://github.com/aspiers/shell-env/blob/master/bin/waitpid) - Wait for a PID to finish.
     * [`waitproc`](https://github.com/aspiers/shell-env/blob/master/bin/waitproc) - Wait for a command to finish (uses [`waitpid`](https://github.com/aspiers/shell-env/blob/master/bin/waitpid)).
     * [`watchdiff`](https://github.com/aspiers/shell-env/blob/master/bin/watchdiff) - Like `watch`, but output in diff format
-    * [`wc-lots`](https://github.com/aspiers/shell-env/blob/master/bin/wc-lots) - Apparently pointless rewrite of `wc -`
     * [`wchan`](https://github.com/aspiers/shell-env/blob/master/bin/wchan) - `ps -O wchan` shortcut.
     * [`wget-monitor`](https://github.com/aspiers/shell-env/blob/master/bin/wget-monitor) - Simple URL monitor.
     * [`whenup`](https://github.com/aspiers/shell-env/blob/master/bin/whenup) - Wait for a host to become pingable and then alert or take some action.
