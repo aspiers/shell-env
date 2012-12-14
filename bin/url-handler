@@ -93,15 +93,31 @@ firefox_handler () {
     esac
 }
 
+# Checks for a named process running as me
+process_running_my_uid () {
+    proc="$1"
+    pgrep -u "`id -un`" "$@" >/dev/null
+}
+
 chrome_handler () {
+    if process_running_my_uid google-chrome; then
+        browser=google-chrome
+    elif process_running_my_uid chromium; then
+        browser=chromium
+    else
+        browser=chromium
+        #browser=google-chrome
+    fi
+
+    "$browser" "$1"
+
     if [ -z "$SSH_CONNECTION" ]; then
         if which wmctrl >&/dev/null; then
-            wmctrl -a chrome
+            wmctrl -a "$browser"
         else
             echo "WARNING: Didn't find wmctrl on \$PATH" >&2
         fi
     fi
-    google-chrome "$1"
 }
 
 case "$method" in
