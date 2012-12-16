@@ -44,7 +44,7 @@ if ($opts{'human-readable'}) {
   eval { require Number::Bytes::Human; };
   usage("Need Number::Bytes::Human CPAN module installed for --human-readable.\n")
     if $@;
-  Number::Bytes::Human->import qw(format_bytes);
+  Number::Bytes::Human->import(qw(format_bytes));
 }
 
 if (! $opts{path}) {
