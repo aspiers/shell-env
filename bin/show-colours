@@ -20,3 +20,6 @@ for bg in `seq 40 47`; do
   done
   echo
 done
+
+echo
+echo "See also tty-colours."
