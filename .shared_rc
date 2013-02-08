@@ -29,6 +29,14 @@ fi
 
 # }}}
 
+# {{{ TERM check
+
+if which tput >/dev/null 2>&1 && ! tput longname >/dev/null 2>&1; then
+    echo >&2 "\nWarning: $TERM not present in terminfo database; falling back to xterm."
+    TERM=xterm
+fi
+
+# }}}
 # {{{ Pager
 
 #export METAMAIL_PAGER='less -R'
