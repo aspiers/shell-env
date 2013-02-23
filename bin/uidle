@@ -235,7 +235,7 @@ sub main {
             $x11idle = int($x11idle / 1000);
             # Give a slight preference to tty-based idle times,
             # since they're more informative.
-            if ($x11idle + 1 < $least_idle_secs) {
+            if ($x11idle + 1 < ($least_idle_secs || 9999)) {
                 $least_idle_secs = $x11idle;
                 $least_idle_tty  = $ENV{DISPLAY} || 'x11';
             }
