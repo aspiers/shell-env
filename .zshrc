@@ -794,8 +794,7 @@ alias term='echo $TERM'
 # {{{ Changing terminal window/icon titles
 
 which cx >&/dev/null || cx () { }
-
-if [[ "$TERM" == ([Ex]term*|rxvt*|screen*) ]]; then
+if [[ "$TERM" == ([Ex]term*|rxvt*|screen*) ]] && [[ -z "$SKIP_CX" ]]; then
   # Could also look at /proc/$PPID/cmdline ...
   cx
 fi
