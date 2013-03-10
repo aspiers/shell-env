@@ -1,16 +1,16 @@
 # Adam's .inputrc
-#
-# $Id$
 
+# Crap from RedHat 6.2's /etc/inputrc.  Order does matter - for pry,
+# at least, these need to appear before any meta bindings.
+# meta-flag is a synonym for input-meta.
+
+set input-meta Off
+set convert-meta On
+set output-meta On
+
+# might need "\ep" / "\en" here
 Meta-p: history-search-backward
 Meta-n: history-search-forward
-
-# Crap from RedHat 6.2's /etc/inputrc
-
-set meta-flag On
-set input-meta On
-set convert-meta Off
-set output-meta On
 
 "\eOd": backward-word
 "\eOc": forward-word
