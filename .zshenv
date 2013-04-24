@@ -91,12 +91,9 @@ pythonpath=(
 sh_load_status "fpath/autoloads"
 
 fpath=(
-       $zdotdir/{.[z]sh/$ZSH_VERSION/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,.local,.$HOST},scripts}}(N)
+       $zdotdir/{.[z]sh/$ZSH_VERSION/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,/person-$ZDOTUSER,/host-$HOST},scripts}}(N)
 
        $fpath
-
-       # very old versions
-       /usr/doc/zsh*/[F]unctions(N)
       )
 
 # Autoload shell functions from all directories in $fpath.  Restrict
