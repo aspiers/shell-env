@@ -1,4 +1,3 @@
 #!/bin/sh
 
-df -lhT -x none "$@"
-
+exec dfll -h "$@"

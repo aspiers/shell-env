@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# dfl:dfll :: l:ll
+# df local disk partitions only (excluding tmpfs, loopback mounts etc.)
 
-df -lT -x none "$@"
+df -lT -x none -x tmpfs -x devtmpfs -x iso9660 "$@"
