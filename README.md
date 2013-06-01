@@ -79,6 +79,7 @@ for the most part they should work on any POSIX-oriented UNIX.
       even if some subdirectories are common to both source and destination
       directories.  See also [`mv-merge`](https://github.com/aspiers/shell-env/blob/master/bin/mv-merge).
     * [`crypt`](https://github.com/aspiers/shell-env/blob/master/bin/crypt) - Generate a hashed password.
+    * [`csort`](https://github.com/aspiers/shell-env/blob/master/bin/csort) - `sort(1)` helper which allows custom sort orders based on string/regexp matching
     * [`cy`](https://github.com/aspiers/shell-env/blob/master/bin/cy) - Show a whole calendar year.
     * [`dbm`](https://github.com/aspiers/shell-env/blob/master/bin/dbm) - [Simple DBM file reader/writer](http://adamspiers.org/computing/dbm/)
     * [`dfh`](https://github.com/aspiers/shell-env/blob/master/bin/dfh) - `df -h` wrapper

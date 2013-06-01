@@ -1,0 +1,91 @@
+#!/usr/bin/ruby
+#
+# sort(1) helper which allows custom sort orders based on string/regexp matching.
+# Prefixes each line with a given value according to whether the line or a field
+# within it matches a string or regexp.
+
+require 'optparse'
+require 'open3'
+
+def parse_options
+  unmatched = "Z"
+
+  parser = OptionParser.new do |opts|
+    opts.banner = <<EOF
+Usage: csort [options] PATTERN VALUE [PATTERN VALUE [...]]
+
+EOF
+    opts.on("-u", "--unmatched STR", String, "Set unmatched sort value [#{unmatched}]") do |v|
+      unmatched = v
+    end
+  end
+
+  def parser.help # ugh, why doesn't OptionParser allow setting a footer??
+    super + <<EOF
+
+Pattern formats:
+  /regexp/   - matches if the line contains the (non-anchored) regexp
+  N:/regexp/ - matches if the Nth field in the line contains the (non-anchored) regexp
+  N=/regexp/ - matches if the Nth field in the line is equal to the given string
+  string     - matches if the line is equal to the given string
+EOF
+  end
+
+  parser.parse!
+
+  if ARGV.length % 2 != 0
+    abort "Each pattern must have a corresponding value."
+  end
+
+  sort_map = [ ]
+  (0..ARGV.length-1).step(2).each do |i|
+    matcher = interpret_pattern ARGV[i]
+    value = ARGV[i+1]
+    sort_map.push [matcher, value]
+  end
+
+  return unmatched, sort_map
+end
+
+def interpret_pattern(pattern)
+  case pattern
+  when %r{^/(.+)/$}
+    re = Regexp.new($1)
+    return Proc.new { |line| line =~ re }
+  when %r{^(\d+):/(.+)/$}
+    fieldnum = $1.to_i - 1
+    re = Regexp.new($2)
+    return Proc.new { |line|
+      fields = line.split
+      fields[fieldnum] =~ re
+    }
+  when %r{^(\d+)=(.+)$}
+    fieldnum = $1.to_i - 1
+    str = $2
+    return Proc.new { |line|
+      fields = line.split
+      fields[fieldnum] == str
+    }
+  else
+    return Proc.new { |line| line == pattern }
+    #abort "Couldn't interpret pattern '#{pattern}'"
+  end
+end
+
+def line_prefix(line, sort_map)
+  sort_map.each do |matcher, value|
+    return value if matcher.call(line)
+  end
+  return nil
+end
+
+def main
+  unmatched, sort_map = parse_options
+
+  $stdin.each_line do |line|
+    prefix = line_prefix(line, sort_map) || unmatched
+    puts prefix + ' ' + line
+  end
+end
+
+main
