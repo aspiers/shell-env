@@ -2,4 +2,14 @@
 
 # df local disk partitions only (excluding tmpfs, loopback mounts etc.)
 
-df -lT -x none -x tmpfs -x devtmpfs -x iso9660 "$@"
+exclude="-x none -x tmpfs -x devtmpfs -x iso9660"
+
+df -lT $exclude "$@" |
+    csort \
+        1=Filesystem a \
+        1:/sda/ b \
+        1:/dm-/ c \
+        1:/dev\/mapper/ d \
+        |
+    sort -k1,1 -k6,6nr |
+    cut -c3-
