@@ -8,6 +8,7 @@ require 'optparse'
 require 'open3'
 
 def parse_options
+  delimiter = nil
   unmatched = "Z"
 
   parser = OptionParser.new do |opts|
@@ -15,7 +16,10 @@ def parse_options
 Usage: csort [options] PATTERN VALUE [PATTERN VALUE [...]]
 
 EOF
-    opts.on("-u", "--unmatched STR", String, "Set unmatched sort value [#{unmatched}]") do |v|
+    opts.on("-t", "--field-separator SEP", String, "set field delimiter [whitespace]") do |d|
+      delimiter = d
+    end
+    opts.on("-u", "--unmatched STR", String, "set unmatched sort value [#{unmatched}]") do |v|
       unmatched = v
     end
   end
@@ -33,21 +37,25 @@ EOF
 
   parser.parse!
 
+  if ARGV.length == 0
+    abort "Must have at least one pattern and value."
+  end
+
   if ARGV.length % 2 != 0
     abort "Each pattern must have a corresponding value."
   end
 
   sort_map = [ ]
   (0..ARGV.length-1).step(2).each do |i|
-    matcher = interpret_pattern ARGV[i]
+    matcher = interpret_pattern(ARGV[i], delimiter)
     value = ARGV[i+1]
     sort_map.push [matcher, value]
   end
 
-  return unmatched, sort_map
+  return delimiter, unmatched, sort_map
 end
 
-def interpret_pattern(pattern)
+def interpret_pattern(pattern, delimiter)
   case pattern
   when %r{^/(.+)/$}
     re = Regexp.new($1)
@@ -56,14 +64,14 @@ def interpret_pattern(pattern)
     fieldnum = $1.to_i - 1
     re = Regexp.new($2)
     return Proc.new { |line|
-      fields = line.split
+      fields = delimiter ? line.split(delimiter) : line.split
       fields[fieldnum] =~ re
     }
   when %r{^(\d+)=(.+)$}
     fieldnum = $1.to_i - 1
     str = $2
     return Proc.new { |line|
-      fields = line.split
+      fields = delimiter ? line.split(delimiter) : line.split
       fields[fieldnum] == str
     }
   else
@@ -80,11 +88,11 @@ def line_prefix(line, sort_map)
 end
 
 def main
-  unmatched, sort_map = parse_options
+  delimiter, unmatched, sort_map = parse_options
 
   $stdin.each_line do |line|
     prefix = line_prefix(line, sort_map) || unmatched
-    puts prefix + ' ' + line
+    puts prefix + (delimiter || ' ') + line
   end
 end
 
