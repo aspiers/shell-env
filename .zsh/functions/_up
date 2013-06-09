@@ -4,4 +4,4 @@ local expl
 
 _description files expl 'archive file'
 
-_files "$expl[@]" -g '(#i)*.(tar.(gz|Z)|tgz|zip|rar|xpi|jar|sar|7z|class|job|pylib|apk)(-.)'
+_files "$expl[@]" -g '(#i)*.(tar.(gz|Z)|tgz|tar|zip|rar|xpi|jar|sar|7z|class|job|pylib|apk)(-.)'
