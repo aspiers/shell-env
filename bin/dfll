@@ -6,10 +6,14 @@ exclude="-x none -x tmpfs -x devtmpfs -x iso9660"
 
 df -lT $exclude "$@" |
     csort \
-        1=Filesystem a \
-        1:/sda/ b \
-        1:/dm-/ c \
-        1:/dev\/mapper/ d \
+        1=Filesystem    a \
+        1:/sda/         b \
+        1:/dm-/         c \
+        7=/             d \
+        7=/home         e \
+        7:/^\/home/     f \
+        7:/\/mnt/       h \
+        1:/dev\/mapper/ g \
         |
     sort -k1,1 -k6,6nr |
     cut -c3-
