@@ -1,0 +1,4 @@
+#compdef sc
+
+service=systemctl
+_systemd "$@"

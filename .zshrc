@@ -800,7 +800,6 @@ if [[ "$TERM" == ([Ex]term*|rxvt*|screen*) ]] && [[ -z "$SKIP_CX" ]]; then
 fi
 
 # }}}
-alias sc=screen
 
 # }}}
 # {{{ Other users

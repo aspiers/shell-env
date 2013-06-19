@@ -1,0 +1,9 @@
+#autoload
+
+if (( EUID == 0 )); then
+    systemctl "$@"
+else
+    sudo systemctl "$@"
+fi
+
+
