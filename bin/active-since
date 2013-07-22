@@ -26,13 +26,13 @@ threshold_epoch=`date +%s -d "$*"`
 threshold_human=`date -d "$*"`
 # don't use uidle -x since we don't want mouse movement
 # to trigger a reboot!
-if ! last_active_epoch=`uidle -l`; then
-    uidle -l -v5 > ~/.log/uidle-l.broke 2>&1
+if ! last_active_epoch=`uidle -lx`; then
+    uidle -lx -v5 > ~/.log/uidle-lx.broke 2>&1
     echo "uidle -l failed; aborting." >&2
     exit 1
 fi
-if ! last_active_human=`uidle -lh`; then
-    uidle -lh -v5 > ~/.log/uidle-lh.broke 2>&1
+if ! last_active_human=`uidle -lhx`; then
+    uidle -lhx -v5 > ~/.log/uidle-lhx.broke 2>&1
     echo "uidle -lh failed; aborting." >&2
     exit 1
 fi
