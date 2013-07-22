@@ -70,7 +70,8 @@ Timeout is in seconds, or can be a time parseable by the -d option of date(1).
 Options:
   -h, --help             Show this help
   -N, -SIG               On timeout, send signal SIG (e.g. 9 or KILL)
-  -c, --command=CMD      On timeout, run command 
+  -c, --command=CMD      On timeout, run command
+  -l, --log=LOGFILE      Log to LOGFILE
   -n, --no-signals       Disable default graceful killing
   -v, --verbose          Show progress in more detail
   -z, --zero             Zero exit code even on timeout 
