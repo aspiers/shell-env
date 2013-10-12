@@ -3,9 +3,12 @@
 # dts - runs a command, date/time-stamping each line of STDOUT
 #
 # Understands a single optional argument for the type of format to use.
-# l => localtime long format - DEFAULT
-# g => gmtime long format, e.g. 2003/09/05 09:52:17.139092
-# a => absolute seconds
+#   l => localtime long format - DEFAULT
+#   g => gmtime long format, e.g. 2003/09/05 09:52:17.139092
+#   a => absolute seconds
+#
+# See also ts from moreutils which does pretty much the same thing:
+#   http://git.kitenet.net/?p=moreutils.git;a=blob;f=ts;hb=HEAD
 
 use strict;
 use warnings;

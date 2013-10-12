@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# See also chronic from moreutils which does the same thing without
+# temporary files:
+#   http://git.kitenet.net/?p=moreutils.git;a=blob;f=chronic;hb=HEAD
+
 tmpdir=/tmp/quietrun.$$
 # Half-heartedly guard against symlink attacks/accidents.  There's
 # still a race.  Hmm.  Does anyone actually care?
