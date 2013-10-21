@@ -37,7 +37,7 @@ EOF
 
     # Ensure we have $ZDOT_FIND_HOOKS; if this is being invoked from
     # be.sh then we probably don't.
-    source $ZDOTDIR/.shared_env 
+    source $ZDOTDIR/.shared_env
 
     # sort by filename not by path
     $ZDOT_FIND_HOOKS "$hookdir" | \
@@ -50,7 +50,10 @@ EOF
         # triggered by including a magic cookie in the hook file.
         if grep -q '%% Executable hook %%' "$conf"; then
             echo "# Output of $conf follows:" >> "$config"
-            "$conf" >> "$config"
+            if ! "$conf" >> "$config"; then
+                echo >&2 "$conf failed; aborting."
+                exit 1
+            fi
         else
             echo "# Include of $conf follows:" >> "$config"
             cat "$conf" >> "$config"
