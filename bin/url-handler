@@ -102,18 +102,22 @@ process_running_my_uid () {
 chrome_handler () {
     if process_running_my_uid google-chrome; then
         browser=google-chrome
+    elif process_running_my_uid chrome; then
+        browser=google-chrome
+        switch_to=chrome
     elif process_running_my_uid chromium; then
         browser=chromium
     else
         browser=chromium
         #browser=google-chrome
     fi
+    : ${switch_to:=$browser}
 
     "$browser" "$1"
 
     if [ -z "$SSH_CONNECTION" ]; then
         if which wmctrl >&/dev/null; then
-            wmctrl -a "$browser"
+            wmctrl -a "$switch_to"
         else
             echo "WARNING: Didn't find wmctrl on \$PATH" >&2
         fi
