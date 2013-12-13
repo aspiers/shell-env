@@ -28,10 +28,11 @@ use File::Spec;
 use File::Temp qw(tempfile);
 use Getopt::Long;
 use IPC::Open2;
+use Time::HiRes qw(sleep);
 
 $| = 1;
 
-my $DEFAULT_INTERVAL = 2;
+my $DEFAULT_INTERVAL = 2.0;
 my $tmpdir = File::Spec->tmpdir;
 my ($old_fh, $old_fn) = tempfile("watchdiff-$$-old-XXXXXXXXXXXXXXX", DIR => $tmpdir);
 my ($new_fh, $new_fn) = tempfile("watchdiff-$$-new-XXXXXXXXXXXXXXX", DIR => $tmpdir);
@@ -61,7 +62,7 @@ sub parse_opts {
   GetOptions(
     \%opts,
     'help|h',
-    'interval|n=i',
+    'interval|n=f',
     'clear|d',
   ) or usage();
   usage() if @ARGV == 0 or $opts{help};
