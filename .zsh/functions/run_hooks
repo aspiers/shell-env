@@ -8,8 +8,8 @@
 # See ConfigHooks.org for details.
 
 # Default to 1, and treat empty as 0.  This ensures we have an integer.
-: ${DEBUG_LOCAL_HOOKS=1}
-: ${DEBUG_LOCAL_HOOKS:=0}
+: ${DEBUG_LOCAL_HOOKS=1}  # Only if not set at all
+: ${DEBUG_LOCAL_HOOKS:=0} # Only has an effect if set to empty
 
 process_hook () {
   zdot_hook_path="$1"
@@ -20,7 +20,7 @@ process_hook () {
     fi
     return 0
   fi
-  
+
   if [ -z "$hooks_found" ]; then
     hooks_found="$zdot_hook_path"
   else
