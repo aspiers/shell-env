@@ -23,21 +23,31 @@ abort () {
     die "$*; aborting."
 }
 
+interactive_mode () {
+    [ -t 1 ]
+}
+
 progress () {
-    echo "$*"
+    if interactive_mode; then
+        echo "$*"
+    fi
 }
 
 usage () {
     cat <<EOF >&2
 Usage: $me ARCHIVE
+
 Unpacks the given archive.  Supported formats include:
 
   tar (incl. compressed with gzip, bzip2, xz), zip, 7z, rar,
   apk, xpi, jar, class, gem
 
-Guarantees that extraction will always be to a newly-created
-directory rather than polluting an existing one with multiple
-entries.
+Guarantees that extraction will always be to a newly-created directory
+rather than polluting an existing one with multiple entries.
+
+If STDOUT is not a tty, only the name of the new directory containing
+the unpacked archive will be output to STDOUT.  This can then be
+captured and reused programmatically in other scripts.
 EOF
     exit 1
 }
@@ -79,6 +89,15 @@ get_ideal_dest_dir () {
     esac
 }
 
+# Runs external commands, redirecting output as required.
+run () {
+    if interactive_mode; then
+        "$@"
+    else
+        "$@" >&2
+    fi
+}
+
 extract () {
     if ! tmpdir=`mktemp -d "$ideal_dest_dir.tmp.XXXXXXXX"`; then
         die "mktemp failed: $!"
@@ -86,30 +105,30 @@ extract () {
 
     case "$archive" in
         *.tar)
-            tar -C "$tmpdir" -xvf "$archive_path"
+            run tar -C "$tmpdir" -xvf "$archive_path"
             ;;
         *.tar.gz|*.tgz)
-            tar -C "$tmpdir" -zxvf "$archive_path"
+            run tar -C "$tmpdir" -zxvf "$archive_path"
             ;;
         *.tar.bz2|*.tbz)
-            tar -C "$tmpdir" -jxvf "$archive_path"
+            run tar -C "$tmpdir" -jxvf "$archive_path"
             ;;
         *.tar.xz|*.txz)
-            tar -C "$tmpdir" -Jxvf "$archive_path"
+            run tar -C "$tmpdir" -Jxvf "$archive_path"
             ;;
         *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk)
-            unzip -d "$tmpdir" "$archive_path"
+            run unzip -d "$tmpdir" "$archive_path"
             ;;
         *.7z)
-            7za x -o"$tmpdir" "$archive_path"
+            run 7za x -o"$tmpdir" "$archive_path"
             ;;
         *.gem)
-            gem unpack --target="$tmpdir" "$archive_path"
+            run gem unpack --target="$tmpdir" "$archive_path"
             ;;
         *.rar)
             archive_abspath=$( abs "$archive_path" )
             pushd "$tmpdir"
-            unrar x "$archive_abspath"
+            run unrar x "$archive_abspath"
             popd
             ;;
         *)
@@ -187,6 +206,9 @@ main () {
     ensure_single_dir
 
     progress "Look inside $dest_dir"
+    if ! [ -t 1 ]; then
+        echo "$dest_dir"
+    fi
 }
 
 main "$@"
