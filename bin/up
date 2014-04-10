@@ -30,6 +30,14 @@ progress () {
 usage () {
     cat <<EOF >&2
 Usage: $me ARCHIVE
+Unpacks the given archive.  Supported formats include:
+
+  tar (incl. compressed with gzip, bzip2, xz), zip, 7z, rar,
+  apk, xpi, jar, class, gem
+
+Guarantees that extraction will always be to a newly-created
+directory rather than polluting an existing one with multiple
+entries.
 EOF
     exit 1
 }
