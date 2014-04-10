@@ -34,128 +34,152 @@ EOF
     exit 1
 }
 
-if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
-    usage
-fi
+parse_args () {
+    if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
+        usage
+    fi
 
-archive_path="$1"
-archive="`basename \"$1\"`"
+    archive_path="$1"
+    archive="`basename \"$1\"`"
 
-if ! [ -e "$archive_path" ]; then
-    abort "$archive_path does not exist"
-fi
+    if ! [ -e "$archive_path" ]; then
+        abort "$archive_path does not exist"
+    fi
+}
 
-ideal_dest=
-case "$archive" in
-    *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem)
-        ideal_dest="${archive%.*}"
-        ;;
-    *.tar.gz)
-        ideal_dest="${archive%.tar.gz}"
-        ;;
-    *.tar.bz2)
-        ideal_dest="${archive%.tar.bz2}"
-        ;;
-    *.tar.xz)
-        ideal_dest="${archive%.tar.xz}"
-        ;;
-    *.7z)
-        ideal_dest="${archive%.7z}"
-        ;;
-    *)
-        abort "$archive does not have a supported file extension"
-        ;;
-esac
+get_ideal_dest_dir () {
+    ideal_dest_dir=
+    case "$archive" in
+        *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem)
+            ideal_dest_dir="${archive%.*}"
+            ;;
+        *.tar.gz)
+            ideal_dest_dir="${archive%.tar.gz}"
+            ;;
+        *.tar.bz2)
+            ideal_dest_dir="${archive%.tar.bz2}"
+            ;;
+        *.tar.xz)
+            ideal_dest_dir="${archive%.tar.xz}"
+            ;;
+        *.7z)
+            ideal_dest_dir="${archive%.7z}"
+            ;;
+        *)
+            abort "$archive does not have a supported file extension"
+            ;;
+    esac
+}
 
-if ! tmpdir=`mktemp -d "$ideal_dest.tmp.XXXXXXXX"`; then
-    die "mktemp failed: $!"
-fi
+extract () {
+    if ! tmpdir=`mktemp -d "$ideal_dest_dir.tmp.XXXXXXXX"`; then
+        die "mktemp failed: $!"
+    fi
 
-case "$archive" in
-    *.tar)
-        tar -C "$tmpdir" -xvf "$archive_path"
-        ;;
-    *.tar.gz|*.tgz)
-        tar -C "$tmpdir" -zxvf "$archive_path"
-        ;;
-    *.tar.bz2|*.tbz)
-        tar -C "$tmpdir" -jxvf "$archive_path"
-        ;;
-    *.tar.xz|*.txz)
-        tar -C "$tmpdir" -Jxvf "$archive_path"
-        ;;
-    *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk)
-        unzip -d "$tmpdir" "$archive_path"
-        ;;
-    *.7z)
-        7za x -o"$tmpdir" "$archive_path"
-        ;;
-    *.gem)
-        gem unpack --target="$tmpdir" "$archive_path"
-        ;;
-    *.rar)
-        archive_abspath=$( abs "$archive_path" )
-        pushd "$tmpdir"
-        unrar x "$archive_abspath"
-        popd
-        ;;
-    *)
-        abort "$archive is not a supported archive format"
-        ;;
-esac
-if [ $? != 0 ]; then
-    abort "Unpack of $archive_path failed"
-fi
+    case "$archive" in
+        *.tar)
+            tar -C "$tmpdir" -xvf "$archive_path"
+            ;;
+        *.tar.gz|*.tgz)
+            tar -C "$tmpdir" -zxvf "$archive_path"
+            ;;
+        *.tar.bz2|*.tbz)
+            tar -C "$tmpdir" -jxvf "$archive_path"
+            ;;
+        *.tar.xz|*.txz)
+            tar -C "$tmpdir" -Jxvf "$archive_path"
+            ;;
+        *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk)
+            unzip -d "$tmpdir" "$archive_path"
+            ;;
+        *.7z)
+            7za x -o"$tmpdir" "$archive_path"
+            ;;
+        *.gem)
+            gem unpack --target="$tmpdir" "$archive_path"
+            ;;
+        *.rar)
+            archive_abspath=$( abs "$archive_path" )
+            pushd "$tmpdir"
+            unrar x "$archive_abspath"
+            popd
+            ;;
+        *)
+            abort "$archive is not a supported archive format"
+            ;;
+    esac
 
-dirents=$( ls -A "$tmpdir" | wc -l )
+    if [ $? != 0 ]; then
+        abort "Unpack of $archive_path failed"
+    fi
+}
 
-if [ "$dirents" -eq 0 ]; then
-    die "$archive was empty?  Aborting"
-fi
+ensure_single_dir () {
+    num_dirents=$( ls -A "$tmpdir" | wc -l )
 
-if [ "$dirents" -gt 1 ]; then
-    # Naughty archive creator!  Would cause a mess if unpacked to cwd.
-    src="$tmpdir"
-    progress "$archive had more than one top-level entry"
-else
-    top_dirent=$( ls -A "$tmpdir" )
-    src="$tmpdir/$top_dirent"
-    progress "$archive is clean"
-    if ! [ -e "$top_dirent" ]; then
-        if mv "$src" .; then
-            progress "Look inside $top_dirent"
-            rmdir "$tmpdir"
-            exit 0
-        else
-            abort "mv $src . failed"
-        fi
+    if [ "$num_dirents" -eq 0 ]; then
+        die "$archive was empty?  Aborting"
+    fi
+
+    if [ "$num_dirents" -gt 1 ]; then
+        # Naughty archive creator!  Would cause a mess if unpacked to cwd.
+        progress "$archive had more than one top-level entry"
+        unpacked_dir="$tmpdir"
     else
-        warn "$top_dirent already exists"
+        progress "$archive is clean; everything under a single top-level directory"
+        top_dir=$( ls -A "$tmpdir" )
+        unpacked_dir="$tmpdir/$top_dir"
+        if [ -e "$top_dir" ]; then
+            warn "$top_dir already exists"
+        else
+            if mv "$unpacked_dir" .; then
+                dest_dir="$top_dir"
+                rmdir "$tmpdir"
+                return
+            else
+                abort "mv $unpacked_dir . failed"
+            fi
+        fi
     fi
-fi
 
-if ! [ -e "$ideal_dest" ]; then
-    # safe to use ideal choice of destination directory
-    dest="$ideal_dest"
-else
-    warn "Ideal destination $ideal_dest already exists"
-    dest="$archive.unpacked"
-    if [ -e "$dest" ]; then
-        warn "$dest also already exists"
-        # Couldn't find a better place to move unpacked directory to, so
-        # leave it where it already is.
-        dest="$src"
+    calc_dest_dir
+    rename_to_dest_dir
+}
+
+calc_dest_dir () {
+    if ! [ -e "$ideal_dest_dir" ]; then
+        # safe to use ideal choice of destination directory
+        dest_dir="$ideal_dest_dir"
+    else
+        warn "Ideal destination $ideal_dest_dir already exists"
+        dest_dir="$archive.unpacked"
+        if [ -e "$dest_dir" ]; then
+            warn "$dest_dir also already exists"
+            # Couldn't find a better place to move unpacked directory to, so
+            # leave it where it already is.
+            dest_dir="$unpacked_dir"
+        fi
     fi
-fi
+}
 
-if [ "$src" != "$dest" ]; then
-    #progress "mv $src $dest OK"
-    if ! mv "$src" "$dest"; then
-        abort "mv $src $dest failed"
+rename_to_dest_dir () {
+    if [ "$unpacked_dir" != "$dest_dir" ]; then
+        #progress "mv $unpacked_dir $dest_dir OK"
+        if ! mv "$unpacked_dir" "$dest_dir"; then
+            abort "mv $unpacked_dir $dest_dir failed"
+        fi
+        [ -d "$tmpdir" ] && rmdir "$tmpdir"
     fi
-    [ -d "$tmpdir" ] && rmdir "$tmpdir"
-fi
+}
 
-progress "Look inside $dest"
-exit 0
+main () {
+    parse_args "$@"
+    get_ideal_dest_dir
+    extract
+    ensure_single_dir
+
+    progress "Look inside $dest_dir"
+}
+
+main "$@"
 
