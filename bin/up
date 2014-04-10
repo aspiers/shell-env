@@ -10,6 +10,23 @@
 
 me="`basename $0`"
 
+warn () {
+    echo >&2 "$*"
+}
+
+die () {
+    warn "$*"
+    exit 1
+}
+
+abort () {
+    die "$*; aborting."
+}
+
+progress () {
+    echo "$*"
+}
+
 usage () {
     cat <<EOF >&2
 Usage: $me ARCHIVE
@@ -25,8 +42,7 @@ archive_path="$1"
 archive="`basename \"$1\"`"
 
 if ! [ -e "$archive_path" ]; then
-    echo "$archive_path does not exist!" >&2
-    exit 1
+    abort "$archive_path does not exist"
 fi
 
 ideal_dest=
@@ -47,14 +63,12 @@ case "$archive" in
         ideal_dest="${archive%.7z}"
         ;;
     *)
-        echo "ERROR: $archive does not have a supported file extension" >&2
-        exit 1
+        abort "$archive does not have a supported file extension"
         ;;
 esac
 
 if ! tmpdir=`mktemp -d "$ideal_dest.tmp.XXXXXXXX"`; then
-    echo "mktemp failed: $!"
-    exit 1
+    die "mktemp failed: $!"
 fi
 
 case "$archive" in
@@ -86,41 +100,37 @@ case "$archive" in
         popd
         ;;
     *)
-        echo "ERROR: $archive is not a supported archive format" >&2
-        exit 1
+        abort "$archive is not a supported archive format"
         ;;
 esac
 if [ $? != 0 ]; then
-    echo "Unpack of $archive_path failed; aborting"
-    exit 1
+    abort "Unpack of $archive_path failed"
 fi
 
 dirents=$( ls -A "$tmpdir" | wc -l )
 
 if [ "$dirents" -eq 0 ]; then
-    echo "ERROR: $archive was empty?" >&2
-    exit 1
+    die "$archive was empty?  Aborting"
 fi
 
 if [ "$dirents" -gt 1 ]; then
     # Naughty archive creator!  Would cause a mess if unpacked to cwd.
     src="$tmpdir"
-    echo "$archive had more than one top-level entry"
+    progress "$archive had more than one top-level entry"
 else
     top_dirent=$( ls -A "$tmpdir" )
     src="$tmpdir/$top_dirent"
-    echo "$archive is clean"
+    progress "$archive is clean"
     if ! [ -e "$top_dirent" ]; then
         if mv "$src" .; then
-            echo "Look inside $top_dirent"
+            progress "Look inside $top_dirent"
             rmdir "$tmpdir"
             exit 0
         else
-            echo "ERROR: mv $src . failed" >&2
-            exit 1
+            abort "mv $src . failed"
         fi
     else
-        echo "$top_dirent already exists." >&2
+        warn "$top_dirent already exists"
     fi
 fi
 
@@ -128,10 +138,10 @@ if ! [ -e "$ideal_dest" ]; then
     # safe to use ideal choice of destination directory
     dest="$ideal_dest"
 else
-    echo "Ideal destination $ideal_dest already exists." >&2
+    warn "Ideal destination $ideal_dest already exists"
     dest="$archive.unpacked"
     if [ -e "$dest" ]; then
-        echo "$dest also already exists." >&2
+        warn "$dest also already exists"
         # Couldn't find a better place to move unpacked directory to, so
         # leave it where it already is.
         dest="$src"
@@ -139,14 +149,13 @@ else
 fi
 
 if [ "$src" != "$dest" ]; then
-    #echo "mv $src $dest OK"
+    #progress "mv $src $dest OK"
     if ! mv "$src" "$dest"; then
-        echo "ERROR: mv $src $dest failed" >&2
-        exit 1
+        abort "mv $src $dest failed"
     fi
     [ -d "$tmpdir" ] && rmdir "$tmpdir"
 fi
 
-echo "Look inside $dest"
+progress "Look inside $dest"
 exit 0
 
