@@ -4,7 +4,12 @@
 
 exclude="-x none -x tmpfs -x devtmpfs -x iso9660"
 
+# When the 1st column gets wide, the remaining columns get split
+# onto a separate line.  For sorting we need to join them back up.
 df -lT $exclude "$@" |
+    perl -0777pe 's!^(/\S+$)\n!$1!gm; s/Mounted on/Mountedon/' |
+    column -t |
+    sed 's/Mountedon/Mounted on/' |
     csort \
         1=Filesystem    a \
         1:/sda/         b \

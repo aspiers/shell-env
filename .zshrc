@@ -950,7 +950,11 @@ alias -g Ud='| uniq -d'
 
 alias -g DN=/dev/null
 alias -g DZ=/dev/zero
-alias -g VM=/var/log/messages
+if [[ -e /var/log/syslog ]]; then
+    alias -g VM=/var/log/syslog
+else
+    alias -g VM=/var/log/messages
+fi
 
 # }}}
 # {{{ grep, xargs

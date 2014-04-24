@@ -1,8 +1,8 @@
 #!/bin/bash
 
-ifconfig "$@" 2>&1 | \
-  perl -0777pe 's/^(lo|veth[1-9])\s.*?\n\n//ms;
-                s/.*(packets|collisions|Interrupt).*\n//g'
+ip addr show "$@" 2>&1 | \
+  perl -0777pe 's/^\d+: (lo|v(eth|net)\d+):\s[^\n]+\n( [^\n]+\n)+//gms;
+                s/^\s+.*(valid_lft|forever).*\n//gm'
 
 which iwconfig >& /dev/null && \
 iwconfig "$@" 2>&1 | \
