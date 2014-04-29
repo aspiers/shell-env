@@ -33,15 +33,6 @@ def parse_args():
 
     return parser.parse_known_args()
 
-def usage():
-    me = os.path.basename(sys.argv[0])
-    usage = '''\
-Usage: %s [options] PING-ARGS ...
-Options:
-    -d, --duration=SECS    
-    -v, --volume=VOLUME    
-'''
-
 def epilog():
     text  = 'Guide to conversion of latency to frequency:\n\n'
     text += '   %10s %11s\n' % ('Latency', 'Frequency')
