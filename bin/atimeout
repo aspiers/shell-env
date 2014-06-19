@@ -1,8 +1,10 @@
 #!/usr/bin/perl
 #
-# timeout -- Run a command with a timeout.  Optionally send a signal
-# and/or run a command on timeout.  Exits with the exit status of the
-# command, or 254 if timeout happened first.
+# atimeout -- alternative to coreutils timeout
+#
+# Run a command with a timeout.  Optionally send a signal and/or run a
+# command on timeout.  Exits with the exit status of the command, or
+# 254 if timeout happened first.
 #
 # Copyright (c) 2010 Adam Spiers <adam@spiers.net>
 #
