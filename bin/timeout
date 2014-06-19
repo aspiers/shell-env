@@ -23,7 +23,7 @@ use strict;
 use warnings;
 
 use Config;
-use Getopt::Long qw(:config require_order);
+use Getopt::Long qw(:config require_order no_ignore_case);
 use POSIX qw(:sys_wait_h setsid);
 
 my %opts = ( zero => 0 );
