@@ -117,9 +117,17 @@ sub main {
   while (1) {
     run_command(@ARGV);
 
-    do_comparison(\%opts);
+    if ($count > 0) {
+      do_comparison(\%opts);
+    }
+    else {
+      system 'cat', $new_fn;
+      delimiter();
+    }
 
-    copy($new_fn, $old_fn) if ! $opts{cumulative} or $count++ == 0;
+    copy($new_fn, $old_fn) if ! $opts{cumulative} or $count == 0;
+
+    $count++;
 
     sleep $opts{interval};
   }
