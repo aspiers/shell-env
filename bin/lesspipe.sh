@@ -24,7 +24,7 @@ lesspipe() {
     *.tar|*.gem)
       tar tvvf "$1"
       ;;
-    *.tgz|*.tar.gz|*.tar.[zZ])
+    *.tgz|*.tar.gz|*.tar.[zZ]|*.box)
       tar tzvvf "$1"
       ;;
     *.tar.bz2|*.tbz|*.tbz2)
