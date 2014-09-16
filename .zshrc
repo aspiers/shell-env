@@ -980,10 +980,26 @@ for global_alias_switches in {,i}{,l,L}{,r}{,v}{,C}; do
     eval "alias -g X0G$global_alias_switches='| xargs -0 egrep $rhs_switches $color'"
 done
 
-alias -g XA='| xargs'
-alias -g X1='| xargs -n1'
-alias -g X0='| xargs -0'
-alias -g Xn='| xargs -d "\n"'
+for global_alias_switches in {,0}{,1}{,r}{,n}; do
+    other_switches=()
+    rhs_switches="$global_alias_switches"
+    case "$global_alias_switches" in
+        *1*)
+            rhs_switches="${rhs_switches//1/}"
+            other_switches+="-n1"
+            ;;
+        *n*)
+            rhs_switches="${rhs_switches//n/}"
+            other_switches+='-d "\n"'
+            ;;
+    esac
+
+    if [ -z "$global_alias_switches" ]; then
+        global_alias_switches="A"
+    fi
+    xargs_options="${rhs_switches:+ -$rhs_switches} ${other_switches[@]}"
+    eval "alias -g X$global_alias_switches='| xargs$xargs_options'"
+done
 
 # }}}
 # {{{ awk
