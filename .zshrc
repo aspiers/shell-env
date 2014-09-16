@@ -913,7 +913,7 @@ alias -g AD='&& div &&'
 
 # }}}
 
-# {{{ Paging with less / head / tail
+# {{{ Paging with less / head / tail / dts
 
 alias -g L='| less'
 alias -g LS='| less -S'
@@ -930,6 +930,8 @@ alias -g T='| tail'
 alias -g TL='| tail -n $(( +LINES ? LINES - 4 : 20 ))'
 alias -g ET='|& tail'
 alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
+
+alias -g DTS='|& dts'
 
 # }}}
 # {{{ Sorting / counting

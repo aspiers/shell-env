@@ -81,6 +81,10 @@ sub run_command {
   waitpid $pid, 0;
 }
 
+sub delimiter {
+  print "=" x ($columns-1), "\n";
+}
+
 {
   my $diff_count = 0;
 
@@ -99,7 +103,7 @@ sub run_command {
       system 'clear';
     }
     else {
-      print "=" x ($columns-1), "\n" if $diff_count++;
+      delimiter() if $diff_count++;
     }
 
     print $diff;
@@ -113,9 +117,17 @@ sub main {
   while (1) {
     run_command(@ARGV);
 
-    do_comparison(\%opts);
+    if ($count > 0) {
+      do_comparison(\%opts);
+    }
+    else {
+      system 'cat', $new_fn;
+      delimiter();
+    }
 
-    copy($new_fn, $old_fn) if ! $opts{cumulative} or $count++ == 0;
+    copy($new_fn, $old_fn) if ! $opts{cumulative} or $count == 0;
+
+    $count++;
 
     sleep $opts{interval};
   }
