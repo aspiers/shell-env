@@ -4,6 +4,24 @@
 
 exclude="-x none -x tmpfs -x devtmpfs -x iso9660"
 
+maybe_color () {
+    if [ -t 1 ]; then
+        perl -lpe '
+          if (/( (\d\d?)% )/) {
+            my $percent = $2;
+            my $color = $percent >= 95 ? "41;1" :
+                        $percent >= 90 ? "31" :
+                        $percent >= 80 ? "33" :
+                        $percent >= 50 ? "32" :
+                                          "0";
+            s/$1/ \e[${color}m${percent}%\e[0m/;
+          }
+        '
+    else
+        cat
+    fi
+}
+
 # When the 1st column gets wide, the remaining columns get split
 # onto a separate line.  For sorting we need to join them back up.
 df -lT $exclude "$@" |
@@ -21,4 +39,5 @@ df -lT $exclude "$@" |
         1:/dev\/mapper/ g \
         |
     sort -k1,1 -k6,6nr |
-    cut -c3-
+    cut -c3- |
+    maybe_color
