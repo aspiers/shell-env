@@ -50,7 +50,7 @@ case "$OSTYPE" in
 
         linux_detect_ascii
 
-        linux_iterate "$@" | less -rS
+        linux_iterate "$@" | less -rSF
         ;;
 esac
 
