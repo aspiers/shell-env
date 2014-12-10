@@ -985,16 +985,21 @@ done
 for global_alias_switches in {,0}{,1}{,r}{,n}; do
     other_switches=()
     rhs_switches="$global_alias_switches"
-    case "$global_alias_switches" in
-        *1*)
-            rhs_switches="${rhs_switches//1/}"
-            other_switches+="-n1"
-            ;;
-        *n*)
-            rhs_switches="${rhs_switches//n/}"
-            other_switches+='-d "\n"'
-            ;;
-    esac
+    while true; do
+        case "$rhs_switches" in
+            *1*)
+                rhs_switches="${rhs_switches//1/}"
+                other_switches+="-n1"
+                ;;
+            *n*)
+                rhs_switches="${rhs_switches//n/}"
+                other_switches+='-d "\n"'
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
 
     if [ -z "$global_alias_switches" ]; then
         global_alias_switches="A"
