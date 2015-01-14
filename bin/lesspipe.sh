@@ -39,6 +39,9 @@ lesspipe() {
     *.bz2)
       bzip2 -dc -- "$1"
       ;;
+    *.7z)
+      7z l "$1"
+      ;;
     *.xz)
       xz -dc -- "$1"
       ;;
