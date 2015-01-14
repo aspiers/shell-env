@@ -7,20 +7,20 @@ if [ $# != 2 ]; then
   exit 1
 fi
 
-if ! mv -i $1 $1.fswap.tmp.$$; then
+if ! mv -i "$1" "$1.fswap.tmp.$$"; then
   echo "Failed to mv $1 $1.fswap.tmp.$$ !  Aborting."
   exit 1
 fi
 
-if ! mv -i $2 $1; then
+if ! mv -i "$2" "$1"; then
   echo "Failed to mv $2 $1 !  Restoring $1."
-  if ! mv -i $1.fswap.tmp.$$ $1; then
+  if ! mv -i "$1.fswap.tmp.$$" "$1"; then
     echo "Failed to restore $1 !!"
   fi
   exit 1
 fi
 
-if ! mv -i $1.fswap.tmp.$$ $2; then
+if ! mv -i "$1.fswap.tmp.$$" "$2"; then
   echo "Failed to mv $1.fswap.tmp.$$ to $2 !"
   exit 1
 fi
