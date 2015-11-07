@@ -15,6 +15,7 @@ fi
 
 if [ $# = 1 ]; then
   exec less +F "$1"
+  #exec tailf "$1"
 else
   exec tail -f "$@"
 fi
