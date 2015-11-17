@@ -183,20 +183,7 @@ case "$OSTYPE" in
     ;;
 
   *)
-    # Don't trust system-wide MANPATH?  Remember what it was, for reference.
-    sysmanpath=$HOME/.sysmanpath.$HOST
-    [ -e $sysmanpath ] || echo "$MANPATH" > $sysmanpath
-    manpath=( )
-
-    # ... or *do* trust system-wide MANPATH
-    #MANPATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$MANPATH
-
-    for dir in "$path[@]"; do
-      [[ "$dir" == */bin ]] || continue
-      mandir="${dir//\/bin//man}"
-      [[ -d "$mandir" ]] && manpath=( "$mandir" "$manpath[@]" )
-    done
-
+    echo "Not Linux? really?" >&2
     ;;
 esac
 
