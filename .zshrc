@@ -168,9 +168,8 @@ sh_load_status 'setting environment'
 typeset -U infopath # no duplicates
 export INFOPATH
 infopath=( 
-          ~/local/$OSTYPE/{share/,}info(N)
-          ~/{local/,}{share/,}info(N)
-          /usr/{local/,}{share/,}info(N)
+          ~/{share/,}info(N)
+          /usr/{share/,}info(N)
           $infopath
          )
 
@@ -204,7 +203,7 @@ esac
 # Add extra paths to path determined by /etc/man.config
 MANPATH="`MANPATH= manpath`"
 manpath=(
-    $ZDOTDIR/{local/,}share/[m]an(N)
+    $ZDOTDIR/share/[m]an(N)
     "$manpath[@]"
 )
 

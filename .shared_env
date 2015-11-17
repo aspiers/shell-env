@@ -136,9 +136,6 @@ for dir in $ZDOTDIRREVPATH; do
   for newpath in                        \
                  $dir/sbin              \
                  $dir/bin               \
-                 $dir/local/$OSTYPE/bin \
-                 $dir/local/sbin        \
-                 $dir/local/bin         \
   ; do
     if [ -d $newpath ]; then
         if [ -z "$newpaths" ]; then
@@ -164,7 +161,7 @@ export PERL5LIB
 . $ZDOTDIR/.zsh/functions/enable_wordsplit
 newpaths=
 for dir in $ZDOTDIRREVPATH; do
-  for newpath in $dir/{local/,}lib/perl5{,/site_perl}; do
+  for newpath in $dir/lib/perl5{,/site_perl}; do
     if [ -d $newpath ]; then
         : #echo got $newpath
         if [ -z "$newpaths" ]; then
