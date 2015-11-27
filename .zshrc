@@ -780,9 +780,12 @@ alias term='echo $TERM'
 # {{{ Changing terminal window/icon titles
 
 which cx >&/dev/null || cx () { }
+
 if [[ "$TERM" == ([Ex]term*|rxvt*|screen*) ]] && [[ -z "$SKIP_CX" ]]; then
-  # Could also look at /proc/$PPID/cmdline ...
-  cx
+    # Could also look at /proc/$PPID/cmdline ...
+    # Don't do this, as it resets window titles set by tmux etc.
+    # cx
+    :
 fi
 
 # }}}
