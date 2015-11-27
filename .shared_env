@@ -158,36 +158,48 @@ PATH=$newpaths:$PATH
 # {{{ Perl libraries
 
 export PERL5LIB
-. $ZDOTDIR/.zsh/functions/enable_wordsplit
-newpaths=
-for dir in $ZDOTDIRREVPATH; do
-  for newpath in $dir/lib/perl5{,/site_perl}; do
-    if [ -d $newpath ]; then
-        : #echo got $newpath
-        if [ -z "$newpaths" ]; then
-            newpaths=$newpath
-        else
-            newpaths=$newpaths:$newpath
-        fi
-    else
-        : #echo no $newpath
-    fi
-  done
-done
-restore_wordsplit
 
-case "$PERL5LIB" in
-    *"$newpaths"*)
-        : #echo "$newpaths already in \$PERL5LIB"
-        ;;
-    *)
-        if [ -z "$PERL5LIB" ]; then
-            PERL5LIB=$newpaths
-        else
-            PERL5LIB=$newpaths:$PERL5LIB
-        fi
-        ;;
-esac
+add_perl5lib_path () {
+    new_path="$1"
+    case "$PERL5LIB" in
+        '')
+            PERL5LIB=$new_path
+            ;;
+
+        $new_path|*:$new_path|$new_path:*|*:$new_path:*)
+            : #echo "$newpaths already in \$PERL5LIB"
+            ;;
+        *)
+            PERL5LIB=$new_path:$PERL5LIB
+            ;;
+    esac
+}
+
+for dir in $ZDOTDIRREVPATH; do
+    add_perl5lib_path $dir/lib/perl
+    add_perl5lib_path $dir/lib/perl/site_perl
+
+    # # Use a cache to avoid invoking Perl during startup of every single
+    # # shell (even non-interactive ones).
+    # cachedir=$dir/.config/perl
+    # cache=$cachedir/pmdir_relative_path
+    # if [ -e $cache ]; then
+    #     pmdir_relative_path=$(<$cache)
+    # else
+    #     # This trick comes from Stow's configure.ac
+    #     pmdir_relative_path=`
+    #       perl -MConfig \
+    #            -wle '($_ = $Config{installsitelib})
+    #                    =~ s!^\Q$Config{siteprefix}/!!; \
+    #                  print'`
+    #     mkdir -p $cachedir
+    #     echo "$pmdir_relative_path" > $cache
+    # fi
+    #
+    # if [ -n "$pmdir_relative_path" ]; then
+    #     add_perl5lib_path $dir/$pmdir_relative_path
+    # fi
+done
 
 # }}}
 # {{{ grep
