@@ -68,7 +68,9 @@ parse_args () {
 get_ideal_dest_dir () {
     ideal_dest_dir=
     case "$archive" in
-        *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|*.job|*.pylib|*.gem|*.box)
+        *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|\
+        *.7z|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|\
+        *.job|*.pylib|*.gem|*.box)
             ideal_dest_dir="${archive%.*}"
             ;;
         *.tar.gz)
@@ -79,9 +81,6 @@ get_ideal_dest_dir () {
             ;;
         *.tar.xz)
             ideal_dest_dir="${archive%.tar.xz}"
-            ;;
-        *.7z)
-            ideal_dest_dir="${archive%.7z}"
             ;;
         *)
             abort "$archive does not have a supported file extension"
