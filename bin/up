@@ -29,7 +29,7 @@ interactive_mode () {
 
 progress () {
     if interactive_mode; then
-        echo "$*"
+        echo "$@"
     fi
 }
 
@@ -40,7 +40,7 @@ Usage: $me ARCHIVE
 Unpacks the given archive.  Supported formats include:
 
   tar (incl. compressed with gzip, bzip2, xz), zip, 7z, rar,
-  apk, xpi, jar, class, gem, box
+  apk, xpi, jar, class, gem, box, rpm
 
 Guarantees that extraction will always be to a newly-created directory
 rather than polluting an existing one with multiple entries.
@@ -70,7 +70,7 @@ get_ideal_dest_dir () {
     case "$archive" in
         *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|\
         *.7z|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|\
-        *.job|*.pylib|*.gem|*.box)
+        *.job|*.pylib|*.gem|*.box|*.rpm)
             ideal_dest_dir="${archive%.*}"
             ;;
         *.tar.gz)
@@ -129,6 +129,23 @@ extract () {
             pushd "$tmpdir"
             run unrar x "$archive_abspath"
             popd
+            ;;
+        *.rpm)
+            rpm="$archive_path"
+            rpm_name="${rpm%.rpm}"
+            rpm_name="${rpm_name##*/}"
+            cpio="$rpm_name.cpio"
+
+            progress -n "Extracting cpio to $tmpdir/$cpio ... "
+            rpm2cpio "$rpm" > "$tmpdir/$cpio"
+            progress "done."
+
+            progress -n "Unpacking cpio into $tmpdir ... "
+            mkdir "$tmpdir/$rpm_name"
+            cd "$tmpdir/$rpm_name"
+            cpio -id < ../"$cpio"
+            progress "done."
+            rm ../"$cpio"
             ;;
         *)
             abort "$archive is not a supported archive format"
@@ -201,7 +218,9 @@ rename_to_dest_dir () {
 main () {
     parse_args "$@"
     get_ideal_dest_dir
+    saved_dir="`pwd`"
     extract
+    cd "$saved_dir"
     ensure_single_dir
 
     progress "Look inside $dest_dir"
