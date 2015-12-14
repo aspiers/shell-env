@@ -176,8 +176,8 @@ add_perl5lib_path () {
 }
 
 for dir in $ZDOTDIRREVPATH; do
-    add_perl5lib_path $dir/lib/perl
-    add_perl5lib_path $dir/lib/perl/site_perl
+    add_perl5lib_path $dir/lib/perl5
+    add_perl5lib_path $dir/lib/perl5/site_perl
 
     # # Use a cache to avoid invoking Perl during startup of every single
     # # shell (even non-interactive ones).
