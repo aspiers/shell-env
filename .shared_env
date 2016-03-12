@@ -202,12 +202,6 @@ for dir in $ZDOTDIRREVPATH; do
 done
 
 # }}}
-# {{{ grep
-
-# Why would you ever want grep to treat dirs like normal files?
-export GREP_OPTIONS='--directories=skip --color=auto'
-
-# }}}
 # {{{ OSTYPE
 
 # Can come in handy too, if the shell sets it (bash and zsh do).
