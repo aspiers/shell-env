@@ -61,7 +61,7 @@ while(<CMD>) {
            1900 + $year,
            $mon + 1,
            $mday,
-           Day_of_Week_Abbreviation($wday+1),
+           Day_of_Week_Abbreviation($wday),
            $hour,
            $min,
            $sec,
