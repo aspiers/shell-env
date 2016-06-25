@@ -45,7 +45,7 @@ lesspipe() {
     *.xz)
       xz -dc -- "$1"
       ;;
-    *.zip|*.Zip|*.ZIP|*.jar|*.war|*.sar|*.xpi|*.job|*.pylib|*.apk)
+    *.zip|*.Zip|*.ZIP|*.jar|*.war|*.sar|*.xpi|*.job|*.pylib|*.apk|*.egg)
       zipinfo -- "$1"
       ;;
     *.rar)
