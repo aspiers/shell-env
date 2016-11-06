@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+
+# http://stackoverflow.com/questions/3772864/how-do-i-remove-leading-whitespace-chars-from-ruby-heredoc
+
+def strip_indent(string)
+  if mindent = string.scan(/^[ \t]*/).min_by(&:length)
+    string.gsub /^#{mindent}/, ''
+  end
+end
+
+puts strip_indent(ARGF.read)
