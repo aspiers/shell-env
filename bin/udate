@@ -1,3 +1,21 @@
 #!/usr/bin/perl -wl
 
-print scalar localtime($ARGV[0] || time);
+use POSIX qw(strftime);
+
+my $utc;
+
+if (@ARGV and $ARGV[0] =~ /^-u|--utc$/) {
+    shift @ARGV;
+    $utc = 1;
+}
+
+my $time = $ARGV[0] || time;
+
+if ($utc) {
+    print strftime "%a %e %b %H:%M:%S %Y UTC +0000", gmtime($time);
+    #print scalar gmtime($time);
+}
+else {
+    print strftime "%a %e %b %H:%M:%S %Y %Z %z", localtime($time);
+    #print scalar localtime($time);
+}
