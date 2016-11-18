@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# Which Less - locate an executable via which(1) and then run less(1) on it
 
 if [ $# = 0 ]; then
   # get usage
