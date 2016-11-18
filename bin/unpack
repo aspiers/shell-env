@@ -78,6 +78,27 @@ unpack () {
 # Calculate a destination directory for the extracted archive which is
 # based on the basename of the archive filename (i.e. with the suffix
 # stripped off).
+#
+# We do this because if we're extracting an archive file called
+# "server27-logs.tar.xz" then the user would probably prefer the
+# resulting top-level directory to be called "server27-logs" which is
+# more informative than just "var", assuming that the archive only
+# contained files under the var/log/ hierarchy.  This is especially
+# helpful if the user is also unpacking server28-logs.tar.xz and
+# server29-logs.tar.xz at the same time, since they can't all be
+# extracted to the same "var" directory.
+#
+# On the other hand, we won't always use this destination directory.
+# Sometimes the user prefers to use the singleton top-level directory
+# within the archive.  For example if we were extracting an archive
+# file called "linux.tar.bz2", we would prefer the resulting top-level
+# directory to be called "linux-4.9-rc5" which is more informative
+# than just "linux".
+#
+# Unfortunately we can't always be sure which the user would prefer.
+# But a fairly decent heuristic is to pick the longer of the two
+# options, since that will usually be more informative and/or more
+# likely to uniquely identify the extracted contents.
 get_base_dest_dir () {
     base_dest_dir=
     case "$archive" in
@@ -182,32 +203,42 @@ ensure_single_dir () {
         progress "$archive had more than one top-level entry"
         unpacked_dir="$tmpdir"
     else
-        progress "$archive is clean; everything under a single top-level directory"
         top_dir=$( ls -A "$tmpdir" )
+        progress "$archive is clean; everything under a single top-level directory $top_dir/"
         unpacked_dir="$tmpdir/$top_dir"
         if [ -e "$top_dir" ]; then
-            warn "$top_dir already exists"
+            warn "$top_dir already exists; won't unpack into that."
+            # Try to unpack to base destination
         else
-            if mv "$unpacked_dir" .; then
-                dest_dir="$top_dir"
-                rmdir "$tmpdir"
-                return
-            else
-                abort "mv $unpacked_dir . failed"
+            # We can either keep the existing top-level directory, or
+            # try to rename to the base destination directory.  As per
+            # the lengthy comment above, let's try a heuristic which
+            # chooses the longer of the two options.
+            if [ "${#top_dir}" -gt "${#base_dest_dir}" ]; then
+                if mv "$unpacked_dir" .; then
+                    dest_dir="$top_dir"
+                    rmdir "$tmpdir"
+                    return
+                else
+                    abort "mv $unpacked_dir . failed"
+                fi
             fi
         fi
     fi
 
+    # If we got this far, we decided not to keep the top-level
+    # directory from within the archive, so try to rename to the base
+    # destination directory.
     calc_dest_dir
     rename_to_dest_dir
 }
 
 calc_dest_dir () {
     if ! [ -e "$base_dest_dir" ]; then
-        # safe to use ideal choice of destination directory
+        # safe to use base destination directory
         dest_dir="$base_dest_dir"
     else
-        warn "Ideal destination $base_dest_dir already exists"
+        warn "Destination $base_dest_dir already exists"
         dest_dir="$archive.unpacked"
         if [ -e "$dest_dir" ]; then
             warn "$dest_dir also already exists"
