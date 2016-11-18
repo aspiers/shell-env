@@ -199,7 +199,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`umnt-initrd`](https://github.com/aspiers/shell-env/blob/master/bin/umnt-initrd) - Unmounts an initrd image mounted via [`mnt-initrd`](https://github.com/aspiers/shell-env/blob/master/bin/mnt-initrd),
       generating a new initrd file.
     * [`un`](https://github.com/aspiers/shell-env/blob/master/bin/un) - `uname -a` shortcut.
-    * [`up`](https://github.com/aspiers/shell-env/blob/master/bin/up) - Safely unpack an archive file.  Supports multiple formats.
+    * [`unpack`](https://github.com/aspiers/shell-env/blob/master/bin/unpack) - Safely unpack an archive file.  Supports multiple formats.
     * [`up-since`](https://github.com/aspiers/shell-env/blob/master/bin/up-since) - Show when the system was last booted.
     * [`url-handler`](https://github.com/aspiers/shell-env/blob/master/bin/url-handler) - Handler for opening various types of URLs
     * [`viz`](https://github.com/aspiers/shell-env/blob/master/bin/viz) - Customisable change-control wrapper around an editor - a bit like
