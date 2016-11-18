@@ -35,9 +35,9 @@ progress () {
 
 usage () {
     cat <<EOF >&2
-Usage: $me ARCHIVE
+Usage: $me ARCHIVE [ARCHIVE ...]
 
-Unpacks the given archive.  Supported formats include:
+Unpacks the given archive(s).  Supported formats include:
 
   tar (incl. compressed with gzip, bzip2, xz), zip, 7z, rar,
   apk, xpi, jar, class, gem, box, rpm, egg
@@ -52,16 +52,26 @@ EOF
     exit 1
 }
 
-parse_args () {
+parse_options () {
     if [ "$1" == -h ] || [ "$1" == --help ] || [ -z "$1" ]; then
         usage
     fi
 
+    ARGV=( "$@" )
+}
+
+unpack () {
     archive_path="$1"
     archive="`basename \"$1\"`"
 
-    if ! [ -e "$archive_path" ]; then
-        abort "$archive_path does not exist"
+    get_ideal_dest_dir
+    extract
+    cd "$saved_dir"
+    ensure_single_dir
+
+    progress "Look inside $dest_dir"
+    if ! [ -t 1 ]; then
+        echo "$dest_dir"
     fi
 }
 
@@ -216,18 +226,19 @@ rename_to_dest_dir () {
 }
 
 main () {
-    parse_args "$@"
-    get_ideal_dest_dir
-    saved_dir="`pwd`"
-    extract
-    cd "$saved_dir"
-    ensure_single_dir
+    parse_options "$@"
 
-    progress "Look inside $dest_dir"
-    if ! [ -t 1 ]; then
-        echo "$dest_dir"
-    fi
+    saved_dir="`pwd`"
+
+    for archive in "${ARGV[@]}"; do
+        if ! [ -e "$archive" ]; then
+            abort "$archive does not exist"
+        fi
+    done
+
+    for archive in "${ARGV[@]}"; do
+        unpack "$archive"
+    done
 }
 
 main "$@"
-
