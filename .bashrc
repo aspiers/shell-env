@@ -50,6 +50,13 @@ if [ -n "$shell_interactive" ]; then
 
 # }}}
 
+# {{{ Save a large history
+
+HISTSIZE=10000
+HISTFILESIZE=10000
+HISTTIMEFORMAT="%F %H:%M:%S"
+
+# }}}
 # {{{ ls colours
 
 if which dircolors >/dev/null 2>&1 && [ -e ~/.dircolors ]; then
