@@ -54,7 +54,7 @@ if [ -n "$shell_interactive" ]; then
 
 HISTSIZE=10000
 HISTFILESIZE=10000
-HISTTIMEFORMAT="%F %H:%M:%S"
+HISTTIMEFORMAT="%F %H:%M:%S "
 
 # }}}
 # {{{ ls colours
