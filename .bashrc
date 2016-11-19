@@ -238,5 +238,3 @@ fi
 . $ZDOT_RUN_HOOKS .bashrc.d
 
 : .bashrc ends # for debugging with -x
-
-[[ -s "/home/adam/.rvm/scripts/rvm" ]] && source "/home/adam/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
