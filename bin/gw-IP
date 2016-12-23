@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ip route | awk '/^default via/ { print $3 }'

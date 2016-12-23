@@ -1,6 +1,6 @@
 #!/bin/sh
 
-gateway=$( gw-dev-IP )
+gateway=$( gw-IP )
 
 if [ -z "$gateway" ]; then
   echo "Could not find default route via route -n:" >&2
