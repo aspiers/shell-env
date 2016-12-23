@@ -1,0 +1,8 @@
+#!/usr/bin/ruby
+
+puts readlines.
+    drop_while {|x| ! x.start_with? "#" }. # first line needs to start with "#"
+    join.
+    force_encoding(Encoding::ASCII_8BIT).
+    split(/(?=^#)/).
+    sort
