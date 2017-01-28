@@ -827,7 +827,9 @@ alias yast2='nocorrect yast2'
 
 # {{{ export DISPLAY=:0.0
 
-alias sd='export DISPLAY=:0.0'
+sd () {
+    source ~/.Xdisplay.$HOST
+}
 
 # }}}
 
