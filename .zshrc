@@ -800,14 +800,8 @@ compdef _finger f
 
 # su changes window title, even if we're not a login shell
 su () {
-  command su "$@"
-  cx
-}
-
-# So does sux in SUSE
-sux () {
-  command sux "$@"
-  cx
+    command su "$@"
+    cx
 }
 
 # }}}
@@ -875,8 +869,8 @@ fi
 # {{{ arch
 
 if which larch >&/dev/null; then
-  alias a=larch
-  compdef _larch a
+    alias a=larch
+    compdef _larch a
 fi
 
 # }}}
