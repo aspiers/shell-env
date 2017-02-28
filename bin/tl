@@ -1,3 +1,8 @@
 #!/bin/bash
 
-lnav -c ':goto -1' "$@"
+# https://github.com/tstack/lnav/issues/416
+lnav \
+    -c ':goto -1' \
+    -c ';update all_logs set log_mark = 1 where log_line = log_top_line()' \
+    -c ':goto -10' \
+     "$@"
