@@ -822,7 +822,7 @@ alias yast2='nocorrect yast2'
 # {{{ export DISPLAY=:0.0
 
 sd () {
-    source $ZDOTDIR/.Xdisplay.$HOST
+    source $ZDOTDIR/.Xdisplay.${HOST%%.*}
 }
 
 # }}}
