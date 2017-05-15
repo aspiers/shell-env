@@ -4,5 +4,5 @@
 lnav \
     -c ':goto -1' \
     -c ';update all_logs set log_mark = 1 where log_line = log_top_line()' \
-    -c ':goto -10' \
+    -c ':goto -30' \
      "$@"
