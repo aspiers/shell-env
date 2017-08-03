@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# requires export BASH_ENV=~/.bashenv which will mean a performance hit,
+# so not worth doing in general
+
+PS4="+\${BASH_SOURCE/\$HOME/\~}@\${LINENO}(\${FUNCNAME[0]}): "

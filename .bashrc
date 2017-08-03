@@ -79,6 +79,11 @@ bind '"\e\C-i":dynamic-complete-history'
 
 sh_load_status "prompt"
 PS1="\u@\h \[\033[1m\]\\w\[\033[0m\] \\$ "
+# This only helps when the non-interactive script is being run from an
+# interactive bash, because this file doesn't get run for
+# non-interactive shells.  In zsh, PS4 is set to something else, so
+# use my bx function instead.
+export PS4="+\${BASH_SOURCE/\$HOME/\~}@\${LINENO}(\${FUNCNAME[0]}): "
 
 # }}}
 # {{{ Aliases and functions

@@ -632,6 +632,10 @@ bash () {
   NO_SWITCH="yes" command bash "$@"
 }
 
+bx () {
+  PS4="$(. ~/.bashenv.d/PS4; echo $PS4)" bash -x "$@"
+}
+
 restart () {
   if jobs | grep . >/dev/null; then
     echo "Jobs running; won't restart." >&2
