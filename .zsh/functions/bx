@@ -1,0 +1,3 @@
+#autoload
+
+PS4="$(. ~/.bashenv.d/PS4; echo $PS4)" bash -x "$@"
