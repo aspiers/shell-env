@@ -54,7 +54,7 @@ lesspipe() {
     *.[rs]pm)
       rq "$1"
       ;;
-    *.cpi|*.cpio)
+    *.cpi|*.cpio|*.obscpio)
       cpio -itv < "$1"
       ;;
     *.htm|*.html)
