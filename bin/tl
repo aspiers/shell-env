@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# https://github.com/tstack/lnav/issues/416
-lnav \
-    -c ':goto -1' \
-    -c ';update all_logs set log_mark = 1 where log_line = log_top_line()' \
-    -c ':goto -30' \
-     "$@"
+if which lnav >&/dev/null; then
+    # https://github.com/tstack/lnav/issues/416
+    lnav \
+        -c ':goto -1' \
+        -c ';update all_logs set log_mark = 1 where log_line = log_top_line()' \
+        -c ':goto -30' \
+        "$@"
+else
+    tf "$@"
+fi
