@@ -922,6 +922,9 @@ alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
 
 alias -g DTS='|& dts'
 
+alias -g F='| fzf'
+alias -g EF='|& fzf'
+
 # }}}
 # {{{ Sorting / counting
 
