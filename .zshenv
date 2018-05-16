@@ -79,10 +79,6 @@ rubylib=(
 
 typeset -TU PYTHONPATH pythonpath
 export PYTHONPATH
-pythonpath=( 
-          ~/lib{,64}/[p]ython{2*,}{/site-packages,}(N)
-          $pythonpath
-         )
 
 # }}}
 
