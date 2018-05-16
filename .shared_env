@@ -125,7 +125,7 @@ if [ ! -e $syspath ]; then
     # cross-WAN.
     echo "$PATH" 2>/dev/null > "$syspath" 
 fi
-PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 # ... or *do* trust system-wide PATH
 #PATH=/usr/local/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
