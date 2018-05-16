@@ -105,7 +105,7 @@ syspath=$HOME/.syspath.$HOST
 if [ ! -e $syspath ]; then
     # Ignore failed write as home directory is sometimes locked down
     # cross-WAN.
-    echo "$PATH" 2>/dev/null > "$syspath" 
+    echo "$PATH" 2>/dev/null > "$syspath"
 fi
 PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
