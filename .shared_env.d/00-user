@@ -1,0 +1,7 @@
+# -*- mode: sh -*-
+
+# zsh sets USERNAME, GROUPS, and E?[UG]ID
+# bash only sets E?UID
+USER=${USERNAME:-`id -un`}
+: ${USERNAME:=$USER}
+export USER USERNAME

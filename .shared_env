@@ -98,24 +98,6 @@ export ZDOTUSER
 
 # }}}
 
-# {{{ HOST / HOSTNAME
-
-: ${HOST:=${HOSTNAME:-`hostname`}}
-: ${HOSTNAME:=$HOST}
-
-# Let's not make this *too* sticky because dhcp might change the host
-#export HOST HOSTNAME
-
-# }}}
-# {{{ USER / USERNAME
-
-# zsh sets USERNAME, GROUPS, and E?[UG]ID
-# bash only sets E?UID
-USER=${USERNAME:-`id -un`}
-: ${USERNAME:=$USER}
-export USER USERNAME
-
-# }}}
 # {{{ PATH
 
 # Don't trust system-wide PATH?  Remember what it was, for reference.
@@ -153,59 +135,6 @@ PATH=$newpaths:$PATH
 # {{{ MANPATH
 
 # In order to avoid forks here, this is done in .zshrc
-
-# }}}
-# {{{ Perl libraries
-
-export PERL5LIB
-
-add_perl5lib_path () {
-    new_path="$1"
-    case "$PERL5LIB" in
-        '')
-            PERL5LIB=$new_path
-            ;;
-
-        $new_path|*:$new_path|$new_path:*|*:$new_path:*)
-            : #echo "$newpaths already in \$PERL5LIB"
-            ;;
-        *)
-            PERL5LIB=$new_path:$PERL5LIB
-            ;;
-    esac
-}
-
-for dir in $ZDOTDIRREVPATH; do
-    add_perl5lib_path $dir/lib/perl5
-    add_perl5lib_path $dir/lib/perl5/site_perl
-
-    # # Use a cache to avoid invoking Perl during startup of every single
-    # # shell (even non-interactive ones).
-    # cachedir=$dir/.config/perl
-    # cache=$cachedir/pmdir_relative_path
-    # if [ -e $cache ]; then
-    #     pmdir_relative_path=$(<$cache)
-    # else
-    #     # This trick comes from Stow's configure.ac
-    #     pmdir_relative_path=`
-    #       perl -MConfig \
-    #            -wle '($_ = $Config{installsitelib})
-    #                    =~ s!^\Q$Config{siteprefix}/!!; \
-    #                  print'`
-    #     mkdir -p $cachedir
-    #     echo "$pmdir_relative_path" > $cache
-    # fi
-    #
-    # if [ -n "$pmdir_relative_path" ]; then
-    #     add_perl5lib_path $dir/$pmdir_relative_path
-    # fi
-done
-
-# }}}
-# {{{ OSTYPE
-
-# Can come in handy too, if the shell sets it (bash and zsh do).
-export OSTYPE
 
 # }}}
 

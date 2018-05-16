@@ -1,0 +1,7 @@
+# -*- mode: sh -*-
+
+: ${HOST:=${HOSTNAME:-`hostname`}}
+: ${HOSTNAME:=$HOST}
+
+# Let's not make this *too* sticky because dhcp might change the host
+#export HOST HOSTNAME
