@@ -118,6 +118,7 @@ for dir in $ZDOTDIRREVPATH; do
   for newpath in                        \
                  $dir/sbin              \
                  $dir/bin               \
+                 $dir/.local/bin        \
   ; do
     if [ -d $newpath ]; then
         if [ -z "$newpaths" ]; then
