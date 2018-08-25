@@ -968,6 +968,15 @@ for global_alias_switches in {,i}{,l,L}{,r}{,v}{,C}; do
 
     [ -n "$rhs_switches" ] && rhs_switches="-$rhs_switches"
 
+    case "$global_alias_switches" in
+        *r*)
+            :
+            ;;
+        *)
+            rhs_switches="--directories=skip $rhs_switches"
+            ;;
+    esac
+
     eval "alias -g  G$global_alias_switches='| egrep $rhs_switches $color'"
     eval "alias -g EG$global_alias_switches='|& egrep $rhs_switches $color'"
     eval "alias -g XG$global_alias_switches='| xargs egrep $rhs_switches $color'"
