@@ -19,20 +19,20 @@
    it is treated specially:
 
     - =person-$individual_uuid=
-      
+
       Run directory contents if =$individual_uuid= equals
       =$ZDOTUSER=.  This should be unique to a person (*not* a uid);
       e-mail addresses are recommended, similar in idea to GNU arch's
       global archive namespace.
-      
+
     - =host-$hostname=
-      
+
       Run directory contents if $hostname equals the current hostname.
       If there is ambiguity with regards to FQDN or non-FQDN, the code
       gives the benefit of the doubt in favour of a match.
 
     - =uid-$username=
-      
+
       Run directory contents if $username equals the current
       (non-numeric) uid.  An additional special case: if =$username=
       equals 'OWNER', the hook is only run if the current user owns
@@ -50,7 +50,7 @@
   person-, uid-, and host-specific.  (Conceivably there could even
   be something person- and host-specific, e.g. if I wanted to run a
   utility to set sound card output volumes in a particular way on a
-  particular laptop.)  So the current approach is too limited.  
+  particular laptop.)  So the current approach is too limited.
 
 * Is anything other than AND boolean ever required?
 
@@ -60,7 +60,7 @@
   controlled manually such as composition of yum/smart repo/channel
   directories via a hostgroups-like approach (this refers to something
   I implemented in a previous job).
-  
+
 * Immutable requirement: listing hooks without running them
 
   Must be able to list which hooks would be run without running
@@ -74,24 +74,24 @@
 * Where are filters described?
 
   Possibilities:
-  
-   a) in the filename, 
-  
+
+   a) in the filename,
+
    b) in the pathname (status quo),
-  
+
    c) stored separately as meta-data somewhere, with the hooks all
       in one directory, or
-  
+
    d) as meta-data embedded within the hook via comments,
       retrievable in a well-defined, consistent manner (like emacs
       local variables).
-  
+
   With c), a single flat file (e.g. =.guards=) in the hook directory
   isn't going to work, because it doesn't support the =$foo.d=
   methodology.  Therefore it would have to be a =.guards.d=
   subdirectory, or a =$foo.guard= for each hook, either of which is a
   bit of a PITA.
-  
+
 * Pros/cons of each
 
  1. a) and d) are easiest when creating new hooks ... unless the
@@ -121,25 +121,25 @@
 
  6. a) and b) are virtually guaranteed to perform better, but
     premature optimization...
-    
+
  7. Avoiding subdirectories makes hook ordering easier to
     implement (we don't actually care, since implementation is a
     one-off cost which has already been done!), and a bit more
     visible (but again we don't really care given a good
     list_hooks).
- 
+
 * Points for each scheme:
 
         a  b  c  d
      1. 1  1  0  1
-     2. 1  1  0  0    
+     2. 1  1  0  0
      3. 4  4  0  0
      4. 0  0  2  2
      5. 0  0  5  5
      6. 1  1  0  0
      7. 0  0  0  0
- total: 7  7  7  8  
-    
+ total: 7  7  7  8
+
 * Conclusion
 
   In light of conflicting design goals, no single solution is
@@ -201,7 +201,7 @@
  - Supports =find_hooks= for =emacs=, =mutt=, =ssh=, =cron=, and other
    non-shell-based environments which invoke the hooks in a different
    way - see =rebuild_config= function in =~/lib/libhooks.sh=
- 
+
  - =ZDOTDIR=~aspiers= as root, where =~aspiers= is shared via NFS,
    reduces security of root a lot since trust level for NFS write
    access to =~aspiers= is only by anyone who can get a port < 1024.
