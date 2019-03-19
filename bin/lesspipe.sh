@@ -30,6 +30,9 @@ lesspipe() {
     *.tar.bz2|*.tbz|*.tbz2)
       tar jtvvf "$1"
       ;;
+    *.tar.xz|*.txz)
+      tar Jtvvf "$1"
+      ;;
     *initrd*.gz)
       gunzip -c "$1" | cpio -tv
       ;;
