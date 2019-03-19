@@ -6,8 +6,6 @@
 #
 # Source this to get a decent setup from another account.
 #
-# $Id$
-#
 
 if [ -n "$DEBUG_NS" ]; then
   set -x
