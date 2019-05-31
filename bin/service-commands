@@ -38,7 +38,9 @@ else
   sudo=
 fi
 
-if [ -x /sbin/service ]; then
+if which systemctl >&/dev/null; then
+  exec $sudo systemctl $op "$service" "$@"
+elif [ -x /sbin/service ]; then
   # Red Hat
   exec $sudo /sbin/service "$service" $op "$@"
 else
