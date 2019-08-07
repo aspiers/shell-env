@@ -902,8 +902,9 @@ alias -g AD='&& div &&'
 
 # }}}
 
-# {{{ Paging with less / head / tail / dts
+# {{{ Paging with lnav / less / head / tail / dts
 
+alias -g LN='| lnav -q'
 alias -g L='| less'
 alias -g LS='| less -S'
 alias -g EL='|& less'
