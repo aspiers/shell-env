@@ -31,7 +31,7 @@ Meta-n: history-search-forward
 "\e[H": beginning-of-line
 "\e[F": end-of-line
 
-# Fix bash's utterly moronic defaults for completion by adding these to ~/.inputrc
+# Fix bash's utterly moronic defaults for completion
 set bell-style visible
 set show-all-if-ambiguous on
 set show-all-if-unmodified on
