@@ -174,12 +174,8 @@ extract () {
             rpm2cpio "$rpm" > "$tmpdir/$cpio"
             progress "done."
 
-            progress -n "Unpacking cpio into $tmpdir ... "
-            mkdir "$tmpdir/$rpm_name"
-            cd "$tmpdir/$rpm_name"
-            cpio -id < ../"$cpio"
-            progress "done."
-            rm ../"$cpio"
+            unpack_cpio "$cpio" "$rpm_name" "$tmpdir"
+            rm "$tmpdir/$cpio"
             ;;
         *)
             abort "$archive is not a supported archive format"
@@ -189,6 +185,25 @@ extract () {
     if [ $? != 0 ]; then
         abort "Unpack of $archive_path failed"
     fi
+}
+
+# Takes a cpio $cpio currently sitting in $tmpdir and unpacks it into
+# a subdirectory called $cpio_name
+unpack_cpio () {
+    cpio="$1"
+    cpio_name="$2"
+    tmpdir="$3"
+
+    mkdir "$tmpdir/$cpio_name"
+    pushd "$tmpdir/$cpio_name"
+    progress "Unpacking contents of $cpio into $tmpdir ... "
+    if ! cpio -id < ../"$cpio"; then
+        popd
+        return $?
+    fi
+    progress "done."
+    popd
+    return 0
 }
 
 ensure_single_dir () {
