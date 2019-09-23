@@ -856,7 +856,11 @@ if ! which less >&/dev/null; then
   alias less=more
 fi
 
-alias v=less
+if which bat >&/dev/null; then
+    alias v=bat
+else
+    alias v=less
+fi
 alias vs='less -S'
 
 # }}}
