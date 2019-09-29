@@ -104,7 +104,7 @@ get_base_dest_dir () {
     case "$archive" in
         *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|\
         *.7z|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|\
-        *.job|*.pylib|*.gem|*.box|*.rpm|*.egg)
+        *.job|*.pylib|*.gem|*.box|*.rpm|*.egg|*.cpio)
             base_dest_dir="${archive%.*}"
             ;;
         *.tar.gz)
@@ -164,17 +164,19 @@ extract () {
             run unrar x "$archive_abspath"
             popd
             ;;
+        *.cpio)
+            cpio_name="$(basename -s .cpio $archive_path)"
+            unpack_cpio "$archive_path" "$cpio_name" "$tmpdir"
+            ;;
         *.rpm)
-            rpm="$archive_path"
-            rpm_name="${rpm%.rpm}"
-            rpm_name="${rpm_name##*/}"
+            rpm_name="$(basename -s .rpm $archive_path)"
             cpio="$rpm_name.cpio"
 
             progress -n "Extracting cpio to $tmpdir/$cpio ... "
             rpm2cpio "$rpm" > "$tmpdir/$cpio"
             progress "done."
 
-            unpack_cpio "$cpio" "$rpm_name" "$tmpdir"
+            unpack_cpio "$tmpdir" "$cpio" "$tmpdir/$rpm_name"
             rm "$tmpdir/$cpio"
             ;;
         *)
@@ -187,22 +189,24 @@ extract () {
     fi
 }
 
-# Takes a cpio $cpio currently sitting in $tmpdir and unpacks it into
-# a subdirectory called $cpio_name
+# Takes a cpio $cpio currently sitting in $cpio_dir and unpacks it into
+# $dest
 unpack_cpio () {
-    cpio="$1"
-    cpio_name="$2"
-    tmpdir="$3"
+    cpio_dir="$1"
+    cpio="$2"
+    dest_dir="$3"
 
     mkdir "$tmpdir/$cpio_name"
-    pushd "$tmpdir/$cpio_name"
+    pushd "$tmpdir/$cpio_name" >/dev/null
     progress "Unpacking contents of $cpio into $tmpdir ... "
-    if ! cpio -id < ../"$cpio"; then
+    cpio -id < ../"$cpio"
+    ret=$?
+    if [ $ret != 0 ]; then
         popd
-        return $?
+        return $ret
     fi
     progress "done."
-    popd
+    popd >/dev/null
     return 0
 }
 
