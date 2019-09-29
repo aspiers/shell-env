@@ -3,13 +3,17 @@
 # Which Less - locate an executable via which(1) and then run less(1) on it
 
 if [ $# = 0 ]; then
-  # get usage
-  which
+    # get usage
+    which
 else
-  if which "$@" >/dev/null; then
-    # -F is --quit-if-one-screen
-    less -F `which "$@"`
-  else
-    which "$@"
-  fi
+    if which "$@" >/dev/null; then
+        if which bat >/dev/null 2>&1; then
+            bat `which "$@"`
+        else
+            # -F is --quit-if-one-screen
+            less -F `which "$@"`
+        fi
+    else
+        which "$@"
+    fi
 fi
