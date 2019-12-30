@@ -25,7 +25,7 @@ enable_nullglob () {
               restore_nullglob="allow_null_glob_expansion=$allow_null_glob_expansion"
               allow_null_glob_expansion=0
               ;;
-          2*|3*|4*)
+          [2-5]*)
               restore_nullglob=`shopt -p nullglob`
               shopt -s nullglob
               ;;
