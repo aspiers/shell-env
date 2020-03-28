@@ -911,8 +911,11 @@ alias -g AD='&& div &&'
 alias -g LN='| lnav -q'
 alias -g L='| less'
 alias -g LS='| less -S'
+
+alias -g ELN='|& lnav -q'
 alias -g EL='|& less'
 alias -g ELS='|& less -S'
+
 alias -g TRIM='| trim-lines'
 
 alias -g H='| head'
