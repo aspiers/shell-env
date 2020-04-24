@@ -12,19 +12,6 @@
 #logger -t $0 "$@" / $DISPLAY
 #exec 2>/tmp/url_handler.log
 
-# acrobat reader passes args: -remote openURL(url,new-window)
-
-if [ "$1" = -remote ]; then
-    shift
-    case "$1" in
-        openURL*)
-            set "${1#openURL(}"
-            set "${1%)}"
-            set "${1%,new-window}"
-            ;;
-    esac
-fi
-
 # Allow hooks to manipulate "$1" prior to parsing.
 HOOK_DIR=".url_handler.d"
 source "$ZDOTDIR/lib/libhooks.sh"

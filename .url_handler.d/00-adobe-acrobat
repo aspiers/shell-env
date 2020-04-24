@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# acrobat reader passes args: -remote openURL(url,new-window)
+
+if [ "$1" = -remote ]; then
+    shift
+    case "$1" in
+        openURL*)
+            set "${1#openURL(}"
+            set "${1%)}"
+            set "${1%,new-window}"
+            ;;
+    esac
+fi
