@@ -176,7 +176,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`sfind`](https://github.com/aspiers/shell-env/blob/master/bin/sfind) - Find source files or links, using [`so`](https://github.com/aspiers/shell-env/blob/master/bin/so) (below).
     * [`show-colours`](https://github.com/aspiers/shell-env/blob/master/bin/show-colours) - Show all ANSI 3-bit console colours (foreground and background).
     * [`shuffle`](https://github.com/aspiers/shell-env/blob/master/bin/shuffle) - Fisher-Yates shuffle lines from STDIN.
-    * [`so`](https://github.com/aspiers/shell-env/blob/master/bin/so) - Prune a list of files using `~/.cvsignore`.
+    * [`source-only` / `so`](https://github.com/aspiers/shell-env/blob/master/bin/so) - Prune a list of files using `~/.cvsignore`.
     * [`sort-by-filename`](https://github.com/aspiers/shell-env/blob/master/bin/sort-by-filename) - Sort list of newline-separated paths by basename
       (filename ignoring path segments).
     * [`sparse`](https://github.com/aspiers/shell-env/blob/master/bin/sparse) - Show sparseness of files.
