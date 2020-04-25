@@ -1,0 +1,21 @@
+#!/usr/bin/zsh
+
+# gse (Grep Shell-Env) - greps my various shell-env files
+
+# N.B. search $ZODTIDR not the git repos, since there might be unstowed
+# files in there which we want to search too.
+
+paths=(
+    $ZDOTDIR/.profile
+    $ZDOTDIR/.bashenv*
+    $ZDOTDIR/.bash_profile
+    $ZDOTDIR/.bashrc*
+    $ZDOTDIR/.zlogin
+    $ZDOTDIR/.zprofile
+    $ZDOTDIR/.zshenv*
+    $ZDOTDIR/.zshrc*
+    $ZDOTDIR/.shared*
+)
+
+sfind ${^paths}(N) | \
+    xargs egrep "$@"
