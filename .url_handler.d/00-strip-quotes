@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Work around stupid bug in exo-open (or thereabouts) which adds double-quotes
+# to URL
+
+if [[ "$1" =~ \"*\" ]]; then
+    set "${1#\"}"
+    set "${1%\"}"
+fi
