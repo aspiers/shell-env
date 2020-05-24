@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Telegram desktop client passes args: '%u' https://...
+
+if [ "$1" = "'%u'" ]; then
+    shift
+fi
