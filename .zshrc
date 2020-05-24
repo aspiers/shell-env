@@ -560,13 +560,10 @@ zle -N backward-to-/
 zle -N forward-to-/
 
 # }}}
-# {{{ kill-region-or-backward-(big-)word
 
-# autoloaded
 zle -N kill-region-or-backward-word
 zle -N kill-region-or-backward-big-word
 
-# }}}
 # {{{ kill-big-word
 
 kill-big-word () {
@@ -583,14 +580,13 @@ zle -N kill-big-word
 zle -N transpose-big-words
 
 # }}}
-# {{{ magic-forward-char
+# {{{ magic-*
 
 zle -N magic-forward-char
-
-# }}}
-# {{{ magic-forward-word
-
 zle -N magic-forward-word
+zle -N magic-backward-word
+zle -N magic-kill-word
+zle -N magic-space
 
 # }}}
 # {{{ incremental-complete-word
@@ -1066,10 +1062,13 @@ bindkey '^[^W'   kill-region-or-backward-big-word
 bindkey '^[T'    transpose-big-words
 bindkey '^I'     complete-word
 bindkey '^Xi'    incremental-complete-word
+bindkey '^[ '    magic-space
+bindkey '^[d'    magic-kill-word
 bindkey '^F'     magic-forward-char
 # bindkey '^[b'    emacs-backward-word
 # bindkey '^[f'    emacs-forward-word
 bindkey '^[f'    magic-forward-word
+bindkey '^[b'    magic-backward-word
 bindkey '^[B'    backward-to-space
 bindkey '^[F'    forward-to-space
 bindkey '^[^b'   backward-to-/

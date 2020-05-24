@@ -1,0 +1,10 @@
+#autoload
+
+# See also magic-forward-word etc.
+
+if [[ "$#BUFFER" == 0 ]]; then
+    zle up-line-or-history
+    zle beginning-of-line
+fi
+
+zle .kill-word

@@ -1,0 +1,14 @@
+#autoload
+
+# Useful for inserting a new word where the cursor is
+
+# See also magic-forward-word etc.
+
+if [[ $LBUFFER[-1] != ' ' ]]; then
+    zle self-insert ' '
+fi
+
+if [[ $RBUFFER[1] != ' ' ]]; then
+    zle self-insert ' '
+    zle .backward-char
+fi

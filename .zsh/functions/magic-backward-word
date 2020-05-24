@@ -1,0 +1,9 @@
+#autoload
+
+# See also magic-forward-word etc.
+
+if [[ "$#BUFFER" == 0 ]]; then
+    zle up-line-or-history
+fi
+
+zle emacs-backward-word
