@@ -5,5 +5,3 @@ if (( EUID == 0 )); then
 else
     sudo systemctl "$@"
 fi
-
-
