@@ -20,6 +20,16 @@ if [ "$1" == '-d' ]; then
   shift
 fi
 
+if ! [ -e ~/.cvsignore ]; then
+    cat <<'EOF' >&2
+source-only cannot run without ~/.cvsignore!
+Please run:
+
+    mrco cvs; mrst cvs
+EOF
+    exit 1
+fi
+
 tmpfile=`mktemp /tmp/source-only.XXXXXXX`
 (
   # We ignore every element no matter where it is in the path chain.
