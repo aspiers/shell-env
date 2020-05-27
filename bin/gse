@@ -14,6 +14,7 @@ paths=(
     $ZDOTDIR/.zprofile
     $ZDOTDIR/.zshenv*
     $ZDOTDIR/.zshrc*
+    $ZDOTDIR/.zsh
     $ZDOTDIR/.shared*
 )
 
