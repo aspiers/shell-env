@@ -584,6 +584,7 @@ zle -N transpose-big-words
 
 zle -N magic-forward-char
 zle -N magic-forward-word
+zle -N magic-forward-to-space
 zle -N magic-backward-word
 zle -N magic-kill-word
 zle -N magic-space
@@ -1068,9 +1069,9 @@ bindkey '^F'     magic-forward-char
 # bindkey '^[b'    emacs-backward-word
 # bindkey '^[f'    emacs-forward-word
 bindkey '^[f'    magic-forward-word
+bindkey '^[F'    magic-forward-to-space
 bindkey '^[b'    magic-backward-word
 bindkey '^[B'    backward-to-space
-bindkey '^[F'    forward-to-space
 bindkey '^[^b'   backward-to-/
 bindkey '^[^f'   forward-to-/
 bindkey '^[^[[C' emacs-forward-word

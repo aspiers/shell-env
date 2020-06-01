@@ -1,0 +1,16 @@
+#autoload
+
+# For easily altering the first word of the previous line;
+# I do this quite a lot, e.g. 
+#    ls foo
+# then
+#    l foo
+#
+# See also magic-forward-char
+
+if [[ "$#BUFFER" == 0 ]]; then
+  zle up-line-or-history
+  zle beginning-of-line
+fi
+
+zle forward-to-space
