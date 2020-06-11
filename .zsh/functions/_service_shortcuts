@@ -1,4 +1,4 @@
-#compdef sst usst ssp ussp sta usta sre usre srl usrl
+#compdef st ust sst usst ssp ussp sta usta sre usre srl usrl
 
 _services "$@"
 

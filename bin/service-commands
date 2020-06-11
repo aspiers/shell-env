@@ -9,7 +9,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   here=`dirname $0`
   echo -n "Setting up handy service shortcuts in $here ... "
   cd "$here"
-  for op in {,u}s{re,rl,st,sp,ta}; do
+  for op in {,u}s{re,rl,st,t,sp,ta}; do
     if ! [ -e $op ]; then
         ln -s $me $op
         echo -n " $op"
@@ -28,12 +28,18 @@ case "$mode" in
 esac
 
 case "$mode" in
-  sre)  op=restart ;;
-  srl)  op=reload  ;;
-  sst)  op=start   ;;
-  ssp)  op=stop    ;;
-  sta)  op=status  ;;
-  *)   echo "$0: BUG with mode '$mode'"; exit 1 ;;
+  sre)
+    op=restart ;;
+  srl)
+    op=reload  ;;
+  st|sst)
+    op=start   ;;
+  ssp)
+    op=stop    ;;
+  sta)
+    op=status  ;;
+  *)
+    echo "$0: BUG with mode '$mode'"; exit 1 ;;
 esac
 
 service="$1"
