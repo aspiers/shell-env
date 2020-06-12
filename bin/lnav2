@@ -1,0 +1,84 @@
+#!/usr/bin/ruby
+#
+# Wrapper around lnav which adds some handy extra options.
+
+require 'time'
+require 'optparse'
+require 'optparse/time'
+require 'pp'
+
+ENV['LANG'] = "C"
+
+class OptionParser
+  # Like order!, but leave any unrecognized --switches alone
+  # https://stackoverflow.com/a/40434335/179332
+  def order_recognized!(args=ARGV)
+    extra_opts = []
+    begin
+      order!(args) { |a| extra_opts << a }
+    rescue OptionParser::InvalidOption => e
+      extra_opts << e.args[0]
+      retry
+    end
+    args[0, 0] = extra_opts
+  end
+end
+
+def main
+  options = parse_options
+
+  args = [
+    # hack to make r/R hotkeys default to navigating one minute forward/back
+    # https://github.com/tstack/lnav/issues/382
+    "-c", ":goto 1 min later",
+  ]
+
+  if options[:hide_before]
+    args += [ "-c", ":hide-lines-before +#{options[:hide_before]}" ]
+  end
+
+  if options[:start_at]
+    args += [ "-c", ":goto +#{options[:start_at]}" ]
+  else
+    # put first error in middle of display
+    args += [
+      '-c', ':goto 0',
+      '-c', ':next-mark error',
+      '-c', ':relative-goto -20',
+    ]
+  end
+
+  args += ARGV
+
+  puts "Running lnav with args:"
+  args.each { |arg| puts "  " + arg.inspect }
+
+  system 'lnav', *args
+end
+
+def parse_options
+  {}.tap do |options|
+    parser = OptionParser.new do |opts|
+      opts.banner = "Usage: #$0 [options] [args]"
+
+      opts.on("-h", "--help", "Show this help") do
+        puts parser
+        puts "\nOther options and arguments are passed on to lnav:\n\n"
+        system "lnav", "-h"
+        exit
+      end
+
+      opts.on("--hide-before TIME", Time, "Hide lines before TIME") do |time|
+        options[:hide_before] = time.strftime("%s")
+      end
+
+      opts.on("--start-at TIME", Time, "Start viewing at TIME") do |time|
+        options[:start_at] = time.strftime("%s")
+      end
+    end
+
+    parser.order_recognized!
+  end
+end
+
+main
