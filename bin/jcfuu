@@ -1,3 +1,24 @@
 #!/bin/bash
 
-jcfu --user-unit "$@"
+# Note that we omit --user here, because for some weird reason it
+# doesn't always work with --user.  E.g. once on ionian I saw it
+# showing "No journal files were found." until I restarted
+# systemd-journald.service.  This *might* have been because it was
+# started without /var/log/journal existing, therefore the default of
+# Storage=auto in /etc/systemd/journald.conf chose volatile storage
+# (see journald.conf(5) man page).
+#
+#   https://unix.stackexchange.com/questions/109490/where-is-why-is-there-no-log-for-normal-user-systemd-services
+#
+# points to:
+#
+#   https://lists.freedesktop.org/archives/systemd-devel/2016-October/037554.html
+#
+# where Poettering explains that persistent logging is needed for this
+# to work.  However he also seemed to suggest that membership of the
+# systemd-journal group should have been sufficient, but apparently it
+# wasn't in the above scenario.
+#
+# Either way it seems that it always works with just --user-unit.
+
+jcf --user-unit "$@"
