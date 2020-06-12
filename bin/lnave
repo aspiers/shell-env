@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# lnav with jumping to last line
+
+# By default, lnav2 does this for us
+exec lnav2 "$@"
