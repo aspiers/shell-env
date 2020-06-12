@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Try to get in the right habit since jl is better for this use case
+if [ -z "$1" ]; then
+    echo >&2 "Use jl instead for viewing system journal"
+    exit 1
+fi
+
 if which lnav >&/dev/null; then
     lnavf "$@"
 else
