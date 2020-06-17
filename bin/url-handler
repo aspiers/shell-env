@@ -29,26 +29,26 @@ method="${1%%:*}"
 if test "$url" = "$method" ; then
     # no method was specified, try to guess one
     case "${url%%.*}" in
-	www|web|w3) method=http		;;
-	mail|mailx) method=mailto	;;
-	gopher)	    method=gopher	;;
-	*)
-	    case "${url}" in
-		*@*)
+        www|web|w3) method=http                 ;;
+        mail|mailx) method=mailto       ;;
+        gopher)             method=gopher       ;;
+        *)
+            case "${url}" in
+                *@*)
                     method=mailto
                     ;;
-		*)
+                *)
                     if [ -e "$url" ]; then
                         method=file
                         url="`abs \"$url\"`"
                     fi
                     ;;
-	    esac
+            esac
         ;;
     esac
     case "$method" in
-	mailto|file)	url="${method}:$url"	;;
-	*)		url="${method}://$url"	;;
+        mailto|file)    url="${method}:$url"    ;;
+        *)              url="${method}://$url"  ;;
     esac
 fi
 
@@ -113,21 +113,21 @@ chrome_handler () {
 
 case "$method" in
     ftp)
-	ftp=ftp
-	if type -p lftp >& /dev/null ; then
+        ftp=ftp
+        if type -p lftp >& /dev/null ; then
             ftp=lftp
-	elif type -p ncftp >& /dev/null ; then
-	    ftp=ncftp
-	else
-	    url="${url#ftp://}"
-	    echo "=====>  Paste this command by mouse:"
-	    echo cd "/${url#*/}"
-	    url="${url%%/*}"
-	fi
-	exec $ftp "$url"
-	;;
+        elif type -p ncftp >& /dev/null ; then
+            ftp=ncftp
+        else
+            url="${url#ftp://}"
+            echo "=====>  Paste this command by mouse:"
+            echo cd "/${url#*/}"
+            url="${url%%/*}"
+        fi
+        exec $ftp "$url"
+        ;;
     file|http|https|gopher)
-	if test -n "$DISPLAY"; then
+        if test -n "$DISPLAY"; then
             if type -p google-chrome >& /dev/null; then
                 chrome_handler "$url" && exit 0
             fi
@@ -139,23 +139,23 @@ case "$method" in
             #     mozilla -remote "openURL($url,new-tab)" && exit 0
             # fi
         fi
-	type -p links >& /dev/null && links "$url" && exit 0
-	type -p w3m   >& /dev/null && w3m   "$url" && exit 0
-	type -p lynx  >& /dev/null && lynx  "$url" && exit 0
+        type -p links >& /dev/null && links "$url" && exit 0
+        type -p w3m   >& /dev/null && w3m   "$url" && exit 0
+        type -p lynx  >& /dev/null && lynx  "$url" && exit 0
         echo "No HTTP browser found."
         read -p "Press return to continue: "
         exit 1
-	;;
+        ;;
     mailto)
         mailto-handler "$url"
-	;;
+        ;;
     textedit)
         lilypond-invoke-editor "$url"
         exit 0
         ;;
     *)
-	echo "URL type \"$method\" not known"
-	read -p "Press return to continue: "
-	exit 0  # No error return
-	;;
+        echo "URL type \"$method\" not known"
+        read -p "Press return to continue: "
+        exit 0  # No error return
+        ;;
 esac
