@@ -154,8 +154,7 @@ case "$method" in
         exit 0
         ;;
     *)
-        echo "URL type \"$method\" not known"
-        read -p "Press return to continue: "
-        exit 0  # No error return
+        echo >&2 "URL type \"$method\" not known"
+        exit 1
         ;;
 esac

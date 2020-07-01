@@ -12,3 +12,5 @@ if [ "$1" = -remote ]; then
             ;;
     esac
 fi
+
+return 1  # Carry on processing other hooks

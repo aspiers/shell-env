@@ -2,6 +2,8 @@
 
 # Telegram desktop client passes args: '%u' https://...
 
-if [ "$1" = "'%u'" ]; then
-    shift
-fi
+# if [ "$1" = "'%u'" ]; then
+#     shift
+# fi
+
+return 1  # Carry on processing other hooks
