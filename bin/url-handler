@@ -12,6 +12,8 @@
 #logger -t $0 "$@" / $DISPLAY
 #exec 2>/tmp/url_handler.log
 
+here=$(dirname $0)
+
 # Allow hooks to manipulate "$1" prior to parsing.
 HOOK_DIR=".url_handler.d"
 source "$ZDOTDIR/lib/libhooks.sh"
@@ -40,7 +42,7 @@ if test "$url" = "$method" ; then
                 *)
                     if [ -e "$url" ]; then
                         method=file
-                        url="`abs \"$url\"`"
+                        url="`$here/abs \"$url\"`"
                     fi
                     ;;
             esac
