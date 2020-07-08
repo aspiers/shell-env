@@ -26,3 +26,4 @@ COPYING
 
 lib/perl5/Sh\.t
 t
+^\.autosync
