@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# This was actually a winner in one of the obfuscated Perl
+# competitions, way back in the day.
+
+perl -0l12pe1 /proc/$1/environ

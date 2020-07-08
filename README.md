@@ -145,6 +145,7 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`pdf`](https://github.com/aspiers/shell-env/blob/master/bin/pdf) - Find a preferred PDF viewer and run it.
     * [`phup`](https://github.com/aspiers/shell-env/blob/master/bin/phup) - `pkill -HUP` shortcut.
     * [`bping`](https://github.com/aspiers/shell-env/blob/master/bin/bping) - Wrapper around ping to make it do a lot of beeping ;-)  Pitch of beeps represents latency: concert A (440Hz) for 10ms, going one octave up or down for every order of magnitude.
+    * [`penv`](https://github.com/aspiers/shell-env/blob/master/bin/penv) - Dump the environment of a given process id.
     * [`pinggw`](https://github.com/aspiers/shell-env/blob/master/bin/pinggw) - Ping the gateway.
     * [`pingns`](https://github.com/aspiers/shell-env/blob/master/bin/pingns) - Ping a nameserver.
     * [`pingwan`](https://github.com/aspiers/shell-env/blob/master/bin/pingwan) - Ping the WAN gateway found by [`find-wan-gateway`](https://github.com/aspiers/shell-env/blob/master/bin/find-wan-gateway).
