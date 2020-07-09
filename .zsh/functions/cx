@@ -47,7 +47,9 @@ cx () {
     new_title="$*"
 
     if (( $#titles )); then
-      titles=( "$new_title" "$titles[@]" )
+      if [[ $new_title != $titles[1] ]]; then
+          titles=( "$new_title" "$titles[@]" )
+      fi
     else
       titles=( "$new_title" )
     fi
