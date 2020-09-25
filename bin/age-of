@@ -3,7 +3,7 @@
 # Show the age in seconds of a running or completed command which
 # was run under the age-track wrapper.  exit 0 if still running, 1 otherwise.
 
-AGE_DIR="$HOME/.age"
+AGE_DIR="$HOME/.run/age"
 
 me=`basename $0`
 

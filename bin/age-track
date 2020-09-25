@@ -4,7 +4,7 @@
 # concurrent invocations.  Useful as a helper for asynchronous
 # process invocations.
 
-AGE_DIR="$HOME/.age"
+AGE_DIR="$HOME/.run/age"
 
 me=`basename $0`
 
