@@ -6,40 +6,40 @@ me="service-commands"
 mode=`basename $0`
 
 if [ "$mode" = "$me" ] && [ -z "$*" ]; then
-  here=`dirname $0`
-  echo -n "Setting up handy service shortcuts in $here ... "
-  cd "$here"
-  for op in {,u}s{re,rl,st,t,sp,ta}; do
-    if ! [ -e $op ]; then
-        ln -s $me $op
-        echo -n " $op"
-    fi
-  done
-  echo
-  exit 0
+    here=`dirname $0`
+    echo -n "Setting up handy service shortcuts in $here ... "
+    cd "$here"
+    for op in {,u}s{re,rl,st,t,sp,ta}; do
+        if ! [ -e $op ]; then
+            ln -s $me $op
+            echo -n " $op"
+        fi
+    done
+    echo
+    exit 0
 fi
 
 user=
 case "$mode" in
-  u*)
-    user=--user
-    mode="${mode#u}"
-    ;;
+    u*)
+        user=--user
+        mode="${mode#u}"
+        ;;
 esac
 
 case "$mode" in
-  sre)
-    op=restart ;;
-  srl)
-    op=reload  ;;
-  st|sst)
-    op=start   ;;
-  ssp)
-    op=stop    ;;
-  sta)
-    op=status  ;;
-  *)
-    echo "$0: BUG with mode '$mode'"; exit 1 ;;
+    sre)
+        op=restart ;;
+    srl)
+        op=reload  ;;
+    st|sst)
+        op=start   ;;
+    ssp)
+        op=stop    ;;
+    sta)
+        op=status  ;;
+    *)
+        echo "$0: BUG with mode '$mode'"; exit 1 ;;
 esac
 
 service="$1"
@@ -51,18 +51,18 @@ elif [ "$op" != status ]; then
 fi
 
 if [ "`id -u`" != 0 ] && [ -z "$user" ]; then
-  # 'ave a go son
-  sudo=sudo
+    # 'ave a go son
+    sudo=sudo
 else
-  sudo=
+    sudo=
 fi
 
 if which systemctl >&/dev/null; then
-  exec $sudo systemctl $user $op $service "$@"
+    exec $sudo systemctl $user $op $service "$@"
 elif [ -x /sbin/service ]; then
-  # legacy v1
-  exec $sudo /sbin/service "$service" $op "$@"
+    # legacy v1
+    exec $sudo /sbin/service "$service" $op "$@"
 else
-  # legacy v2
-  exec $sudo /etc/init.d/"$service" $op "$@"
+    # legacy v2
+    exec $sudo /etc/init.d/"$service" $op "$@"
 fi
