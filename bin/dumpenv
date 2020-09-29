@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+# This is more readable than the devilishly cunning winner of an old
+# obfuscated Perl competition:
+#
+#    perl -0l12pe1 /proc/$pid/environ
+
 import sys
 
 pid = sys.argv[1]
