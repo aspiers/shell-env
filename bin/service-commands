@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 me="service-commands"
 mode=`basename $0`
 
