@@ -56,7 +56,24 @@ else
 fi
 
 if which systemctl >&/dev/null; then
-    exec $sudo systemctl $user $op $service "$@"
+    case $op in
+        status)
+            # For some moronic reason, systemctl --lines=N status doesn't
+            # work properly.  I'm guessing it only shows lines since the
+            # service was
+            $sudo systemctl -n 0 --no-pager $user $op $service "$@"
+            if [[ -z $user ]]; then
+                unit_option=-u
+            else
+                unit_option=--user-unit
+            fi
+            echo
+            $sudo journalctl -n 10 --no-pager $user $unit_option $service "$@"
+            ;;
+        *)
+            exec $sudo systemctl $user $op $service "$@"
+            ;;
+    esac
 elif [ -x /sbin/service ]; then
     # legacy v1
     exec $sudo /sbin/service "$service" $op "$@"
