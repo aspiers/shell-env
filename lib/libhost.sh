@@ -1,7 +1,7 @@
 #!/bin/sh
 
 read_localhost_nickname () {
-    HOST_NAME_FILE=$HOME/.localhost-nickname
+    HOST_NAME_FILE=$ZDOTDIR/.localhost-nickname
     [ -f "$HOST_NAME_FILE" ] && localhost_nickname="$(<$HOST_NAME_FILE)"
     [ -n "$localhost_nickname" ] && return 0
 
