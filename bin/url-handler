@@ -106,7 +106,8 @@ chrome_handler () {
 
     if [ -z "$SSH_CONNECTION" ]; then
         if which wmctrl >&/dev/null; then
-            wmctrl -a "$switch_to"
+            # -x searches by WM_CLASS
+            wmctrl -x -a "$switch_to"
         else
             echo "WARNING: Didn't find wmctrl on \$PATH" >&2
         fi
