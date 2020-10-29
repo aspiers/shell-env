@@ -89,7 +89,9 @@ process_running_my_uid () {
 }
 
 chrome_handler () {
-    if process_running_my_uid google-chrome; then
+    if process_running_my_uid brave-browser; then
+        browser=brave-browser
+    elif process_running_my_uid google-chrome; then
         browser=google-chrome
     elif process_running_my_uid chrome; then
         browser=google-chrome
