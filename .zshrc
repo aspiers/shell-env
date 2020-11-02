@@ -1039,6 +1039,17 @@ alias -g EA8="|& awk '{print \$8}'"
 alias -g EA9="|& awk '{print \$9}'"
 
 # }}}
+# {{{ clipboard
+
+if which xclip >&/dev/null; then
+    # defaults to primary selection for Shift+Insert etc.
+    alias -g XC="| xclip"
+
+    # Control+V / CUA context
+    alias -g XCC="| xclip -selection clipboard"
+fi
+
+# }}}
 
 # }}}
 
