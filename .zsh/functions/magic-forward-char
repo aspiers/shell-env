@@ -1,7 +1,7 @@
 #autoload
 
 # For easily altering the first word of the previous line;
-# I do this quite a lot, e.g. 
+# I do this quite a lot, e.g.
 #    ls foo
 # then
 #    l foo
@@ -10,7 +10,7 @@
 
 if [[ "$#BUFFER" == 0 ]]; then
   zle up-line-or-history
-  zle beginning-of-buffer-or-history
+  CURSOR=0
   zle forward-char
 else
   zle forward-char
