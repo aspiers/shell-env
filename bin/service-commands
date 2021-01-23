@@ -37,7 +37,7 @@ case "$mode" in
     sta)
         op=status  ;;
     *)
-        echo "$0: BUG with mode '$mode'"; exit 1 ;;
+        echo "$0: Unrecognised mode '$mode'"; exit 1 ;;
 esac
 
 service="$1"
