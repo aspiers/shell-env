@@ -16,4 +16,4 @@ fi
 
 ~/.cfg-post.d/cron
 
-mkdir ~/.run
+mkdir -p ~/.run
