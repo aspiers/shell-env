@@ -88,10 +88,11 @@ sh_load_status "fpath/autoloads"
 
 typeset -U fpath
 fpath=(
-       {~,$zdotdir}/{.[z]sh/$ZSH_VERSION/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,/person-$ZDOTUSER,/host-${HOST%%.*}},scripts}}(N)
-
+       {~,$zdotdir}/.[z]sh/$ZSH_VERSION/*.zwc}(N)
+       {~,$zdotdir}/{{.[z]sh,[l]ib/zsh}/{functions{,/person-$ZDOTUSER,/host-${HOST%%.*}},scripts}}(N)
+       /etc/zsh_completion.d
        $fpath
-      )
+)
 
 # Autoload shell functions from all directories in $fpath.  Restrict
 # functions from $zdotdir/.zsh to ones that have the executable bit
