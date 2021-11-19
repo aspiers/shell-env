@@ -86,6 +86,7 @@ export PYTHONPATH
 
 sh_load_status "fpath/autoloads"
 
+typeset -U fpath
 fpath=(
        {~,$zdotdir}/{.[z]sh/$ZSH_VERSION/*.zwc,{.[z]sh,[l]ib/zsh}/{functions{,/person-$ZDOTUSER,/host-${HOST%%.*}},scripts}}(N)
 
