@@ -11,6 +11,7 @@ _my_zrecompile () {
     _site_funcs=(
         "$_Completions_glob[@]"
         "$_Prompts_glob[@]"
+        /etc/zsh_completion.d
     )
 
     # zrecompile cheatsheet:
