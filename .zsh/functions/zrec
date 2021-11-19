@@ -16,18 +16,14 @@ _my_zrecompile () {
         _compinit_dir="$_func_dir"
         _site_funcs=( $_func_dir/*~*.zwc*(.) )
     fi
-
-    # For some reason this always ends up 444.
-    # 2009-06-27 Sat 15:51:36 BST always? commenting to see what happens
-    #chmod u+w ~/.zsh/functions.zwc*
-
+    # zrecompile cheatsheet:
+    #
     # -p means sets of arguments in between -- get passed to
     # zcompile.  See comments at top of the zrecompile source file
-    # in /usr/share/zsh/$ZSH_VERSION/zrecompile for examples.
+    # in /usr/share/zsh/functions/Misc/zrecompile for examples.
     # -R copies .zwc into shell process memory
     # -M mmaps the .zwc
     # -U suppresses alias expansion during reading of function
-
     # -z autoloads function as if KSH_AUTOLOAD unset.
     # -k autoloads function as if KSH_AUTOLOAD set.
     # Without -k or -z, takes value of KSH_AUTOLOAD when compiled
@@ -37,16 +33,16 @@ _my_zrecompile () {
     # Info says -U and -z to be used for system functions.
     if [[ -w $_compinit_dir ]]; then
         _compinits=(
-            -R $_compinit_dir/compinit -- 
+            -R $_compinit_dir/compinit --
             -R $_compinit_dir/compaudit --
-            -R $_compinit_dir/compdump -- 
+            -R $_compinit_dir/compdump --
         )
     else
         _compinits=()
     fi
 
     # deal with shared $HOME
-    zwcdir=~/.zsh/$ZSH_VERSION 
+    zwcdir=~/.zsh/$ZSH_VERSION
     [ -d "$zwcdir" ] || mkdir -p "$zwcdir"
     rm -f ~/.zsh/*.zwc(N) # clean up old versions
 
