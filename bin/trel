@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# tre but like ls -l
+exec tre -ugsp "$@"
