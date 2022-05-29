@@ -15,7 +15,6 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
   # see also global aliases in .zshrc
   for switches in '' {,i}{,l,L}{,r,R}{,v}{,C}; do
     cmd=g$switches
-    [ "$cmd" = 'gv' ] && continue
     preexisting=$( which $cmd 2>/dev/null )
     if [ $? = 0 ] && [ "$ZDOTDIR/bin/$cmd" != "$preexisting" ]; then
         echo -ne "\nWARNING! $cmd already found on path" >&2
