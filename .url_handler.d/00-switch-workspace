@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if which wmctrl >&/dev/null; then
+    wmctrl -s 1
+else
+    echo "WARNING: Didn't find wmctrl on \$PATH" >&2
+fi
+
+return 1

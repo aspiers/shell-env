@@ -64,6 +64,7 @@ fi
 shift
 
 firefox_handler () {
+    wmctrl -a firefox
     ff_version="`firefox -version`"
     echo "ff_version $ff_version"
     case "$ff_version" in
@@ -89,13 +90,13 @@ process_running_my_uid () {
 }
 
 chrome_handler () {
-    if process_running_my_uid brave-browser; then
-        browser=brave-browser
-    elif process_running_my_uid google-chrome; then
+    if process_running_my_uid google-chrome; then
         browser=google-chrome
     elif process_running_my_uid chrome; then
         browser=google-chrome
         switch_to=chrome
+    elif process_running_my_uid brave-browser; then
+        browser=brave-browser
     elif process_running_my_uid chromium; then
         browser=chromium
     else
@@ -105,7 +106,9 @@ chrome_handler () {
     : ${switch_to:=$browser}
 
     if [ -z "$SSH_CONNECTION" ]; then
-        if which wmctrl >&/dev/null; then
+        if pgrep fluxbox 2>/dev/null; then
+            fluxbox-remote "MacroCmd {NextWindow (Name=$browser) (Head=1)} {Exec focus-active-window}"
+        elif which wmctrl >&/dev/null; then
             # -x searches by WM_CLASS
             wmctrl -x -a "$switch_to"
         else
