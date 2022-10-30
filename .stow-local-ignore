@@ -1,3 +1,11 @@
+# We don't want any old CVS repository stowing its .cvsignore
+# into my ~ directory; however this global stow ignore list
+# gets overridden by the local one in my cvs repo which does
+# *not* contain .cvsignore.  So the .cvsignore from that
+# repo, and only that repo, gets stowed in ~.
+#
+# Similarly for .gitignore and my git repo.
+\.cvsignore
 \.git
 \.gitignore
 
@@ -18,12 +26,42 @@ Attic
 .*\.class
 .*\.flc
 .*\.zwc
-
+\.hg
+_darcs
+\{arch\}
+\.arch-ids
+\.arch-inventory
+,,.*
+\.svn
+BitKeeper
+\.pcl-cvs-cache
+pm_to_blib
+blib
+\.nfs.+
+pod2html-.+cache
+tags
+TAGS
+\.xvpics
+\.emacs\.desktop
+\.emacs\.backup
+\+\+build
+_build
+Build
+\.zshhistory
+\.bash_history
+.*\.rpmsave
+.*\.cfgsave\.
+config\.log
+autom4te\.cache
+.*\.log
 README.*
 LICENSE.*
 COPYING
 /doc
 
+\.autosync
+\.autocommit
+\.mypy_cache
+
 lib/perl5/Sh\.t
 t
-^\.autosync
