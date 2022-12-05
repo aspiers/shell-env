@@ -21,7 +21,7 @@ while read hook; do
     if source "$hook"; then
         break
     fi
-done < <(source $ZDOT_FIND_HOOKS ".url_handler.d")
+done < <(source $ZDOT_FIND_HOOKS "$HOOK_DIR")
 # The while read; do ... done < <() is necessary to
 # avoid the while's body running in a subshell.
 
