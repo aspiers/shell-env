@@ -853,12 +853,16 @@ if ! which less >&/dev/null; then
   alias less=more
 fi
 
-if which bat >&/dev/null; then
-    alias v=bat
-else
-    alias v=less
-fi
+alias v=less
 alias vs='less -S'
+
+if which batpipe >&/dev/null; then
+    eval "$(batpipe)"
+else
+    if which bat >&/dev/null; then
+        alias v=bat
+    fi
+fi
 
 # }}}
 # {{{ editors
