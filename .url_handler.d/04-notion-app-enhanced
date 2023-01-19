@@ -1,0 +1,10 @@
+#!/bin/bash
+
+case "$1" in
+    https://www.notion.so/*)
+        path="${1#https://www.notion.so/}"
+        ~/software/web/Notion-Enhanced.AppImage notion://"$path" &
+        set --
+        return 0
+        ;;
+esac

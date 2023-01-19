@@ -25,7 +25,11 @@ done < <(source $ZDOT_FIND_HOOKS "$HOOK_DIR")
 # The while read; do ... done < <() is necessary to
 # avoid the while's body running in a subshell.
 
-   url="$1"
+if [ -z "$1" ]; then
+    exit 0
+fi
+
+url="$1"
 method="${1%%:*}"
 
 if test "$url" = "$method" ; then
