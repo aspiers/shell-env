@@ -10,7 +10,7 @@
 #
 
 #logger -t $0 "$@" / $DISPLAY
-#exec 2>/tmp/url_handler.log
+exec >&/tmp/url_handler.log
 
 here=$(dirname $0)
 
