@@ -110,7 +110,7 @@ chrome_handler () {
     : ${switch_to:=$browser}
 
     if [ -z "$SSH_CONNECTION" ]; then
-        if pgrep fluxbox 2>/dev/null; then
+        if pgrep fluxbox >&/dev/null; then
             fluxbox-remote "MacroCmd {NextWindow (Name=$browser) (Head=1)} {Exec focus-active-window}"
         elif which wmctrl >&/dev/null; then
             # -x searches by WM_CLASS
