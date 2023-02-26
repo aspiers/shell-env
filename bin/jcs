@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# mnemonic: JournalCtl System unit
+
+journalctl --unit "$@"
