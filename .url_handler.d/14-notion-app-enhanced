@@ -1,9 +1,16 @@
 #!/bin/bash
 
+notion_enhanced=~/software/web/Notion-Enhanced.AppImage
+
+if ! [ -x "$notion_enhanced" ]; then
+    return 1
+fi
+
+
 case "$1" in
     https://www.notion.so/*)
         path="${1#https://www.notion.so/}"
-        ~/software/web/Notion-Enhanced.AppImage notion://"$path" &
+        $notion_enhanced notion://"$path" &
         set --
         return 0
         ;;
