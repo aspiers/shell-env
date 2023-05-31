@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# See notes in ujcfu about not using --user via ujc
+
+jc --user-unit "$@"

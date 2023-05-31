@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# See notes in jcfuu on why we don't use --user here
-
-jl --user-unit "$@"

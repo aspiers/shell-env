@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# mnemonic: JL System unit
-
-jl --unit "$@"
