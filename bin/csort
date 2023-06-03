@@ -30,7 +30,7 @@ EOF
 Pattern formats:
   /regexp/   - matches if the line contains the (non-anchored) regexp
   N:/regexp/ - matches if the Nth field in the line contains the (non-anchored) regexp
-  N=/regexp/ - matches if the Nth field in the line is equal to the given string
+  N=string   - matches if the Nth field in the line is equal to the given string
   string     - matches if the line is equal to the given string
 EOF
   end
