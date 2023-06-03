@@ -75,7 +75,7 @@ def interpret_pattern(pattern, delimiter)
       fields[fieldnum] == str
     }
   else
-    return Proc.new { |line| line == pattern }
+    return Proc.new { |line| line.chomp == pattern }
     #abort "Couldn't interpret pattern '#{pattern}'"
   end
 end
