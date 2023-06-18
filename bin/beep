@@ -60,7 +60,7 @@ sub get_sound_command {
     return "$exe \Q$sound\E";
   }
 
-  return 'bip' if `which play 2>&1`;
+  return 'bip -v 0.1' if `which play 2>&1`;
 
   die "$ME: couldn't find a way to make a sound!\n";
 }
