@@ -1,7 +1,7 @@
 #!/bin/sh -
 #
 # To use this filter with less, define LESSOPEN:
-# export LESSOPEN="|/usr/bin/lesspipe.sh %s"
+# export LESSOPEN="|~/bin/lesspipe.sh %s"
 
 lesspipe() {
   case "$1" in
