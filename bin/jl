@@ -3,4 +3,4 @@
 # FIXME: the nice lnavf behaviour doesn't work because jcf takes a
 # while to spew log history down the pipe, and lnav has no way of
 # knowing when it's done.
-jcf --since="2 days ago" "$@" | lnavf
+jcf2 | lnavf "$@"
