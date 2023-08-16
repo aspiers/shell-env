@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Not using this for now
+return 1
+
 notion_enhanced=~/software/web/Notion-Enhanced.AppImage
 
 if ! [ -x "$notion_enhanced" ]; then
