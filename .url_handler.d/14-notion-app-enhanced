@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Not using this for now
-return 1
+return 1  # Carry on processing other hooks
 
 notion_enhanced=~/software/web/Notion-Enhanced.AppImage
 
 if ! [ -x "$notion_enhanced" ]; then
-    return 1
+    return 1  # Carry on processing other hooks
 fi
 
 

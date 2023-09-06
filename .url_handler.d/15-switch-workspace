@@ -6,4 +6,4 @@ else
     echo "WARNING: Didn't find wmctrl on \$PATH" >&2
 fi
 
-return 1
+return 1  # Carry on processing other hooks
