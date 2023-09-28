@@ -1,0 +1,3 @@
+#!/bin/bash
+
+uuidgen | xclip -r -selection clipboard
