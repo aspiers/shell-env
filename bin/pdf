@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # See ~/org/notes/PDFviewers.org for justification on decision order
-viewers='okular kpdf evince acroread xpdf'
+viewers='kpdf evince okular acroread xpdf'
 
 found=
 for file in "$@"; do
