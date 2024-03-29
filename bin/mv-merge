@@ -93,6 +93,6 @@ for src in "${srcs[@]}"; do
     rsync -Rav --link-dest="$abs_cwd" $dry_run $overwrite "$src" "$dst"
 
     echo
-    echo rm-src-dups $dry_run -s "$src" . "$dst"
+    echo rm-src-dups -vv $dry_run -s \""$src"\" . \""$dst"\"
     [ -d "$dst/$src" ] && rm-src-dups -vv $dry_run -s "$src" . "$dst"
 done
