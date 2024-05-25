@@ -2,9 +2,10 @@
 
 set -e
 
+me=cm
 mode=`basename $0`
 
-if [ "$mode" = 'cm' ] && [ -z "$*" ]; then
+if [ "$mode" = $me ] && [ -z "$*" ]; then
   here=`dirname $0`
   echo -n "Setting up handy shortcuts in $here ..."
   cd "$here"
@@ -13,7 +14,7 @@ if [ "$mode" = 'cm' ] && [ -z "$*" ]; then
               {1,2,3,4,}{700,710,711,750,751,755,775,770,771,777}
   do
     if ! [ -e $mode ]; then
-      ln -s cm $mode
+      ln -s $me $mode
       echo -n " $mode"
     fi
   done
