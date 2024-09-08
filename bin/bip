@@ -49,7 +49,7 @@ getopts () {
             *)
                 usage "Unrecognised option: $1"
                 ;;
-        esac        
+        esac
     done
 }
 
