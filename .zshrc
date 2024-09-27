@@ -858,10 +858,15 @@ alias vs='less -S'
 
 if which batpipe >&/dev/null; then
     eval "$(batpipe)"
+    # LESSOPEN="|$ZDOTDIR/bin/lesspipe.sh %s"
 else
     if which bat >&/dev/null; then
         alias v=bat
     fi
+fi
+
+if which batman >&/dev/null; then
+    alias man=batman
 fi
 
 # }}}
@@ -904,6 +909,11 @@ alias -g PIPE='|'
 # {{{ Lists of pipelines
 
 alias -g AD='&& div &&'
+
+# }}}
+# {{{ Checking exit code
+
+alias -g XS='; echo $?'
 
 # }}}
 
