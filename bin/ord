@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 foreach my $ord (split //, shift) {
-  printf "%s: dec %d, oct %03o, hex 0x%2x\n", $ord, (ord $ord) x 3;
+  printf "%s: dec %d, oct %03o, hex 0x%02x\n", $ord, (ord $ord) x 3;
 }
 
 
