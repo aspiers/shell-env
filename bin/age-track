@@ -12,7 +12,7 @@ me=`basename $0`
 
 usage () {
   cat <<EOF >&2
-Usage: $me COMMAND [-n NAME] [ARGS]
+Usage: $me [-n NAME] COMMAND [ARGS]
 EOF
   exit 1
 }
