@@ -7,7 +7,7 @@ if [ "$mode" = "$me" ] && [ -z "$*" ]; then
     here=`dirname $0`
     echo -n "Setting up handy service shortcuts in $here ... "
     cd "$here"
-    for op in {,u}s{re,rl,st,t,sp,ta}; do
+    for op in {,u}s{re,rl,st,t,sp,p,ta}; do
         if ! [ -e $op ]; then
             ln -s $me $op
             echo -n " $op"
@@ -32,7 +32,7 @@ case "$mode" in
         op=reload  ;;
     st|sst)
         op=start   ;;
-    ssp)
+    sp|ssp)
         op=stop    ;;
     sta)
         op=status  ;;
