@@ -167,7 +167,7 @@ sh_load_status 'setting environment'
 [[ "$ZSH_VERSION_TYPE" == 'old' ]] || typeset -T INFOPATH infopath
 typeset -U infopath # no duplicates
 export INFOPATH
-infopath=( 
+infopath=(
           ~/{share/,}info(N)
           /usr/{share/,}info(N)
           $infopath
@@ -386,7 +386,7 @@ zstyle ':completion:*' squeeze-slashes 'yes'
 # {{{ Include non-hidden dirs in globbed file completions for certain commands
 
 #zstyle ':completion::complete:*' \
-#  tag-order 'globbed-files directories' all-files 
+#  tag-order 'globbed-files directories' all-files
 #zstyle ':completion::complete:*:tar:directories' file-patterns '*~.*(-/)'
 
 # }}}
@@ -419,9 +419,9 @@ zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:descriptions' format "%B---- %d%b"
 
 # Messages/warnings format
-zstyle ':completion:*:messages' format '%B%U---- %d%u%b' 
+zstyle ':completion:*:messages' format '%B%U---- %d%u%b'
 zstyle ':completion:*:warnings' format '%B%U---- no match for: %d%u%b'
- 
+
 # Describe options in full
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
@@ -431,7 +431,7 @@ zstyle ':completion:*:options' auto-description '%d'
 
 # When completing inside array or association subscripts, the array
 # elements are more useful than parameters so complete them first:
-zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters 
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 # }}}
 # {{{ Completion for processes
@@ -440,7 +440,7 @@ zstyle ':completion:*:*:*:*:processes' menu yes select
 zstyle ':completion:*:*:*:*:processes' force-list always
 
 # }}}
-# {{{ Simulate my old dabbrev-expand 3.0.5 patch 
+# {{{ Simulate my old dabbrev-expand 3.0.5 patch
 
 zstyle ':completion:*:history-words' stop yes
 zstyle ':completion:*:history-words' remove-all-dups yes
@@ -463,7 +463,7 @@ if [[ "$ZSH_VERSION_TYPE" == 'new' ]]; then
   # %%\#* -> remove comment lines and trailing comments
   # (ps:\t:) -> split on tab
   # ##[:blank:]#[^[:blank:]]# -> remove comment lines
-  
+
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
 # _ssh_known_hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\ *}%%,*})
 else
@@ -1068,7 +1068,7 @@ fi
 # }}}
 
 # }}}
-# {{{ Key bindings 
+# {{{ Key bindings
 
 sh_load_status 'key bindings'
 
