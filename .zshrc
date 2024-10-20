@@ -236,7 +236,13 @@ WATCHFMT="[%B%t%b] %B%n%b has %a %B%l%b from %B%M%b"
 # }}}
 # {{{ Auto logout
 
-TMOUT=1800
+# This ancient code is from an era where dinosaurs roamed the earth
+# and we all shared computers or even just dumb terminals in a
+# computer lab with no screen-lock functionality.  These days we can
+# protect sessions with biometrics etc. so no need for auto-logout of
+# terminals.
+
+#TMOUT=1800
 #TRAPALRM () {
 #  clear
 #  echo Inactivity timeout on $TTY
@@ -245,6 +251,11 @@ TMOUT=1800
 #  echo
 #  echo Terminal unlocked. [ Press Enter ]
 #}
+
+# Don't always autologout
+# if [[ "${TERM}" == ([Ex]term*|rxvt*|dtterm|screen*|tmux*) ]]; then
+#   unset TMOUT
+# fi
 
 # }}}
 
@@ -1135,13 +1146,6 @@ if [[ $ZSH_VERSION > 3.1.5 ]]; then
 
   # completion colours
   zstyle ':completion:*' list-colors "$LS_COLORS"
-fi  
-
-# }}}
-# {{{ Don't always autologout
-
-if [[ "${TERM}" == ([Ex]term*|rxvt*|dtterm|screen*) ]]; then
-  unset TMOUT
 fi
 
 # }}}
