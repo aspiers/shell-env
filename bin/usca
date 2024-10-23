@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Crazy that there's no better way to do this.
+find ~/.config/systemd/user/ -name "*.service" -printf '%f\0' | \
+    xargs -0 systemctl --user list-units --all
