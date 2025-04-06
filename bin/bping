@@ -62,20 +62,20 @@ def bip(frequency, duration, volume):
 def main():
     options, ping_args = parse_args()
 
-    regexp = re.compile('time=(\d+(?:\.\d+)?)\s*(\w+)')
+    regexp = re.compile(r'time=(\d+(?:\.\d+)?)\s*(\w+)')
 
     ping = subprocess.Popen(['ping'] + ping_args, stdin=None, stdout=subprocess.PIPE)
     while True:
         if ping.poll():
             break
-        line = ping.stdout.readline()
-        print line,
+        line = ping.stdout.readline().decode()
+        print(line, end='')
         m = regexp.search(line)
         if m:
             latency, unit = m.groups()
             if unit != 'ms':
                 bip(440, duration=options.duration, volume = options.volume * 2)
-                raise RuntimeError, "Unrecognised unit: %s" % unit
+                raise(RuntimeError, "Unrecognised unit: %s" % unit)
             freq = frequency(float(latency))
             bip(freq, options.duration, options.volume)
 
