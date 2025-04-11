@@ -5,7 +5,14 @@
 # Try switch shell if we're interactive, aiming for safety, but
 # not so much that we end up hogging memory.
 #
-# $Id$
+# The motivation for this script is somewhat lost in the murky depths
+# of time, but probably it was originally written for an era in which
+# I used shared UNIX / Linux systems and had no control over which
+# shell I was given.  These days I can always run chsh myself, so I
+# probably don't need it any more.  The other possible scenario was
+# wanting to keep root set to /bin/bash or similar, but have it switch
+# to zsh for interactive usage.  However I can't think of any good
+# reason for needing that any more either.
 #
 # Usage:
 #
