@@ -1,0 +1,10 @@
+#!/bin/bash
+
+me=$(basename $0)
+
+if [ $# != 1 ]; then
+    echo >&2 "Usage: $me PROP"
+    exit 1
+fi
+
+grep -q "^$1\$" ~/.localhost-props
