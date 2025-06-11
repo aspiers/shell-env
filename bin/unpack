@@ -40,7 +40,7 @@ Usage: $me ARCHIVE [ARCHIVE ...]
 Unpacks the given archive(s).  Supported formats include:
 
   tar (incl. compressed with gzip, bzip2, xz), zip, 7z, rar,
-  apk, xpi, jar, class, gem, box, rpm, egg
+  apk, xpi, jar, class, gem, box, rpm, egg, whl
 
 Guarantees that extraction will always be to a newly-created directory
 rather than polluting an existing one with multiple entries.
@@ -104,7 +104,7 @@ get_base_dest_dir () {
     case "$archive" in
         *.tar|*.tgz|*.tbz|*.txz|*.zip|*.Zip|*.ZIP|\
         *.7z|*.apk|*.rar|*.xpi|*.jar|*.sar|*.class|\
-        *.job|*.pylib|*.gem|*.box|*.rpm|*.egg|*.cpio)
+        *.job|*.pylib|*.gem|*.box|*.rpm|*.egg|*.whl|*.cpio)
             base_dest_dir="${archive%.*}"
             ;;
         *.tar.gz)
@@ -149,7 +149,7 @@ extract () {
         *.tar.xz|*.txz)
             run tar -C "$tmpdir" -Jxvf "$archive_path"
             ;;
-        *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk|*.egg)
+        *.zip|*.ZIP|*.Zip|*.xpi|*.jar|*.class|*.sar|*.job|*.pylib|*.apk|*.egg|*.whl)
             run unzip -d "$tmpdir" "$archive_path"
             ;;
         *.7z)
