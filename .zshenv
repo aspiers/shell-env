@@ -10,7 +10,7 @@
 #
 # This gets run even for non-interactive shells;
 # keep it as fast as possible.
-# 
+#
 # N.B. This is for zsh-specific environment stuff.  Put generic,
 # portable environment settings in .shared_env instead, so that they
 # take effect for bash and ksh.
@@ -19,7 +19,7 @@
 [ -n "$INHERIT_ENV" ] && return 0
 
 # Stop bad system-wide scripts interfering.
-setopt NO_global_rcs 
+setopt NO_global_rcs
 
 # {{{ What version are we running?
 
@@ -68,7 +68,7 @@ typeset -TU PERL5LIB perl5lib
 
 typeset -TU RUBYLIB rubylib
 export RUBYLIB
-rubylib=( 
+rubylib=(
           ~/lib/[r]uby{/site_ruby,}{/1.*,}{/i?86*,}(N)
           ~/lib/[r]uby(N)
           $rubylib
