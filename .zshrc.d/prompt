@@ -1,0 +1,76 @@
+#!/bin/zsh
+
+if which starship >&/dev/null; then
+    eval "$(starship init zsh)"
+    return
+fi
+
+# Load the theme-able prompt system and use it to set a prompt.
+# Probably only suitable for a dark background terminal.
+
+local _find_promptinit
+_find_promptinit=( $^fpath/promptinit(N) )
+if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
+  sh_load_status 'zsh prompt system'
+
+  autoload -U promptinit
+  promptinit
+
+  PS4="trace %N:%i> "
+  #RPS1="$bold_colour$bg_red              $reset_colour"
+
+  # Default prompt style
+  adam2_colors=( white cyan cyan green )
+
+  if [[ -r $zdotdir/.zsh_prompt ]]; then
+    . $zdotdir/.zsh_prompt
+  fi
+
+  if [[ -r /proc/$PPID/cmdline ]] &&
+       egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+  then
+    # probably OK for fancy graphic prompt
+    if [[ "`prompt -h adam2`" == *8bit* ]]; then
+      prompt adam2 8bit $adam2_colors
+    else
+      prompt adam2 $adam2_colors
+    fi
+  else
+    if [[ "`prompt -h adam2`" == *plain* ]]; then
+      prompt adam2 plain $adam2_colors
+    else
+      prompt adam2 $adam2_colors
+    fi
+  fi
+
+  # TopGun ssh for Palm
+  case "$TERM" in
+      tgtelnet) prompt off ;;
+      dumb)
+          # Make sure emacs tramp.el doesn't hang.
+          # The default value of tramp-shell-prompt-regexp gets confused
+          # by CR carriage return characters unless you change the first
+          # ^ to \\(^|^M\\) (N.B. ^M would need to be the raw character
+          # in that).  But instead we can just stop zsh producing them.
+
+          # Note that zsh's 'off' prompt theme's prompt_opts causes
+          # prompt_cr to be enabled.
+          #prompt off
+          #setopt no_prompt_cr
+
+          # Or we can make our own "theme" right here:
+          functions precmd  >/dev/null && unfunction precmd
+          functions preexec >/dev/null && unfunction preexec
+          setopt no_prompt_cr prompt_subst no_prompt_bang prompt_percent
+          PS1="[%n@%m %1~]\$ "
+          PS2="> "
+
+          # http://www.emacswiki.org/emacs/TrampMode#toc3 suggests these too
+          # but I don't seem to need them:
+          #unsetopt zle
+          #unsetopt prompt_subst
+          ;;
+  esac
+else
+  PS1='%n@%m %B%3~%b %# '
+fi
