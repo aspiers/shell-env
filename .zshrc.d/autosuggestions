@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+autosuggestions=/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -e "$autosuggestions" ]; then
+    source "$autosuggestions"
+fi
