@@ -149,7 +149,7 @@ alias po=popd
 # {{{ du1 (du with depth 1)
 
 du1 () {
-    du "$@" | egrep -v '/.*/'
+    du "$@" | grep -Ev '/.*/'
     # Another idea from Bart Schaefer, which I need to fix
     # to take parameters
     #du -s *(/)

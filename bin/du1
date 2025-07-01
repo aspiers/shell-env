@@ -3,7 +3,7 @@
 # du1 (du with depth 1)
 
 du --max-depth=1 "$@"
-#du "$@" | egrep -v '/.*/'
+#du "$@" | grep -Ev '/.*/'
 
 # Another idea from Bart Schaefer, which I need to fix
 # to take parameters

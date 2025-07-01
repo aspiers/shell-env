@@ -2,7 +2,7 @@
 
 
 if [[ -d /proc && -r /proc/$PPID/cmdline ]] &&
-   egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+   grep -Eq 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
 then
   # probably OK for fancy graphic prompt
   if prompt -h adam2 | grep -q 8bit; then

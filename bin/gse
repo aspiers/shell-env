@@ -2,4 +2,4 @@
 
 # gse (Grep Shell-Env) - greps my various shell-env files
 
-lse | xargs egrep "$@"
+lse | xargs grep -E "$@"

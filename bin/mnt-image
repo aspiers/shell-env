@@ -28,7 +28,7 @@ img=$1
 imgbase=${1##*/}
 mnt=${2:-$MNTROOT/$imgbase}
 absmnt="`abs $mnt`"
-if mount | egrep -q "$absmnt"; then
+if mount | grep -Eq "$absmnt"; then
   echo "Something already mounted on $absmnt!  Aborting."
   exit 1
 fi

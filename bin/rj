@@ -10,13 +10,13 @@ esac
 
 case "$OSTYPE" in
   solaris*) exec /usr/bin/ps -ef $threads |
-                  egrep -v "grep.+USER|$0|ps -ef\$" |
-                  egrep --color=always "($*|^ *UID)"
+                  grep -Ev "grep.+USER|$0|ps -ef\$" |
+                  grep -E --color=always "($*|^ *UID)"
             ;;
 
   # FreeBSD and Linux
          *) exec ps auxwwww $threads |
-                  egrep -v "grep.+USER|$0|ps auxwwww\$" |
-                  egrep --color=always "($*|^USER)"
+                  grep -Ev "grep.+USER|$0|ps auxwwww\$" |
+                  grep -E --color=always "($*|^USER)"
             ;; 
 esac

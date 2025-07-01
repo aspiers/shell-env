@@ -39,4 +39,4 @@ esac
 
 [ -n "$switches" ] && switches=-$switches
 
-exec egrep $switches $color "$@"
+exec grep -E $switches $color "$@"

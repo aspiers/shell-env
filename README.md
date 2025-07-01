@@ -109,8 +109,8 @@ for the most part they should work on any POSIX-oriented UNIX.
     * [`fswap`](https://github.com/aspiers/shell-env/blob/master/bin/fswap) - Swap the names/contents of two files.
     * [`ftrace`](https://github.com/aspiers/shell-env/blob/master/bin/ftrace) - Shortcut for `strace -e trace=file`.
     * [`glob-to-re`](https://github.com/aspiers/shell-env/blob/master/bin/glob-to-re) - Filter to convert globs into regexps.
-    * [`grep-shortcuts`](https://github.com/aspiers/shell-env/blob/master/bin/grep-shortcuts) - Provide handy egrep shortcuts, e.g. `gilr` is
-      equivalent to `egrep -i -l -r`
+    * [`grep-shortcuts`](https://github.com/aspiers/shell-env/blob/master/bin/grep-shortcuts) - Provide handy grep -E shortcuts, e.g. `gilr` is
+      equivalent to `grep -E -i -l -r`
     * [`gw-dev`](https://github.com/aspiers/shell-env/blob/master/bin/gw-dev) - Detect the default gateway's network interface.
     * [`gw-dev-IP`](https://github.com/aspiers/shell-env/blob/master/bin/gw-dev-IP) - Detect the IP of the default gateway's network interface.
     * [`harden-ln`](https://github.com/aspiers/shell-env/blob/master/bin/harden-ln) - Suspiciously similar to [`clip`](https://github.com/aspiers/shell-env/blob/master/bin/clip) (above).

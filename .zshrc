@@ -284,7 +284,7 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   fi
 
   if [[ -r /proc/$PPID/cmdline ]] &&
-       egrep -q 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+       grep -Eq 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
     if [[ "`prompt -h adam2`" == *8bit* ]]; then
@@ -1007,10 +1007,10 @@ for global_alias_switches in {,i}{,l,L}{,r}{,v}{,C}; do
             ;;
     esac
 
-    eval "alias -g  G$global_alias_switches='| egrep $rhs_switches $color'"
-    eval "alias -g EG$global_alias_switches='|& egrep $rhs_switches $color'"
-    eval "alias -g XG$global_alias_switches='| xargs egrep $rhs_switches $color'"
-    eval "alias -g X0G$global_alias_switches='| xargs -0 egrep $rhs_switches $color'"
+    eval "alias -g  G$global_alias_switches='| grep -E $rhs_switches $color'"
+    eval "alias -g EG$global_alias_switches='|& grep -E $rhs_switches $color'"
+    eval "alias -g XG$global_alias_switches='| xargs grep -E $rhs_switches $color'"
+    eval "alias -g X0G$global_alias_switches='| xargs -0 grep -E $rhs_switches $color'"
 done
 
 for global_alias_switches in {,0}{,1}{,r}{,n}; do
