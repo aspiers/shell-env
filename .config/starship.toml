@@ -164,12 +164,14 @@ symbol = " "
 
 [python]
 symbol = " "
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 
 [rlang]
 symbol = "󰟔 "
 
 [ruby]
 symbol = " "
+format = "[$symbol($version )]($style)"
 
 [rust]
 symbol = "󱘗 "
