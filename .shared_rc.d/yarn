@@ -1,1 +1,14 @@
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# -*- mode: sh -*-
+
+# Allow non-root global installation of yarn modules.
+export YARN_HOME="$HOME/.yarn"
+
+yarn_bin_path="$YARN_HOME/bin"
+if [ -d "$yarn_bin_path" ]; then
+    export PATH="$yarn_bin_path:$PATH"
+fi
+
+yarn_global_bin_path="$HOME/.config/yarn/global/node_modules/.bin"
+if [ -d "$yarn_global_bin_path" ]; then
+    export PATH="$yarn_global_bin_path:$PATH"
+fi

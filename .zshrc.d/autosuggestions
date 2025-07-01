@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+autosuggestions=/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -e "$autosuggestions" ]; then
+    ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=(
+        magic-forward-word
+        forward-word
+        emacs-forward-word
+        vi-forward-word
+        vi-forward-word-end
+        vi-forward-blank-word
+        vi-forward-blank-word-end
+        vi-find-next-char
+        vi-find-next-char-skip
+    )
+    source "$autosuggestions"
+fi
