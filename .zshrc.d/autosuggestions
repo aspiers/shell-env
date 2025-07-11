@@ -2,6 +2,7 @@
 
 autosuggestions=/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 if [ -e "$autosuggestions" ]; then
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#888888'
     ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=(
         magic-forward-word
         forward-word
