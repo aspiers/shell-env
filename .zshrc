@@ -622,62 +622,10 @@ alias sl=ls # often screw this up
 # }}}
 # {{{ File management/navigation
 
-# {{{ Changing/making/removing directory
-
-alias -g ...=../..
-alias -g ....=../../..
-alias -g .....=../../../..
-alias -g ......=../../../../..
-alias cd..='cd ..'
-alias cd...='cd ../..'
-alias cd....='cd ../../..'
-alias cd.....='cd ../../../..'
-# blegh
-alias ..='cd ..'
-alias ../..='cd ../..'
-alias ../../..='cd ../../..'
-alias ../../../..='cd ../../../..'
-alias ../../../../..='cd ../../../../..'
-
-alias cd/='cd /'
-
-alias 1='cd -'
-alias 2='cd +2'
-alias 3='cd +3'
-alias 4='cd +4'
-alias 5='cd +5'
-alias 6='cd +6'
-alias 7='cd +7'
-alias 8='cd +8'
-alias 9='cd +9'
-
-# Sweet trick from zshwiki.org :-)
-cd () {
-  if (( $# != 1 )); then
-    builtin cd "$@"
-    return
-  fi
-
-  if [[ -f "$1" ]]; then
-    builtin cd "$1:h"
-  else
-    builtin cd "$1"
-  fi
-}
-
-z () {
-  cd ~/"$1"
-}
+# {{{ Making/removing directory
 
 alias md='mkdir -p'
 alias rd=rmdir
-
-alias d='dirs -v'
-
-po () {
-  popd "$@"
-  dirs -v
-}
 
 # }}}
 # {{{ Renaming
