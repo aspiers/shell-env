@@ -8,6 +8,9 @@ disabled = false
 [buf]
 symbol = " "
 
+[bun]
+disabled = true
+
 [c]
 symbol = " "
 
