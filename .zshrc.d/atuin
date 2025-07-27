@@ -1,5 +1,15 @@
 #!/bin/zsh
 
 if which atuin >&/dev/null; then
+    #export ATUIN_NOBIND="true"
+    unset ATUIN_NOBIND
+
     eval "$(atuin init zsh)"
+
+    if [ "$ATUIN_NOBIND" = true ]; then
+        bindkey '^r' atuin-search
+
+        # bind to the up key, which depends on terminal mode
+        #bindkey '^[[A' atuin-up-search
+    fi
 fi
