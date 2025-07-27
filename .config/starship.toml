@@ -50,6 +50,7 @@ symbol = " "
 symbol = " "
 
 [git_branch]
+format = "[$symbol$branch(:$remote_branch)]($style) "
 symbol = " "
 
 [git_commit]
@@ -101,6 +102,7 @@ symbol = "󰆥 "
 symbol = " "
 
 [nodejs]
+format = "[$symbol($version )]($style)"
 symbol = " "
 
 [ocaml]
@@ -155,6 +157,7 @@ Windows = "󰍲 "
 
 [package]
 symbol = "󰏗 "
+format = "[$symbol$version]($style) "
 
 [perl]
 symbol = " "
