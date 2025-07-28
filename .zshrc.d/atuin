@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 if which atuin >&/dev/null; then
-    #export ATUIN_NOBIND="true"
-    unset ATUIN_NOBIND
+    #unset ATUIN_NOBIND
+    export ATUIN_NOBIND="true"
 
     eval "$(atuin init zsh)"
 
