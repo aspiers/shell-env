@@ -7,7 +7,7 @@ exclude="-x none -x tmpfs -x devtmpfs -x iso9660"
 maybe_color () {
     if [ -t 1 ]; then
         perl -lpe '
-          if (/( (\d\d?)% )/) {
+          if (/( (\d{1,3})% )/) {
             my $percent = $2;
             my $color = $percent >= 95 ? "41;1" :
                         $percent >= 90 ? "31" :
