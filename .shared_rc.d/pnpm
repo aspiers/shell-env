@@ -2,6 +2,6 @@
 export PNPM_HOME="/home/adam/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
+  *) export PATH="$PATH:$PNPM_HOME" ;;
 esac
 # pnpm end
