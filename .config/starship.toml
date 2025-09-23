@@ -1,3 +1,14 @@
+format="""$all$fill $time$line_break\
+$jobs\
+$battery\
+$status\
+$os\
+$container\
+$netns\
+$shell\
+$character"""
+#right_format = """$time"""
+
 [aws]
 symbol = "  "
 disabled = true
@@ -85,6 +96,9 @@ symbol = " "
 
 [kotlin]
 symbol = " "
+
+[line_break]
+disabled = false
 
 [lua]
 symbol = " "
@@ -187,6 +201,12 @@ symbol = " "
 
 [swift]
 symbol = " "
+
+[time]
+format = "[$time]($style)"
+#time_format = "%T"
+time_format = "%a %b %e %T"
+disabled = false
 
 [zig]
 symbol = " "
