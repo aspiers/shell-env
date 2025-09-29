@@ -9,6 +9,13 @@ $shell\
 $character"""
 #right_format = """$time"""
 
+[fill]
+# U+2501 BOX DRAWINGS HEAVY HORIZONTAL
+symbol="━"
+style="bold white"
+
+#symbol="-"
+
 [aws]
 symbol = "  "
 disabled = true
