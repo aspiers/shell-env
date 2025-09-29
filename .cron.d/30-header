@@ -8,9 +8,10 @@ PATH=$HOME/bin:/usr/bin:/bin:/usr/sbin:/sbin
 # This is redundant I think
 #MAILTO=${USER:-$USERNAME}
 
-# arctic postfix won't accept mail from anybody
-# beimborn MX will, but better not to rely on that
-MAILTO=moosehall-cron@adamspiers.org
+# coral postfix won't accept mail from anybody
+#MAILTO=moosehall-cron@adamspiers.org
+
+MAILTO=adam
 
 #min  hr dom mon dow    command
 EOF
