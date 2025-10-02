@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Nushell Table for JSON
+
+nu -c 'cat | from json | table -e -t none'
