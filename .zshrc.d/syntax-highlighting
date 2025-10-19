@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+highlighting=/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -e "$highlighting" ]; then
+    source "$highlighting"
+fi
