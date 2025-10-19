@@ -985,8 +985,13 @@ bindkey '^[b'    magic-backward-word
 bindkey '^[B'    backward-to-space
 bindkey '^[^b'   backward-to-/
 bindkey '^[^f'   forward-to-/
+# Not sure what generates these any more; apparently used to be
+# M-{left,right}
 bindkey '^[^[[C' emacs-forward-word
 bindkey '^[^[[D' emacs-backward-word
+# Modern M-{left,right} seems to be this:
+bindkey '^[[1;3C' emacs-forward-word
+bindkey '^[[1;3D' emacs-backward-word
 
 bindkey '^[D'  kill-big-word
 
