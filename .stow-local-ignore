@@ -57,11 +57,26 @@ autom4te\.cache
 README.*
 LICENSE.*
 COPYING
-/doc
-
 \.autosync
 \.autocommit
 \.mypy_cache
+\.env
+\.env\..*
+\.cursor
+^/AGENT.md
+^/AGENTS.md
+^/CLAUDE.md
+^/GEMINI.md
+^/\.claude/settings.json
+^/\.claude/settings.local.json
+^/\.opencode
+^/\.prettier.*
+^/\.editorconfig
+^/node_modules
+tmp
+nohup\.out
 
+# Specific to shell-env
 lib/perl5/Sh\.t
 t
+/doc
