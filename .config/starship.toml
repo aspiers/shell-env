@@ -67,6 +67,9 @@ symbol = " "
 [fossil_branch]
 symbol = " "
 
+[gcloud]
+disabled = true
+
 [git_branch]
 format = "[$symbol$branch(:$remote_branch)]($style) "
 symbol = " "
