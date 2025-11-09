@@ -3,6 +3,4 @@
 lnav \
     -q \
     "$@" \
-    -c ':goto -1' \
-    -c ':mark' \
-    -c ':goto -30' \
+    -c ':mark'
