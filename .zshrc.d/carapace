@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-if which atuin >&/dev/null; then
+if which atuin >&/dev/null && which carapace >&/dev/null; then
     export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
     zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
     source <(carapace _carapace)
