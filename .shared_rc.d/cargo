@@ -1,0 +1,6 @@
+# -*- mode: sh -*-
+
+# Allow non-root global installation of cargo modules.
+export CARGO_HOME="$HOME/.cargo"
+
+safe_add_to_path --append "$CARGO_HOME/bin"

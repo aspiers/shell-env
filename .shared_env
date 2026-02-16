@@ -100,6 +100,38 @@ export ZDOTUSER
 
 # {{{ PATH
 
+# Add directories to $PATH if they exist and aren't already present.
+# Default is to prepend; use --append to append instead.
+# Preserves the order of the given paths.
+safe_add_to_path () {
+    local append=
+    if [ "$1" = "--append" ]; then
+        append=1
+        shift
+    fi
+
+    local new= dir=
+    for dir in "$@"; do
+        [ -d "$dir" ] || continue
+        case ":$PATH:$new:" in
+            *:"$dir":*) continue ;;
+        esac
+        if [ -z "$new" ]; then
+            new="$dir"
+        else
+            new="$new:$dir"
+        fi
+    done
+
+    if [ -n "$new" ]; then
+        if [ -n "$append" ]; then
+            PATH="$PATH:$new"
+        else
+            PATH="$new:$PATH"
+        fi
+    fi
+}
+
 # Don't trust system-wide PATH?  Remember what it was, for reference.
 syspath=$HOME/.syspath.$HOST
 if [ ! -e $syspath ]; then
@@ -107,30 +139,19 @@ if [ ! -e $syspath ]; then
     # cross-WAN.
     echo "$PATH" 2>/dev/null > "$syspath"
 fi
-PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+#PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
 # ... or *do* trust system-wide PATH
-#PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
+PATH=/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH
 
 . $ZDOTDIR/.zsh/functions/enable_wordsplit
-newpaths=
 for dir in $ZDOTDIRREVPATH; do
-  for newpath in                        \
-                 $dir/sbin              \
-                 $dir/bin               \
-                 $dir/.local/bin        \
-  ; do
-    if [ -d $newpath ]; then
-        if [ -z "$newpaths" ]; then
-            newpaths=$newpath
-        else
-            newpaths=$newpaths:$newpath
-        fi
-    fi
-  done
+  safe_add_to_path          \
+      $dir/sbin             \
+      $dir/bin              \
+      $dir/.local/bin
 done
 restore_wordsplit
-PATH=$newpaths:$PATH
 
 # }}}
 # {{{ MANPATH

@@ -1,7 +1,4 @@
 # pnpm
 export PNPM_HOME="/home/adam/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PATH:$PNPM_HOME" ;;
-esac
+safe_add_to_path --append "$PNPM_HOME"
 # pnpm end
