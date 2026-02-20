@@ -43,8 +43,6 @@ _CVSROOTS=(
            mutt              :pserver:anonymous@ftp.guug.de:/home/roessler/cvs
 ### BEGIN PRIVATE
            adamspiers         adam@adamspiers.org:/home/adam/.CVSROOT
-           banjo              adam@banjo.celticmusic.com:/home/adam/.CVSROOT
-           f5                 adam@f5.mandolinarchive.com:/home/adam/.CVSROOT
            sourceforge_anon   :pserver:anonymous@cvs.sourceforge.net:/cvsroot/\$1
            sourceforge        :ext:adamspiers@cvs.sourceforge.net:/cvsroot/\$\{1:l\}
 
