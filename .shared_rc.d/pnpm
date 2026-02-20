@@ -1,4 +1,4 @@
 # pnpm
-export PNPM_HOME="/home/adam/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 safe_add_to_path --append "$PNPM_HOME"
 # pnpm end
