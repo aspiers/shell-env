@@ -1,3 +1,5 @@
+# https://agent-flywheel.com/ compatibility
+
 # ACFS loader
 acfs_loader="$HOME/.acfs/zsh/acfs.zshrc"
 
