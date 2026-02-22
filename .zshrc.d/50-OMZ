@@ -1,0 +1,24 @@
+# Override OMZ's tmux title hooks to use cx.d substitutions and show
+# "dir: cmd" format while a command runs, and just "dir" at the prompt.
+# Requires: OMZ (loaded by flywheel), set_title, run_hooks (from shell-env).
+# Sorts after flywheel via numeric prefix to ensure OMZ is already loaded.
+if [[ -n "$TMUX" ]] && (( $+functions[set_title] )); then
+  _omz_cx_short_dir() {
+    local full_stitle="${PWD##*/}"
+    local _save_debug=$DEBUG_LOCAL_HOOKS
+    DEBUG_LOCAL_HOOKS= run_hooks .zsh/cx.d
+    DEBUG_LOCAL_HOOKS=$_save_debug
+    OMZ_SHORT_DIR=$full_stitle
+  }
+
+  omz_termsupport_precmd() {
+    _omz_cx_short_dir
+    set_title screen "$OMZ_SHORT_DIR"
+  }
+
+  omz_termsupport_preexec() {
+    _omz_cx_short_dir
+    local cmd="${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]}"
+    set_title screen "$OMZ_SHORT_DIR: $cmd"
+  }
+fi
