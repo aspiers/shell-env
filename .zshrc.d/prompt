@@ -28,7 +28,7 @@ if (( $#_find_promptinit >= 1 )) && [[ -r $_find_promptinit[1] ]]; then
   fi
 
   if [[ -r /proc/$PPID/cmdline ]] &&
-       grep -Eq 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
+       command grep -Eq 'watchlogs|kates|nexus|vga' /proc/$PPID/cmdline;
   then
     # probably OK for fancy graphic prompt
     if [[ "`prompt -h adam2`" == *8bit* ]]; then
