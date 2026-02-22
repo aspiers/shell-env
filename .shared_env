@@ -33,6 +33,40 @@ esac
 : ${DEBUG_LOCAL_HOOKS:=0}
 
 sh_load_status () {
+  # Benchmarking: log wallclock time and elapsed since last call (no date fork)
+  _sls_log=~/.log/sh_load_status.log
+  # zsh requires loading zsh/datetime for EPOCHREALTIME; bash 5+ has it built-in
+  [ -n "$BASH_VERSION" ] || zmodload zsh/datetime 2>/dev/null
+  _sls_raw=$EPOCHREALTIME
+  _sls_secs=${_sls_raw%.*}
+  _sls_frac=${_sls_raw#*.}
+  _sls_frac=${_sls_frac:0:3}
+  _sls_now_ms="${_sls_secs}${_sls_frac}"
+  if [ -n "$BASH_VERSION" ]; then
+    printf -v _sls_ts "%(%H:%M:%S)T.%s" "$_sls_secs" "$_sls_frac"
+  else
+    strftime -s _sls_hms "%H:%M:%S" "$_sls_secs"
+    _sls_ts="${_sls_hms}.${_sls_frac}"
+  fi
+  if [ -n "$_sls_last_ms" ]; then
+    _sls_elapsed=$(( _sls_now_ms - _sls_last_ms ))
+  else
+    _sls_elapsed=0
+  fi
+  # Cache tty for the session (avoid repeated forks)
+  if [ -z "$_sls_tty" ]; then
+    if [ -n "$BASH_VERSION" ]; then
+      _sls_tty=$(tty 2>/dev/null) || _sls_tty=unknown
+    else
+      # zsh: $TTY is a built-in variable
+      _sls_tty=${TTY:-unknown}
+    fi
+    _sls_tty=${_sls_tty#/dev/}
+  fi
+  mkdir -p "${_sls_log%/*}"
+  printf '%s  %s  (%4dms later)  %s\n' "$_sls_tty" "$_sls_ts" "$_sls_elapsed" "$*" >> "$_sls_log"
+  _sls_last_ms=$_sls_now_ms
+
   # Find the name of the running shell
   _this_shell=${shell:-${0##*/}}
 
