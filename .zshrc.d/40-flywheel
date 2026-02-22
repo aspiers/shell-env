@@ -1,5 +1,9 @@
 # ACFS loader
-source "$HOME/.acfs/zsh/acfs.zshrc"
+acfs_loader="$HOME/.acfs/zsh/acfs.zshrc"
+
+if ! [ -e "$acfs_loader" ]; then
+    return 0
+fi
 
 # bun completions for zsh
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
