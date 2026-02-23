@@ -1,0 +1,12 @@
+# -*- mode: sh -*-
+
+FNM_PATH="$HOME/.local/share/fnm"
+[ -d "$FNM_PATH" ] || return 0
+
+safe_add_to_path "$FNM_PATH"
+
+if [ -n "$BASH_VERSION" ]; then
+  eval "$(fnm env --shell bash)"
+else
+  eval "$(fnm env --shell zsh)"
+fi
