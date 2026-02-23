@@ -1,8 +1,3 @@
-# OMZ's key-bindings.zsh calls `bindkey -e` which resets the emacs keymap to
-# defaults, clobbering bindings set in .zshrc. Restore them here.
-bindkey -s '^[H' ' --help'
-bindkey -s '^[V' ' --version'
-
 # Override OMZ's tmux title hooks to use cx.d substitutions and show
 # "dir: cmd" format while a command runs, and just "dir" at the prompt.
 # Requires: OMZ (loaded by flywheel), set_title, run_hooks (from shell-env).
