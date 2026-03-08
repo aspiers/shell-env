@@ -46,6 +46,11 @@ fi
 
 # }}}
 
+# Ensure emacs keymap is the base before any custom bindings.
+# Without this, EDITOR/VISUAL containing "vi" causes zsh to
+# automatically switch to vi mode.
+bindkey -e
+
 # {{{ Options
 
 sh_load_status 'setting options'
