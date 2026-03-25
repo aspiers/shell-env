@@ -1,0 +1,32 @@
+#autoload
+
+# Get the current window title.
+# Checks cx's TITLES env var first, then tmux, then queries
+# the terminal emulator directly via CSI 21 t.
+
+if [[ -n "$TITLES" ]]; then
+    printf '%s' "${TITLES%%:*}"
+elif [[ -n "$TMUX" ]]; then
+    tmux display-message -p '#{window_name}'
+elif [[ -t 1 ]]; then
+    # Query the terminal emulator directly via xterm's CSI 21 t.
+    # Only useful outside tmux (tmux intercepts these sequences).
+    # Response is: ESC ] l <title> ESC \
+    local title ch prev old_settings
+    old_settings=$(stty -g)
+    stty raw -echo
+    printf '\e[21t' > /dev/tty
+    title=
+    prev=
+    while IFS= read -r -k 1 -t 1 ch < /dev/tty; do
+        if [[ "$prev" == $'\e' && "$ch" == '\' ]]; then
+            title=${title%$'\e'}
+            break
+        fi
+        title+="$ch"
+        prev="$ch"
+    done
+    stty "$old_settings"
+    # Strip the leading ESC ] l
+    printf '%s' "${title#$'\e']l}"
+fi
