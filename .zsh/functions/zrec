@@ -61,6 +61,16 @@ zrec () {
 
     rm -f ~/.zsh/functions.zwc # in case old versions are still around
 
+    # Remove _zsh_autosuggest_bound_* wrapper functions before compinit.
+    # zsh-autosuggestions wraps every zle widget with these, and some
+    # (e.g. backward-to-/, forward-to-/) contain '/' in their names.
+    # compdump builds a glob pattern $^fpath/(_func1|...|_funcN)(N:t)
+    # and '/' inside the alternation is parsed as a path separator,
+    # causing "bad pattern" errors.
+    for _f in ${(k)functions[(I)_zsh_autosuggest_bound_*]}; do
+        unfunction $_f
+    done
+
     # Some really weird shit happens when you remove an entry from the
     # _comps array - it persists unless you really try to get rid of
     # it.  Haven't figured out exactly how it refuses to die yet.
