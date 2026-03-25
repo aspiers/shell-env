@@ -44,12 +44,22 @@ _my_zrecompile () {
     [ -d "$zwcdir" ] || mkdir -p "$zwcdir"
     rm -f ~/.zsh/*.zwc(N) # clean up old versions
 
+    # zrecompile -p only understands -M and -R, not -U/-z/-k,
+    # so use zcompile directly for digest files needing -U.
+    rm -f $zwcdir/my-functions.zwc
+    echo -n "compiling $zwcdir/my-functions.zwc: "
+    zcompile -M -U $zwcdir/my-functions.zwc ~/.zsh/functions/*(-*) \
+        && echo succeeded || echo failed
+
+    rm -f $zwcdir/site-functions.zwc
+    echo -n "compiling $zwcdir/site-functions.zwc: "
+    zcompile -M -U $zwcdir/site-functions.zwc "$_site_funcs[@]" \
+        && echo succeeded || echo failed
+
     zrecompile "$@" -p -- \
       -R ~/.zshenv -- \
       -R ~/.zshrc  -- \
       "$_compinits[@]" \
-      -M -U $zwcdir/my-functions.zwc ~/.zsh/functions/*(-*) -- \
-      -M -U $zwcdir/site-functions.zwc "$_site_funcs[@]" -- \
       -R ~/.zcompdump
 }
 
